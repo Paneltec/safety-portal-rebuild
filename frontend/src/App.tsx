@@ -5,6 +5,9 @@ import { Loading } from "./components/ui";
 import { ForgotPassword, Login, RedeemLink, Setup } from "./pages/SignIn";
 import { OrganisationSettings } from "./pages/Organisation";
 import { Documents } from "./pages/Documents";
+import { FormEditor } from "./pages/FormEditor";
+import { FormSubmissions, Forms } from "./pages/Forms";
+import { SubmissionPage } from "./pages/Submission";
 import { Home } from "./pages/Home";
 import { Profile } from "./pages/Profile";
 import { Roles } from "./pages/Roles";
@@ -35,6 +38,10 @@ export function App() {
         <Route index element={<Navigate to="/app/home" replace />} />
         <Route path="home" element={<Home />} />
         <Route path="profile" element={<Profile />} />
+        <Route path="forms" element={<Forms />} />
+        <Route path="forms/templates/:templateId/edit" element={<FormEditor />} />
+        <Route path="forms/templates/:templateId/submissions" element={<FormSubmissions />} />
+        <Route path="forms/submissions/:submissionId" element={<SubmissionPage />} />
         <Route path="documents" element={<Documents />} />
         <Route path="documents/:folderId" element={<Documents />} />
         <Route path="settings/organisation" element={<OrganisationSettings />} />

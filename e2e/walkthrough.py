@@ -168,7 +168,73 @@ def documents(browser) -> None:
     print("document library walkthrough: ok")
 
 
-STEPS = [stage1_and_2a, documents]
+def forms(browser) -> None:
+    pg = sign_in(browser)
+    errors: list[str] = []
+    pg.on("pageerror", lambda e: errors.append(str(e)))
+    pg.get_by_role("link", name="Forms", exact=True).click()
+    expect(pg.get_by_text("No forms yet")).to_be_visible()
+    pg.get_by_role("button", name="New form").click()
+    pg.wait_for_url("**/edit")
+    pg.get_by_label("Form name").fill("Daily pre-start")
+    pg.locator("label.field", has_text="Type").locator("select").first.select_option("pre_start")
+
+    def add(kind: str, label: str, required: bool = False, choices: str | None = None) -> None:
+        pg.get_by_label("Add a question").select_option(kind)
+        pg.get_by_role("button", name="Add", exact=True).click()
+        pg.get_by_label("Question", exact=True).last.fill(label)
+        if choices:
+            pg.get_by_label("Choices, one per line").last.fill(choices)
+        if required:
+            pg.get_by_label("Required", exact=True).last.check()
+
+    add("text", "Rego", required=True)
+    add("compliance", "Tyres and wheel nuts", required=True)
+    add("select", "Weather", choices="Fine\nRain")
+    add("photo", "Defect photo")
+    add("signature", "Operator signature", required=True)
+    pg.get_by_role("button", name="Publish", exact=True).click()
+    expect(pg.get_by_text("Published as version 1.")).to_be_visible()
+    shot(pg, "07-form-editor", full=True)
+
+    # Fill it in: a failed check needs a note, and the signature is required.
+    pg.get_by_role("link", name="← All forms").click()
+    pg.get_by_role("button", name="Fill in").click()
+    pg.wait_for_url("**/forms/submissions/*")
+    pg.get_by_label("Rego").fill("PT-031")
+    pg.get_by_role("button", name="Fail").click()
+    pg.get_by_role("button", name="Submit", exact=True).click()
+    expect(pg.get_by_text("2 answers need attention.")).to_be_visible()
+    expect(pg.get_by_text("a failed check needs a note")).to_be_visible()
+    pg.get_by_label("What is wrong? (required)").fill("Nail in rear left tyre")
+    pg.get_by_label("Weather").select_option("Rain")
+    pg.locator("input[type=file]").set_input_files({"name": "tyre.png", "mimeType": "image/png", "buffer": png()})
+    expect(pg.get_by_role("button", name="tyre.png", exact=True)).to_be_visible()
+    box = pg.locator("canvas").bounding_box()
+    pg.mouse.move(box["x"] + 30, box["y"] + 60)
+    pg.mouse.down()
+    pg.mouse.move(box["x"] + 150, box["y"] + 90, steps=6)
+    pg.mouse.move(box["x"] + 260, box["y"] + 50, steps=6)
+    pg.mouse.up()
+    pg.get_by_label("Name of the person signing").fill("Stephen")
+    pg.get_by_role("button", name="Save signature").click()
+    expect(pg.get_by_text("Signed by Stephen")).to_be_visible()
+    pg.get_by_role("button", name="Save draft").click()
+    expect(pg.get_by_text("Draft saved.")).to_be_visible()
+    pg.get_by_role("button", name="Submit", exact=True).click()
+    expect(pg.get_by_text("Submitted. This record can no longer be changed.")).to_be_visible()
+    # The submitted record is read-only and keeps the failure and its note.
+    expect(pg.get_by_text("Nail in rear left tyre")).to_be_visible()
+    expect(pg.get_by_text("Fail", exact=True)).to_be_visible()
+    assert pg.get_by_role("button", name="Submit", exact=True).count() == 0
+    shot(pg, "08-form-submitted", full=True)
+    pg.get_by_role("link", name="← Daily pre-start submissions").click()
+    expect(pg.get_by_text("Showing 1–1 of 1")).to_be_visible()
+    assert not errors, errors
+    print("forms walkthrough: ok")
+
+
+STEPS = [stage1_and_2a, documents, forms]
 
 if __name__ == "__main__":
     with sync_playwright() as p:

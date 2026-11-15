@@ -6,6 +6,7 @@ HERE = Path(__file__).parent
 T_AUTH, T_USERS, T_RST = "tests/test_auth.py", "tests/test_users.py", "tests/test_roles_sessions_tenancy.py"
 T_ORG = "tests/test_org_setup_files.py"
 T_DOC = "tests/test_documents.py"
+T_FORM = "tests/test_forms_api.py; tests/test_forms_engine.py"
 
 # (method, baseline path) -> (classification, new handler, tests, status, decision)
 DONE = {
@@ -82,9 +83,39 @@ DONE = {
     ("POST", "/api/document-library/folders/{folder_id}/files"): ("team/resource", "documents.upload_files", T_DOC, "IMPLEMENTED_TESTED", "Per-file saved/rejected; type allowlist; duplicate-safe"),
     ("GET", "/api/document-library/folders/{folder_id}/subfolders"): ("team/resource", "documents.list_subfolders", T_DOC, "IMPLEMENTED_TESTED", ""),
     ("GET", "/api/document-library/search"): ("team/resource", "documents.search", T_DOC, "IMPLEMENTED_TESTED", "Name and tag search; extracted-text search arrives with AI stage"),
+
+    # ---- form engine (stage 2c)
+    ("GET", "/api/forms/templates"): ("team/resource", "forms.list_templates", T_FORM, "IMPLEMENTED_TESTED", "Unpublished forms hidden from people who cannot manage templates; assignment filter arrives with FORM-02"),
+    ("POST", "/api/forms/templates"): ("team/resource", "forms.create_template", T_FORM, "IMPLEMENTED_TESTED", "D-023 needs forms.use"),
+    ("POST", "/api/forms/templates/import"): ("team/resource", "forms.import_templates", T_FORM, "IMPLEMENTED_TESTED", "Creates drafts; per-entry errors"),
+    ("GET", "/api/forms/templates/{template_id}"): ("team/resource", "forms.get_template", T_FORM, "IMPLEMENTED_TESTED", ""),
+    ("PATCH", "/api/forms/templates/{template_id}"): ("team/resource", "forms.patch_template", T_FORM, "IMPLEMENTED_TESTED", "Edits the draft only; D-024 publish creates an immutable version"),
+    ("DELETE", "/api/forms/templates/{template_id}"): ("team/resource", "forms.delete_template", T_FORM, "IMPLEMENTED_TESTED", "Soft delete; submissions kept"),
+    ("GET", "/api/forms/templates/{template_id}/access-check"): ("authenticated-own", "forms.access_check", T_FORM, "IMPLEMENTED_TESTED", "Published and permission checks; assignment and certification gate arrive with FORM-02"),
+    ("GET", "/api/forms/templates/{template_id}/submissions"): ("team/resource", "forms.list_submissions", T_FORM, "IMPLEMENTED_TESTED", "Own-only without forms.team_view; paginated"),
+    ("POST", "/api/forms/templates/{template_id}/submissions"): ("authenticated-own", "forms.create_submission", T_FORM, "IMPLEMENTED_TESTED", "D-025 staged draft then submit; client_submission_id idempotency"),
+    ("GET", "/api/forms/submissions/{submission_id}"): ("team/resource", "forms.get_submission", T_FORM, "IMPLEMENTED_TESTED", "Carries the schema snapshot"),
+    ("DELETE", "/api/forms/submissions/{submission_id}"): ("team/resource", "forms.delete_submission", T_FORM, "IMPLEMENTED_TESTED", "Own draft, or forms.delete"),
+    ("POST", "/api/forms/submissions/{submission_id}/photos"): ("authenticated-own", "forms.upload_photo", T_FORM, "IMPLEMENTED_TESTED", "Draft only; images only"),
+    ("POST", "/api/forms/submissions/{submission_id}/attachments"): ("authenticated-own", "forms.upload_attachment", T_FORM, "IMPLEMENTED_TESTED", "Draft only; images and PDF"),
+    ("GET", "/api/forms/submissions/{submission_id}/photos/{stored_name}"): ("team/resource", "forms.download_submission_file", T_FORM, "HISTORICAL_COMPATIBILITY", "Replaced by GET /submissions/{id}/files/{file_id}: files are addressed by id, not stored name"),
+    ("GET", "/api/forms/submissions/{submission_id}/attachments/{stored_name}"): ("team/resource", "forms.download_submission_file", T_FORM, "HISTORICAL_COMPATIBILITY", "Replaced by GET /submissions/{id}/files/{file_id}"),
+    ("GET", "/api/forms/pickers/workers"): ("authenticated-own", "forms.pick_workers", T_FORM, "IMPLEMENTED_TESTED", "Lists active users until the worker register exists (stage 4); value shape unchanged"),
+    ("GET", "/api/forms/pickers/sites"): ("authenticated-own", "forms.pick_sites", T_FORM, "EXPLICITLY_UNAVAILABLE", "Returns available:false until the sites register (stage 4)"),
+    ("GET", "/api/forms/pickers/jobs"): ("authenticated-own", "forms.pick_jobs", T_FORM, "EXPLICITLY_UNAVAILABLE", "Returns available:false until daily jobs (stage 4)"),
+    ("GET", "/api/forms/fleet/vehicles"): ("authenticated-own", "forms.pick_vehicles", T_FORM, "EXPLICITLY_UNAVAILABLE", "Returns available:false until Navixy (stages 5-6); manual entry allowed and labelled"),
 }
 
 NEW_ROWS = [
+    ["GET", "/api/forms/field-types", "(new)", "field_types", "authenticated-own", "forms.field_types", T_FORM, "IMPLEMENTED_TESTED", "One field-family contract for office and phone"],
+    ["GET", "/api/forms/templates/export", "(new)", "export_templates", "team/resource", "forms.export_templates", T_FORM, "IMPLEMENTED_TESTED", "Definitions only, never answers"],
+    ["POST", "/api/forms/templates/{template_id}/publish", "(new)", "publish_template", "team/resource", "forms.publish_template", T_FORM, "IMPLEMENTED_TESTED", "D-024"],
+    ["POST", "/api/forms/templates/{template_id}/archive", "(new)", "archive_template", "team/resource", "forms.archive_template", T_FORM, "IMPLEMENTED_TESTED", ""],
+    ["PATCH", "/api/forms/submissions/{submission_id}", "(new)", "update_draft", "authenticated-own", "forms.update_draft", T_FORM, "IMPLEMENTED_TESTED", "Draft save with expected_revision"],
+    ["POST", "/api/forms/submissions/{submission_id}/submit", "(new)", "submit_draft", "authenticated-own", "forms.submit_draft", T_FORM, "IMPLEMENTED_TESTED", "D-025"],
+    ["POST", "/api/forms/submissions/{submission_id}/files", "(new)", "upload_submission_file", "authenticated-own", "forms.upload_submission_file", T_FORM, "IMPLEMENTED_TESTED", ""],
+    ["GET", "/api/forms/submissions/{submission_id}/files/{file_id}", "(new)", "download_submission_file", "team/resource", "forms.download_submission_file", T_FORM, "IMPLEMENTED_TESTED", ""],
+    ["DELETE", "/api/forms/submissions/{submission_id}/files/{file_id}", "(new)", "remove_submission_file", "authenticated-own", "forms.remove_submission_file", T_FORM, "IMPLEMENTED_TESTED", "Draft only"],
     ["GET", "/api/document-library/folders/{folder_id}", "(new)", "get_folder", "team/resource", "documents.get_folder", T_DOC, "IMPLEMENTED_TESTED", "Folder with breadcrumb path"],
     ["GET", "/api/document-library/files/{file_id}", "(new)", "get_file", "team/resource", "documents.get_file", T_DOC, "IMPLEMENTED_TESTED", "File with revision history"],
     ["GET", "/api/setup/status", "(new)", "setup_status", "public-scoped", "org.setup_status", T_ORG, "IMPLEMENTED_TESTED", "D-016"],
@@ -102,6 +133,7 @@ FEATURES = {
     "PERM-01": ("PARTIAL", "tests/test_permissions_unit.py; tests/test_users.py; tests/test_roles_sessions_tenancy.py", "Built: custom roles, action matrix, per-user overrides, presets, audit, grant guards. Outstanding: role form allowlist, payroll named grants, phone module allocation."),
     "ORG-01": ("PARTIAL", "tests/test_org_setup_files.py; e2e/walkthrough.py", "Built: name, time zone, contact details, validated portal and staff URLs with no host default, logo upload/replace/remove shown in shell and sign-in, companies, account holder. Outstanding: logo and branding in PDFs and email templates (arrive with those features), insurance certificates."),
     "DOC-01": ("PARTIAL", "tests/test_documents.py; e2e/walkthrough.py", "Built: folders (nest, move, rename, delete when empty), upload with type allowlist and content check, hash/size/type, private authorised download, inline preview for PDF and images, rename, move, expiry, tags, archive/restore, delete, revision history, missing-content state with repair or record-as-lost, counts, name/tag search. Outstanding: extracted-text search and AI retry, categories, generated per-worker and per-supplier folders, sharing (historical/optional), reorganise tool."),
+    "FORM-01": ("PARTIAL", "tests/test_forms_engine.py; tests/test_forms_api.py; e2e/walkthrough.py", "Built: all 20 field families with a documented value shape and server validation, template editor with preview, immutable published versions, staged draft/submit, photos/attachments/signatures stored separately and linked, idempotent retry, read-only record view from the schema snapshot, definition-only import/export. Outstanding: PDF, authorised corrections after submit, site/job/asset pickers and Navixy vehicle list (need later stages), AI draft."),
     "NAV-01": ("PARTIAL", "Browser walkthrough (login, users, roles, sessions, profile)", "Shell with permission-filtered menu for built screens only. Preferences, app directory and version display outstanding."),
 }
 

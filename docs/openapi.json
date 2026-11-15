@@ -43,6 +43,25 @@
     "title": "Body_replace_binary_api_document_library_files__file_id__replace_binary_post",
     "type": "object"
    },
+   "Body_upload_attachment_api_forms_submissions__submission_id__attachments_post": {
+    "properties": {
+     "field_id": {
+      "title": "Field Id",
+      "type": "string"
+     },
+     "file": {
+      "contentMediaType": "application/octet-stream",
+      "title": "File",
+      "type": "string"
+     }
+    },
+    "required": [
+     "field_id",
+     "file"
+    ],
+    "title": "Body_upload_attachment_api_forms_submissions__submission_id__attachments_post",
+    "type": "object"
+   },
    "Body_upload_files_api_document_library_folders__folder_id__files_post": {
     "properties": {
      "files": {
@@ -72,6 +91,44 @@
      "file"
     ],
     "title": "Body_upload_logo_api_org_logo_upload_post",
+    "type": "object"
+   },
+   "Body_upload_photo_api_forms_submissions__submission_id__photos_post": {
+    "properties": {
+     "field_id": {
+      "title": "Field Id",
+      "type": "string"
+     },
+     "file": {
+      "contentMediaType": "application/octet-stream",
+      "title": "File",
+      "type": "string"
+     }
+    },
+    "required": [
+     "field_id",
+     "file"
+    ],
+    "title": "Body_upload_photo_api_forms_submissions__submission_id__photos_post",
+    "type": "object"
+   },
+   "Body_upload_submission_file_api_forms_submissions__submission_id__files_post": {
+    "properties": {
+     "field_id": {
+      "title": "Field Id",
+      "type": "string"
+     },
+     "file": {
+      "contentMediaType": "application/octet-stream",
+      "title": "File",
+      "type": "string"
+     }
+    },
+    "required": [
+     "field_id",
+     "file"
+    ],
+    "title": "Body_upload_submission_file_api_forms_submissions__submission_id__files_post",
     "type": "object"
    },
    "BulkAssignRoleIn": {
@@ -262,6 +319,22 @@
      "name"
     ],
     "title": "CreateUserIn",
+    "type": "object"
+   },
+   "FieldValue": {
+    "properties": {
+     "id": {
+      "title": "Id",
+      "type": "string"
+     },
+     "value": {
+      "title": "Value"
+     }
+    },
+    "required": [
+     "id"
+    ],
+    "title": "FieldValue",
     "type": "object"
    },
    "FilePatch": {
@@ -474,6 +547,68 @@
      }
     },
     "title": "HTTPValidationError",
+    "type": "object"
+   },
+   "ImportPayload": {
+    "properties": {
+     "app": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "App"
+     },
+     "count": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Count"
+     },
+     "exported_at": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Exported At"
+     },
+     "templates": {
+      "items": {
+       "additionalProperties": true,
+       "type": "object"
+      },
+      "maxItems": 200,
+      "title": "Templates",
+      "type": "array"
+     },
+     "version": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Version"
+     }
+    },
+    "required": [
+     "templates"
+    ],
+    "title": "ImportPayload",
     "type": "object"
    },
    "LoginIn": {
@@ -1008,6 +1143,233 @@
      "confirm_password"
     ],
     "title": "SetupIn",
+    "type": "object"
+   },
+   "SubmissionIn": {
+    "properties": {
+     "client_submission_id": {
+      "anyOf": [
+       {
+        "maxLength": 64,
+        "minLength": 8,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Client Submission Id"
+     },
+     "fields": {
+      "items": {
+       "$ref": "#/components/schemas/FieldValue"
+      },
+      "title": "Fields",
+      "type": "array"
+     },
+     "launched_via": {
+      "anyOf": [
+       {
+        "maxLength": 40,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Launched Via"
+     },
+     "source_asset_id": {
+      "anyOf": [
+       {
+        "maxLength": 100,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Source Asset Id"
+     },
+     "source_scan_token": {
+      "anyOf": [
+       {
+        "maxLength": 200,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Source Scan Token"
+     },
+     "status": {
+      "default": "submitted",
+      "title": "Status",
+      "type": "string"
+     }
+    },
+    "title": "SubmissionIn",
+    "type": "object"
+   },
+   "SubmissionPatch": {
+    "properties": {
+     "expected_revision": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Expected Revision"
+     },
+     "fields": {
+      "items": {
+       "$ref": "#/components/schemas/FieldValue"
+      },
+      "title": "Fields",
+      "type": "array"
+     }
+    },
+    "required": [
+     "fields"
+    ],
+    "title": "SubmissionPatch",
+    "type": "object"
+   },
+   "TemplateIn": {
+    "properties": {
+     "category": {
+      "default": "general",
+      "title": "Category",
+      "type": "string"
+     },
+     "certification_gate_enabled": {
+      "default": false,
+      "title": "Certification Gate Enabled",
+      "type": "boolean"
+     },
+     "description": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "default": "",
+      "title": "Description"
+     },
+     "fields": {
+      "items": {
+       "additionalProperties": true,
+       "type": "object"
+      },
+      "title": "Fields",
+      "type": "array"
+     },
+     "name": {
+      "maxLength": 200,
+      "minLength": 1,
+      "title": "Name",
+      "type": "string"
+     },
+     "required_certifications": {
+      "items": {
+       "type": "string"
+      },
+      "title": "Required Certifications",
+      "type": "array"
+     }
+    },
+    "required": [
+     "name"
+    ],
+    "title": "TemplateIn",
+    "type": "object"
+   },
+   "TemplatePatch": {
+    "properties": {
+     "category": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Category"
+     },
+     "certification_gate_enabled": {
+      "anyOf": [
+       {
+        "type": "boolean"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Certification Gate Enabled"
+     },
+     "description": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Description"
+     },
+     "fields": {
+      "anyOf": [
+       {
+        "items": {
+         "additionalProperties": true,
+         "type": "object"
+        },
+        "type": "array"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Fields"
+     },
+     "name": {
+      "anyOf": [
+       {
+        "maxLength": 200,
+        "minLength": 1,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Name"
+     },
+     "required_certifications": {
+      "anyOf": [
+       {
+        "items": {
+         "type": "string"
+        },
+        "type": "array"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Required Certifications"
+     }
+    },
+    "title": "TemplatePatch",
     "type": "object"
    },
    "TokenIn": {
@@ -3134,6 +3496,1232 @@
     "summary": "Search",
     "tags": [
      "document library"
+    ]
+   }
+  },
+  "/api/forms/field-types": {
+   "get": {
+    "description": "The single definition of field families, shared by the office and phone apps.",
+    "operationId": "field_types_api_forms_field_types_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Field Types Api Forms Field Types Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Field Types",
+    "tags": [
+     "forms"
+    ]
+   }
+  },
+  "/api/forms/fleet/vehicles": {
+   "get": {
+    "operationId": "pick_vehicles_api_forms_fleet_vehicles_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Pick Vehicles Api Forms Fleet Vehicles Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Pick Vehicles",
+    "tags": [
+     "forms"
+    ]
+   }
+  },
+  "/api/forms/pickers/jobs": {
+   "get": {
+    "operationId": "pick_jobs_api_forms_pickers_jobs_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Pick Jobs Api Forms Pickers Jobs Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Pick Jobs",
+    "tags": [
+     "forms"
+    ]
+   }
+  },
+  "/api/forms/pickers/sites": {
+   "get": {
+    "operationId": "pick_sites_api_forms_pickers_sites_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Pick Sites Api Forms Pickers Sites Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Pick Sites",
+    "tags": [
+     "forms"
+    ]
+   }
+  },
+  "/api/forms/pickers/workers": {
+   "get": {
+    "description": "People who can be chosen in a worker field. Until the worker register is built (stage 4)\nthis lists active user accounts; the value shape {id, label} stays the same afterwards.",
+    "operationId": "pick_workers_api_forms_pickers_workers_get",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "q",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "maxLength": 100,
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Q"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Pick Workers Api Forms Pickers Workers Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Pick Workers",
+    "tags": [
+     "forms"
+    ]
+   }
+  },
+  "/api/forms/submissions/{submission_id}": {
+   "delete": {
+    "description": "A person may discard their own draft. Removing a submitted record needs `forms.delete` and keeps an audit entry.",
+    "operationId": "delete_submission_api_forms_submissions__submission_id__delete",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "submission_id",
+      "required": true,
+      "schema": {
+       "title": "Submission Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": {
+          "type": "boolean"
+         },
+         "title": "Response Delete Submission Api Forms Submissions  Submission Id  Delete",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Delete Submission",
+    "tags": [
+     "forms"
+    ]
+   },
+   "get": {
+    "operationId": "get_submission_api_forms_submissions__submission_id__get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "submission_id",
+      "required": true,
+      "schema": {
+       "title": "Submission Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Get Submission Api Forms Submissions  Submission Id  Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Get Submission",
+    "tags": [
+     "forms"
+    ]
+   },
+   "patch": {
+    "description": "Save a draft. The answers sent replace the stored answers.",
+    "operationId": "update_draft_api_forms_submissions__submission_id__patch",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "submission_id",
+      "required": true,
+      "schema": {
+       "title": "Submission Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/SubmissionPatch"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Update Draft Api Forms Submissions  Submission Id  Patch",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Update Draft",
+    "tags": [
+     "forms"
+    ]
+   }
+  },
+  "/api/forms/submissions/{submission_id}/attachments": {
+   "post": {
+    "operationId": "upload_attachment_api_forms_submissions__submission_id__attachments_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "submission_id",
+      "required": true,
+      "schema": {
+       "title": "Submission Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "multipart/form-data": {
+       "schema": {
+        "$ref": "#/components/schemas/Body_upload_attachment_api_forms_submissions__submission_id__attachments_post"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Upload Attachment Api Forms Submissions  Submission Id  Attachments Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Upload Attachment",
+    "tags": [
+     "forms"
+    ]
+   }
+  },
+  "/api/forms/submissions/{submission_id}/files": {
+   "post": {
+    "description": "Add a photo, attachment or signature to a draft. The returned id goes into that field's answer.",
+    "operationId": "upload_submission_file_api_forms_submissions__submission_id__files_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "submission_id",
+      "required": true,
+      "schema": {
+       "title": "Submission Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "multipart/form-data": {
+       "schema": {
+        "$ref": "#/components/schemas/Body_upload_submission_file_api_forms_submissions__submission_id__files_post"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Upload Submission File Api Forms Submissions  Submission Id  Files Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Upload Submission File",
+    "tags": [
+     "forms"
+    ]
+   }
+  },
+  "/api/forms/submissions/{submission_id}/files/{file_id}": {
+   "delete": {
+    "operationId": "remove_submission_file_api_forms_submissions__submission_id__files__file_id__delete",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "submission_id",
+      "required": true,
+      "schema": {
+       "title": "Submission Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "path",
+      "name": "file_id",
+      "required": true,
+      "schema": {
+       "title": "File Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": {
+          "type": "boolean"
+         },
+         "title": "Response Remove Submission File Api Forms Submissions  Submission Id  Files  File Id  Delete",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Remove Submission File",
+    "tags": [
+     "forms"
+    ]
+   },
+   "get": {
+    "description": "Files are only reachable through a submission the caller is allowed to see.",
+    "operationId": "download_submission_file_api_forms_submissions__submission_id__files__file_id__get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "submission_id",
+      "required": true,
+      "schema": {
+       "title": "Submission Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "path",
+      "name": "file_id",
+      "required": true,
+      "schema": {
+       "title": "File Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "download",
+      "required": false,
+      "schema": {
+       "default": 0,
+       "maximum": 1,
+       "minimum": 0,
+       "title": "Download",
+       "type": "integer"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Download Submission File",
+    "tags": [
+     "forms"
+    ]
+   }
+  },
+  "/api/forms/submissions/{submission_id}/photos": {
+   "post": {
+    "operationId": "upload_photo_api_forms_submissions__submission_id__photos_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "submission_id",
+      "required": true,
+      "schema": {
+       "title": "Submission Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "multipart/form-data": {
+       "schema": {
+        "$ref": "#/components/schemas/Body_upload_photo_api_forms_submissions__submission_id__photos_post"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Upload Photo Api Forms Submissions  Submission Id  Photos Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Upload Photo",
+    "tags": [
+     "forms"
+    ]
+   }
+  },
+  "/api/forms/submissions/{submission_id}/submit": {
+   "post": {
+    "description": "Check every required answer and file, then lock the record.",
+    "operationId": "submit_draft_api_forms_submissions__submission_id__submit_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "submission_id",
+      "required": true,
+      "schema": {
+       "title": "Submission Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/SubmissionPatch"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "title": "Body"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Submit Draft Api Forms Submissions  Submission Id  Submit Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Submit Draft",
+    "tags": [
+     "forms"
+    ]
+   }
+  },
+  "/api/forms/templates": {
+   "get": {
+    "description": "People who cannot manage templates only see published forms.",
+    "operationId": "list_templates_api_forms_templates_get",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "category",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Category"
+      }
+     },
+     {
+      "in": "query",
+      "name": "status",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Status"
+      }
+     },
+     {
+      "in": "query",
+      "name": "include_archived",
+      "required": false,
+      "schema": {
+       "default": false,
+       "title": "Include Archived",
+       "type": "boolean"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response List Templates Api Forms Templates Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "List Templates",
+    "tags": [
+     "forms"
+    ]
+   },
+   "post": {
+    "operationId": "create_template_api_forms_templates_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/TemplateIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Create Template Api Forms Templates Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Create Template",
+    "tags": [
+     "forms"
+    ]
+   }
+  },
+  "/api/forms/templates/export": {
+   "get": {
+    "description": "Definitions only. Answers are never part of a template export.",
+    "operationId": "export_templates_api_forms_templates_export_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Export Templates Api Forms Templates Export Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Export Templates",
+    "tags": [
+     "forms"
+    ]
+   }
+  },
+  "/api/forms/templates/import": {
+   "post": {
+    "description": "Create draft templates from an export. Nothing is published, and a bad entry is reported, not half-imported.",
+    "operationId": "import_templates_api_forms_templates_import_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ImportPayload"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Import Templates Api Forms Templates Import Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Import Templates",
+    "tags": [
+     "forms"
+    ]
+   }
+  },
+  "/api/forms/templates/{template_id}": {
+   "delete": {
+    "description": "Remove a template from use. Its submissions and their version snapshots are kept.",
+    "operationId": "delete_template_api_forms_templates__template_id__delete",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "template_id",
+      "required": true,
+      "schema": {
+       "title": "Template Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Delete Template Api Forms Templates  Template Id  Delete",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Delete Template",
+    "tags": [
+     "forms"
+    ]
+   },
+   "get": {
+    "operationId": "get_template_api_forms_templates__template_id__get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "template_id",
+      "required": true,
+      "schema": {
+       "title": "Template Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Get Template Api Forms Templates  Template Id  Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Get Template",
+    "tags": [
+     "forms"
+    ]
+   },
+   "patch": {
+    "description": "Edit the working draft. Published versions and existing submissions are not touched.",
+    "operationId": "patch_template_api_forms_templates__template_id__patch",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "template_id",
+      "required": true,
+      "schema": {
+       "title": "Template Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/TemplatePatch"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Patch Template Api Forms Templates  Template Id  Patch",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Patch Template",
+    "tags": [
+     "forms"
+    ]
+   }
+  },
+  "/api/forms/templates/{template_id}/access-check": {
+   "get": {
+    "description": "Whether the caller may fill in this form right now, with a plain reason when not.",
+    "operationId": "access_check_api_forms_templates__template_id__access_check_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "template_id",
+      "required": true,
+      "schema": {
+       "title": "Template Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Access Check Api Forms Templates  Template Id  Access Check Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Access Check",
+    "tags": [
+     "forms"
+    ]
+   }
+  },
+  "/api/forms/templates/{template_id}/archive": {
+   "post": {
+    "description": "Stop new submissions. Existing submissions stay readable.",
+    "operationId": "archive_template_api_forms_templates__template_id__archive_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "template_id",
+      "required": true,
+      "schema": {
+       "title": "Template Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Archive Template Api Forms Templates  Template Id  Archive Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Archive Template",
+    "tags": [
+     "forms"
+    ]
+   }
+  },
+  "/api/forms/templates/{template_id}/publish": {
+   "post": {
+    "description": "Freeze the draft as the next version. New submissions use it; earlier ones keep their own version.",
+    "operationId": "publish_template_api_forms_templates__template_id__publish_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "template_id",
+      "required": true,
+      "schema": {
+       "title": "Template Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Publish Template Api Forms Templates  Template Id  Publish Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Publish Template",
+    "tags": [
+     "forms"
+    ]
+   }
+  },
+  "/api/forms/templates/{template_id}/submissions": {
+   "get": {
+    "operationId": "list_submissions_api_forms_templates__template_id__submissions_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "template_id",
+      "required": true,
+      "schema": {
+       "title": "Template Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "status",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Status"
+      }
+     },
+     {
+      "in": "query",
+      "name": "limit",
+      "required": false,
+      "schema": {
+       "default": 50,
+       "maximum": 200,
+       "minimum": 1,
+       "title": "Limit",
+       "type": "integer"
+      }
+     },
+     {
+      "in": "query",
+      "name": "offset",
+      "required": false,
+      "schema": {
+       "default": 0,
+       "minimum": 0,
+       "title": "Offset",
+       "type": "integer"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response List Submissions Api Forms Templates  Template Id  Submissions Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "List Submissions",
+    "tags": [
+     "forms"
+    ]
+   },
+   "post": {
+    "description": "Start or send a form. Sending the same client_submission_id again returns the first result\ninstead of creating a duplicate, so an offline retry is safe.",
+    "operationId": "create_submission_api_forms_templates__template_id__submissions_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "template_id",
+      "required": true,
+      "schema": {
+       "title": "Template Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/SubmissionIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Create Submission Api Forms Templates  Template Id  Submissions Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Create Submission",
+    "tags": [
+     "forms"
     ]
    }
   },

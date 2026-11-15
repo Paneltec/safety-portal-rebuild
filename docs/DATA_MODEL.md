@@ -10,6 +10,10 @@ IDs are opaque strings. Every tenant-owned table carries `org_id`, and every que
 | `document_folders` | Nested library folders | Unique name per parent (case-insensitive, enforced in the API); soft delete only when empty |
 | `documents` | A library file: display name, folder, current bytes, expiry, tags, archive and lost states | Identity is the id, not the name |
 | `document_revisions` | Every set of bytes a document has had | Unique `(document_id, revision)`; never overwritten |
+| `form_templates` | Form definition: working draft schema, status, published version number | Draft edits never touch published versions |
+| `form_template_versions` | Immutable published snapshots | Unique `(template_id, version)` |
+| `form_submissions` | Answers, status, revision, author, launch provenance | Unique `(org_id, submitted_by, client_submission_id)` for idempotent retries; points at the version it was filled in on |
+| `form_submission_files` | Photos, attachments and signatures per field | Bytes in `stored_files`; reachable only through the submission |
 | `stored_files` | Metadata for uploaded bytes: hash, size, MIME type, original name, purpose | Bytes on the files volume by organisation and SHA-256; identity separate from name |
 | `companies` | Divisions inside an organisation (for example Paneltec, Viatec) | Unique `(org_id, code)` |
 | `roles` | Role catalogue: built-in (read-only) and custom | Unique `(org_id, role_id)`; `permissions` is `{resource: {action: bool}}`; soft delete |

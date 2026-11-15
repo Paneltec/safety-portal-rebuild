@@ -19,11 +19,19 @@ export function clearToken(): void {
   localStorage.removeItem(KEY);
 }
 
+export interface FieldError {
+  field_id: string;
+  message: string;
+}
+
 export class ApiError extends Error {
   status: number;
-  constructor(status: number, message: string) {
+  /** Per-field problems, when the server reports them (form validation). */
+  fieldErrors: FieldError[];
+  constructor(status: number, message: string, fieldErrors: FieldError[] = []) {
     super(message);
     this.status = status;
+    this.fieldErrors = fieldErrors;
   }
 }
 
@@ -38,6 +46,9 @@ function describe(detail: unknown, status: number): string {
         return field ? `${field}: ${item.msg ?? "invalid"}` : (item.msg ?? "invalid");
       })
       .join("; ");
+  }
+  if (detail && typeof detail === "object" && typeof (detail as { message?: unknown }).message === "string") {
+    return (detail as { message: string }).message;
   }
   if (status >= 500) return "The server had a problem. Please try again.";
   return `Request failed (${status})`;
@@ -76,7 +87,8 @@ export async function api<T>(
       clearToken();
       window.dispatchEvent(new CustomEvent("sp:signed-out", { detail: message }));
     }
-    throw new ApiError(response.status, message);
+    const fieldErrors = (detail as { errors?: FieldError[] } | null)?.errors;
+    throw new ApiError(response.status, message, Array.isArray(fieldErrors) ? fieldErrors : []);
   }
   return payload as T;
 }
@@ -211,4 +223,58 @@ export function formatSize(bytes: number | null): string {
   if (bytes < 1024) return `${bytes} B`;
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} KB`;
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+// ---------- forms ----------
+
+export interface FieldDef {
+  id: string;
+  type: string;
+  label: string;
+  help?: string;
+  required: boolean;
+  options?: string[];
+  config?: Record<string, unknown>;
+}
+
+export interface SubmissionFile {
+  id: string;
+  field_id: string;
+  kind: string;
+  name: string;
+  mime_type: string;
+  size_bytes: number;
+  missing?: boolean;
+}
+
+export interface FormTemplate {
+  id: string;
+  name: string;
+  category: string;
+  category_label: string;
+  description: string;
+  status: "draft" | "published" | "archived";
+  published_version: number;
+  has_unpublished_changes: boolean;
+  field_count: number;
+  updated_at: string;
+  fields?: FieldDef[];
+  published_fields?: FieldDef[] | null;
+}
+
+export interface Submission {
+  id: string;
+  template_id: string;
+  template_name: string;
+  template_version: number | null;
+  status: "draft" | "submitted";
+  revision: number;
+  submitted_by: string;
+  submitted_by_name: string | null;
+  created_at: string;
+  updated_at: string;
+  submitted_at: string | null;
+  schema?: FieldDef[];
+  values?: Record<string, unknown>;
+  files?: SubmissionFile[];
 }

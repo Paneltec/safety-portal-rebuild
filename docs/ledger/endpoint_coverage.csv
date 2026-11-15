@@ -382,29 +382,29 @@ GET,/api/forms/assets/lookup,forms,asset_lookup,CLASSIFY,,,NOT_STARTED,
 GET,/api/forms/assets/picker,forms,asset_picker,CLASSIFY,,,NOT_STARTED,
 GET,/api/forms/cert-kinds,forms,list_cert_kinds,CLASSIFY,,,NOT_STARTED,
 POST,/api/forms/fleet/vehicle-overrides,forms,set_vehicle_override,CLASSIFY,,,NOT_STARTED,
-GET,/api/forms/fleet/vehicles,forms,list_fleet_for_forms,CLASSIFY,,,NOT_STARTED,
+GET,/api/forms/fleet/vehicles,forms,list_fleet_for_forms,authenticated-own,forms.pick_vehicles,tests/test_forms_api.py; tests/test_forms_engine.py,EXPLICITLY_UNAVAILABLE,Returns available:false until Navixy (stages 5-6); manual entry allowed and labelled
 GET,/api/forms/pickers/customers,forms_pickers,customers,CLASSIFY,,,NOT_STARTED,
-GET,/api/forms/pickers/jobs,forms_pickers,jobs,CLASSIFY,,,NOT_STARTED,
-GET,/api/forms/pickers/sites,forms_pickers,sites,CLASSIFY,,,NOT_STARTED,
-GET,/api/forms/pickers/workers,forms_pickers,workers,CLASSIFY,,,NOT_STARTED,
+GET,/api/forms/pickers/jobs,forms_pickers,jobs,authenticated-own,forms.pick_jobs,tests/test_forms_api.py; tests/test_forms_engine.py,EXPLICITLY_UNAVAILABLE,Returns available:false until daily jobs (stage 4)
+GET,/api/forms/pickers/sites,forms_pickers,sites,authenticated-own,forms.pick_sites,tests/test_forms_api.py; tests/test_forms_engine.py,EXPLICITLY_UNAVAILABLE,Returns available:false until the sites register (stage 4)
+GET,/api/forms/pickers/workers,forms_pickers,workers,authenticated-own,forms.pick_workers,tests/test_forms_api.py; tests/test_forms_engine.py,IMPLEMENTED_TESTED,Lists active users until the worker register exists (stage 4); value shape unchanged
 POST,/api/forms/submissions/pdf-token,forms,mint_form_pdf_token,CLASSIFY,,,NOT_STARTED,
-DELETE,/api/forms/submissions/{submission_id},forms,delete_submission,CLASSIFY,,,NOT_STARTED,
-GET,/api/forms/submissions/{submission_id},forms,get_submission,CLASSIFY,,,NOT_STARTED,
-POST,/api/forms/submissions/{submission_id}/attachments,forms,upload_submission_attachments,CLASSIFY,,,NOT_STARTED,
-GET,/api/forms/submissions/{submission_id}/attachments/{stored_name},forms,serve_submission_attachment,CLASSIFY,,,NOT_STARTED,
+DELETE,/api/forms/submissions/{submission_id},forms,delete_submission,team/resource,forms.delete_submission,tests/test_forms_api.py; tests/test_forms_engine.py,IMPLEMENTED_TESTED,"Own draft, or forms.delete"
+GET,/api/forms/submissions/{submission_id},forms,get_submission,team/resource,forms.get_submission,tests/test_forms_api.py; tests/test_forms_engine.py,IMPLEMENTED_TESTED,Carries the schema snapshot
+POST,/api/forms/submissions/{submission_id}/attachments,forms,upload_submission_attachments,authenticated-own,forms.upload_attachment,tests/test_forms_api.py; tests/test_forms_engine.py,IMPLEMENTED_TESTED,Draft only; images and PDF
+GET,/api/forms/submissions/{submission_id}/attachments/{stored_name},forms,serve_submission_attachment,team/resource,forms.download_submission_file,tests/test_forms_api.py; tests/test_forms_engine.py,HISTORICAL_COMPATIBILITY,Replaced by GET /submissions/{id}/files/{file_id}
 GET,/api/forms/submissions/{submission_id}/pdf,forms,render_submission_pdf,CLASSIFY,,,NOT_STARTED,
-POST,/api/forms/submissions/{submission_id}/photos,forms,upload_submission_photos,CLASSIFY,,,NOT_STARTED,
-GET,/api/forms/submissions/{submission_id}/photos/{stored_name},forms,serve_submission_photo,CLASSIFY,,,NOT_STARTED,
-GET,/api/forms/templates,forms,list_templates,CLASSIFY,,,NOT_STARTED,
-POST,/api/forms/templates,forms,create_template,CLASSIFY,,,NOT_STARTED,
+POST,/api/forms/submissions/{submission_id}/photos,forms,upload_submission_photos,authenticated-own,forms.upload_photo,tests/test_forms_api.py; tests/test_forms_engine.py,IMPLEMENTED_TESTED,Draft only; images only
+GET,/api/forms/submissions/{submission_id}/photos/{stored_name},forms,serve_submission_photo,team/resource,forms.download_submission_file,tests/test_forms_api.py; tests/test_forms_engine.py,HISTORICAL_COMPATIBILITY,"Replaced by GET /submissions/{id}/files/{file_id}: files are addressed by id, not stored name"
+GET,/api/forms/templates,forms,list_templates,team/resource,forms.list_templates,tests/test_forms_api.py; tests/test_forms_engine.py,IMPLEMENTED_TESTED,Unpublished forms hidden from people who cannot manage templates; assignment filter arrives with FORM-02
+POST,/api/forms/templates,forms,create_template,team/resource,forms.create_template,tests/test_forms_api.py; tests/test_forms_engine.py,IMPLEMENTED_TESTED,D-023 needs forms.use
 POST,/api/forms/templates/ai-generate,forms,ai_generate_template,CLASSIFY,,,NOT_STARTED,
-POST,/api/forms/templates/import,forms,import_templates,CLASSIFY,,,NOT_STARTED,
-DELETE,/api/forms/templates/{template_id},forms,delete_template,CLASSIFY,,,NOT_STARTED,
-GET,/api/forms/templates/{template_id},forms,get_template,CLASSIFY,,,NOT_STARTED,
-PATCH,/api/forms/templates/{template_id},forms,update_template,CLASSIFY,,,NOT_STARTED,
-GET,/api/forms/templates/{template_id}/access-check,forms,template_access_check,CLASSIFY,,,NOT_STARTED,
-GET,/api/forms/templates/{template_id}/submissions,forms,list_submissions,CLASSIFY,,,NOT_STARTED,
-POST,/api/forms/templates/{template_id}/submissions,forms,create_submission,CLASSIFY,,,NOT_STARTED,
+POST,/api/forms/templates/import,forms,import_templates,team/resource,forms.import_templates,tests/test_forms_api.py; tests/test_forms_engine.py,IMPLEMENTED_TESTED,Creates drafts; per-entry errors
+DELETE,/api/forms/templates/{template_id},forms,delete_template,team/resource,forms.delete_template,tests/test_forms_api.py; tests/test_forms_engine.py,IMPLEMENTED_TESTED,Soft delete; submissions kept
+GET,/api/forms/templates/{template_id},forms,get_template,team/resource,forms.get_template,tests/test_forms_api.py; tests/test_forms_engine.py,IMPLEMENTED_TESTED,
+PATCH,/api/forms/templates/{template_id},forms,update_template,team/resource,forms.patch_template,tests/test_forms_api.py; tests/test_forms_engine.py,IMPLEMENTED_TESTED,Edits the draft only; D-024 publish creates an immutable version
+GET,/api/forms/templates/{template_id}/access-check,forms,template_access_check,authenticated-own,forms.access_check,tests/test_forms_api.py; tests/test_forms_engine.py,IMPLEMENTED_TESTED,Published and permission checks; assignment and certification gate arrive with FORM-02
+GET,/api/forms/templates/{template_id}/submissions,forms,list_submissions,team/resource,forms.list_submissions,tests/test_forms_api.py; tests/test_forms_engine.py,IMPLEMENTED_TESTED,Own-only without forms.team_view; paginated
+POST,/api/forms/templates/{template_id}/submissions,forms,create_submission,authenticated-own,forms.create_submission,tests/test_forms_api.py; tests/test_forms_engine.py,IMPLEMENTED_TESTED,D-025 staged draft then submit; client_submission_id idempotency
 GET,/api/gps-map,server,gps_map_proxy,CLASSIFY,,,NOT_STARTED,
 GET,/api/hazards,crud,list_items,CLASSIFY,,,NOT_STARTED,
 POST,/api/hazards,crud,create_item,CLASSIFY,,,NOT_STARTED,
@@ -1010,6 +1010,15 @@ POST,/mobile/sites/{site_id}/visitor-sign-in,mobile_sites,visitor_sign_in,RETIRE
 POST,/mobile/sites/{site_id}/visitor-sign-out,mobile_sites,visitor_sign_out,RETIRED,,,HISTORICAL,Removed mobile_sites router; functionality uses current site routes
 GET,/mobile/sites/{site_id}/current-occupancy,mobile_sites,current_occupancy,RETIRED,,,HISTORICAL,Removed mobile_sites router; functionality uses current site routes
 POST,/mobile/gps/heartbeat,mobile_sites,gps_heartbeat,RETIRED,,,HISTORICAL,Removed mobile_sites router; functionality uses current site routes
+GET,/api/forms/field-types,(new),field_types,authenticated-own,forms.field_types,tests/test_forms_api.py; tests/test_forms_engine.py,IMPLEMENTED_TESTED,One field-family contract for office and phone
+GET,/api/forms/templates/export,(new),export_templates,team/resource,forms.export_templates,tests/test_forms_api.py; tests/test_forms_engine.py,IMPLEMENTED_TESTED,"Definitions only, never answers"
+POST,/api/forms/templates/{template_id}/publish,(new),publish_template,team/resource,forms.publish_template,tests/test_forms_api.py; tests/test_forms_engine.py,IMPLEMENTED_TESTED,D-024
+POST,/api/forms/templates/{template_id}/archive,(new),archive_template,team/resource,forms.archive_template,tests/test_forms_api.py; tests/test_forms_engine.py,IMPLEMENTED_TESTED,
+PATCH,/api/forms/submissions/{submission_id},(new),update_draft,authenticated-own,forms.update_draft,tests/test_forms_api.py; tests/test_forms_engine.py,IMPLEMENTED_TESTED,Draft save with expected_revision
+POST,/api/forms/submissions/{submission_id}/submit,(new),submit_draft,authenticated-own,forms.submit_draft,tests/test_forms_api.py; tests/test_forms_engine.py,IMPLEMENTED_TESTED,D-025
+POST,/api/forms/submissions/{submission_id}/files,(new),upload_submission_file,authenticated-own,forms.upload_submission_file,tests/test_forms_api.py; tests/test_forms_engine.py,IMPLEMENTED_TESTED,
+GET,/api/forms/submissions/{submission_id}/files/{file_id},(new),download_submission_file,team/resource,forms.download_submission_file,tests/test_forms_api.py; tests/test_forms_engine.py,IMPLEMENTED_TESTED,
+DELETE,/api/forms/submissions/{submission_id}/files/{file_id},(new),remove_submission_file,authenticated-own,forms.remove_submission_file,tests/test_forms_api.py; tests/test_forms_engine.py,IMPLEMENTED_TESTED,Draft only
 GET,/api/document-library/folders/{folder_id},(new),get_folder,team/resource,documents.get_folder,tests/test_documents.py,IMPLEMENTED_TESTED,Folder with breadcrumb path
 GET,/api/document-library/files/{file_id},(new),get_file,team/resource,documents.get_file,tests/test_documents.py,IMPLEMENTED_TESTED,File with revision history
 GET,/api/setup/status,(new),setup_status,public-scoped,org.setup_status,tests/test_org_setup_files.py,IMPLEMENTED_TESTED,D-016

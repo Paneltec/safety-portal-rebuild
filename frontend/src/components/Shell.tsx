@@ -17,6 +17,7 @@ export function Shell() {
   // Only screens that exist are listed, so no menu item leads to a blank page.
   const groups: { label: string; items: NavItem[] }[] = [
     { label: "Overview", items: [{ to: "/app/home", label: "Home", show: true }] },
+    { label: "Capture", items: [{ to: "/app/forms", label: "Forms", show: can("forms", "view") }] },
     { label: "Compliance", items: [{ to: "/app/documents", label: "Document library", show: can("documents", "view") }] },
     {
       label: "Settings",

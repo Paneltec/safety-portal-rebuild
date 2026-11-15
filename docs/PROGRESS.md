@@ -10,10 +10,11 @@ Updated at the end of each finished part. The ledgers in `docs/ledger/` hold the
 | Account holder | First-run setup protected by `SETUP_KEY`; the account holder is the protected top-level admin and payroll owner; transfer by the holder only | `backend/tests/test_org_setup_files.py` |
 | Stage 2a | Organisation settings with validated addresses, contact details, logo upload/replace/remove, companies, file storage with hash/size/type and a clear "missing" state | `backend/tests/test_org_setup_files.py`, `e2e/walkthrough.py` |
 | Stage 2b | Document library: nested folders, multi-file upload with type allowlist, authorised download and inline preview, rename, move, expiry, tags, archive/restore, delete, revision history, missing-content repair, counts, search | `backend/tests/test_documents.py`, `e2e/walkthrough.py` |
+| Stage 2c (core) | Form engine: 20 field families, template editor with preview, published versions, draft/submit with photos, attachments and drawn signatures, idempotent retry, read-only record view, import/export | `backend/tests/test_forms_engine.py`, `test_forms_api.py`, `e2e/walkthrough.py` |
 
 ## Next, in order
 
-1. **2c Form engine**: template editor, every field family with a documented value shape, immutable schema snapshot per submission, submissions, attachments, PDF, assignments and the double-switch certification gate (FORM-01, FORM-02, REF-01).
+1. **2c remainder**: submission PDF with organisation branding; form assignments (roles, people, companies, positions, asset types) with an effective preview; the double-switch certification gate (FORM-01, FORM-02, REF-01).
 2. Stage 3 onwards as listed in `STAGED_PLAN.md`.
 
 ## Not verified
