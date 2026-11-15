@@ -6,10 +6,11 @@ from pydantic import BaseModel, EmailStr, Field
 from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session
 
+from .. import comms
 from .. import permissions as perms
 from ..db import get_db
 from ..deps import Caller, ensure_can_grant, require_admin, require_permission
-from ..models import AuthToken, PermissionPreset, Role, User, UserPermissionOverride, utcnow
+from ..models import AuthToken, Organisation, PermissionPreset, Role, User, UserPermissionOverride, utcnow
 from ..security import hash_password, password_policy_error
 from ..services import (
     active_admin_count,
@@ -482,21 +483,27 @@ def _send_link(db: Session, request: Request, caller: Caller, user: User, kind: 
         raise HTTPException(400, "This account is disabled. Re-enable it before sending a link.")
     row, token = issue_auth_token(db, user, kind, created_by=caller.user.id)
     path = "/accept-invite" if kind == "invite" else "/reset-password"
-    hold_message(db, org_id=caller.org_id, channel="email",
-                 purpose="invitation" if kind == "invite" else "password_reset", recipient=user.email,
-                 subject="Your Safety Portal invitation" if kind == "invite" else "Reset your password",
-                 related_type="auth_token", related_id=row.id, created_by=caller.user.id)
+    link = link_for(request, path, token)
+    org_name = db.get(Organisation, caller.org_id).name
+    if kind == "invite":
+        subject, text = f"Your {org_name} Safety Portal invitation", f"Hello {user.name},\n\nYou have been invited to the {org_name} Safety Portal. Choose your password here:\n{link}\n\nThis link works once and expires on {row.expires_at:%d/%m/%Y}."
+    else:
+        subject, text = "Reset your Safety Portal password", f"Hello {user.name},\n\nUse this link to choose a new password:\n{link}\n\nIt works once. If you did not ask for this, ignore this message."
+    # The text contains a one-time link, so it is used for this attempt only and never stored.
+    message = hold_message(db, org_id=caller.org_id, channel="email", purpose="invitation" if kind == "invite" else "password_reset",
+                           recipient=user.email, subject=subject, related_type="auth_token", related_id=row.id,
+                           created_by=caller.user.id, request=request, body=text, store_body=False)
     audit(db, request, org_id=caller.org_id, actor_id=caller.user.id, action=f"user.{kind}_link_created",
           target_type="user", target_id=user.id, detail={"expires_at": iso(row.expires_at)})
     db.commit()
     # The link is shown once to the administrator. It is never stored or logged.
     return {
         "ok": True,
-        "channel": "manual",
-        "delivery": "held",
-        "delivery_note": "Email delivery is not connected yet, so nothing was sent. Pass this link to the person directly.",
+        "channel": "email" if message.status == "sent" else "manual",
+        "delivery": message.status,
+        "delivery_note": comms.link_note(message),
         "expires_at": iso(row.expires_at),
-        "link": link_for(request, path, token),
+        "link": link,
     }
 
 

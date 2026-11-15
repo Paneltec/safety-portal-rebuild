@@ -200,8 +200,16 @@ class AuditLog(Base):
 
 
 class OutboxMessage(Base):
-    """Central record of every outbound message. Nothing is delivered in stage 1:
-    messages are recorded as 'held' so the later outbox stage can pick them up."""
+    """Central record of every outbound message, whether or not it was delivered.
+
+    held       not sent: safe mode is on, the provider is not connected, or the message carries a
+               one-time link that is passed on by hand
+    queued     accepted for sending, waiting for an attempt
+    sent       the provider accepted it (accepted for processing, not proof of delivery)
+    simulated  handled by a labelled simulator; nothing left the server
+    failed     the provider refused it or could not be reached
+    cancelled  withdrawn before sending
+    """
 
     __tablename__ = "outbox_messages"
 
@@ -211,12 +219,74 @@ class OutboxMessage(Base):
     purpose: Mapped[str] = mapped_column(String(60))
     recipient: Mapped[str] = mapped_column(String(320))
     subject: Mapped[str] = mapped_column(String(300), default="")
-    status: Mapped[str] = mapped_column(String(20), default="held")  # held | queued | sending | sent | failed | cancelled
-    hold_reason: Mapped[str | None] = mapped_column(String(120))
+    status: Mapped[str] = mapped_column(String(20), default="held")
+    hold_reason: Mapped[str | None] = mapped_column(String(200))
+    hold_code: Mapped[str | None] = mapped_column(String(30))  # safe_mode | not_connected | manual_link
+    # Kept only for messages with no secret in them, so they can be retried. A message carrying a
+    # one-time link never has its body stored.
+    body_text: Mapped[str | None] = mapped_column(Text)
+    dedupe_key: Mapped[str | None] = mapped_column(String(200))
     related_type: Mapped[str | None] = mapped_column(String(40))
     related_id: Mapped[str | None] = mapped_column(String(80))
+    provider_message_id: Mapped[str | None] = mapped_column(String(120))
+    attempts: Mapped[int] = mapped_column(Integer, default=0, server_default="0")
+    last_error: Mapped[str | None] = mapped_column(String(400))
     created_by: Mapped[str | None] = mapped_column(String(36))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    sent_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    deleted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
+class OutboxAttempt(Base):
+    """One try at delivering a message: what happened, with anything sensitive removed."""
+
+    __tablename__ = "outbox_attempts"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    org_id: Mapped[str] = mapped_column(ForeignKey("organisations.id"), index=True)
+    message_id: Mapped[str] = mapped_column(ForeignKey("outbox_messages.id"), index=True)
+    outcome: Mapped[str] = mapped_column(String(20))  # sent | simulated | failed | held
+    detail: Mapped[str | None] = mapped_column(String(400))
+    actor_user_id: Mapped[str | None] = mapped_column(String(36))
+    at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class IntegrationConfig(Base):
+    """One provider connection for one organisation. Secrets are encrypted; the names of the
+    secrets that are set are kept alongside so a listing never needs the key."""
+
+    __tablename__ = "integration_configs"
+    __table_args__ = (UniqueConstraint("org_id", "kind", name="uq_integration_configs"),)
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    org_id: Mapped[str] = mapped_column(ForeignKey("organisations.id"), index=True)
+    kind: Mapped[str] = mapped_column(String(30))
+    mode: Mapped[str] = mapped_column(String(12), default="off")  # off | simulator | live
+    settings: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict)
+    secrets: Mapped[str | None] = mapped_column(Text)  # encrypted JSON
+    secrets_set: Mapped[list[str]] = mapped_column(JSONB, default=list)
+    key_version: Mapped[int] = mapped_column(Integer, default=1)
+    last_test_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    last_test_ok: Mapped[bool | None] = mapped_column(Boolean)
+    last_test_mode: Mapped[str | None] = mapped_column(String(12))
+    last_test_message: Mapped[str | None] = mapped_column(String(400))
+    capabilities: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict)
+    last_sync_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    updated_by: Mapped[str | None] = mapped_column(String(36))
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+class NotificationRead(Base):
+    """A person has seen one notification. Notifications themselves are worked out from live records."""
+
+    __tablename__ = "notification_reads"
+    __table_args__ = (UniqueConstraint("user_id", "notification_id", name="uq_notification_reads"),)
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    org_id: Mapped[str] = mapped_column(ForeignKey("organisations.id"), index=True)
+    user_id: Mapped[str] = mapped_column(ForeignKey("users.id"), index=True)
+    notification_id: Mapped[str] = mapped_column(String(160))
+    read_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
 
 
 class StoredFile(Base):

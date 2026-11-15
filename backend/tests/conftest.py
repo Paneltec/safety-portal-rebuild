@@ -6,6 +6,7 @@ os.environ["DATABASE_URL"] = os.environ.get(
     "TEST_DATABASE_URL", "postgresql+psycopg://portal:portal@localhost:5432/portal_test"
 )
 os.environ["SETUP_KEY"] = "test-setup-key"
+os.environ["COMMS_SAFE_MODE"] = "off"  # the server lock is off so tests can exercise each organisation's own switch
 from cryptography.fernet import Fernet  # noqa: E402
 
 os.environ["ENCRYPTION_KEY"] = Fernet.generate_key().decode()  # throwaway key for the test run

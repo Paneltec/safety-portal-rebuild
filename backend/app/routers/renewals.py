@@ -18,7 +18,7 @@ from pydantic import BaseModel, EmailStr, Field
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from .. import people
+from .. import comms, people
 from ..db import get_db
 from ..deps import Caller, require_permission
 from ..files import file_out, file_response, save_upload
@@ -46,8 +46,6 @@ STATUS_LABELS = {
     "partly_accepted": "Partly accepted", "rejected": "Rejected", "revoked": "Cancelled", "expired": "Link expired",
 }
 PUBLIC_UPLOAD_MAX_BYTES = 15 * 1024 * 1024
-DELIVERY_NOTE = "Email delivery is not connected yet, so nothing was sent. Pass this link to the person directly."
-NO_RECIPIENT_NOTE = "No email address is recorded for them, so no message was prepared. Pass this link to the person directly."
 
 
 # ---------- bodies ----------
@@ -219,23 +217,41 @@ def _mint(db: Session, request: Request, caller: Caller, *, entity_type: str, en
     db.add(link)
     db.flush()
     if recipient:
-        held = hold_message(db, org_id=caller.org_id, channel="email", purpose="renewal_request", recipient=recipient,
-                            subject=link.subject or "Documents requested", related_type="renewal_link", related_id=link.id,
-                            created_by=caller.user.id)
-        db.flush()
-        link.outbox_message_id = held.id
+        _notify(db, request, caller, link, token, _entity_name(entity))
     audit(db, request, org_id=caller.org_id, actor_id=caller.user.id, action="renewal.created",
           target_type="renewal_link", target_id=link.id,
           detail={"entity_type": entity_type, "entity_id": entity.id, "doc_types": doc_types, "expires_at": iso(link.expires_at)})
     return link, token
 
 
+def _notify(db: Session, request: Request, caller: Caller, link: RenewalLink, token: str, name: str) -> None:
+    """Prepare the email for a request. The text holds the link, so it is never stored."""
+    org_name = db.get(Organisation, caller.org_id).name
+    labels = _labels(db, link)
+    wanted = "\n".join(f"- {labels.get(s, s)}" for s in link.doc_types)
+    text = (f"Hello,\n\n{org_name} needs current copies of the following for {name}:\n{wanted}\n\n"
+            + (f"{link.message}\n\n" if link.message else "")
+            + f"Upload them here (no login needed):\n{portal_base_url(request)}/renew/{token}\n\nThis link expires on {link.expires_at:%d/%m/%Y}.")
+    held = hold_message(db, org_id=caller.org_id, channel="email", purpose="renewal_request", recipient=link.recipient_email,
+                        subject=link.subject or f"Documents requested by {org_name}", related_type="renewal_link", related_id=link.id,
+                        created_by=caller.user.id, request=request, body=text, store_body=False)
+    db.flush()
+    link.outbox_message_id = held.id
+
+
+def link_note_for(link: RenewalLink) -> str:
+    from sqlalchemy.orm import object_session
+
+    db = object_session(link)
+    message = db.get(OutboxMessage, link.outbox_message_id) if db is not None and link.outbox_message_id else None
+    return comms.link_note(message)
+
+
 def _link_payload(request: Request, token: str, link: RenewalLink) -> dict[str, Any]:
     # Shown once. Only the hash is stored, so it cannot be shown again; reissue to get a new one.
     # `delivery` itself comes from the outbox record, so it is never reported as held when no
     # message exists.
-    note = DELIVERY_NOTE if link.outbox_message_id else NO_RECIPIENT_NOTE
-    return {"link": f"{portal_base_url(request)}/renew/{token}", "delivery_note": note}
+    return {"link": f"{portal_base_url(request)}/renew/{token}", "delivery_note": link_note_for(link)}
 
 
 # ---------- office: list and create ----------
@@ -418,11 +434,7 @@ def reissue(
     link.submitted_at = None
     link.round_no += 1
     if link.recipient_email:
-        held = hold_message(db, org_id=caller.org_id, channel="email", purpose="renewal_request", recipient=link.recipient_email,
-                            subject=link.subject or "Documents requested", related_type="renewal_link", related_id=link.id,
-                            created_by=caller.user.id)
-        db.flush()
-        link.outbox_message_id = held.id
+        _notify(db, request, caller, link, token, _entity_name(_entity(db, link)))
     audit(db, request, org_id=caller.org_id, actor_id=caller.user.id, action="renewal.reissued",
           target_type="renewal_link", target_id=link.id, detail={"round": link.round_no, "expires_at": iso(link.expires_at)})
     db.commit()

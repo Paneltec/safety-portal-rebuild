@@ -37,6 +37,12 @@ class Settings(BaseSettings):
     # Key for encrypting sensitive fields at rest. Generate with `python -m app.seed generate-key`.
     encryption_key: str = ""
 
+    # Outbound messages. "on" (the default) locks safe mode on for every organisation: nothing is
+    # sent, whatever is saved in the portal. Set to "off" to let each organisation's own switch decide.
+    comms_safe_mode: str = "on"
+    # Seconds to wait for a provider before giving up.
+    provider_timeout_seconds: float = 15.0
+
     # Where uploaded files are stored (a Docker volume in production).
     files_dir: str = "./data/files"
     max_upload_mb: int = 50

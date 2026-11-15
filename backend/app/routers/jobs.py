@@ -163,8 +163,21 @@ def _issue(db: Session, request: Request, caller: Caller, worker: Worker, day: d
     db.flush()
     recipient = worker.mobile or worker.phone
     if recipient:
+        lines = [f"{db.get(Organisation, caller.org_id).name}: job for {day.strftime('%d/%m/%Y')}", job.site_name or ""]
+        if job.address:
+            lines.append(job.address)
+        if job.start_time:
+            lines.append(f"Start {job.start_time}")
+        if job.truck:
+            lines.append(f"Truck/plant: {job.truck}")
+        if job.notes:
+            lines.append(job.notes)
+        lines.append("Open My work in the Safety Portal to accept.")
+        # No secret in this text, so it is kept and can be sent later from the outbox.
         held = hold_message(db, org_id=caller.org_id, channel="sms", purpose="daily_job", recipient=recipient,
-                            subject=f"Job for {day.strftime('%d/%m/%Y')}", related_type="daily_job", related_id=job.id, created_by=caller.user.id)
+                            subject=f"Job for {day.strftime('%d/%m/%Y')}", related_type="daily_job", related_id=job.id,
+                            created_by=caller.user.id, request=request, body="\n".join(x for x in lines if x)[:600],
+                            store_body=True, dedupe_key=f"daily_job:{job.id}")
         db.flush()
         job.outbox_message_id = held.id
     audit(db, request, org_id=caller.org_id, actor_id=caller.user.id, action="daily_job.issued", target_type="daily_job", target_id=job.id,

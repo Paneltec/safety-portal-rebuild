@@ -20,7 +20,7 @@ from sqlalchemy import func, or_, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
-from .. import people
+from .. import comms, people
 from ..crypto import decrypt_json, encrypt_json, key_status
 from ..db import get_db
 from ..deps import Caller, ensure_can_grant, get_caller, require_admin, require_permission
@@ -881,19 +881,22 @@ def provision_user(
         db.rollback()
         raise HTTPException(409, "This worker already has a login") from None
     row, token = issue_auth_token(db, user, "invite", created_by=caller.user.id)
-    hold_message(db, org_id=caller.org_id, channel="email", purpose="invitation", recipient=user.email,
-                 subject="Your Safety Portal invitation", related_type="auth_token", related_id=row.id,
-                 created_by=caller.user.id)
+    link = link_for(request, "/accept-invite", token)
+    org_name = _org(db, caller).name
+    message = hold_message(db, org_id=caller.org_id, channel="email", purpose="invitation", recipient=user.email,
+                           subject=f"Your {org_name} Safety Portal invitation", related_type="auth_token", related_id=row.id,
+                           created_by=caller.user.id, request=request, store_body=False,
+                           body=f"Hello {user.name},\n\nYou have been invited to the {org_name} Safety Portal. Choose your password here:\n{link}\n\nThis link works once.")
     audit(db, request, org_id=caller.org_id, actor_id=caller.user.id, action="worker.user_provisioned",
           target_type="worker", target_id=worker.id, detail={"user_id": user.id, "role_id": role.role_id})
     db.commit()
     return {
         "worker": worker_out(db, caller, worker, detail=True),
         "user_id": user.id,
-        "delivery": "held",
-        "delivery_note": "Email delivery is not connected yet, so nothing was sent. Pass this link to the person directly.",
+        "delivery": message.status,
+        "delivery_note": comms.link_note(message),
         "expires_at": iso(row.expires_at),
-        "link": link_for(request, "/accept-invite", token),
+        "link": link,
     }
 
 

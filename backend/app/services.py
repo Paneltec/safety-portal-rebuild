@@ -295,22 +295,19 @@ def hold_message(
     related_type: str | None,
     related_id: str | None,
     created_by: str | None,
+    request: Request | None = None,
+    body: str | None = None,
+    store_body: bool = False,
+    dedupe_key: str | None = None,
 ) -> OutboxMessage:
-    """The single outbound boundary. Stage 1 never delivers: every message is held.
+    """Record an outbound message through the single comms boundary (see comms.deliver).
 
-    The message body (and any link token) is deliberately not stored here.
+    The name is historical: until a provider is connected and safe mode is switched off, every
+    message is held. A body containing a one-time link is passed with store_body=False so it is
+    used for the attempt and never written to the database.
     """
-    message = OutboxMessage(
-        org_id=org_id,
-        channel=channel,
-        purpose=purpose,
-        recipient=recipient,
-        subject=subject,
-        status="held",
-        hold_reason="Delivery is not connected yet (stage 1). Nothing was sent.",
-        related_type=related_type,
-        related_id=related_id,
-        created_by=created_by,
-    )
-    db.add(message)
-    return message
+    from . import comms
+
+    return comms.deliver(db, request, org_id=org_id, channel=channel, purpose=purpose, recipient=recipient, subject=subject,
+                         body=body, store_body=store_body, related_type=related_type, related_id=related_id,
+                         created_by=created_by, dedupe_key=dedupe_key)

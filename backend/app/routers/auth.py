@@ -19,6 +19,7 @@ from ..services import (
     hold_message,
     iso,
     issue_auth_token,
+    link_for,
     revoke_user_sessions,
     user_out,
 )
@@ -217,9 +218,14 @@ def forgot_password(body: ForgotIn, request: Request, db: Session = Depends(get_
     email = body.email.strip().lower()
     user = db.scalars(select(User).where(User.email == email, User.deleted_at.is_(None))).first()
     if user is not None and user.status == "active":
-        row, _token = issue_auth_token(db, user, "reset", created_by=None)
+        row, token = issue_auth_token(db, user, "reset", created_by=None)
+        text = (f"Hello {user.name},\n\nUse this link to choose a new password:\n{link_for(request, '/reset-password', token)}\n\n"
+                "It works once. If you did not ask for this, ignore this message.")
+        # Sent only when email is connected and safe mode is off; otherwise held, and an
+        # administrator creates a reset link instead. The text is never stored.
         hold_message(db, org_id=user.org_id, channel="email", purpose="password_reset", recipient=user.email,
-                     subject="Reset your password", related_type="auth_token", related_id=row.id, created_by=None)
+                     subject="Reset your Safety Portal password", related_type="auth_token", related_id=row.id, created_by=None,
+                     request=request, body=text, store_body=False)
         audit(db, request, org_id=user.org_id, actor_id=None, action="auth.reset_requested",
               target_type="user", target_id=user.id)
         db.commit()

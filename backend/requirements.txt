@@ -11,3 +11,4 @@ reportlab
 pillow
 cryptography
 segno
+httpx
