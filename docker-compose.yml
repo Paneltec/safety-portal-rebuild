@@ -27,6 +27,7 @@ services:
       DATABASE_URL: postgresql+psycopg://portal:${POSTGRES_PASSWORD}@db:5432/portal
       PUBLIC_BASE_URL: ${PUBLIC_BASE_URL:-}
       SETUP_KEY: ${SETUP_KEY:-}
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY:-}
       FILES_DIR: /data/files
       SESSION_TTL_HOURS: ${SESSION_TTL_HOURS:-12}
       REMEMBER_ME_TTL_DAYS: ${REMEMBER_ME_TTL_DAYS:-30}

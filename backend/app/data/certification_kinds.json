@@ -1,0 +1,182 @@
+[
+ {
+  "slug": "white_card",
+  "label": "White Card (Construction Induction)",
+  "aliases": [
+   "white card",
+   "whitecard",
+   "white_card_induction",
+   "general construction induction",
+   "csi"
+  ]
+ },
+ {
+  "slug": "first_aid",
+  "label": "First Aid",
+  "aliases": [
+   "first aid",
+   "first_aid",
+   "first_aid_cert",
+   "first aid certificate",
+   "hltaid011",
+   "hltaid012"
+  ]
+ },
+ {
+  "slug": "cpr",
+  "label": "CPR",
+  "aliases": [
+   "cpr",
+   "cpr cert",
+   "hltaid009"
+  ]
+ },
+ {
+  "slug": "working_at_heights",
+  "label": "Working at Heights",
+  "aliases": [
+   "working at heights",
+   "heights",
+   "wah",
+   "working_at_heights"
+  ]
+ },
+ {
+  "slug": "confined_space",
+  "label": "Confined Space Entry",
+  "aliases": [
+   "confined space card",
+   "confined space",
+   "confined space entry",
+   "riiwhs202"
+  ]
+ },
+ {
+  "slug": "traffic_control",
+  "label": "Traffic Control",
+  "aliases": [
+   "traffic control",
+   "tc",
+   "riiwhs205",
+   "traffic management"
+  ]
+ },
+ {
+  "slug": "hr_licence",
+  "label": "Heavy Rigid Licence",
+  "aliases": [
+   "hr license",
+   "hr licence",
+   "heavy rigid",
+   "hr"
+  ]
+ },
+ {
+  "slug": "mr_licence",
+  "label": "Medium Rigid Licence",
+  "aliases": [
+   "mr license",
+   "mr licence",
+   "medium rigid",
+   "mr"
+  ]
+ },
+ {
+  "slug": "ewp_licence",
+  "label": "Elevated Work Platform",
+  "aliases": [
+   "ewp",
+   "ewp licence",
+   "boom lift",
+   "scissor lift",
+   "wp licence"
+  ]
+ },
+ {
+  "slug": "forklift_licence",
+  "label": "Forklift",
+  "aliases": [
+   "forklift",
+   "lf",
+   "lf licence",
+   "forklift licence"
+  ]
+ },
+ {
+  "slug": "dogging",
+  "label": "Dogging",
+  "aliases": [
+   "dogging",
+   "dg",
+   "riihrw302"
+  ]
+ },
+ {
+  "slug": "basic_rigging",
+  "label": "Basic Rigging",
+  "aliases": [
+   "basic rigging",
+   "rigging",
+   "rb",
+   "riihrw301"
+  ]
+ },
+ {
+  "slug": "taswater_induction",
+  "label": "TasWater Induction",
+  "aliases": [
+   "taswater",
+   "taswater induction",
+   "tas water",
+   "taswater cdo induction",
+   "taswater cdo"
+  ]
+ },
+ {
+  "slug": "tasrail_induction",
+  "label": "TasRail Induction",
+  "aliases": [
+   "tas rail",
+   "tasrail",
+   "tasrail induction",
+   "rail corridor"
+  ]
+ },
+ {
+  "slug": "tasgas_induction",
+  "label": "TasGas Induction",
+  "aliases": [
+   "tasgas",
+   "tas gas",
+   "tasgas induction",
+   "tas gas induction"
+  ]
+ },
+ {
+  "slug": "tasnetworks_induction",
+  "label": "TasNetworks Induction",
+  "aliases": [
+   "tasnetworks",
+   "tas networks",
+   "tasnetworks induction",
+   "tas networks induction"
+  ]
+ },
+ {
+  "slug": "petuna_induction",
+  "label": "Petuna Induction",
+  "aliases": [
+   "petuna",
+   "petuna induction"
+  ]
+ },
+ {
+  "slug": "airport_induction",
+  "label": "Airport Induction",
+  "aliases": [
+   "airport",
+   "airport induction",
+   "aerodrome"
+  ]
+ }
+]

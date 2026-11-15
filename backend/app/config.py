@@ -34,6 +34,9 @@ class Settings(BaseSettings):
     # and become its account holder. Empty disables the setup screen.
     setup_key: str = ""
 
+    # Key for encrypting sensitive fields at rest. Generate with `python -m app.seed generate-key`.
+    encryption_key: str = ""
+
     # Where uploaded files are stored (a Docker volume in production).
     files_dir: str = "./data/files"
     max_upload_mb: int = 50

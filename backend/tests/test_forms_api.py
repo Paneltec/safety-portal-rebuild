@@ -206,9 +206,12 @@ def test_forms_are_invisible_across_organisations(world, client):
 
 def test_pickers_are_scoped_and_honest_about_what_is_not_built(world, client):
     worker = world.auth("worker1")
+    ours = world.add_worker("Alex", "Rowe")
+    world.add_worker("Alex", "Rowe", org=world.org2)  # same name in the other organisation
+    world.add_worker("Alexa", "Gone", active=False)  # inactive people are not offered
     people = client.get(f"{BASE}/pickers/workers?q=alex", headers=worker).json()
-    assert people["available"] is True and [p["label"] for p in people["items"]] == ["Alex Rowe"]
-    assert people["items"][0]["id"] == world.id("admin1")  # the other organisation's Alex Rowe is not offered
+    assert people["available"] is True and people["source"] == "workers"
+    assert [(p["id"], p["label"]) for p in people["items"]] == [(ours.id, "Alex Rowe")]
     for path in ("pickers/sites", "pickers/jobs", "fleet/vehicles"):
         result = client.get(f"{BASE}/{path}", headers=worker).json()
         assert result["available"] is False and result["items"] == [] and "built" in result["message"]

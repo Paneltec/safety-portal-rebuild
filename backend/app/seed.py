@@ -127,9 +127,14 @@ def main() -> None:
     admin.add_argument("--name", required=True)
     admin.add_argument("--email", required=True)
     sub.add_parser("demo", help="load synthetic demo organisations and users")
+    sub.add_parser("generate-key", help="print a new ENCRYPTION_KEY value")
     args = parser.parse_args()
     if args.command == "create-admin":
         create_admin(args.org, args.name, args.email)
+    elif args.command == "generate-key":
+        from .crypto import generate_key
+
+        print(generate_key())
     else:
         demo()
 

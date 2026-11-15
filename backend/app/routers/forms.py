@@ -15,10 +15,11 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from .. import forms as engine
+from .. import people
 from ..db import get_db
 from ..deps import Caller, require_permission
 from ..files import file_exists, file_response, read_bytes, save_upload
-from ..models import Company, FormAssignment, FormSubmission, FormSubmissionFile, Role, FormTemplate, FormTemplateVersion, Organisation, StoredFile, User, utcnow
+from ..models import Company, FormAssignment, FormSubmission, FormSubmissionFile, Role, FormTemplate, FormTemplateVersion, Organisation, StoredFile, User, Worker, utcnow
 from ..pdf import submission_pdf
 from ..services import audit, iso
 from .safety import project_submission
@@ -235,6 +236,18 @@ def _apply(db: Session, sub: FormSubmission, values: dict[str, Any], *, final: b
     sub.values = cleaned
 
 
+def _cert_slugs(db: Session, caller: Caller, values: list[str]) -> list[str]:
+    """Required certificates must be known types; names and aliases are normalised to their slug."""
+    out: list[str] = []
+    for value in values:
+        kind = people.resolve_kind(db, caller.org_id, value)
+        if kind is None:
+            raise HTTPException(422, f"Unknown certification type: {value}")
+        if kind.slug not in out:
+            out.append(kind.slug)
+    return out
+
+
 # ---------- catalogue ----------
 
 @router.get("/field-types")
@@ -252,13 +265,13 @@ def pick_workers(
     caller: Caller = Depends(require_permission("forms", "view")),
     db: Session = Depends(get_db),
 ) -> dict[str, Any]:
-    """People who can be chosen in a worker field. Until the worker register is built (stage 4)
-    this lists active user accounts; the value shape {id, label} stays the same afterwards."""
-    stmt = select(User).where(User.org_id == caller.org_id, User.status == "active", User.deleted_at.is_(None))
+    """People who can be chosen in a worker field: active workers from the register."""
+    stmt = select(Worker).where(Worker.org_id == caller.org_id, Worker.deleted_at.is_(None),
+                                Worker.archived_at.is_(None), Worker.active.is_(True))
     if q and q.strip():
-        stmt = stmt.where(func.lower(User.name).like(f"%{q.strip().lower()}%"))
-    rows = db.scalars(stmt.order_by(func.lower(User.name), User.id).limit(100)).all()
-    return {"available": True, "source": "users", "items": [{"id": u.id, "label": u.name} for u in rows]}
+        stmt = stmt.where(func.lower(Worker.first_name + " " + Worker.last_name).like(f"%{q.strip().lower()}%"))
+    rows = db.scalars(stmt.order_by(func.lower(Worker.first_name), func.lower(Worker.last_name), Worker.id).limit(200)).all()
+    return {"available": True, "source": "workers", "items": [{"id": w.id, "label": people.worker_name(w)} for w in rows]}
 
 
 def _not_yet(what: str, stage: str) -> dict[str, Any]:
@@ -318,7 +331,7 @@ def create_template(
     template = FormTemplate(
         org_id=caller.org_id, name=body.name.strip(), category=_category(body.category), description=body.description or "",
         schema=_schema(body.fields), certification_gate_enabled=body.certification_gate_enabled,
-        required_certifications=list(dict.fromkeys(body.required_certifications)), created_by=caller.user.id,
+        required_certifications=_cert_slugs(db, caller, body.required_certifications), created_by=caller.user.id,
     )
     db.add(template)
     db.flush()
@@ -430,7 +443,7 @@ def patch_template(
         template.certification_gate_enabled = patch["certification_gate_enabled"]
         changed.append("certification_gate_enabled")
     if patch.get("required_certifications") is not None:
-        certs = list(dict.fromkeys(patch["required_certifications"]))
+        certs = _cert_slugs(db, caller, patch["required_certifications"])
         if certs != list(template.required_certifications or []):
             template.required_certifications = certs
             changed.append("required_certifications")
@@ -518,6 +531,11 @@ def access_check(
         return {"allowed": False, "reason": "no_permission", "message": "Your role cannot fill in forms."}
     if not _assigned(db, caller, template):
         return {"allowed": False, "reason": "not_assigned", "message": "This form is not assigned to you."}
+    problems = people.gate_problems(db, db.get(Organisation, caller.org_id), template, caller.user)
+    if problems:
+        return {"allowed": False, "reason": "certification_gate",
+                "message": "This form needs current certificates before it can be filled in.",
+                "certification_gate": problems}
     return {"allowed": True, "reason": None, "message": None, "template_version": template.published_version}
 
 
@@ -654,6 +672,7 @@ def create_submission(
         ).first()
         if existing is not None:
             return {**_submission_out(db, existing, detail=True), "duplicate": True}
+    people.enforce_gate(db, db.get(Organisation, caller.org_id), template, caller.user)
     sub = FormSubmission(
         org_id=caller.org_id, template_id=template.id, template_version_id=version.id, status="draft",
         submitted_by=caller.user.id, client_submission_id=body.client_submission_id, launched_via=body.launched_via,
@@ -757,6 +776,8 @@ def submit_draft(
     if sub.status == "submitted" and sub.submitted_by == caller.user.id:
         return _submission_out(db, sub, detail=True)  # a repeated submit is harmless
     sub = _own_draft(db, caller, submission_id)
+    # Checked again at the moment of sending: a certificate may have expired since the draft was started.
+    people.enforce_gate(db, db.get(Organisation, caller.org_id), db.get(FormTemplate, sub.template_id), caller.user)
     _apply(db, sub, _values(body.fields) if body is not None else dict(sub.values or {}), final=True)
     sub.status = "submitted"
     sub.submitted_at = utcnow()

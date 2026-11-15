@@ -6,6 +6,9 @@ os.environ["DATABASE_URL"] = os.environ.get(
     "TEST_DATABASE_URL", "postgresql+psycopg://portal:portal@localhost:5432/portal_test"
 )
 os.environ["SETUP_KEY"] = "test-setup-key"
+from cryptography.fernet import Fernet  # noqa: E402
+
+os.environ["ENCRYPTION_KEY"] = Fernet.generate_key().decode()  # throwaway key for the test run
 os.environ["FILES_DIR"] = __import__("tempfile").mkdtemp(prefix="portal-test-files-")
 os.environ["PUBLIC_BASE_URL"] = "https://portal.test"
 
@@ -20,7 +23,7 @@ from sqlalchemy.orm import Session  # noqa: E402
 
 from app.db import get_engine  # noqa: E402
 from app.main import app  # noqa: E402
-from app.models import Base, User  # noqa: E402
+from app.models import Base, User, Worker  # noqa: E402
 from app.security import hash_password  # noqa: E402
 from app.services import create_organisation  # noqa: E402
 
@@ -104,6 +107,17 @@ class World:
 
     def id(self, key: str) -> str:
         return self.users[key].id
+
+    def add_worker(self, first: str, last: str, *, org=None, link: str | None = None, **fields) -> Worker:
+        """A worker record, optionally linked to one of the logins above."""
+        org = org or self.org1
+        worker = Worker(org_id=org.id, first_name=first, last_name=last, **fields)
+        self.db.add(worker)
+        self.db.flush()
+        if link:
+            self.users[link].worker_id = worker.id
+        self.db.commit()
+        return worker
 
 
 @pytest.fixture

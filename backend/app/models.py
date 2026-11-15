@@ -9,7 +9,7 @@ import uuid
 from datetime import date, datetime, timezone
 from typing import Any
 
-from sqlalchemy import Boolean, Date, DateTime, ForeignKey, Index, Integer, String, Text, UniqueConstraint
+from sqlalchemy import Boolean, Date, DateTime, ForeignKey, Index, Integer, String, Text, UniqueConstraint, text
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
@@ -87,6 +87,8 @@ class User(Base):
     """A login identity. A worker record is separate and linked by worker_id (stage 3)."""
 
     __tablename__ = "users"
+    # One login per worker record.
+    __table_args__ = (Index("uq_users_worker", "worker_id", unique=True, postgresql_where=text("worker_id IS NOT NULL")),)
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
     org_id: Mapped[str] = mapped_column(ForeignKey("organisations.id"), index=True)
@@ -480,3 +482,78 @@ class SafetyAcknowledgement(Base):
     user_id: Mapped[str] = mapped_column(String(36))
     signed_name: Mapped[str] = mapped_column(String(200))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class Worker(Base):
+    """The operational person record. Separate from a login (User); the two are linked explicitly."""
+
+    __tablename__ = "workers"
+    __table_args__ = (
+        UniqueConstraint("org_id", "source_system", "source_company", "source_id", name="uq_workers_source"),
+    )
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    org_id: Mapped[str] = mapped_column(ForeignKey("organisations.id"), index=True)
+    first_name: Mapped[str] = mapped_column(String(100))
+    last_name: Mapped[str] = mapped_column(String(100), default="")
+    preferred_name: Mapped[str | None] = mapped_column(String(100))
+    email: Mapped[str | None] = mapped_column(String(320))
+    phone: Mapped[str | None] = mapped_column(String(40))
+    mobile: Mapped[str | None] = mapped_column(String(40))
+    position: Mapped[str | None] = mapped_column(String(120))
+    company_id: Mapped[str | None] = mapped_column(ForeignKey("companies.id"))
+    active: Mapped[bool] = mapped_column(Boolean, default=True)
+    # The login link lives on users.worker_id (one login per worker, enforced by a unique index).
+    # External identity (for example a Simpro employee). Imports upsert on this key, never on a name.
+    source_system: Mapped[str | None] = mapped_column(String(20))
+    source_company: Mapped[str | None] = mapped_column(String(40))
+    source_id: Mapped[str | None] = mapped_column(String(80))
+    photo_file_id: Mapped[str | None] = mapped_column(String(36))
+    details: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict)  # address, emergency contact, notes
+    protected: Mapped[str | None] = mapped_column(Text)  # encrypted JSON: birth date, tax file number, USI
+    created_by: Mapped[str | None] = mapped_column(String(36))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+    archived_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    deleted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
+class CertificationKind(Base):
+    """Vocabulary of certification types (white card, first aid, licences...)."""
+
+    __tablename__ = "certification_kinds"
+    __table_args__ = (UniqueConstraint("org_id", "slug", name="uq_certification_kinds"),)
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    org_id: Mapped[str] = mapped_column(ForeignKey("organisations.id"), index=True)
+    slug: Mapped[str] = mapped_column(String(60))
+    label: Mapped[str] = mapped_column(String(160))
+    aliases: Mapped[list[str]] = mapped_column(JSONB, default=list)
+    is_system: Mapped[bool] = mapped_column(Boolean, default=False)
+    active: Mapped[bool] = mapped_column(Boolean, default=True)
+
+
+class Certification(Base):
+    """One certificate held by a worker. A renewal is a new row that supersedes the old one,
+    so earlier evidence is kept."""
+
+    __tablename__ = "certifications"
+    __table_args__ = (Index("ix_certifications_worker", "worker_id", "kind_slug"),)
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    org_id: Mapped[str] = mapped_column(ForeignKey("organisations.id"), index=True)
+    worker_id: Mapped[str] = mapped_column(ForeignKey("workers.id"))
+    kind_slug: Mapped[str] = mapped_column(String(60))
+    number: Mapped[str | None] = mapped_column(String(80))
+    issue_date: Mapped[date | None] = mapped_column(Date)
+    expiry_date: Mapped[date | None] = mapped_column(Date)
+    no_expiry: Mapped[bool] = mapped_column(Boolean, default=False)  # explicitly does not expire
+    evidence_file_id: Mapped[str | None] = mapped_column(String(36))
+    notes: Mapped[str | None] = mapped_column(Text)
+    supersedes_id: Mapped[str | None] = mapped_column(String(36))
+    superseded_by_id: Mapped[str | None] = mapped_column(String(36))
+    created_by: Mapped[str | None] = mapped_column(String(36))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+    archived_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    deleted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
