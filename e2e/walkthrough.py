@@ -110,11 +110,11 @@ def stage1_and_2a(browser) -> None:
     print("stage 1 + 2a walkthrough: ok")
 
 
-def sign_in(browser, width: int = 1280, height: int = 900):
+def sign_in(browser, width: int = 1280, height: int = 900, email: str = HOLDER["email"], password: str = HOLDER["password"]):
     page = browser.new_context(viewport={"width": width, "height": height}).new_page()
     page.goto(BASE + "/login")
-    page.get_by_label("Email").fill(HOLDER["email"])
-    page.get_by_label("Password").fill(HOLDER["password"])
+    page.get_by_label("Email").fill(email)
+    page.get_by_label("Password").fill(password)
     page.get_by_role("button", name="Sign in").click()
     page.wait_for_url("**/app/home")
     return page
@@ -198,13 +198,13 @@ def forms(browser) -> None:
     # Limit the form to one role, and check what a named person will see.
     pg.get_by_label("Only the roles, companies and people ticked below").check()
     pg.get_by_role("group", name="Roles").get_by_label("Supervisor").check()
-    pg.get_by_role("button", name="Save who can fill this in").click()
-    expect(pg.get_by_text("Saved who can fill this in.")).to_be_visible()
+    pg.get_by_role("button", name="Save assignment").click()
+    expect(pg.get_by_text("Saved who this is assigned to.")).to_be_visible()
     pg.get_by_label("Check what one person sees").select_option(label="Nina Example")
     expect(pg.get_by_text("No, they do not see this form. It is not assigned to them.")).to_be_visible()
     pg.get_by_role("group", name="Roles").get_by_label("Worker").check()
-    pg.get_by_role("button", name="Save who can fill this in").click()
-    expect(pg.get_by_text("Saved who can fill this in.")).to_be_visible()
+    pg.get_by_role("button", name="Save assignment").click()
+    expect(pg.get_by_text("Saved who this is assigned to.")).to_be_visible()
     pg.get_by_label("Check what one person sees").select_option("")
     pg.get_by_label("Check what one person sees").select_option(label="Nina Example")
     expect(pg.get_by_text("Yes, they see this form. Assigned to the Worker role.")).to_be_visible()
@@ -257,7 +257,76 @@ def forms(browser) -> None:
     print("forms walkthrough: ok")
 
 
-STEPS = [stage1_and_2a, documents, forms]
+def safety_registers(browser) -> None:
+    pg = sign_in(browser)
+    errors: list[str] = []
+    pg.on("pageerror", lambda e: errors.append(str(e)))
+
+    # The pre-start form submitted earlier landed in the pre-starts register, once.
+    pg.get_by_role("link", name="Pre-starts").click()
+    expect(pg.get_by_text("Showing 1–1 of 1")).to_be_visible()
+    expect(pg.get_by_text("from a form")).to_be_visible()
+
+    # SWMS: draft, submit, approve.
+    pg.get_by_role("link", name="SWMS", exact=True).click()
+    expect(pg.get_by_text("No swms recorded yet.")).to_be_visible()
+    pg.get_by_role("button", name="New SWMS").click()
+    pg.wait_for_url("**/r/swms/*")
+    pg.get_by_label("SWMS title").fill("Trenching and excavation")
+    pg.get_by_label("Job description").fill("Excavate and lay sewer main")
+    pg.get_by_label("Prepared by").fill("Stephen")
+    pg.get_by_role("button", name="Submit for review").click()
+    expect(pg.get_by_text("1 answer needs attention.")).to_be_visible()  # the job steps table is required
+    pg.get_by_role("button", name="Add a row").click()
+    pg.get_by_role("textbox", name="Job step", exact=True).fill("Excavate trench")
+    pg.get_by_role("textbox", name="Hazards", exact=True).fill("Trench collapse")
+    pg.get_by_role("textbox", name="Controls", exact=True).fill("Shoring and edge protection")
+    pg.get_by_role("button", name="Submit for review").click()
+    expect(pg.get_by_text("Submitted for review.")).to_be_visible()
+    pg.get_by_role("button", name="Approve").click()
+    expect(pg.get_by_text("Approved.", exact=True)).to_be_visible()
+    expect(pg.get_by_text("Nobody has acknowledged this version yet.")).to_be_visible()
+    shot(pg, "09-swms", full=True)
+
+    # Hazard: report, then close with a resolution note.
+    pg.get_by_role("link", name="Incidents & hazards").click()
+    pg.get_by_role("link", name="Hazards and near misses").click()
+    pg.get_by_role("button", name="Report a hazard").click()
+    pg.get_by_role("button", name="Save report").click()
+    expect(pg.get_by_text("4 answers need attention.")).to_be_visible()
+    pg.get_by_label("What is the hazard?").fill("Open trench unfenced")
+    pg.get_by_label("Type").select_option("Hazard")
+    pg.get_by_label("Describe it").fill("Trench beside the footpath has no barrier")
+    pg.get_by_label("Severity").select_option("High")
+    pg.get_by_role("button", name="Save report").click()
+    pg.wait_for_url("**/r/hazards/*")
+    expect(pg.get_by_role("heading", name="Open trench unfenced")).to_be_visible()
+    pg.get_by_role("button", name="Close", exact=True).click()
+    pg.get_by_role("dialog").get_by_label("How was it resolved?").fill("Barrier fence installed")
+    pg.get_by_role("dialog").get_by_role("button", name="Close", exact=True).click()
+    expect(pg.get_by_text("Closed. The original report is unchanged.")).to_be_visible()
+    expect(pg.get_by_role("cell", name="Barrier fence installed")).to_be_visible()
+    shot(pg, "10-hazard", full=True)
+
+    # A worker on a phone sees the approved SWMS and acknowledges it.
+    phone = sign_in(browser, 390, 844, "nina@e2e.example", "Nina-Pass-2026")
+    phone.on("pageerror", lambda e: errors.append(str(e)))
+    phone.get_by_role("button", name="Menu").click()
+    phone.get_by_role("link", name="SWMS", exact=True).click()
+    phone.get_by_role("link", name="Trenching and excavation").click()
+    assert phone.get_by_role("button", name="Submit for review").count() == 0
+    phone.get_by_role("button", name="I have read and understood this SWMS").click()
+    expect(phone.get_by_text("You acknowledged version 1")).to_be_visible()
+    shot(phone, "11-phone-swms-ack", full=True)
+    pg.reload()
+    pg.get_by_role("link", name="SWMS", exact=True).click()
+    pg.get_by_role("link", name="Trenching and excavation").click()
+    expect(pg.get_by_role("cell", name="Nina Example").first).to_be_visible()
+    assert not errors, errors
+    print("safety registers walkthrough: ok")
+
+
+STEPS = [stage1_and_2a, documents, forms, safety_registers]
 
 if __name__ == "__main__":
     with sync_playwright() as p:

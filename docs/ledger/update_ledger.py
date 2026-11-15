@@ -7,6 +7,7 @@ T_AUTH, T_USERS, T_RST = "tests/test_auth.py", "tests/test_users.py", "tests/tes
 T_ORG = "tests/test_org_setup_files.py"
 T_DOC = "tests/test_documents.py"
 T_FORM = "tests/test_forms_api.py; tests/test_forms_engine.py"
+T_SAFE = "tests/test_safety.py"
 
 # (method, baseline path) -> (classification, new handler, tests, status, decision)
 DONE = {
@@ -109,7 +110,47 @@ DONE = {
     ("POST", "/api/form-templates/assignments/bulk"): ("team/resource", "forms.put_assignments", T_FORM, "HISTORICAL_COMPATIBILITY", "Replaced by PUT /api/forms/templates/{id}/assignments (replace rules per template)"),
 }
 
+# ---- safety registers (stage 3): the same route set exists for every register
+REGISTER_PREFIXES = ["swms", "pre-starts", "site-diary", "hazards", "incidents", "inspections", "risk-assessments"]
+OPTIONAL = {}
+for _p in REGISTER_PREFIXES:
+    _b = f"/api/{_p}"
+    OPTIONAL.update({
+        ("GET", _b): ("team/resource", "safety.list_records", T_SAFE, "IMPLEMENTED_TESTED", "Paginated; own-only without team_view on team-scoped registers"),
+        ("POST", _b): ("team/resource", "safety.create", T_SAFE, "IMPLEMENTED_TESTED", "D-030 body is {fields:[{id,value}]} validated against the register's form schema"),
+        ("POST", f"{_b}/archive"): ("team/resource", "safety.bulk_archive", T_SAFE, "IMPLEMENTED_TESTED", "Needs the archive right; dry run by default"),
+        ("POST", f"{_b}/unarchive-batch/{{batch_id}}"): ("team/resource", "safety.unarchive_batch", T_SAFE, "IMPLEMENTED_TESTED", ""),
+        ("GET", f"{_b}/{{item_id}}"): ("team/resource", "safety.get_record", T_SAFE, "IMPLEMENTED_TESTED", ""),
+        ("PATCH", f"{_b}/{{item_id}}"): ("team/resource", "safety.patch", T_SAFE, "IMPLEMENTED_TESTED", "Earlier answers kept in history"),
+        ("DELETE", f"{_b}/{{item_id}}"): ("team/resource", "safety.delete", T_SAFE, "IMPLEMENTED_TESTED", "Own draft, or the delete right (baseline used edit)"),
+        ("POST", f"{_b}/{{item_id}}/archive"): ("team/resource", "safety.archive", T_SAFE, "IMPLEMENTED_TESTED", ""),
+        ("POST", f"{_b}/{{item_id}}/unarchive"): ("team/resource", "safety.unarchive", T_SAFE, "IMPLEMENTED_TESTED", ""),
+        ("GET", f"{_b}/category-counts"): ("team/resource", "safety.category_counts", T_SAFE, "IMPLEMENTED_TESTED", "Same scope as the list"),
+    })
+OPTIONAL.update({
+    ("POST", "/api/swms/{item_id}/review"): ("team/resource", "safety.review", T_SAFE, "IMPLEMENTED_TESTED", "D-029 needs approve (admin, HSEQ lead); same route on every review register"),
+    ("GET", "/api/swms/{swms_id}/history"): ("team/resource", "safety.versions", T_SAFE, "IMPLEMENTED_TESTED", "Served as GET /api/swms/{id}/versions; /history is the event log"),
+    ("PUT", "/api/swms/assignments/{swms_id}"): ("team/resource", "safety.put_assignments", T_SAFE, "HISTORICAL_COMPATIBILITY", "Replaced by PUT /api/swms/{id}/assignments"),
+    ("GET", "/api/swms/assignments"): ("team/resource", "safety.get_assignments", T_SAFE, "HISTORICAL_COMPATIBILITY", "Replaced by GET /api/swms/{id}/assignments"),
+})
+
 NEW_ROWS = [
+    ["GET", "/api/{register}/schema", "(new)", "schema", "authenticated-own", "safety.schema", T_SAFE, "IMPLEMENTED_TESTED", "Built-in form, statuses and scope for each of the 8 registers"],
+    ["POST", "/api/{register}/{id}/submit", "(new)", "submit", "team/resource", "safety.submit", T_SAFE, "IMPLEMENTED_TESTED", "Review registers"],
+    ["POST", "/api/{register}/{id}/review", "(new)", "review", "team/resource", "safety.review", T_SAFE, "IMPLEMENTED_TESTED", "Review registers other than SWMS"],
+    ["POST", "/api/{register}/{id}/status", "(new)", "set_status", "team/resource", "safety.set_status", T_SAFE, "IMPLEMENTED_TESTED", "Hazards and incidents: open, in progress, closed with note"],
+    ["GET", "/api/{register}/{id}/history", "(new)", "history", "team/resource", "safety.history", T_SAFE, "IMPLEMENTED_TESTED", "Event log"],
+    ["GET", "/api/{register}/{id}/pdf", "(new)", "pdf", "team/resource", "safety.pdf", T_SAFE, "IMPLEMENTED_TESTED", "Branded PDF from the saved record"],
+    ["POST", "/api/{register}/{id}/files", "(new)", "upload_file", "team/resource", "safety.upload_file", T_SAFE, "IMPLEMENTED_TESTED", ""],
+    ["GET", "/api/{register}/{id}/files/{file_id}", "(new)", "download_file", "team/resource", "safety.download_file", T_SAFE, "IMPLEMENTED_TESTED", "Only through a record the caller may see"],
+    ["DELETE", "/api/{register}/{id}/files/{file_id}", "(new)", "remove_file", "team/resource", "safety.remove_file", T_SAFE, "IMPLEMENTED_TESTED", ""],
+    ["GET", "/api/ssra", "(new)", "ssra register", "team/resource", "safety (ssra)", T_SAFE, "IMPLEMENTED_TESTED", "SSRA has its own register with the full route set"],
+    ["POST", "/api/swms/{id}/new-version", "(new)", "new_version", "team/resource", "safety.new_version", T_SAFE, "IMPLEMENTED_TESTED", "D-031"],
+    ["GET", "/api/swms/{id}/versions", "(new)", "versions", "team/resource", "safety.versions", T_SAFE, "IMPLEMENTED_TESTED", ""],
+    ["GET", "/api/swms/{id}/assignments", "(new)", "get_assignments", "team/resource", "safety.get_assignments", T_SAFE, "IMPLEMENTED_TESTED", ""],
+    ["PUT", "/api/swms/{id}/assignments", "(new)", "put_assignments", "team/resource", "safety.put_assignments", T_SAFE, "IMPLEMENTED_TESTED", "Roles, people, companies"],
+    ["POST", "/api/swms/{id}/acknowledge", "(new)", "acknowledge", "authenticated-own", "safety.acknowledge", T_SAFE, "IMPLEMENTED_TESTED", "D-031 per version"],
+    ["GET", "/api/swms/{id}/acknowledgements", "(new)", "acknowledgements", "team/resource", "safety.acknowledgements", T_SAFE, "IMPLEMENTED_TESTED", ""],
     ["GET", "/api/forms/templates/{template_id}/assignments", "(new)", "get_assignments", "team/resource", "forms.get_assignments", T_FORM, "IMPLEMENTED_TESTED", "D-027"],
     ["PUT", "/api/forms/templates/{template_id}/assignments", "(new)", "put_assignments", "team/resource", "forms.put_assignments", T_FORM, "IMPLEMENTED_TESTED", "D-027 roles, people, companies; targets checked against the organisation"],
     ["GET", "/api/forms/assignments/effective", "(new)", "effective_assignments", "team/resource", "forms.effective_assignments", T_FORM, "IMPLEMENTED_TESTED", "Explains why a person sees each form"],
@@ -141,6 +182,12 @@ FEATURES = {
     "DOC-01": ("PARTIAL", "tests/test_documents.py; e2e/walkthrough.py", "Built: folders (nest, move, rename, delete when empty), upload with type allowlist and content check, hash/size/type, private authorised download, inline preview for PDF and images, rename, move, expiry, tags, archive/restore, delete, revision history, missing-content state with repair or record-as-lost, counts, name/tag search. Outstanding: extracted-text search and AI retry, categories, generated per-worker and per-supplier folders, sharing (historical/optional), reorganise tool."),
     "FORM-01": ("PARTIAL", "tests/test_forms_engine.py; tests/test_forms_api.py; e2e/walkthrough.py", "Built: all 20 field families with a documented value shape and server validation, template editor with preview, immutable published versions, staged draft/submit, photos/attachments/signatures stored separately and linked, idempotent retry, read-only record view from the schema snapshot, definition-only import/export. branded PDF from the saved version with embedded photos and signatures and honest missing-file notes. Outstanding: authorised corrections after submit, scoped PDF share tokens, site/job/asset pickers and Navixy vehicle list (need later stages), AI draft."),
     "FORM-02": ("PARTIAL", "tests/test_forms_api.py; e2e/walkthrough.py", "Built: assignment to roles, named people and companies; open-to-everyone default; enforced on list, open, access-check and submit; effective preview with reasons. Outstanding: positions and asset types (need workers and fleet), the double-switch certification gate (needs certifications; per-template switch is stored and defaults off)."),
+    "SWMS-01": ("PARTIAL", "tests/test_safety.py; e2e/walkthrough.py", "Built: capture on the SWMS form (job steps table, PPE, emergency, legislation, source file), draft/submit/approve/changes/reject, assignments to roles/people/companies, per-version acknowledgements, new versions with supersede, version chain, PDF, archive. Outstanding: AI draft, paste/scan/docx import, asset-type assignment, attendance sheet, recycle bin and version diff."),
+    "PRE-01": ("PARTIAL", "tests/test_safety.py; e2e/walkthrough.py", "Built: pre-start register with crew sign-on, hazards, vehicle (manual until Navixy), meter, GPS, signature, review cycle, PDF, projection of pre-start form templates. Outstanding: Navixy vehicle list and worker ids (stages 4-6), bulk URL/PDF/ZIP import (IMP-01)."),
+    "DIARY-01": ("PARTIAL", "tests/test_safety.py", "Built: daily diary with raw notes, crew, activities, issues, photos, review, PDF. Outstanding: AI structuring of raw notes (AI stage)."),
+    "INC-01": ("PARTIAL", "tests/test_safety.py; e2e/walkthrough.py", "Built: incidents and hazards registers shown as one surface with a type switch, categories, severity, people involved, evidence photos, follow-up actions, open/in progress/closed with resolution note, history that keeps original answers, category counts, bulk archive, PDF. Outstanding: root-cause catalogue, customer-service issues, bulk PDF export."),
+    "INSP-01": ("PARTIAL", "tests/test_safety.py", "Built: inspection register with pass/fail/NA checklist where a fail needs a note, failures surfaced on list, detail and PDF, corrective actions, signature, GPS, review. Custom checklists come from form templates of the inspection category."),
+    "RISK-01": ("PARTIAL", "tests/test_safety.py", "Built: risk assessment and SSRA as separate registers; scores computed only from valid 1-5 answers and always shown with the rule. Outstanding: editable master risk catalogue (REF-01)."),
     "NAV-01": ("PARTIAL", "Browser walkthrough (login, users, roles, sessions, profile)", "Shell with permission-filtered menu for built screens only. Preferences, app directory and version display outstanding."),
 }
 
@@ -158,6 +205,9 @@ def main() -> None:
             row[4], row[5], row[6], row[7], row[8] = DONE[key]
     missing = sorted(set(DONE) - seen)
     assert not missing, f"Not in baseline inventory: {missing}"
+    for row in body:
+        if (row[0], row[1]) in OPTIONAL:
+            row[4], row[5], row[6], row[7], row[8] = OPTIONAL[(row[0], row[1])]
     body = [r for r in body if (r[0], r[1]) not in {(n[0], n[1]) for n in NEW_ROWS}] + NEW_ROWS
     with path.open("w", encoding="utf-8", newline="") as fh:
         csv.writer(fh).writerows([header, *body])

@@ -406,16 +406,16 @@ GET,/api/forms/templates/{template_id}/access-check,forms,template_access_check,
 GET,/api/forms/templates/{template_id}/submissions,forms,list_submissions,team/resource,forms.list_submissions,tests/test_forms_api.py; tests/test_forms_engine.py,IMPLEMENTED_TESTED,Own-only without forms.team_view; paginated
 POST,/api/forms/templates/{template_id}/submissions,forms,create_submission,authenticated-own,forms.create_submission,tests/test_forms_api.py; tests/test_forms_engine.py,IMPLEMENTED_TESTED,D-025 staged draft then submit; client_submission_id idempotency
 GET,/api/gps-map,server,gps_map_proxy,CLASSIFY,,,NOT_STARTED,
-GET,/api/hazards,crud,list_items,CLASSIFY,,,NOT_STARTED,
-POST,/api/hazards,crud,create_item,CLASSIFY,,,NOT_STARTED,
-POST,/api/hazards/archive,crud,bulk_archive,CLASSIFY,,,NOT_STARTED,
-GET,/api/hazards/category-counts,category_counts,hazards_category_counts,CLASSIFY,,,NOT_STARTED,
-POST,/api/hazards/unarchive-batch/{batch_id},crud,unarchive_batch,CLASSIFY,,,NOT_STARTED,
-DELETE,/api/hazards/{item_id},crud,delete_item,CLASSIFY,,,NOT_STARTED,
-GET,/api/hazards/{item_id},crud,get_item,CLASSIFY,,,NOT_STARTED,
-PATCH,/api/hazards/{item_id},crud,update_item,CLASSIFY,,,NOT_STARTED,
-POST,/api/hazards/{item_id}/archive,crud,archive_item,CLASSIFY,,,NOT_STARTED,
-POST,/api/hazards/{item_id}/unarchive,crud,unarchive_item,CLASSIFY,,,NOT_STARTED,
+GET,/api/hazards,crud,list_items,team/resource,safety.list_records,tests/test_safety.py,IMPLEMENTED_TESTED,Paginated; own-only without team_view on team-scoped registers
+POST,/api/hazards,crud,create_item,team/resource,safety.create,tests/test_safety.py,IMPLEMENTED_TESTED,"D-030 body is {fields:[{id,value}]} validated against the register's form schema"
+POST,/api/hazards/archive,crud,bulk_archive,team/resource,safety.bulk_archive,tests/test_safety.py,IMPLEMENTED_TESTED,Needs the archive right; dry run by default
+GET,/api/hazards/category-counts,category_counts,hazards_category_counts,team/resource,safety.category_counts,tests/test_safety.py,IMPLEMENTED_TESTED,Same scope as the list
+POST,/api/hazards/unarchive-batch/{batch_id},crud,unarchive_batch,team/resource,safety.unarchive_batch,tests/test_safety.py,IMPLEMENTED_TESTED,
+DELETE,/api/hazards/{item_id},crud,delete_item,team/resource,safety.delete,tests/test_safety.py,IMPLEMENTED_TESTED,"Own draft, or the delete right (baseline used edit)"
+GET,/api/hazards/{item_id},crud,get_item,team/resource,safety.get_record,tests/test_safety.py,IMPLEMENTED_TESTED,
+PATCH,/api/hazards/{item_id},crud,update_item,team/resource,safety.patch,tests/test_safety.py,IMPLEMENTED_TESTED,Earlier answers kept in history
+POST,/api/hazards/{item_id}/archive,crud,archive_item,team/resource,safety.archive,tests/test_safety.py,IMPLEMENTED_TESTED,
+POST,/api/hazards/{item_id}/unarchive,crud,unarchive_item,team/resource,safety.unarchive,tests/test_safety.py,IMPLEMENTED_TESTED,
 GET,/api/health/backup,health_extras,health_backup,CLASSIFY,,,NOT_STARTED,
 POST,/api/health/disk-panic,health_extras,disk_panic,CLASSIFY,,,NOT_STARTED,
 GET,/api/health/integrations,health_extras,health_integrations,CLASSIFY,,,NOT_STARTED,
@@ -453,17 +453,17 @@ POST,/api/incident-root-causes/reimport,incident_root_causes,reimport_rows,CLASS
 DELETE,/api/incident-root-causes/{uid},incident_root_causes,delete_row,CLASSIFY,,,NOT_STARTED,
 GET,/api/incident-root-causes/{uid},incident_root_causes,get_row,CLASSIFY,,,NOT_STARTED,
 PATCH,/api/incident-root-causes/{uid},incident_root_causes,patch_row,CLASSIFY,,,NOT_STARTED,
-GET,/api/incidents,crud,list_items,CLASSIFY,,,NOT_STARTED,
-POST,/api/incidents,crud,create_item,CLASSIFY,,,NOT_STARTED,
-POST,/api/incidents/archive,crud,bulk_archive,CLASSIFY,,,NOT_STARTED,
+GET,/api/incidents,crud,list_items,team/resource,safety.list_records,tests/test_safety.py,IMPLEMENTED_TESTED,Paginated; own-only without team_view on team-scoped registers
+POST,/api/incidents,crud,create_item,team/resource,safety.create,tests/test_safety.py,IMPLEMENTED_TESTED,"D-030 body is {fields:[{id,value}]} validated against the register's form schema"
+POST,/api/incidents/archive,crud,bulk_archive,team/resource,safety.bulk_archive,tests/test_safety.py,IMPLEMENTED_TESTED,Needs the archive right; dry run by default
 POST,/api/incidents/bulk-pdf-export,incidents_bulk,bulk_pdf_export,CLASSIFY,,,NOT_STARTED,
-GET,/api/incidents/category-counts,category_counts,incidents_category_counts,CLASSIFY,,,NOT_STARTED,
-POST,/api/incidents/unarchive-batch/{batch_id},crud,unarchive_batch,CLASSIFY,,,NOT_STARTED,
-DELETE,/api/incidents/{item_id},crud,delete_item,CLASSIFY,,,NOT_STARTED,
-GET,/api/incidents/{item_id},crud,get_item,CLASSIFY,,,NOT_STARTED,
-PATCH,/api/incidents/{item_id},crud,update_item,CLASSIFY,,,NOT_STARTED,
-POST,/api/incidents/{item_id}/archive,crud,archive_item,CLASSIFY,,,NOT_STARTED,
-POST,/api/incidents/{item_id}/unarchive,crud,unarchive_item,CLASSIFY,,,NOT_STARTED,
+GET,/api/incidents/category-counts,category_counts,incidents_category_counts,team/resource,safety.category_counts,tests/test_safety.py,IMPLEMENTED_TESTED,Same scope as the list
+POST,/api/incidents/unarchive-batch/{batch_id},crud,unarchive_batch,team/resource,safety.unarchive_batch,tests/test_safety.py,IMPLEMENTED_TESTED,
+DELETE,/api/incidents/{item_id},crud,delete_item,team/resource,safety.delete,tests/test_safety.py,IMPLEMENTED_TESTED,"Own draft, or the delete right (baseline used edit)"
+GET,/api/incidents/{item_id},crud,get_item,team/resource,safety.get_record,tests/test_safety.py,IMPLEMENTED_TESTED,
+PATCH,/api/incidents/{item_id},crud,update_item,team/resource,safety.patch,tests/test_safety.py,IMPLEMENTED_TESTED,Earlier answers kept in history
+POST,/api/incidents/{item_id}/archive,crud,archive_item,team/resource,safety.archive,tests/test_safety.py,IMPLEMENTED_TESTED,
+POST,/api/incidents/{item_id}/unarchive,crud,unarchive_item,team/resource,safety.unarchive,tests/test_safety.py,IMPLEMENTED_TESTED,
 GET,/api/induction-columns/cleanup-suggestions,induction_columns,cleanup_suggestions,CLASSIFY,,,NOT_STARTED,
 POST,/api/induction-columns/clear-column-key,induction_columns,clear_column_key,CLASSIFY,,,NOT_STARTED,
 POST,/api/induction-columns/merge,induction_columns,merge_columns,CLASSIFY,,,NOT_STARTED,
@@ -472,16 +472,16 @@ GET,/api/inductions/types,induction_types,list_types,CLASSIFY,,,NOT_STARTED,
 POST,/api/inductions/types,induction_types,create_type,CLASSIFY,,,NOT_STARTED,
 DELETE,/api/inductions/types/{tid},induction_types,delete_type,CLASSIFY,,,NOT_STARTED,
 PATCH,/api/inductions/types/{tid},induction_types,rename_type,CLASSIFY,,,NOT_STARTED,
-GET,/api/inspections,crud,list_items,CLASSIFY,,,NOT_STARTED,
-POST,/api/inspections,crud,create_item,CLASSIFY,,,NOT_STARTED,
-POST,/api/inspections/archive,crud,bulk_archive,CLASSIFY,,,NOT_STARTED,
-GET,/api/inspections/category-counts,category_counts,inspections_category_counts,CLASSIFY,,,NOT_STARTED,
-POST,/api/inspections/unarchive-batch/{batch_id},crud,unarchive_batch,CLASSIFY,,,NOT_STARTED,
-DELETE,/api/inspections/{item_id},crud,delete_item,CLASSIFY,,,NOT_STARTED,
-GET,/api/inspections/{item_id},crud,get_item,CLASSIFY,,,NOT_STARTED,
-PATCH,/api/inspections/{item_id},crud,update_item,CLASSIFY,,,NOT_STARTED,
-POST,/api/inspections/{item_id}/archive,crud,archive_item,CLASSIFY,,,NOT_STARTED,
-POST,/api/inspections/{item_id}/unarchive,crud,unarchive_item,CLASSIFY,,,NOT_STARTED,
+GET,/api/inspections,crud,list_items,team/resource,safety.list_records,tests/test_safety.py,IMPLEMENTED_TESTED,Paginated; own-only without team_view on team-scoped registers
+POST,/api/inspections,crud,create_item,team/resource,safety.create,tests/test_safety.py,IMPLEMENTED_TESTED,"D-030 body is {fields:[{id,value}]} validated against the register's form schema"
+POST,/api/inspections/archive,crud,bulk_archive,team/resource,safety.bulk_archive,tests/test_safety.py,IMPLEMENTED_TESTED,Needs the archive right; dry run by default
+GET,/api/inspections/category-counts,category_counts,inspections_category_counts,team/resource,safety.category_counts,tests/test_safety.py,IMPLEMENTED_TESTED,Same scope as the list
+POST,/api/inspections/unarchive-batch/{batch_id},crud,unarchive_batch,team/resource,safety.unarchive_batch,tests/test_safety.py,IMPLEMENTED_TESTED,
+DELETE,/api/inspections/{item_id},crud,delete_item,team/resource,safety.delete,tests/test_safety.py,IMPLEMENTED_TESTED,"Own draft, or the delete right (baseline used edit)"
+GET,/api/inspections/{item_id},crud,get_item,team/resource,safety.get_record,tests/test_safety.py,IMPLEMENTED_TESTED,
+PATCH,/api/inspections/{item_id},crud,update_item,team/resource,safety.patch,tests/test_safety.py,IMPLEMENTED_TESTED,Earlier answers kept in history
+POST,/api/inspections/{item_id}/archive,crud,archive_item,team/resource,safety.archive,tests/test_safety.py,IMPLEMENTED_TESTED,
+POST,/api/inspections/{item_id}/unarchive,crud,unarchive_item,team/resource,safety.unarchive,tests/test_safety.py,IMPLEMENTED_TESTED,
 GET,/api/integrations,integrations,list_integrations,CLASSIFY,,,NOT_STARTED,
 POST,/api/integrations/admin/migrate-integration-secrets,integrations,migrate_integration_secrets,CLASSIFY,,,NOT_STARTED,
 DELETE,/api/integrations/microsoft365,integrations_m365,m365_disconnect,CLASSIFY,,,NOT_STARTED,
@@ -752,9 +752,9 @@ DELETE,/api/plant-maintenance/{uid},plant_maintenance,delete_row,CLASSIFY,,,NOT_
 GET,/api/plant-maintenance/{uid},plant_maintenance,get_row,CLASSIFY,,,NOT_STARTED,
 PATCH,/api/plant-maintenance/{uid},plant_maintenance,patch_row,CLASSIFY,,,NOT_STARTED,
 GET,/api/plant/{plant_id}/maintenance,plant_maintenance,maintenance_for_plant,CLASSIFY,,,NOT_STARTED,
-GET,/api/pre-starts,crud,list_items,CLASSIFY,,,NOT_STARTED,
-POST,/api/pre-starts,crud,create_item,CLASSIFY,,,NOT_STARTED,
-POST,/api/pre-starts/archive,crud,bulk_archive,CLASSIFY,,,NOT_STARTED,
+GET,/api/pre-starts,crud,list_items,team/resource,safety.list_records,tests/test_safety.py,IMPLEMENTED_TESTED,Paginated; own-only without team_view on team-scoped registers
+POST,/api/pre-starts,crud,create_item,team/resource,safety.create,tests/test_safety.py,IMPLEMENTED_TESTED,"D-030 body is {fields:[{id,value}]} validated against the register's form schema"
+POST,/api/pre-starts/archive,crud,bulk_archive,team/resource,safety.bulk_archive,tests/test_safety.py,IMPLEMENTED_TESTED,Needs the archive right; dry run by default
 GET,/api/pre-starts/bulk-import/fixture/prestart-sample.zip,bulk_import_prestarts,fixture_zip,CLASSIFY,,,NOT_STARTED,
 HEAD,/api/pre-starts/bulk-import/fixture/prestart-sample.zip,bulk_import_prestarts,fixture_zip,CLASSIFY,,,NOT_STARTED,
 POST,/api/pre-starts/bulk-import/init,bulk_import_prestarts,init_job,CLASSIFY,,,NOT_STARTED,
@@ -764,13 +764,13 @@ POST,/api/pre-starts/bulk-import/{job_id}/approve,bulk_import_prestarts,approve,
 GET,/api/pre-starts/bulk-import/{job_id}/report,bulk_import_prestarts,report,CLASSIFY,,,NOT_STARTED,
 POST,/api/pre-starts/bulk-import/{job_id}/start,bulk_import_prestarts,start_job,CLASSIFY,,,NOT_STARTED,
 GET,/api/pre-starts/bulk-import/{job_id}/status,bulk_import_prestarts,status,CLASSIFY,,,NOT_STARTED,
-GET,/api/pre-starts/category-counts,category_counts,pre_starts_category_counts,CLASSIFY,,,NOT_STARTED,
-POST,/api/pre-starts/unarchive-batch/{batch_id},crud,unarchive_batch,CLASSIFY,,,NOT_STARTED,
-DELETE,/api/pre-starts/{item_id},crud,delete_item,CLASSIFY,,,NOT_STARTED,
-GET,/api/pre-starts/{item_id},crud,get_item,CLASSIFY,,,NOT_STARTED,
-PATCH,/api/pre-starts/{item_id},crud,update_item,CLASSIFY,,,NOT_STARTED,
-POST,/api/pre-starts/{item_id}/archive,crud,archive_item,CLASSIFY,,,NOT_STARTED,
-POST,/api/pre-starts/{item_id}/unarchive,crud,unarchive_item,CLASSIFY,,,NOT_STARTED,
+GET,/api/pre-starts/category-counts,category_counts,pre_starts_category_counts,team/resource,safety.category_counts,tests/test_safety.py,IMPLEMENTED_TESTED,Same scope as the list
+POST,/api/pre-starts/unarchive-batch/{batch_id},crud,unarchive_batch,team/resource,safety.unarchive_batch,tests/test_safety.py,IMPLEMENTED_TESTED,
+DELETE,/api/pre-starts/{item_id},crud,delete_item,team/resource,safety.delete,tests/test_safety.py,IMPLEMENTED_TESTED,"Own draft, or the delete right (baseline used edit)"
+GET,/api/pre-starts/{item_id},crud,get_item,team/resource,safety.get_record,tests/test_safety.py,IMPLEMENTED_TESTED,
+PATCH,/api/pre-starts/{item_id},crud,update_item,team/resource,safety.patch,tests/test_safety.py,IMPLEMENTED_TESTED,Earlier answers kept in history
+POST,/api/pre-starts/{item_id}/archive,crud,archive_item,team/resource,safety.archive,tests/test_safety.py,IMPLEMENTED_TESTED,
+POST,/api/pre-starts/{item_id}/unarchive,crud,unarchive_item,team/resource,safety.unarchive,tests/test_safety.py,IMPLEMENTED_TESTED,
 GET,/api/preview/{source}/pdf,preview_sources,preview_stream_pdf,CLASSIFY,,,NOT_STARTED,
 POST,/api/preview/{source}/token,preview_sources,preview_mint_token,CLASSIFY,,,NOT_STARTED,
 GET,/api/program-schematic/overlays,program_schematic_overlays,list_overlays,CLASSIFY,,,NOT_STARTED,
@@ -796,16 +796,16 @@ PATCH,/api/renewals/doc-types/{type_id},renewals,update_doc_type,CLASSIFY,,,NOT_
 DELETE,/api/renewals/{rid},renewals,delete_renewal,CLASSIFY,,,NOT_STARTED,
 PATCH,/api/renewals/{rid},renewals,update_renewal,CLASSIFY,,,NOT_STARTED,
 POST,/api/renewals/{rid}/revoke,renewals,revoke_renewal,CLASSIFY,,,NOT_STARTED,
-GET,/api/risk-assessments,crud,list_items,CLASSIFY,,,NOT_STARTED,
-POST,/api/risk-assessments,crud,create_item,CLASSIFY,,,NOT_STARTED,
-POST,/api/risk-assessments/archive,crud,bulk_archive,CLASSIFY,,,NOT_STARTED,
-GET,/api/risk-assessments/category-counts,category_counts,risk_assessments_category_counts,CLASSIFY,,,NOT_STARTED,
-POST,/api/risk-assessments/unarchive-batch/{batch_id},crud,unarchive_batch,CLASSIFY,,,NOT_STARTED,
-DELETE,/api/risk-assessments/{item_id},crud,delete_item,CLASSIFY,,,NOT_STARTED,
-GET,/api/risk-assessments/{item_id},crud,get_item,CLASSIFY,,,NOT_STARTED,
-PATCH,/api/risk-assessments/{item_id},crud,update_item,CLASSIFY,,,NOT_STARTED,
-POST,/api/risk-assessments/{item_id}/archive,crud,archive_item,CLASSIFY,,,NOT_STARTED,
-POST,/api/risk-assessments/{item_id}/unarchive,crud,unarchive_item,CLASSIFY,,,NOT_STARTED,
+GET,/api/risk-assessments,crud,list_items,team/resource,safety.list_records,tests/test_safety.py,IMPLEMENTED_TESTED,Paginated; own-only without team_view on team-scoped registers
+POST,/api/risk-assessments,crud,create_item,team/resource,safety.create,tests/test_safety.py,IMPLEMENTED_TESTED,"D-030 body is {fields:[{id,value}]} validated against the register's form schema"
+POST,/api/risk-assessments/archive,crud,bulk_archive,team/resource,safety.bulk_archive,tests/test_safety.py,IMPLEMENTED_TESTED,Needs the archive right; dry run by default
+GET,/api/risk-assessments/category-counts,category_counts,risk_assessments_category_counts,team/resource,safety.category_counts,tests/test_safety.py,IMPLEMENTED_TESTED,Same scope as the list
+POST,/api/risk-assessments/unarchive-batch/{batch_id},crud,unarchive_batch,team/resource,safety.unarchive_batch,tests/test_safety.py,IMPLEMENTED_TESTED,
+DELETE,/api/risk-assessments/{item_id},crud,delete_item,team/resource,safety.delete,tests/test_safety.py,IMPLEMENTED_TESTED,"Own draft, or the delete right (baseline used edit)"
+GET,/api/risk-assessments/{item_id},crud,get_item,team/resource,safety.get_record,tests/test_safety.py,IMPLEMENTED_TESTED,
+PATCH,/api/risk-assessments/{item_id},crud,update_item,team/resource,safety.patch,tests/test_safety.py,IMPLEMENTED_TESTED,Earlier answers kept in history
+POST,/api/risk-assessments/{item_id}/archive,crud,archive_item,team/resource,safety.archive,tests/test_safety.py,IMPLEMENTED_TESTED,
+POST,/api/risk-assessments/{item_id}/unarchive,crud,unarchive_item,team/resource,safety.unarchive,tests/test_safety.py,IMPLEMENTED_TESTED,
 POST,/api/scan/quick-action,asset_service,scan_quick_action,CLASSIFY,,,NOT_STARTED,
 GET,/api/scan/site/{scan_token},sites_qr,resolve_site_scan,CLASSIFY,,,NOT_STARTED,
 POST,/api/scan/site/{scan_token}/sign-on,sites_qr,sign_on_to_site,CLASSIFY,,,NOT_STARTED,
@@ -829,16 +829,16 @@ PUT,/api/settings/nav-layout,settings_nav,put_nav_layout,CLASSIFY,,,NOT_STARTED,
 GET,/api/settings/session-timeout/me,session_timeout,session_timeout_me,CLASSIFY,,,NOT_STARTED,
 PATCH,/api/settings/session-timeout/me,session_timeout,patch_session_timeout_me,CLASSIFY,,,NOT_STARTED,
 GET,/api/sign-on/{site_id},sites_qr_v132dk,resolve_persistent_signon,CLASSIFY,,,NOT_STARTED,
-GET,/api/site-diary,crud,list_items,CLASSIFY,,,NOT_STARTED,
-POST,/api/site-diary,crud,create_item,CLASSIFY,,,NOT_STARTED,
-POST,/api/site-diary/archive,crud,bulk_archive,CLASSIFY,,,NOT_STARTED,
-GET,/api/site-diary/category-counts,category_counts,site_diary_category_counts,CLASSIFY,,,NOT_STARTED,
-POST,/api/site-diary/unarchive-batch/{batch_id},crud,unarchive_batch,CLASSIFY,,,NOT_STARTED,
-DELETE,/api/site-diary/{item_id},crud,delete_item,CLASSIFY,,,NOT_STARTED,
-GET,/api/site-diary/{item_id},crud,get_item,CLASSIFY,,,NOT_STARTED,
-PATCH,/api/site-diary/{item_id},crud,update_item,CLASSIFY,,,NOT_STARTED,
-POST,/api/site-diary/{item_id}/archive,crud,archive_item,CLASSIFY,,,NOT_STARTED,
-POST,/api/site-diary/{item_id}/unarchive,crud,unarchive_item,CLASSIFY,,,NOT_STARTED,
+GET,/api/site-diary,crud,list_items,team/resource,safety.list_records,tests/test_safety.py,IMPLEMENTED_TESTED,Paginated; own-only without team_view on team-scoped registers
+POST,/api/site-diary,crud,create_item,team/resource,safety.create,tests/test_safety.py,IMPLEMENTED_TESTED,"D-030 body is {fields:[{id,value}]} validated against the register's form schema"
+POST,/api/site-diary/archive,crud,bulk_archive,team/resource,safety.bulk_archive,tests/test_safety.py,IMPLEMENTED_TESTED,Needs the archive right; dry run by default
+GET,/api/site-diary/category-counts,category_counts,site_diary_category_counts,team/resource,safety.category_counts,tests/test_safety.py,IMPLEMENTED_TESTED,Same scope as the list
+POST,/api/site-diary/unarchive-batch/{batch_id},crud,unarchive_batch,team/resource,safety.unarchive_batch,tests/test_safety.py,IMPLEMENTED_TESTED,
+DELETE,/api/site-diary/{item_id},crud,delete_item,team/resource,safety.delete,tests/test_safety.py,IMPLEMENTED_TESTED,"Own draft, or the delete right (baseline used edit)"
+GET,/api/site-diary/{item_id},crud,get_item,team/resource,safety.get_record,tests/test_safety.py,IMPLEMENTED_TESTED,
+PATCH,/api/site-diary/{item_id},crud,update_item,team/resource,safety.patch,tests/test_safety.py,IMPLEMENTED_TESTED,Earlier answers kept in history
+POST,/api/site-diary/{item_id}/archive,crud,archive_item,team/resource,safety.archive,tests/test_safety.py,IMPLEMENTED_TESTED,
+POST,/api/site-diary/{item_id}/unarchive,crud,unarchive_item,team/resource,safety.unarchive,tests/test_safety.py,IMPLEMENTED_TESTED,
 GET,/api/sites,sites_qr,list_sites,CLASSIFY,,,NOT_STARTED,
 POST,/api/sites,sites_signon_v127,create_manual_site,CLASSIFY,,,NOT_STARTED,
 GET,/api/sites/admin,sites_admin,list_sites,CLASSIFY,,,NOT_STARTED,
@@ -876,26 +876,26 @@ GET,/api/suppliers/{supplier_id}/notes,supplier_panels,list_notes,CLASSIFY,,,NOT
 POST,/api/suppliers/{supplier_id}/notes,supplier_panels,create_note,CLASSIFY,,,NOT_STARTED,
 GET,/api/suppliers/{supplier_id}/tasks,supplier_panels,list_tasks,CLASSIFY,,,NOT_STARTED,
 POST,/api/suppliers/{supplier_id}/tasks,supplier_panels,create_task,CLASSIFY,,,NOT_STARTED,
-GET,/api/swms,crud,list_items,CLASSIFY,,,NOT_STARTED,
-POST,/api/swms,crud,create_item,CLASSIFY,,,NOT_STARTED,
-POST,/api/swms/archive,crud,bulk_archive,CLASSIFY,,,NOT_STARTED,
-GET,/api/swms/assignments,swms_extras,list_assignments,CLASSIFY,,,NOT_STARTED,
+GET,/api/swms,crud,list_items,team/resource,safety.list_records,tests/test_safety.py,IMPLEMENTED_TESTED,Paginated; own-only without team_view on team-scoped registers
+POST,/api/swms,crud,create_item,team/resource,safety.create,tests/test_safety.py,IMPLEMENTED_TESTED,"D-030 body is {fields:[{id,value}]} validated against the register's form schema"
+POST,/api/swms/archive,crud,bulk_archive,team/resource,safety.bulk_archive,tests/test_safety.py,IMPLEMENTED_TESTED,Needs the archive right; dry run by default
+GET,/api/swms/assignments,swms_extras,list_assignments,team/resource,safety.get_assignments,tests/test_safety.py,HISTORICAL_COMPATIBILITY,Replaced by GET /api/swms/{id}/assignments
 PUT,/api/swms/assignments/bulk,swms_extras,put_assignment_bulk,CLASSIFY,,,NOT_STARTED,
-PUT,/api/swms/assignments/{swms_id},swms_extras,put_assignment,CLASSIFY,,,NOT_STARTED,
+PUT,/api/swms/assignments/{swms_id},swms_extras,put_assignment,team/resource,safety.put_assignments,tests/test_safety.py,HISTORICAL_COMPATIBILITY,Replaced by PUT /api/swms/{id}/assignments
 POST,/api/swms/bulk-delete,swms_phase45,bulk_delete_swms,CLASSIFY,,,NOT_STARTED,
 POST,/api/swms/from-paste,swms_phase45,swms_from_paste,CLASSIFY,,,NOT_STARTED,
 POST,/api/swms/from-scan,swms_phase45,swms_from_scan,CLASSIFY,,,NOT_STARTED,
 POST,/api/swms/import-docx,swms_extras,import_swms_docx,CLASSIFY,,,NOT_STARTED,
 GET,/api/swms/recycle-bin,swms_phase45,list_recycle_bin,CLASSIFY,,,NOT_STARTED,
-POST,/api/swms/unarchive-batch/{batch_id},crud,unarchive_batch,CLASSIFY,,,NOT_STARTED,
-DELETE,/api/swms/{item_id},crud,delete_item,CLASSIFY,,,NOT_STARTED,
-GET,/api/swms/{item_id},crud,get_item,CLASSIFY,,,NOT_STARTED,
-PATCH,/api/swms/{item_id},crud,update_item,CLASSIFY,,,NOT_STARTED,
-POST,/api/swms/{item_id}/archive,crud,archive_item,CLASSIFY,,,NOT_STARTED,
-POST,/api/swms/{item_id}/review,crud,review_swms,CLASSIFY,,,NOT_STARTED,
-POST,/api/swms/{item_id}/unarchive,crud,unarchive_item,CLASSIFY,,,NOT_STARTED,
+POST,/api/swms/unarchive-batch/{batch_id},crud,unarchive_batch,team/resource,safety.unarchive_batch,tests/test_safety.py,IMPLEMENTED_TESTED,
+DELETE,/api/swms/{item_id},crud,delete_item,team/resource,safety.delete,tests/test_safety.py,IMPLEMENTED_TESTED,"Own draft, or the delete right (baseline used edit)"
+GET,/api/swms/{item_id},crud,get_item,team/resource,safety.get_record,tests/test_safety.py,IMPLEMENTED_TESTED,
+PATCH,/api/swms/{item_id},crud,update_item,team/resource,safety.patch,tests/test_safety.py,IMPLEMENTED_TESTED,Earlier answers kept in history
+POST,/api/swms/{item_id}/archive,crud,archive_item,team/resource,safety.archive,tests/test_safety.py,IMPLEMENTED_TESTED,
+POST,/api/swms/{item_id}/review,crud,review_swms,team/resource,safety.review,tests/test_safety.py,IMPLEMENTED_TESTED,"D-029 needs approve (admin, HSEQ lead); same route on every review register"
+POST,/api/swms/{item_id}/unarchive,crud,unarchive_item,team/resource,safety.unarchive,tests/test_safety.py,IMPLEMENTED_TESTED,
 GET,/api/swms/{swms_id}/diff/{previous_id},swms_extras,swms_diff,CLASSIFY,,,NOT_STARTED,
-GET,/api/swms/{swms_id}/history,swms_extras,swms_history,CLASSIFY,,,NOT_STARTED,
+GET,/api/swms/{swms_id}/history,swms_extras,swms_history,team/resource,safety.versions,tests/test_safety.py,IMPLEMENTED_TESTED,Served as GET /api/swms/{id}/versions; /history is the event log
 POST,/api/swms/{swms_id}/restore,swms_phase45,restore_swms,CLASSIFY,,,NOT_STARTED,
 DELETE,/api/tile-credentials/{tile_id},tile_credentials,delete_credentials,CLASSIFY,,,NOT_STARTED,
 GET,/api/tile-credentials/{tile_id},tile_credentials,get_credentials,CLASSIFY,,,NOT_STARTED,
@@ -1010,6 +1010,22 @@ POST,/mobile/sites/{site_id}/visitor-sign-in,mobile_sites,visitor_sign_in,RETIRE
 POST,/mobile/sites/{site_id}/visitor-sign-out,mobile_sites,visitor_sign_out,RETIRED,,,HISTORICAL,Removed mobile_sites router; functionality uses current site routes
 GET,/mobile/sites/{site_id}/current-occupancy,mobile_sites,current_occupancy,RETIRED,,,HISTORICAL,Removed mobile_sites router; functionality uses current site routes
 POST,/mobile/gps/heartbeat,mobile_sites,gps_heartbeat,RETIRED,,,HISTORICAL,Removed mobile_sites router; functionality uses current site routes
+GET,/api/{register}/schema,(new),schema,authenticated-own,safety.schema,tests/test_safety.py,IMPLEMENTED_TESTED,"Built-in form, statuses and scope for each of the 8 registers"
+POST,/api/{register}/{id}/submit,(new),submit,team/resource,safety.submit,tests/test_safety.py,IMPLEMENTED_TESTED,Review registers
+POST,/api/{register}/{id}/review,(new),review,team/resource,safety.review,tests/test_safety.py,IMPLEMENTED_TESTED,Review registers other than SWMS
+POST,/api/{register}/{id}/status,(new),set_status,team/resource,safety.set_status,tests/test_safety.py,IMPLEMENTED_TESTED,"Hazards and incidents: open, in progress, closed with note"
+GET,/api/{register}/{id}/history,(new),history,team/resource,safety.history,tests/test_safety.py,IMPLEMENTED_TESTED,Event log
+GET,/api/{register}/{id}/pdf,(new),pdf,team/resource,safety.pdf,tests/test_safety.py,IMPLEMENTED_TESTED,Branded PDF from the saved record
+POST,/api/{register}/{id}/files,(new),upload_file,team/resource,safety.upload_file,tests/test_safety.py,IMPLEMENTED_TESTED,
+GET,/api/{register}/{id}/files/{file_id},(new),download_file,team/resource,safety.download_file,tests/test_safety.py,IMPLEMENTED_TESTED,Only through a record the caller may see
+DELETE,/api/{register}/{id}/files/{file_id},(new),remove_file,team/resource,safety.remove_file,tests/test_safety.py,IMPLEMENTED_TESTED,
+GET,/api/ssra,(new),ssra register,team/resource,safety (ssra),tests/test_safety.py,IMPLEMENTED_TESTED,SSRA has its own register with the full route set
+POST,/api/swms/{id}/new-version,(new),new_version,team/resource,safety.new_version,tests/test_safety.py,IMPLEMENTED_TESTED,D-031
+GET,/api/swms/{id}/versions,(new),versions,team/resource,safety.versions,tests/test_safety.py,IMPLEMENTED_TESTED,
+GET,/api/swms/{id}/assignments,(new),get_assignments,team/resource,safety.get_assignments,tests/test_safety.py,IMPLEMENTED_TESTED,
+PUT,/api/swms/{id}/assignments,(new),put_assignments,team/resource,safety.put_assignments,tests/test_safety.py,IMPLEMENTED_TESTED,"Roles, people, companies"
+POST,/api/swms/{id}/acknowledge,(new),acknowledge,authenticated-own,safety.acknowledge,tests/test_safety.py,IMPLEMENTED_TESTED,D-031 per version
+GET,/api/swms/{id}/acknowledgements,(new),acknowledgements,team/resource,safety.acknowledgements,tests/test_safety.py,IMPLEMENTED_TESTED,
 GET,/api/forms/templates/{template_id}/assignments,(new),get_assignments,team/resource,forms.get_assignments,tests/test_forms_api.py; tests/test_forms_engine.py,IMPLEMENTED_TESTED,D-027
 PUT,/api/forms/templates/{template_id}/assignments,(new),put_assignments,team/resource,forms.put_assignments,tests/test_forms_api.py; tests/test_forms_engine.py,IMPLEMENTED_TESTED,"D-027 roles, people, companies; targets checked against the organisation"
 GET,/api/forms/assignments/effective,(new),effective_assignments,team/resource,forms.effective_assignments,tests/test_forms_api.py; tests/test_forms_engine.py,IMPLEMENTED_TESTED,Explains why a person sees each form

@@ -106,6 +106,19 @@ function Display({ field, value, files = [], onOpenFile }: Props & { field: Fiel
     case "site_picker":
     case "asset_qr":
       return <span>{(value as Ref).label}</span>;
+    case "table": {
+      const columns = (field.config?.table_columns as Ref[]) ?? [];
+      const rows = value as Record<string, string>[];
+      if (rows.length === 0) return empty;
+      return (
+        <div className="table-wrap">
+          <table>
+            <thead><tr>{columns.map((c) => <th key={c.id} scope="col">{c.label}</th>)}</tr></thead>
+            <tbody>{rows.map((row, i) => <tr key={i}>{columns.map((c) => <td key={c.id} style={{ whiteSpace: "pre-wrap" }}>{row[c.id] || "—"}</td>)}</tr>)}</tbody>
+          </table>
+        </div>
+      );
+    }
     case "corrective_actions":
       return (
         <ul style={{ margin: 0, paddingLeft: 18 }}>
@@ -252,6 +265,8 @@ function Input(props: Props & { field: FieldDef; value: unknown }) {
       );
     case "corrective_actions":
       return <ActionsInput value={(value as Action[]) ?? []} set={set} />;
+    case "table":
+      return <TableInput field={field} value={(value as Record<string, string>[]) ?? []} set={set} />;
     default:
       return <Notice tone="warn">This field type is not supported here.</Notice>;
   }
@@ -534,6 +549,34 @@ function ActionsInput({ value, set }: { value: Action[]; set: (v: unknown) => vo
       ))}
       <div>
         <button type="button" className="btn" onClick={() => set([...value, { description: "", responsible: "", status: "open" }])}>Add an action</button>
+      </div>
+    </div>
+  );
+}
+
+function TableInput({ field, value, set }: { field: FieldDef; value: Record<string, string>[]; set: (v: unknown) => void }) {
+  const columns = (field.config?.table_columns as Ref[]) ?? [];
+  const update = (index: number, column: string, text: string) => set(value.map((row, i) => (i === index ? { ...row, [column]: text } : row)));
+  return (
+    <div className="stack" style={{ gap: 8 }}>
+      {value.map((row, index) => (
+        <div key={index} className="fields" style={{ alignItems: "end", padding: 10, border: "1px solid var(--line)", borderRadius: 6 }}>
+          {columns.map((c) => (
+            <label className="field" key={c.id}>
+              {c.label}
+              <input value={row[c.id] ?? ""} onChange={(e) => update(index, c.id, e.target.value)} />
+            </label>
+          ))}
+          <button type="button" className="btn" aria-label={`Remove row ${index + 1} from ${field.label}`}
+            onClick={() => { const next = value.filter((_, i) => i !== index); set(next.length ? next : undefined); }}>
+            Remove row
+          </button>
+        </div>
+      ))}
+      <div>
+        <button type="button" className="btn" style={{ minHeight: 44 }} onClick={() => set([...value, Object.fromEntries(columns.map((c) => [c.id, ""]))])}>
+          Add a row
+        </button>
       </div>
     </div>
   );

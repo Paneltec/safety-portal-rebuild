@@ -15,6 +15,11 @@ IDs are opaque strings. Every tenant-owned table carries `org_id`, and every que
 | `form_submissions` | Answers, status, revision, author, launch provenance | Unique `(org_id, submitted_by, client_submission_id)` for idempotent retries; points at the version it was filled in on |
 | `form_submission_files` | Photos, attachments and signatures per field | Bytes in `stored_files`; reachable only through the submission |
 | `form_assignments` | Who may fill in a form: role, person or company rules | Unique `(template_id, target_kind, target_id)`; no rules means open to all form users |
+| `safety_records` | One entry in any safety register: kind, title, status, business date, the schema it was captured on, answers, version links | Unique `(org_id, source_submission_id)` so a form projects once; soft delete; archive batch id |
+| `safety_record_files` | Photos, attachments and signatures of a record | Reachable only through the record |
+| `safety_record_events` | Append-only history: created, edited (with earlier answers), submitted, reviewed, status changes, archive | Never rewritten |
+| `safety_assignments` | Who a SWMS is assigned to | Unique `(record_id, target_kind, target_id)` |
+| `safety_acknowledgements` | A person's sign-off on one SWMS version | Unique `(record_id, user_id)` |
 | `stored_files` | Metadata for uploaded bytes: hash, size, MIME type, original name, purpose | Bytes on the files volume by organisation and SHA-256; identity separate from name |
 | `companies` | Divisions inside an organisation (for example Paneltec, Viatec) | Unique `(org_id, code)` |
 | `roles` | Role catalogue: built-in (read-only) and custom | Unique `(org_id, role_id)`; `permissions` is `{resource: {action: bool}}`; soft delete |

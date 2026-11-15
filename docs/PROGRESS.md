@@ -11,12 +11,13 @@ Updated at the end of each finished part. The ledgers in `docs/ledger/` hold the
 | Stage 2a | Organisation settings with validated addresses, contact details, logo upload/replace/remove, companies, file storage with hash/size/type and a clear "missing" state | `backend/tests/test_org_setup_files.py`, `e2e/walkthrough.py` |
 | Stage 2b | Document library: nested folders, multi-file upload with type allowlist, authorised download and inline preview, rename, move, expiry, tags, archive/restore, delete, revision history, missing-content repair, counts, search | `backend/tests/test_documents.py`, `e2e/walkthrough.py` |
 | Stage 2c | Form engine: 20 field families, template editor with preview, published versions, draft/submit with photos, attachments and drawn signatures, idempotent retry, read-only record view, import/export, branded PDF, assignments by role/person/company with an effective preview | `backend/tests/test_forms_engine.py`, `test_forms_api.py`, `e2e/walkthrough.py` |
+| Stage 3 | Safety registers: SWMS (review, assignments, acknowledgements, versions), pre-starts, site diary, incidents, hazards, inspections, risk assessments, SSRA; review and tracking workflows, history, photos and signatures, PDFs, bulk archive; forms project into their register once | `backend/tests/test_safety.py`, `e2e/walkthrough.py` |
 
 ## Next, in order
 
-1. **Stage 3 Safety capture**, built on the form engine: SWMS (versions, review, assignments, acknowledgements), pre-starts, site diary, incidents and hazards, inspections, risk assessments and SSRA, each as a register with review states and PDFs. Form submissions project into the matching register exactly once.
-1a. Carried forward from stage 2: positions and asset-type assignment rules (need workers and fleet), certification gate (needs certifications), authorised corrections after submit, reference catalogues (REF-01).
-2. Stage 3 onwards as listed in `STAGED_PLAN.md`.
+1. **Stage 4**: workers register (separate from users, Simpro link fields), HR privacy, certifications and kinds, inductions matrix, suppliers and contractors, renewal links, sites with QR and visitors, daily jobs. Then wire the site, job and worker pickers and the certification gate into forms and registers.
+1a. Carried forward: bulk pre-start import (IMP-01), reference catalogues (REF-01), AI drafting, positions and asset-type assignment rules, authorised corrections after submit.
+2. Stage 5 onwards as listed in `STAGED_PLAN.md`.
 
 ## Not verified
 

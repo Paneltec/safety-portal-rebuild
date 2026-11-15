@@ -1,6 +1,21 @@
 {
  "components": {
   "schemas": {
+   "AcknowledgeIn": {
+    "properties": {
+     "signed_name": {
+      "maxLength": 200,
+      "minLength": 1,
+      "title": "Signed Name",
+      "type": "string"
+     }
+    },
+    "required": [
+     "signed_name"
+    ],
+    "title": "AcknowledgeIn",
+    "type": "object"
+   },
    "ApplyPresetIn": {
     "properties": {
      "preset_id": {
@@ -46,6 +61,82 @@
     "title": "AssignmentsIn",
     "type": "object"
    },
+   "Body_hazard_upload_file_api_hazards__record_id__files_post": {
+    "properties": {
+     "field_id": {
+      "title": "Field Id",
+      "type": "string"
+     },
+     "file": {
+      "contentMediaType": "application/octet-stream",
+      "title": "File",
+      "type": "string"
+     }
+    },
+    "required": [
+     "field_id",
+     "file"
+    ],
+    "title": "Body_hazard_upload_file_api_hazards__record_id__files_post",
+    "type": "object"
+   },
+   "Body_incident_upload_file_api_incidents__record_id__files_post": {
+    "properties": {
+     "field_id": {
+      "title": "Field Id",
+      "type": "string"
+     },
+     "file": {
+      "contentMediaType": "application/octet-stream",
+      "title": "File",
+      "type": "string"
+     }
+    },
+    "required": [
+     "field_id",
+     "file"
+    ],
+    "title": "Body_incident_upload_file_api_incidents__record_id__files_post",
+    "type": "object"
+   },
+   "Body_inspection_upload_file_api_inspections__record_id__files_post": {
+    "properties": {
+     "field_id": {
+      "title": "Field Id",
+      "type": "string"
+     },
+     "file": {
+      "contentMediaType": "application/octet-stream",
+      "title": "File",
+      "type": "string"
+     }
+    },
+    "required": [
+     "field_id",
+     "file"
+    ],
+    "title": "Body_inspection_upload_file_api_inspections__record_id__files_post",
+    "type": "object"
+   },
+   "Body_pre_start_upload_file_api_pre_starts__record_id__files_post": {
+    "properties": {
+     "field_id": {
+      "title": "Field Id",
+      "type": "string"
+     },
+     "file": {
+      "contentMediaType": "application/octet-stream",
+      "title": "File",
+      "type": "string"
+     }
+    },
+    "required": [
+     "field_id",
+     "file"
+    ],
+    "title": "Body_pre_start_upload_file_api_pre_starts__record_id__files_post",
+    "type": "object"
+   },
    "Body_replace_binary_api_document_library_files__file_id__replace_binary_post": {
     "properties": {
      "file": {
@@ -58,6 +149,82 @@
      "file"
     ],
     "title": "Body_replace_binary_api_document_library_files__file_id__replace_binary_post",
+    "type": "object"
+   },
+   "Body_risk_assessment_upload_file_api_risk_assessments__record_id__files_post": {
+    "properties": {
+     "field_id": {
+      "title": "Field Id",
+      "type": "string"
+     },
+     "file": {
+      "contentMediaType": "application/octet-stream",
+      "title": "File",
+      "type": "string"
+     }
+    },
+    "required": [
+     "field_id",
+     "file"
+    ],
+    "title": "Body_risk_assessment_upload_file_api_risk_assessments__record_id__files_post",
+    "type": "object"
+   },
+   "Body_site_diary_upload_file_api_site_diary__record_id__files_post": {
+    "properties": {
+     "field_id": {
+      "title": "Field Id",
+      "type": "string"
+     },
+     "file": {
+      "contentMediaType": "application/octet-stream",
+      "title": "File",
+      "type": "string"
+     }
+    },
+    "required": [
+     "field_id",
+     "file"
+    ],
+    "title": "Body_site_diary_upload_file_api_site_diary__record_id__files_post",
+    "type": "object"
+   },
+   "Body_ssra_upload_file_api_ssra__record_id__files_post": {
+    "properties": {
+     "field_id": {
+      "title": "Field Id",
+      "type": "string"
+     },
+     "file": {
+      "contentMediaType": "application/octet-stream",
+      "title": "File",
+      "type": "string"
+     }
+    },
+    "required": [
+     "field_id",
+     "file"
+    ],
+    "title": "Body_ssra_upload_file_api_ssra__record_id__files_post",
+    "type": "object"
+   },
+   "Body_swms_upload_file_api_swms__record_id__files_post": {
+    "properties": {
+     "field_id": {
+      "title": "Field Id",
+      "type": "string"
+     },
+     "file": {
+      "contentMediaType": "application/octet-stream",
+      "title": "File",
+      "type": "string"
+     }
+    },
+    "required": [
+     "field_id",
+     "file"
+    ],
+    "title": "Body_swms_upload_file_api_swms__record_id__files_post",
     "type": "object"
    },
    "Body_upload_attachment_api_forms_submissions__submission_id__attachments_post": {
@@ -146,6 +313,55 @@
      "file"
     ],
     "title": "Body_upload_submission_file_api_forms_submissions__submission_id__files_post",
+    "type": "object"
+   },
+   "BulkArchiveIn": {
+    "properties": {
+     "before_date": {
+      "anyOf": [
+       {
+        "format": "date",
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Before Date"
+     },
+     "dry_run": {
+      "default": true,
+      "title": "Dry Run",
+      "type": "boolean"
+     },
+     "ids": {
+      "anyOf": [
+       {
+        "items": {
+         "type": "string"
+        },
+        "maxItems": 1000,
+        "type": "array"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Ids"
+     },
+     "status": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Status"
+     }
+    },
+    "title": "BulkArchiveIn",
     "type": "object"
    },
    "BulkAssignRoleIn": {
@@ -970,6 +1186,69 @@
     "title": "PresetIn",
     "type": "object"
    },
+   "RecordIn": {
+    "properties": {
+     "fields": {
+      "items": {
+       "$ref": "#/components/schemas/FieldValue"
+      },
+      "title": "Fields",
+      "type": "array"
+     },
+     "status": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Status"
+     },
+     "workspace_id": {
+      "anyOf": [
+       {
+        "maxLength": 36,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Workspace Id"
+     }
+    },
+    "title": "RecordIn",
+    "type": "object"
+   },
+   "RecordPatch": {
+    "properties": {
+     "expected_revision": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Expected Revision"
+     },
+     "fields": {
+      "items": {
+       "$ref": "#/components/schemas/FieldValue"
+      },
+      "title": "Fields",
+      "type": "array"
+     }
+    },
+    "required": [
+     "fields"
+    ],
+    "title": "RecordPatch",
+    "type": "object"
+   },
    "RedeemIn": {
     "properties": {
      "confirm_password": {
@@ -992,6 +1271,31 @@
      "confirm_password"
     ],
     "title": "RedeemIn",
+    "type": "object"
+   },
+   "ReviewIn": {
+    "properties": {
+     "action": {
+      "title": "Action",
+      "type": "string"
+     },
+     "note": {
+      "anyOf": [
+       {
+        "maxLength": 2000,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Note"
+     }
+    },
+    "required": [
+     "action"
+    ],
+    "title": "ReviewIn",
     "type": "object"
    },
    "RoleCreate": {
@@ -1180,6 +1484,31 @@
      "confirm_password"
     ],
     "title": "SetupIn",
+    "type": "object"
+   },
+   "StatusIn": {
+    "properties": {
+     "note": {
+      "anyOf": [
+       {
+        "maxLength": 2000,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Note"
+     },
+     "status": {
+      "title": "Status",
+      "type": "string"
+     }
+    },
+    "required": [
+     "status"
+    ],
+    "title": "StatusIn",
     "type": "object"
    },
    "SubmissionIn": {
@@ -4957,6 +5286,893 @@
     ]
    }
   },
+  "/api/hazards": {
+   "get": {
+    "operationId": "hazard_list_api_hazards_get",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "status",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Status"
+      }
+     },
+     {
+      "in": "query",
+      "name": "q",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "maxLength": 100,
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Q"
+      }
+     },
+     {
+      "in": "query",
+      "name": "category",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "maxLength": 60,
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Category"
+      }
+     },
+     {
+      "in": "query",
+      "name": "date_from",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "format": "date",
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Date From"
+      }
+     },
+     {
+      "in": "query",
+      "name": "date_to",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "format": "date",
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Date To"
+      }
+     },
+     {
+      "in": "query",
+      "name": "include_archived",
+      "required": false,
+      "schema": {
+       "default": false,
+       "title": "Include Archived",
+       "type": "boolean"
+      }
+     },
+     {
+      "in": "query",
+      "name": "include_superseded",
+      "required": false,
+      "schema": {
+       "default": false,
+       "title": "Include Superseded",
+       "type": "boolean"
+      }
+     },
+     {
+      "in": "query",
+      "name": "limit",
+      "required": false,
+      "schema": {
+       "default": 50,
+       "maximum": 200,
+       "minimum": 1,
+       "title": "Limit",
+       "type": "integer"
+      }
+     },
+     {
+      "in": "query",
+      "name": "offset",
+      "required": false,
+      "schema": {
+       "default": 0,
+       "minimum": 0,
+       "title": "Offset",
+       "type": "integer"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Hazard List Api Hazards Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Hazard List",
+    "tags": [
+     "Hazards"
+    ]
+   },
+   "post": {
+    "operationId": "hazard_create_api_hazards_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/RecordIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Hazard Create Api Hazards Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Hazard Create",
+    "tags": [
+     "Hazards"
+    ]
+   }
+  },
+  "/api/hazards/archive": {
+   "post": {
+    "description": "Archive many records by explicit ids or by criteria. Runs as a preview unless dry_run is false.",
+    "operationId": "hazard_bulk_archive_api_hazards_archive_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/BulkArchiveIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Hazard Bulk Archive Api Hazards Archive Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Hazard Bulk Archive",
+    "tags": [
+     "Hazards"
+    ]
+   }
+  },
+  "/api/hazards/category-counts": {
+   "get": {
+    "description": "Counts by category and status, using the same scope as the list.",
+    "operationId": "hazard_category_counts_api_hazards_category_counts_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Hazard Category Counts Api Hazards Category Counts Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Hazard Category Counts",
+    "tags": [
+     "Hazards"
+    ]
+   }
+  },
+  "/api/hazards/schema": {
+   "get": {
+    "operationId": "hazard_schema_api_hazards_schema_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Hazard Schema Api Hazards Schema Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Hazard Schema",
+    "tags": [
+     "Hazards"
+    ]
+   }
+  },
+  "/api/hazards/unarchive-batch/{batch_id}": {
+   "post": {
+    "operationId": "hazard_unarchive_batch_api_hazards_unarchive_batch__batch_id__post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "batch_id",
+      "required": true,
+      "schema": {
+       "title": "Batch Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Hazard Unarchive Batch Api Hazards Unarchive Batch  Batch Id  Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Hazard Unarchive Batch",
+    "tags": [
+     "Hazards"
+    ]
+   }
+  },
+  "/api/hazards/{record_id}": {
+   "delete": {
+    "description": "Remove from the register. An author may discard their own draft; anything else needs the delete right.",
+    "operationId": "hazard_delete_api_hazards__record_id__delete",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": {
+          "type": "boolean"
+         },
+         "title": "Response Hazard Delete Api Hazards  Record Id  Delete",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Hazard Delete",
+    "tags": [
+     "Hazards"
+    ]
+   },
+   "get": {
+    "operationId": "hazard_get_api_hazards__record_id__get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Hazard Get Api Hazards  Record Id  Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Hazard Get",
+    "tags": [
+     "Hazards"
+    ]
+   },
+   "patch": {
+    "operationId": "hazard_patch_api_hazards__record_id__patch",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/RecordPatch"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Hazard Patch Api Hazards  Record Id  Patch",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Hazard Patch",
+    "tags": [
+     "Hazards"
+    ]
+   }
+  },
+  "/api/hazards/{record_id}/archive": {
+   "post": {
+    "operationId": "hazard_archive_api_hazards__record_id__archive_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Hazard Archive Api Hazards  Record Id  Archive Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Hazard Archive",
+    "tags": [
+     "Hazards"
+    ]
+   }
+  },
+  "/api/hazards/{record_id}/files": {
+   "post": {
+    "operationId": "hazard_upload_file_api_hazards__record_id__files_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "multipart/form-data": {
+       "schema": {
+        "$ref": "#/components/schemas/Body_hazard_upload_file_api_hazards__record_id__files_post"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Hazard Upload File Api Hazards  Record Id  Files Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Hazard Upload File",
+    "tags": [
+     "Hazards"
+    ]
+   }
+  },
+  "/api/hazards/{record_id}/files/{file_id}": {
+   "delete": {
+    "operationId": "hazard_remove_file_api_hazards__record_id__files__file_id__delete",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "path",
+      "name": "file_id",
+      "required": true,
+      "schema": {
+       "title": "File Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": {
+          "type": "boolean"
+         },
+         "title": "Response Hazard Remove File Api Hazards  Record Id  Files  File Id  Delete",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Hazard Remove File",
+    "tags": [
+     "Hazards"
+    ]
+   },
+   "get": {
+    "description": "A file is only reachable through a record the caller is allowed to see.",
+    "operationId": "hazard_download_file_api_hazards__record_id__files__file_id__get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "path",
+      "name": "file_id",
+      "required": true,
+      "schema": {
+       "title": "File Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "download",
+      "required": false,
+      "schema": {
+       "default": 0,
+       "maximum": 1,
+       "minimum": 0,
+       "title": "Download",
+       "type": "integer"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Hazard Download File",
+    "tags": [
+     "Hazards"
+    ]
+   }
+  },
+  "/api/hazards/{record_id}/history": {
+   "get": {
+    "operationId": "hazard_history_api_hazards__record_id__history_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Hazard History Api Hazards  Record Id  History Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Hazard History",
+    "tags": [
+     "Hazards"
+    ]
+   }
+  },
+  "/api/hazards/{record_id}/pdf": {
+   "get": {
+    "operationId": "hazard_pdf_api_hazards__record_id__pdf_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "download",
+      "required": false,
+      "schema": {
+       "default": 0,
+       "maximum": 1,
+       "minimum": 0,
+       "title": "Download",
+       "type": "integer"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Hazard Pdf",
+    "tags": [
+     "Hazards"
+    ]
+   }
+  },
+  "/api/hazards/{record_id}/status": {
+   "post": {
+    "description": "Move between open, in progress and closed. The original report and its history stay as they were.",
+    "operationId": "hazard_status_api_hazards__record_id__status_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/StatusIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Hazard Status Api Hazards  Record Id  Status Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Hazard Status",
+    "tags": [
+     "Hazards"
+    ]
+   }
+  },
+  "/api/hazards/{record_id}/unarchive": {
+   "post": {
+    "operationId": "hazard_unarchive_api_hazards__record_id__unarchive_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Hazard Unarchive Api Hazards  Record Id  Unarchive Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Hazard Unarchive",
+    "tags": [
+     "Hazards"
+    ]
+   }
+  },
   "/api/health": {
    "get": {
     "description": "Readiness: reports the database separately so one failure does not hide the rest.",
@@ -4978,6 +6194,1817 @@
     "summary": "Health",
     "tags": [
      "organisation"
+    ]
+   }
+  },
+  "/api/incidents": {
+   "get": {
+    "operationId": "incident_list_api_incidents_get",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "status",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Status"
+      }
+     },
+     {
+      "in": "query",
+      "name": "q",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "maxLength": 100,
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Q"
+      }
+     },
+     {
+      "in": "query",
+      "name": "category",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "maxLength": 60,
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Category"
+      }
+     },
+     {
+      "in": "query",
+      "name": "date_from",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "format": "date",
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Date From"
+      }
+     },
+     {
+      "in": "query",
+      "name": "date_to",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "format": "date",
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Date To"
+      }
+     },
+     {
+      "in": "query",
+      "name": "include_archived",
+      "required": false,
+      "schema": {
+       "default": false,
+       "title": "Include Archived",
+       "type": "boolean"
+      }
+     },
+     {
+      "in": "query",
+      "name": "include_superseded",
+      "required": false,
+      "schema": {
+       "default": false,
+       "title": "Include Superseded",
+       "type": "boolean"
+      }
+     },
+     {
+      "in": "query",
+      "name": "limit",
+      "required": false,
+      "schema": {
+       "default": 50,
+       "maximum": 200,
+       "minimum": 1,
+       "title": "Limit",
+       "type": "integer"
+      }
+     },
+     {
+      "in": "query",
+      "name": "offset",
+      "required": false,
+      "schema": {
+       "default": 0,
+       "minimum": 0,
+       "title": "Offset",
+       "type": "integer"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Incident List Api Incidents Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Incident List",
+    "tags": [
+     "Incidents"
+    ]
+   },
+   "post": {
+    "operationId": "incident_create_api_incidents_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/RecordIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Incident Create Api Incidents Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Incident Create",
+    "tags": [
+     "Incidents"
+    ]
+   }
+  },
+  "/api/incidents/archive": {
+   "post": {
+    "description": "Archive many records by explicit ids or by criteria. Runs as a preview unless dry_run is false.",
+    "operationId": "incident_bulk_archive_api_incidents_archive_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/BulkArchiveIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Incident Bulk Archive Api Incidents Archive Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Incident Bulk Archive",
+    "tags": [
+     "Incidents"
+    ]
+   }
+  },
+  "/api/incidents/category-counts": {
+   "get": {
+    "description": "Counts by category and status, using the same scope as the list.",
+    "operationId": "incident_category_counts_api_incidents_category_counts_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Incident Category Counts Api Incidents Category Counts Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Incident Category Counts",
+    "tags": [
+     "Incidents"
+    ]
+   }
+  },
+  "/api/incidents/schema": {
+   "get": {
+    "operationId": "incident_schema_api_incidents_schema_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Incident Schema Api Incidents Schema Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Incident Schema",
+    "tags": [
+     "Incidents"
+    ]
+   }
+  },
+  "/api/incidents/unarchive-batch/{batch_id}": {
+   "post": {
+    "operationId": "incident_unarchive_batch_api_incidents_unarchive_batch__batch_id__post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "batch_id",
+      "required": true,
+      "schema": {
+       "title": "Batch Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Incident Unarchive Batch Api Incidents Unarchive Batch  Batch Id  Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Incident Unarchive Batch",
+    "tags": [
+     "Incidents"
+    ]
+   }
+  },
+  "/api/incidents/{record_id}": {
+   "delete": {
+    "description": "Remove from the register. An author may discard their own draft; anything else needs the delete right.",
+    "operationId": "incident_delete_api_incidents__record_id__delete",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": {
+          "type": "boolean"
+         },
+         "title": "Response Incident Delete Api Incidents  Record Id  Delete",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Incident Delete",
+    "tags": [
+     "Incidents"
+    ]
+   },
+   "get": {
+    "operationId": "incident_get_api_incidents__record_id__get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Incident Get Api Incidents  Record Id  Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Incident Get",
+    "tags": [
+     "Incidents"
+    ]
+   },
+   "patch": {
+    "operationId": "incident_patch_api_incidents__record_id__patch",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/RecordPatch"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Incident Patch Api Incidents  Record Id  Patch",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Incident Patch",
+    "tags": [
+     "Incidents"
+    ]
+   }
+  },
+  "/api/incidents/{record_id}/archive": {
+   "post": {
+    "operationId": "incident_archive_api_incidents__record_id__archive_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Incident Archive Api Incidents  Record Id  Archive Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Incident Archive",
+    "tags": [
+     "Incidents"
+    ]
+   }
+  },
+  "/api/incidents/{record_id}/files": {
+   "post": {
+    "operationId": "incident_upload_file_api_incidents__record_id__files_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "multipart/form-data": {
+       "schema": {
+        "$ref": "#/components/schemas/Body_incident_upload_file_api_incidents__record_id__files_post"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Incident Upload File Api Incidents  Record Id  Files Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Incident Upload File",
+    "tags": [
+     "Incidents"
+    ]
+   }
+  },
+  "/api/incidents/{record_id}/files/{file_id}": {
+   "delete": {
+    "operationId": "incident_remove_file_api_incidents__record_id__files__file_id__delete",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "path",
+      "name": "file_id",
+      "required": true,
+      "schema": {
+       "title": "File Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": {
+          "type": "boolean"
+         },
+         "title": "Response Incident Remove File Api Incidents  Record Id  Files  File Id  Delete",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Incident Remove File",
+    "tags": [
+     "Incidents"
+    ]
+   },
+   "get": {
+    "description": "A file is only reachable through a record the caller is allowed to see.",
+    "operationId": "incident_download_file_api_incidents__record_id__files__file_id__get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "path",
+      "name": "file_id",
+      "required": true,
+      "schema": {
+       "title": "File Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "download",
+      "required": false,
+      "schema": {
+       "default": 0,
+       "maximum": 1,
+       "minimum": 0,
+       "title": "Download",
+       "type": "integer"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Incident Download File",
+    "tags": [
+     "Incidents"
+    ]
+   }
+  },
+  "/api/incidents/{record_id}/history": {
+   "get": {
+    "operationId": "incident_history_api_incidents__record_id__history_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Incident History Api Incidents  Record Id  History Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Incident History",
+    "tags": [
+     "Incidents"
+    ]
+   }
+  },
+  "/api/incidents/{record_id}/pdf": {
+   "get": {
+    "operationId": "incident_pdf_api_incidents__record_id__pdf_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "download",
+      "required": false,
+      "schema": {
+       "default": 0,
+       "maximum": 1,
+       "minimum": 0,
+       "title": "Download",
+       "type": "integer"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Incident Pdf",
+    "tags": [
+     "Incidents"
+    ]
+   }
+  },
+  "/api/incidents/{record_id}/status": {
+   "post": {
+    "description": "Move between open, in progress and closed. The original report and its history stay as they were.",
+    "operationId": "incident_status_api_incidents__record_id__status_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/StatusIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Incident Status Api Incidents  Record Id  Status Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Incident Status",
+    "tags": [
+     "Incidents"
+    ]
+   }
+  },
+  "/api/incidents/{record_id}/unarchive": {
+   "post": {
+    "operationId": "incident_unarchive_api_incidents__record_id__unarchive_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Incident Unarchive Api Incidents  Record Id  Unarchive Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Incident Unarchive",
+    "tags": [
+     "Incidents"
+    ]
+   }
+  },
+  "/api/inspections": {
+   "get": {
+    "operationId": "inspection_list_api_inspections_get",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "status",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Status"
+      }
+     },
+     {
+      "in": "query",
+      "name": "q",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "maxLength": 100,
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Q"
+      }
+     },
+     {
+      "in": "query",
+      "name": "category",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "maxLength": 60,
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Category"
+      }
+     },
+     {
+      "in": "query",
+      "name": "date_from",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "format": "date",
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Date From"
+      }
+     },
+     {
+      "in": "query",
+      "name": "date_to",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "format": "date",
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Date To"
+      }
+     },
+     {
+      "in": "query",
+      "name": "include_archived",
+      "required": false,
+      "schema": {
+       "default": false,
+       "title": "Include Archived",
+       "type": "boolean"
+      }
+     },
+     {
+      "in": "query",
+      "name": "include_superseded",
+      "required": false,
+      "schema": {
+       "default": false,
+       "title": "Include Superseded",
+       "type": "boolean"
+      }
+     },
+     {
+      "in": "query",
+      "name": "limit",
+      "required": false,
+      "schema": {
+       "default": 50,
+       "maximum": 200,
+       "minimum": 1,
+       "title": "Limit",
+       "type": "integer"
+      }
+     },
+     {
+      "in": "query",
+      "name": "offset",
+      "required": false,
+      "schema": {
+       "default": 0,
+       "minimum": 0,
+       "title": "Offset",
+       "type": "integer"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Inspection List Api Inspections Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Inspection List",
+    "tags": [
+     "Inspections"
+    ]
+   },
+   "post": {
+    "operationId": "inspection_create_api_inspections_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/RecordIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Inspection Create Api Inspections Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Inspection Create",
+    "tags": [
+     "Inspections"
+    ]
+   }
+  },
+  "/api/inspections/archive": {
+   "post": {
+    "description": "Archive many records by explicit ids or by criteria. Runs as a preview unless dry_run is false.",
+    "operationId": "inspection_bulk_archive_api_inspections_archive_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/BulkArchiveIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Inspection Bulk Archive Api Inspections Archive Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Inspection Bulk Archive",
+    "tags": [
+     "Inspections"
+    ]
+   }
+  },
+  "/api/inspections/schema": {
+   "get": {
+    "operationId": "inspection_schema_api_inspections_schema_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Inspection Schema Api Inspections Schema Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Inspection Schema",
+    "tags": [
+     "Inspections"
+    ]
+   }
+  },
+  "/api/inspections/unarchive-batch/{batch_id}": {
+   "post": {
+    "operationId": "inspection_unarchive_batch_api_inspections_unarchive_batch__batch_id__post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "batch_id",
+      "required": true,
+      "schema": {
+       "title": "Batch Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Inspection Unarchive Batch Api Inspections Unarchive Batch  Batch Id  Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Inspection Unarchive Batch",
+    "tags": [
+     "Inspections"
+    ]
+   }
+  },
+  "/api/inspections/{record_id}": {
+   "delete": {
+    "description": "Remove from the register. An author may discard their own draft; anything else needs the delete right.",
+    "operationId": "inspection_delete_api_inspections__record_id__delete",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": {
+          "type": "boolean"
+         },
+         "title": "Response Inspection Delete Api Inspections  Record Id  Delete",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Inspection Delete",
+    "tags": [
+     "Inspections"
+    ]
+   },
+   "get": {
+    "operationId": "inspection_get_api_inspections__record_id__get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Inspection Get Api Inspections  Record Id  Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Inspection Get",
+    "tags": [
+     "Inspections"
+    ]
+   },
+   "patch": {
+    "operationId": "inspection_patch_api_inspections__record_id__patch",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/RecordPatch"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Inspection Patch Api Inspections  Record Id  Patch",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Inspection Patch",
+    "tags": [
+     "Inspections"
+    ]
+   }
+  },
+  "/api/inspections/{record_id}/archive": {
+   "post": {
+    "operationId": "inspection_archive_api_inspections__record_id__archive_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Inspection Archive Api Inspections  Record Id  Archive Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Inspection Archive",
+    "tags": [
+     "Inspections"
+    ]
+   }
+  },
+  "/api/inspections/{record_id}/files": {
+   "post": {
+    "operationId": "inspection_upload_file_api_inspections__record_id__files_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "multipart/form-data": {
+       "schema": {
+        "$ref": "#/components/schemas/Body_inspection_upload_file_api_inspections__record_id__files_post"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Inspection Upload File Api Inspections  Record Id  Files Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Inspection Upload File",
+    "tags": [
+     "Inspections"
+    ]
+   }
+  },
+  "/api/inspections/{record_id}/files/{file_id}": {
+   "delete": {
+    "operationId": "inspection_remove_file_api_inspections__record_id__files__file_id__delete",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "path",
+      "name": "file_id",
+      "required": true,
+      "schema": {
+       "title": "File Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": {
+          "type": "boolean"
+         },
+         "title": "Response Inspection Remove File Api Inspections  Record Id  Files  File Id  Delete",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Inspection Remove File",
+    "tags": [
+     "Inspections"
+    ]
+   },
+   "get": {
+    "description": "A file is only reachable through a record the caller is allowed to see.",
+    "operationId": "inspection_download_file_api_inspections__record_id__files__file_id__get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "path",
+      "name": "file_id",
+      "required": true,
+      "schema": {
+       "title": "File Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "download",
+      "required": false,
+      "schema": {
+       "default": 0,
+       "maximum": 1,
+       "minimum": 0,
+       "title": "Download",
+       "type": "integer"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Inspection Download File",
+    "tags": [
+     "Inspections"
+    ]
+   }
+  },
+  "/api/inspections/{record_id}/history": {
+   "get": {
+    "operationId": "inspection_history_api_inspections__record_id__history_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Inspection History Api Inspections  Record Id  History Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Inspection History",
+    "tags": [
+     "Inspections"
+    ]
+   }
+  },
+  "/api/inspections/{record_id}/pdf": {
+   "get": {
+    "operationId": "inspection_pdf_api_inspections__record_id__pdf_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "download",
+      "required": false,
+      "schema": {
+       "default": 0,
+       "maximum": 1,
+       "minimum": 0,
+       "title": "Download",
+       "type": "integer"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Inspection Pdf",
+    "tags": [
+     "Inspections"
+    ]
+   }
+  },
+  "/api/inspections/{record_id}/review": {
+   "post": {
+    "description": "Approve, return for changes, or reject. Only a person, never an automated step, can approve.",
+    "operationId": "inspection_review_api_inspections__record_id__review_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ReviewIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Inspection Review Api Inspections  Record Id  Review Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Inspection Review",
+    "tags": [
+     "Inspections"
+    ]
+   }
+  },
+  "/api/inspections/{record_id}/submit": {
+   "post": {
+    "operationId": "inspection_submit_api_inspections__record_id__submit_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/RecordPatch"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "title": "Body"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Inspection Submit Api Inspections  Record Id  Submit Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Inspection Submit",
+    "tags": [
+     "Inspections"
+    ]
+   }
+  },
+  "/api/inspections/{record_id}/unarchive": {
+   "post": {
+    "operationId": "inspection_unarchive_api_inspections__record_id__unarchive_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Inspection Unarchive Api Inspections  Record Id  Unarchive Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Inspection Unarchive",
+    "tags": [
+     "Inspections"
     ]
    }
   },
@@ -5584,6 +8611,930 @@
     ]
    }
   },
+  "/api/pre-starts": {
+   "get": {
+    "operationId": "pre_start_list_api_pre_starts_get",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "status",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Status"
+      }
+     },
+     {
+      "in": "query",
+      "name": "q",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "maxLength": 100,
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Q"
+      }
+     },
+     {
+      "in": "query",
+      "name": "category",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "maxLength": 60,
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Category"
+      }
+     },
+     {
+      "in": "query",
+      "name": "date_from",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "format": "date",
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Date From"
+      }
+     },
+     {
+      "in": "query",
+      "name": "date_to",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "format": "date",
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Date To"
+      }
+     },
+     {
+      "in": "query",
+      "name": "include_archived",
+      "required": false,
+      "schema": {
+       "default": false,
+       "title": "Include Archived",
+       "type": "boolean"
+      }
+     },
+     {
+      "in": "query",
+      "name": "include_superseded",
+      "required": false,
+      "schema": {
+       "default": false,
+       "title": "Include Superseded",
+       "type": "boolean"
+      }
+     },
+     {
+      "in": "query",
+      "name": "limit",
+      "required": false,
+      "schema": {
+       "default": 50,
+       "maximum": 200,
+       "minimum": 1,
+       "title": "Limit",
+       "type": "integer"
+      }
+     },
+     {
+      "in": "query",
+      "name": "offset",
+      "required": false,
+      "schema": {
+       "default": 0,
+       "minimum": 0,
+       "title": "Offset",
+       "type": "integer"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Pre Start List Api Pre Starts Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Pre Start List",
+    "tags": [
+     "Pre-starts"
+    ]
+   },
+   "post": {
+    "operationId": "pre_start_create_api_pre_starts_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/RecordIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Pre Start Create Api Pre Starts Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Pre Start Create",
+    "tags": [
+     "Pre-starts"
+    ]
+   }
+  },
+  "/api/pre-starts/archive": {
+   "post": {
+    "description": "Archive many records by explicit ids or by criteria. Runs as a preview unless dry_run is false.",
+    "operationId": "pre_start_bulk_archive_api_pre_starts_archive_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/BulkArchiveIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Pre Start Bulk Archive Api Pre Starts Archive Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Pre Start Bulk Archive",
+    "tags": [
+     "Pre-starts"
+    ]
+   }
+  },
+  "/api/pre-starts/schema": {
+   "get": {
+    "operationId": "pre_start_schema_api_pre_starts_schema_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Pre Start Schema Api Pre Starts Schema Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Pre Start Schema",
+    "tags": [
+     "Pre-starts"
+    ]
+   }
+  },
+  "/api/pre-starts/unarchive-batch/{batch_id}": {
+   "post": {
+    "operationId": "pre_start_unarchive_batch_api_pre_starts_unarchive_batch__batch_id__post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "batch_id",
+      "required": true,
+      "schema": {
+       "title": "Batch Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Pre Start Unarchive Batch Api Pre Starts Unarchive Batch  Batch Id  Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Pre Start Unarchive Batch",
+    "tags": [
+     "Pre-starts"
+    ]
+   }
+  },
+  "/api/pre-starts/{record_id}": {
+   "delete": {
+    "description": "Remove from the register. An author may discard their own draft; anything else needs the delete right.",
+    "operationId": "pre_start_delete_api_pre_starts__record_id__delete",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": {
+          "type": "boolean"
+         },
+         "title": "Response Pre Start Delete Api Pre Starts  Record Id  Delete",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Pre Start Delete",
+    "tags": [
+     "Pre-starts"
+    ]
+   },
+   "get": {
+    "operationId": "pre_start_get_api_pre_starts__record_id__get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Pre Start Get Api Pre Starts  Record Id  Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Pre Start Get",
+    "tags": [
+     "Pre-starts"
+    ]
+   },
+   "patch": {
+    "operationId": "pre_start_patch_api_pre_starts__record_id__patch",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/RecordPatch"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Pre Start Patch Api Pre Starts  Record Id  Patch",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Pre Start Patch",
+    "tags": [
+     "Pre-starts"
+    ]
+   }
+  },
+  "/api/pre-starts/{record_id}/archive": {
+   "post": {
+    "operationId": "pre_start_archive_api_pre_starts__record_id__archive_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Pre Start Archive Api Pre Starts  Record Id  Archive Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Pre Start Archive",
+    "tags": [
+     "Pre-starts"
+    ]
+   }
+  },
+  "/api/pre-starts/{record_id}/files": {
+   "post": {
+    "operationId": "pre_start_upload_file_api_pre_starts__record_id__files_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "multipart/form-data": {
+       "schema": {
+        "$ref": "#/components/schemas/Body_pre_start_upload_file_api_pre_starts__record_id__files_post"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Pre Start Upload File Api Pre Starts  Record Id  Files Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Pre Start Upload File",
+    "tags": [
+     "Pre-starts"
+    ]
+   }
+  },
+  "/api/pre-starts/{record_id}/files/{file_id}": {
+   "delete": {
+    "operationId": "pre_start_remove_file_api_pre_starts__record_id__files__file_id__delete",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "path",
+      "name": "file_id",
+      "required": true,
+      "schema": {
+       "title": "File Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": {
+          "type": "boolean"
+         },
+         "title": "Response Pre Start Remove File Api Pre Starts  Record Id  Files  File Id  Delete",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Pre Start Remove File",
+    "tags": [
+     "Pre-starts"
+    ]
+   },
+   "get": {
+    "description": "A file is only reachable through a record the caller is allowed to see.",
+    "operationId": "pre_start_download_file_api_pre_starts__record_id__files__file_id__get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "path",
+      "name": "file_id",
+      "required": true,
+      "schema": {
+       "title": "File Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "download",
+      "required": false,
+      "schema": {
+       "default": 0,
+       "maximum": 1,
+       "minimum": 0,
+       "title": "Download",
+       "type": "integer"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Pre Start Download File",
+    "tags": [
+     "Pre-starts"
+    ]
+   }
+  },
+  "/api/pre-starts/{record_id}/history": {
+   "get": {
+    "operationId": "pre_start_history_api_pre_starts__record_id__history_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Pre Start History Api Pre Starts  Record Id  History Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Pre Start History",
+    "tags": [
+     "Pre-starts"
+    ]
+   }
+  },
+  "/api/pre-starts/{record_id}/pdf": {
+   "get": {
+    "operationId": "pre_start_pdf_api_pre_starts__record_id__pdf_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "download",
+      "required": false,
+      "schema": {
+       "default": 0,
+       "maximum": 1,
+       "minimum": 0,
+       "title": "Download",
+       "type": "integer"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Pre Start Pdf",
+    "tags": [
+     "Pre-starts"
+    ]
+   }
+  },
+  "/api/pre-starts/{record_id}/review": {
+   "post": {
+    "description": "Approve, return for changes, or reject. Only a person, never an automated step, can approve.",
+    "operationId": "pre_start_review_api_pre_starts__record_id__review_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ReviewIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Pre Start Review Api Pre Starts  Record Id  Review Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Pre Start Review",
+    "tags": [
+     "Pre-starts"
+    ]
+   }
+  },
+  "/api/pre-starts/{record_id}/submit": {
+   "post": {
+    "operationId": "pre_start_submit_api_pre_starts__record_id__submit_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/RecordPatch"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "title": "Body"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Pre Start Submit Api Pre Starts  Record Id  Submit Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Pre Start Submit",
+    "tags": [
+     "Pre-starts"
+    ]
+   }
+  },
+  "/api/pre-starts/{record_id}/unarchive": {
+   "post": {
+    "operationId": "pre_start_unarchive_api_pre_starts__record_id__unarchive_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Pre Start Unarchive Api Pre Starts  Record Id  Unarchive Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Pre Start Unarchive",
+    "tags": [
+     "Pre-starts"
+    ]
+   }
+  },
   "/api/public/branding": {
    "get": {
     "description": "Name and logo for the sign-in page. Only shown when the install has a single organisation,\nso one tenant's identity is never shown to another's staff.",
@@ -5605,6 +9556,930 @@
     "summary": "Public Branding",
     "tags": [
      "organisation"
+    ]
+   }
+  },
+  "/api/risk-assessments": {
+   "get": {
+    "operationId": "risk_assessment_list_api_risk_assessments_get",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "status",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Status"
+      }
+     },
+     {
+      "in": "query",
+      "name": "q",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "maxLength": 100,
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Q"
+      }
+     },
+     {
+      "in": "query",
+      "name": "category",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "maxLength": 60,
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Category"
+      }
+     },
+     {
+      "in": "query",
+      "name": "date_from",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "format": "date",
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Date From"
+      }
+     },
+     {
+      "in": "query",
+      "name": "date_to",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "format": "date",
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Date To"
+      }
+     },
+     {
+      "in": "query",
+      "name": "include_archived",
+      "required": false,
+      "schema": {
+       "default": false,
+       "title": "Include Archived",
+       "type": "boolean"
+      }
+     },
+     {
+      "in": "query",
+      "name": "include_superseded",
+      "required": false,
+      "schema": {
+       "default": false,
+       "title": "Include Superseded",
+       "type": "boolean"
+      }
+     },
+     {
+      "in": "query",
+      "name": "limit",
+      "required": false,
+      "schema": {
+       "default": 50,
+       "maximum": 200,
+       "minimum": 1,
+       "title": "Limit",
+       "type": "integer"
+      }
+     },
+     {
+      "in": "query",
+      "name": "offset",
+      "required": false,
+      "schema": {
+       "default": 0,
+       "minimum": 0,
+       "title": "Offset",
+       "type": "integer"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Risk Assessment List Api Risk Assessments Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Risk Assessment List",
+    "tags": [
+     "Risk assessments"
+    ]
+   },
+   "post": {
+    "operationId": "risk_assessment_create_api_risk_assessments_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/RecordIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Risk Assessment Create Api Risk Assessments Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Risk Assessment Create",
+    "tags": [
+     "Risk assessments"
+    ]
+   }
+  },
+  "/api/risk-assessments/archive": {
+   "post": {
+    "description": "Archive many records by explicit ids or by criteria. Runs as a preview unless dry_run is false.",
+    "operationId": "risk_assessment_bulk_archive_api_risk_assessments_archive_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/BulkArchiveIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Risk Assessment Bulk Archive Api Risk Assessments Archive Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Risk Assessment Bulk Archive",
+    "tags": [
+     "Risk assessments"
+    ]
+   }
+  },
+  "/api/risk-assessments/schema": {
+   "get": {
+    "operationId": "risk_assessment_schema_api_risk_assessments_schema_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Risk Assessment Schema Api Risk Assessments Schema Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Risk Assessment Schema",
+    "tags": [
+     "Risk assessments"
+    ]
+   }
+  },
+  "/api/risk-assessments/unarchive-batch/{batch_id}": {
+   "post": {
+    "operationId": "risk_assessment_unarchive_batch_api_risk_assessments_unarchive_batch__batch_id__post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "batch_id",
+      "required": true,
+      "schema": {
+       "title": "Batch Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Risk Assessment Unarchive Batch Api Risk Assessments Unarchive Batch  Batch Id  Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Risk Assessment Unarchive Batch",
+    "tags": [
+     "Risk assessments"
+    ]
+   }
+  },
+  "/api/risk-assessments/{record_id}": {
+   "delete": {
+    "description": "Remove from the register. An author may discard their own draft; anything else needs the delete right.",
+    "operationId": "risk_assessment_delete_api_risk_assessments__record_id__delete",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": {
+          "type": "boolean"
+         },
+         "title": "Response Risk Assessment Delete Api Risk Assessments  Record Id  Delete",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Risk Assessment Delete",
+    "tags": [
+     "Risk assessments"
+    ]
+   },
+   "get": {
+    "operationId": "risk_assessment_get_api_risk_assessments__record_id__get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Risk Assessment Get Api Risk Assessments  Record Id  Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Risk Assessment Get",
+    "tags": [
+     "Risk assessments"
+    ]
+   },
+   "patch": {
+    "operationId": "risk_assessment_patch_api_risk_assessments__record_id__patch",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/RecordPatch"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Risk Assessment Patch Api Risk Assessments  Record Id  Patch",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Risk Assessment Patch",
+    "tags": [
+     "Risk assessments"
+    ]
+   }
+  },
+  "/api/risk-assessments/{record_id}/archive": {
+   "post": {
+    "operationId": "risk_assessment_archive_api_risk_assessments__record_id__archive_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Risk Assessment Archive Api Risk Assessments  Record Id  Archive Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Risk Assessment Archive",
+    "tags": [
+     "Risk assessments"
+    ]
+   }
+  },
+  "/api/risk-assessments/{record_id}/files": {
+   "post": {
+    "operationId": "risk_assessment_upload_file_api_risk_assessments__record_id__files_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "multipart/form-data": {
+       "schema": {
+        "$ref": "#/components/schemas/Body_risk_assessment_upload_file_api_risk_assessments__record_id__files_post"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Risk Assessment Upload File Api Risk Assessments  Record Id  Files Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Risk Assessment Upload File",
+    "tags": [
+     "Risk assessments"
+    ]
+   }
+  },
+  "/api/risk-assessments/{record_id}/files/{file_id}": {
+   "delete": {
+    "operationId": "risk_assessment_remove_file_api_risk_assessments__record_id__files__file_id__delete",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "path",
+      "name": "file_id",
+      "required": true,
+      "schema": {
+       "title": "File Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": {
+          "type": "boolean"
+         },
+         "title": "Response Risk Assessment Remove File Api Risk Assessments  Record Id  Files  File Id  Delete",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Risk Assessment Remove File",
+    "tags": [
+     "Risk assessments"
+    ]
+   },
+   "get": {
+    "description": "A file is only reachable through a record the caller is allowed to see.",
+    "operationId": "risk_assessment_download_file_api_risk_assessments__record_id__files__file_id__get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "path",
+      "name": "file_id",
+      "required": true,
+      "schema": {
+       "title": "File Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "download",
+      "required": false,
+      "schema": {
+       "default": 0,
+       "maximum": 1,
+       "minimum": 0,
+       "title": "Download",
+       "type": "integer"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Risk Assessment Download File",
+    "tags": [
+     "Risk assessments"
+    ]
+   }
+  },
+  "/api/risk-assessments/{record_id}/history": {
+   "get": {
+    "operationId": "risk_assessment_history_api_risk_assessments__record_id__history_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Risk Assessment History Api Risk Assessments  Record Id  History Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Risk Assessment History",
+    "tags": [
+     "Risk assessments"
+    ]
+   }
+  },
+  "/api/risk-assessments/{record_id}/pdf": {
+   "get": {
+    "operationId": "risk_assessment_pdf_api_risk_assessments__record_id__pdf_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "download",
+      "required": false,
+      "schema": {
+       "default": 0,
+       "maximum": 1,
+       "minimum": 0,
+       "title": "Download",
+       "type": "integer"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Risk Assessment Pdf",
+    "tags": [
+     "Risk assessments"
+    ]
+   }
+  },
+  "/api/risk-assessments/{record_id}/review": {
+   "post": {
+    "description": "Approve, return for changes, or reject. Only a person, never an automated step, can approve.",
+    "operationId": "risk_assessment_review_api_risk_assessments__record_id__review_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ReviewIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Risk Assessment Review Api Risk Assessments  Record Id  Review Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Risk Assessment Review",
+    "tags": [
+     "Risk assessments"
+    ]
+   }
+  },
+  "/api/risk-assessments/{record_id}/submit": {
+   "post": {
+    "operationId": "risk_assessment_submit_api_risk_assessments__record_id__submit_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/RecordPatch"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "title": "Body"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Risk Assessment Submit Api Risk Assessments  Record Id  Submit Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Risk Assessment Submit",
+    "tags": [
+     "Risk assessments"
+    ]
+   }
+  },
+  "/api/risk-assessments/{record_id}/unarchive": {
+   "post": {
+    "operationId": "risk_assessment_unarchive_api_risk_assessments__record_id__unarchive_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Risk Assessment Unarchive Api Risk Assessments  Record Id  Unarchive Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Risk Assessment Unarchive",
+    "tags": [
+     "Risk assessments"
     ]
    }
   },
@@ -5674,6 +10549,3064 @@
     "summary": "Setup Status",
     "tags": [
      "organisation"
+    ]
+   }
+  },
+  "/api/site-diary": {
+   "get": {
+    "operationId": "site_diary_list_api_site_diary_get",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "status",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Status"
+      }
+     },
+     {
+      "in": "query",
+      "name": "q",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "maxLength": 100,
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Q"
+      }
+     },
+     {
+      "in": "query",
+      "name": "category",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "maxLength": 60,
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Category"
+      }
+     },
+     {
+      "in": "query",
+      "name": "date_from",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "format": "date",
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Date From"
+      }
+     },
+     {
+      "in": "query",
+      "name": "date_to",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "format": "date",
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Date To"
+      }
+     },
+     {
+      "in": "query",
+      "name": "include_archived",
+      "required": false,
+      "schema": {
+       "default": false,
+       "title": "Include Archived",
+       "type": "boolean"
+      }
+     },
+     {
+      "in": "query",
+      "name": "include_superseded",
+      "required": false,
+      "schema": {
+       "default": false,
+       "title": "Include Superseded",
+       "type": "boolean"
+      }
+     },
+     {
+      "in": "query",
+      "name": "limit",
+      "required": false,
+      "schema": {
+       "default": 50,
+       "maximum": 200,
+       "minimum": 1,
+       "title": "Limit",
+       "type": "integer"
+      }
+     },
+     {
+      "in": "query",
+      "name": "offset",
+      "required": false,
+      "schema": {
+       "default": 0,
+       "minimum": 0,
+       "title": "Offset",
+       "type": "integer"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Site Diary List Api Site Diary Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Site Diary List",
+    "tags": [
+     "Site diary"
+    ]
+   },
+   "post": {
+    "operationId": "site_diary_create_api_site_diary_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/RecordIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Site Diary Create Api Site Diary Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Site Diary Create",
+    "tags": [
+     "Site diary"
+    ]
+   }
+  },
+  "/api/site-diary/archive": {
+   "post": {
+    "description": "Archive many records by explicit ids or by criteria. Runs as a preview unless dry_run is false.",
+    "operationId": "site_diary_bulk_archive_api_site_diary_archive_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/BulkArchiveIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Site Diary Bulk Archive Api Site Diary Archive Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Site Diary Bulk Archive",
+    "tags": [
+     "Site diary"
+    ]
+   }
+  },
+  "/api/site-diary/schema": {
+   "get": {
+    "operationId": "site_diary_schema_api_site_diary_schema_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Site Diary Schema Api Site Diary Schema Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Site Diary Schema",
+    "tags": [
+     "Site diary"
+    ]
+   }
+  },
+  "/api/site-diary/unarchive-batch/{batch_id}": {
+   "post": {
+    "operationId": "site_diary_unarchive_batch_api_site_diary_unarchive_batch__batch_id__post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "batch_id",
+      "required": true,
+      "schema": {
+       "title": "Batch Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Site Diary Unarchive Batch Api Site Diary Unarchive Batch  Batch Id  Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Site Diary Unarchive Batch",
+    "tags": [
+     "Site diary"
+    ]
+   }
+  },
+  "/api/site-diary/{record_id}": {
+   "delete": {
+    "description": "Remove from the register. An author may discard their own draft; anything else needs the delete right.",
+    "operationId": "site_diary_delete_api_site_diary__record_id__delete",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": {
+          "type": "boolean"
+         },
+         "title": "Response Site Diary Delete Api Site Diary  Record Id  Delete",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Site Diary Delete",
+    "tags": [
+     "Site diary"
+    ]
+   },
+   "get": {
+    "operationId": "site_diary_get_api_site_diary__record_id__get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Site Diary Get Api Site Diary  Record Id  Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Site Diary Get",
+    "tags": [
+     "Site diary"
+    ]
+   },
+   "patch": {
+    "operationId": "site_diary_patch_api_site_diary__record_id__patch",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/RecordPatch"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Site Diary Patch Api Site Diary  Record Id  Patch",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Site Diary Patch",
+    "tags": [
+     "Site diary"
+    ]
+   }
+  },
+  "/api/site-diary/{record_id}/archive": {
+   "post": {
+    "operationId": "site_diary_archive_api_site_diary__record_id__archive_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Site Diary Archive Api Site Diary  Record Id  Archive Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Site Diary Archive",
+    "tags": [
+     "Site diary"
+    ]
+   }
+  },
+  "/api/site-diary/{record_id}/files": {
+   "post": {
+    "operationId": "site_diary_upload_file_api_site_diary__record_id__files_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "multipart/form-data": {
+       "schema": {
+        "$ref": "#/components/schemas/Body_site_diary_upload_file_api_site_diary__record_id__files_post"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Site Diary Upload File Api Site Diary  Record Id  Files Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Site Diary Upload File",
+    "tags": [
+     "Site diary"
+    ]
+   }
+  },
+  "/api/site-diary/{record_id}/files/{file_id}": {
+   "delete": {
+    "operationId": "site_diary_remove_file_api_site_diary__record_id__files__file_id__delete",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "path",
+      "name": "file_id",
+      "required": true,
+      "schema": {
+       "title": "File Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": {
+          "type": "boolean"
+         },
+         "title": "Response Site Diary Remove File Api Site Diary  Record Id  Files  File Id  Delete",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Site Diary Remove File",
+    "tags": [
+     "Site diary"
+    ]
+   },
+   "get": {
+    "description": "A file is only reachable through a record the caller is allowed to see.",
+    "operationId": "site_diary_download_file_api_site_diary__record_id__files__file_id__get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "path",
+      "name": "file_id",
+      "required": true,
+      "schema": {
+       "title": "File Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "download",
+      "required": false,
+      "schema": {
+       "default": 0,
+       "maximum": 1,
+       "minimum": 0,
+       "title": "Download",
+       "type": "integer"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Site Diary Download File",
+    "tags": [
+     "Site diary"
+    ]
+   }
+  },
+  "/api/site-diary/{record_id}/history": {
+   "get": {
+    "operationId": "site_diary_history_api_site_diary__record_id__history_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Site Diary History Api Site Diary  Record Id  History Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Site Diary History",
+    "tags": [
+     "Site diary"
+    ]
+   }
+  },
+  "/api/site-diary/{record_id}/pdf": {
+   "get": {
+    "operationId": "site_diary_pdf_api_site_diary__record_id__pdf_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "download",
+      "required": false,
+      "schema": {
+       "default": 0,
+       "maximum": 1,
+       "minimum": 0,
+       "title": "Download",
+       "type": "integer"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Site Diary Pdf",
+    "tags": [
+     "Site diary"
+    ]
+   }
+  },
+  "/api/site-diary/{record_id}/review": {
+   "post": {
+    "description": "Approve, return for changes, or reject. Only a person, never an automated step, can approve.",
+    "operationId": "site_diary_review_api_site_diary__record_id__review_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ReviewIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Site Diary Review Api Site Diary  Record Id  Review Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Site Diary Review",
+    "tags": [
+     "Site diary"
+    ]
+   }
+  },
+  "/api/site-diary/{record_id}/submit": {
+   "post": {
+    "operationId": "site_diary_submit_api_site_diary__record_id__submit_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/RecordPatch"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "title": "Body"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Site Diary Submit Api Site Diary  Record Id  Submit Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Site Diary Submit",
+    "tags": [
+     "Site diary"
+    ]
+   }
+  },
+  "/api/site-diary/{record_id}/unarchive": {
+   "post": {
+    "operationId": "site_diary_unarchive_api_site_diary__record_id__unarchive_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Site Diary Unarchive Api Site Diary  Record Id  Unarchive Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Site Diary Unarchive",
+    "tags": [
+     "Site diary"
+    ]
+   }
+  },
+  "/api/ssra": {
+   "get": {
+    "operationId": "ssra_list_api_ssra_get",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "status",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Status"
+      }
+     },
+     {
+      "in": "query",
+      "name": "q",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "maxLength": 100,
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Q"
+      }
+     },
+     {
+      "in": "query",
+      "name": "category",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "maxLength": 60,
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Category"
+      }
+     },
+     {
+      "in": "query",
+      "name": "date_from",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "format": "date",
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Date From"
+      }
+     },
+     {
+      "in": "query",
+      "name": "date_to",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "format": "date",
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Date To"
+      }
+     },
+     {
+      "in": "query",
+      "name": "include_archived",
+      "required": false,
+      "schema": {
+       "default": false,
+       "title": "Include Archived",
+       "type": "boolean"
+      }
+     },
+     {
+      "in": "query",
+      "name": "include_superseded",
+      "required": false,
+      "schema": {
+       "default": false,
+       "title": "Include Superseded",
+       "type": "boolean"
+      }
+     },
+     {
+      "in": "query",
+      "name": "limit",
+      "required": false,
+      "schema": {
+       "default": 50,
+       "maximum": 200,
+       "minimum": 1,
+       "title": "Limit",
+       "type": "integer"
+      }
+     },
+     {
+      "in": "query",
+      "name": "offset",
+      "required": false,
+      "schema": {
+       "default": 0,
+       "minimum": 0,
+       "title": "Offset",
+       "type": "integer"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Ssra List Api Ssra Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Ssra List",
+    "tags": [
+     "Site-specific risk assessments"
+    ]
+   },
+   "post": {
+    "operationId": "ssra_create_api_ssra_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/RecordIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Ssra Create Api Ssra Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Ssra Create",
+    "tags": [
+     "Site-specific risk assessments"
+    ]
+   }
+  },
+  "/api/ssra/archive": {
+   "post": {
+    "description": "Archive many records by explicit ids or by criteria. Runs as a preview unless dry_run is false.",
+    "operationId": "ssra_bulk_archive_api_ssra_archive_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/BulkArchiveIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Ssra Bulk Archive Api Ssra Archive Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Ssra Bulk Archive",
+    "tags": [
+     "Site-specific risk assessments"
+    ]
+   }
+  },
+  "/api/ssra/schema": {
+   "get": {
+    "operationId": "ssra_schema_api_ssra_schema_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Ssra Schema Api Ssra Schema Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Ssra Schema",
+    "tags": [
+     "Site-specific risk assessments"
+    ]
+   }
+  },
+  "/api/ssra/unarchive-batch/{batch_id}": {
+   "post": {
+    "operationId": "ssra_unarchive_batch_api_ssra_unarchive_batch__batch_id__post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "batch_id",
+      "required": true,
+      "schema": {
+       "title": "Batch Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Ssra Unarchive Batch Api Ssra Unarchive Batch  Batch Id  Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Ssra Unarchive Batch",
+    "tags": [
+     "Site-specific risk assessments"
+    ]
+   }
+  },
+  "/api/ssra/{record_id}": {
+   "delete": {
+    "description": "Remove from the register. An author may discard their own draft; anything else needs the delete right.",
+    "operationId": "ssra_delete_api_ssra__record_id__delete",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": {
+          "type": "boolean"
+         },
+         "title": "Response Ssra Delete Api Ssra  Record Id  Delete",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Ssra Delete",
+    "tags": [
+     "Site-specific risk assessments"
+    ]
+   },
+   "get": {
+    "operationId": "ssra_get_api_ssra__record_id__get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Ssra Get Api Ssra  Record Id  Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Ssra Get",
+    "tags": [
+     "Site-specific risk assessments"
+    ]
+   },
+   "patch": {
+    "operationId": "ssra_patch_api_ssra__record_id__patch",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/RecordPatch"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Ssra Patch Api Ssra  Record Id  Patch",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Ssra Patch",
+    "tags": [
+     "Site-specific risk assessments"
+    ]
+   }
+  },
+  "/api/ssra/{record_id}/archive": {
+   "post": {
+    "operationId": "ssra_archive_api_ssra__record_id__archive_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Ssra Archive Api Ssra  Record Id  Archive Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Ssra Archive",
+    "tags": [
+     "Site-specific risk assessments"
+    ]
+   }
+  },
+  "/api/ssra/{record_id}/files": {
+   "post": {
+    "operationId": "ssra_upload_file_api_ssra__record_id__files_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "multipart/form-data": {
+       "schema": {
+        "$ref": "#/components/schemas/Body_ssra_upload_file_api_ssra__record_id__files_post"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Ssra Upload File Api Ssra  Record Id  Files Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Ssra Upload File",
+    "tags": [
+     "Site-specific risk assessments"
+    ]
+   }
+  },
+  "/api/ssra/{record_id}/files/{file_id}": {
+   "delete": {
+    "operationId": "ssra_remove_file_api_ssra__record_id__files__file_id__delete",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "path",
+      "name": "file_id",
+      "required": true,
+      "schema": {
+       "title": "File Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": {
+          "type": "boolean"
+         },
+         "title": "Response Ssra Remove File Api Ssra  Record Id  Files  File Id  Delete",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Ssra Remove File",
+    "tags": [
+     "Site-specific risk assessments"
+    ]
+   },
+   "get": {
+    "description": "A file is only reachable through a record the caller is allowed to see.",
+    "operationId": "ssra_download_file_api_ssra__record_id__files__file_id__get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "path",
+      "name": "file_id",
+      "required": true,
+      "schema": {
+       "title": "File Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "download",
+      "required": false,
+      "schema": {
+       "default": 0,
+       "maximum": 1,
+       "minimum": 0,
+       "title": "Download",
+       "type": "integer"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Ssra Download File",
+    "tags": [
+     "Site-specific risk assessments"
+    ]
+   }
+  },
+  "/api/ssra/{record_id}/history": {
+   "get": {
+    "operationId": "ssra_history_api_ssra__record_id__history_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Ssra History Api Ssra  Record Id  History Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Ssra History",
+    "tags": [
+     "Site-specific risk assessments"
+    ]
+   }
+  },
+  "/api/ssra/{record_id}/pdf": {
+   "get": {
+    "operationId": "ssra_pdf_api_ssra__record_id__pdf_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "download",
+      "required": false,
+      "schema": {
+       "default": 0,
+       "maximum": 1,
+       "minimum": 0,
+       "title": "Download",
+       "type": "integer"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Ssra Pdf",
+    "tags": [
+     "Site-specific risk assessments"
+    ]
+   }
+  },
+  "/api/ssra/{record_id}/review": {
+   "post": {
+    "description": "Approve, return for changes, or reject. Only a person, never an automated step, can approve.",
+    "operationId": "ssra_review_api_ssra__record_id__review_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ReviewIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Ssra Review Api Ssra  Record Id  Review Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Ssra Review",
+    "tags": [
+     "Site-specific risk assessments"
+    ]
+   }
+  },
+  "/api/ssra/{record_id}/submit": {
+   "post": {
+    "operationId": "ssra_submit_api_ssra__record_id__submit_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/RecordPatch"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "title": "Body"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Ssra Submit Api Ssra  Record Id  Submit Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Ssra Submit",
+    "tags": [
+     "Site-specific risk assessments"
+    ]
+   }
+  },
+  "/api/ssra/{record_id}/unarchive": {
+   "post": {
+    "operationId": "ssra_unarchive_api_ssra__record_id__unarchive_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Ssra Unarchive Api Ssra  Record Id  Unarchive Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Ssra Unarchive",
+    "tags": [
+     "Site-specific risk assessments"
+    ]
+   }
+  },
+  "/api/swms": {
+   "get": {
+    "operationId": "swms_list_api_swms_get",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "status",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Status"
+      }
+     },
+     {
+      "in": "query",
+      "name": "q",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "maxLength": 100,
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Q"
+      }
+     },
+     {
+      "in": "query",
+      "name": "category",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "maxLength": 60,
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Category"
+      }
+     },
+     {
+      "in": "query",
+      "name": "date_from",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "format": "date",
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Date From"
+      }
+     },
+     {
+      "in": "query",
+      "name": "date_to",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "format": "date",
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Date To"
+      }
+     },
+     {
+      "in": "query",
+      "name": "include_archived",
+      "required": false,
+      "schema": {
+       "default": false,
+       "title": "Include Archived",
+       "type": "boolean"
+      }
+     },
+     {
+      "in": "query",
+      "name": "include_superseded",
+      "required": false,
+      "schema": {
+       "default": false,
+       "title": "Include Superseded",
+       "type": "boolean"
+      }
+     },
+     {
+      "in": "query",
+      "name": "limit",
+      "required": false,
+      "schema": {
+       "default": 50,
+       "maximum": 200,
+       "minimum": 1,
+       "title": "Limit",
+       "type": "integer"
+      }
+     },
+     {
+      "in": "query",
+      "name": "offset",
+      "required": false,
+      "schema": {
+       "default": 0,
+       "minimum": 0,
+       "title": "Offset",
+       "type": "integer"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Swms List Api Swms Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Swms List",
+    "tags": [
+     "SWMS"
+    ]
+   },
+   "post": {
+    "operationId": "swms_create_api_swms_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/RecordIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Swms Create Api Swms Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Swms Create",
+    "tags": [
+     "SWMS"
+    ]
+   }
+  },
+  "/api/swms/archive": {
+   "post": {
+    "description": "Archive many records by explicit ids or by criteria. Runs as a preview unless dry_run is false.",
+    "operationId": "swms_bulk_archive_api_swms_archive_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/BulkArchiveIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Swms Bulk Archive Api Swms Archive Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Swms Bulk Archive",
+    "tags": [
+     "SWMS"
+    ]
+   }
+  },
+  "/api/swms/schema": {
+   "get": {
+    "operationId": "swms_schema_api_swms_schema_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Swms Schema Api Swms Schema Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Swms Schema",
+    "tags": [
+     "SWMS"
+    ]
+   }
+  },
+  "/api/swms/unarchive-batch/{batch_id}": {
+   "post": {
+    "operationId": "swms_unarchive_batch_api_swms_unarchive_batch__batch_id__post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "batch_id",
+      "required": true,
+      "schema": {
+       "title": "Batch Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Swms Unarchive Batch Api Swms Unarchive Batch  Batch Id  Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Swms Unarchive Batch",
+    "tags": [
+     "SWMS"
+    ]
+   }
+  },
+  "/api/swms/{record_id}": {
+   "delete": {
+    "description": "Remove from the register. An author may discard their own draft; anything else needs the delete right.",
+    "operationId": "swms_delete_api_swms__record_id__delete",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": {
+          "type": "boolean"
+         },
+         "title": "Response Swms Delete Api Swms  Record Id  Delete",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Swms Delete",
+    "tags": [
+     "SWMS"
+    ]
+   },
+   "get": {
+    "operationId": "swms_get_api_swms__record_id__get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Swms Get Api Swms  Record Id  Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Swms Get",
+    "tags": [
+     "SWMS"
+    ]
+   },
+   "patch": {
+    "operationId": "swms_patch_api_swms__record_id__patch",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/RecordPatch"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Swms Patch Api Swms  Record Id  Patch",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Swms Patch",
+    "tags": [
+     "SWMS"
+    ]
+   }
+  },
+  "/api/swms/{record_id}/acknowledge": {
+   "post": {
+    "description": "Sign off this exact version. The sign-off stays on this version when a newer one is approved.",
+    "operationId": "acknowledge_api_swms__record_id__acknowledge_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/AcknowledgeIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Acknowledge Api Swms  Record Id  Acknowledge Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Acknowledge",
+    "tags": [
+     "SWMS"
+    ]
+   }
+  },
+  "/api/swms/{record_id}/acknowledgements": {
+   "get": {
+    "operationId": "acknowledgements_api_swms__record_id__acknowledgements_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Acknowledgements Api Swms  Record Id  Acknowledgements Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Acknowledgements",
+    "tags": [
+     "SWMS"
+    ]
+   }
+  },
+  "/api/swms/{record_id}/archive": {
+   "post": {
+    "operationId": "swms_archive_api_swms__record_id__archive_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Swms Archive Api Swms  Record Id  Archive Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Swms Archive",
+    "tags": [
+     "SWMS"
+    ]
+   }
+  },
+  "/api/swms/{record_id}/assignments": {
+   "get": {
+    "operationId": "get_assignments_api_swms__record_id__assignments_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Get Assignments Api Swms  Record Id  Assignments Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Get Assignments",
+    "tags": [
+     "SWMS"
+    ]
+   },
+   "put": {
+    "description": "Replace who this SWMS is assigned to (roles, named people, companies). Empty means everyone who can view SWMS.",
+    "operationId": "put_assignments_api_swms__record_id__assignments_put",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/AssignmentsIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Put Assignments Api Swms  Record Id  Assignments Put",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Put Assignments",
+    "tags": [
+     "SWMS"
+    ]
+   }
+  },
+  "/api/swms/{record_id}/files": {
+   "post": {
+    "operationId": "swms_upload_file_api_swms__record_id__files_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "multipart/form-data": {
+       "schema": {
+        "$ref": "#/components/schemas/Body_swms_upload_file_api_swms__record_id__files_post"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Swms Upload File Api Swms  Record Id  Files Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Swms Upload File",
+    "tags": [
+     "SWMS"
+    ]
+   }
+  },
+  "/api/swms/{record_id}/files/{file_id}": {
+   "delete": {
+    "operationId": "swms_remove_file_api_swms__record_id__files__file_id__delete",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "path",
+      "name": "file_id",
+      "required": true,
+      "schema": {
+       "title": "File Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": {
+          "type": "boolean"
+         },
+         "title": "Response Swms Remove File Api Swms  Record Id  Files  File Id  Delete",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Swms Remove File",
+    "tags": [
+     "SWMS"
+    ]
+   },
+   "get": {
+    "description": "A file is only reachable through a record the caller is allowed to see.",
+    "operationId": "swms_download_file_api_swms__record_id__files__file_id__get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "path",
+      "name": "file_id",
+      "required": true,
+      "schema": {
+       "title": "File Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "download",
+      "required": false,
+      "schema": {
+       "default": 0,
+       "maximum": 1,
+       "minimum": 0,
+       "title": "Download",
+       "type": "integer"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Swms Download File",
+    "tags": [
+     "SWMS"
+    ]
+   }
+  },
+  "/api/swms/{record_id}/history": {
+   "get": {
+    "operationId": "swms_history_api_swms__record_id__history_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Swms History Api Swms  Record Id  History Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Swms History",
+    "tags": [
+     "SWMS"
+    ]
+   }
+  },
+  "/api/swms/{record_id}/new-version": {
+   "post": {
+    "description": "Start a new draft from an approved SWMS. The approved one stays in force, with its\nacknowledgements, until the new version is approved.",
+    "operationId": "new_version_api_swms__record_id__new_version_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response New Version Api Swms  Record Id  New Version Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "New Version",
+    "tags": [
+     "SWMS"
+    ]
+   }
+  },
+  "/api/swms/{record_id}/pdf": {
+   "get": {
+    "operationId": "swms_pdf_api_swms__record_id__pdf_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "download",
+      "required": false,
+      "schema": {
+       "default": 0,
+       "maximum": 1,
+       "minimum": 0,
+       "title": "Download",
+       "type": "integer"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Swms Pdf",
+    "tags": [
+     "SWMS"
+    ]
+   }
+  },
+  "/api/swms/{record_id}/review": {
+   "post": {
+    "description": "Approve, return for changes, or reject. Only a person, never an automated step, can approve.",
+    "operationId": "swms_review_api_swms__record_id__review_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ReviewIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Swms Review Api Swms  Record Id  Review Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Swms Review",
+    "tags": [
+     "SWMS"
+    ]
+   }
+  },
+  "/api/swms/{record_id}/submit": {
+   "post": {
+    "operationId": "swms_submit_api_swms__record_id__submit_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "anyOf": [
+         {
+          "$ref": "#/components/schemas/RecordPatch"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "title": "Body"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Swms Submit Api Swms  Record Id  Submit Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Swms Submit",
+    "tags": [
+     "SWMS"
+    ]
+   }
+  },
+  "/api/swms/{record_id}/unarchive": {
+   "post": {
+    "operationId": "swms_unarchive_api_swms__record_id__unarchive_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Swms Unarchive Api Swms  Record Id  Unarchive Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Swms Unarchive",
+    "tags": [
+     "SWMS"
+    ]
+   }
+  },
+  "/api/swms/{record_id}/versions": {
+   "get": {
+    "description": "Every version in this SWMS's chain, newest first.",
+    "operationId": "versions_api_swms__record_id__versions_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Versions Api Swms  Record Id  Versions Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Versions",
+    "tags": [
+     "SWMS"
     ]
    }
   },

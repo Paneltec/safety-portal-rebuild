@@ -136,6 +136,14 @@ def _answer(field: dict[str, Any], value: Any, files: dict[str, dict[str, Any]],
         return [_p(", ".join(v["label"] for v in (value if isinstance(value, list) else [value])))]
     if ftype in ("job_picker", "site_picker", "asset_qr"):
         return [_p(value["label"])]
+    if ftype == "table":
+        columns = field.get("config", {}).get("table_columns", [])
+        head = [Paragraph(escape(c["label"]), ParagraphStyle("th", parent=SMALL, fontName="Helvetica-Bold")) for c in columns]
+        body = [[_p(row.get(c["id"], ""), ParagraphStyle("td", parent=BODY, fontSize=9, leading=11.5)) for c in columns] for row in value]
+        table = Table([head, *body], colWidths=[width / max(len(columns), 1)] * len(columns), repeatRows=1)
+        table.setStyle(TableStyle([("GRID", (0, 0), (-1, -1), 0.5, LINE), ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#F3F5F7")),
+                                   ("VALIGN", (0, 0), (-1, -1), "TOP"), ("LEFTPADDING", (0, 0), (-1, -1), 4), ("RIGHTPADDING", (0, 0), (-1, -1), 4)]))
+        return [Spacer(1, 3), table]
     if ftype == "corrective_actions":
         return [
             _p(f"{i}. {a['description']} — {a['responsible']}"
@@ -193,7 +201,7 @@ def submission_pdf(
             continue
         block = [_p(field["label"], LABEL), *_answer(field, values.get(field["id"]), files, width - 4 * mm)]
         rule = HRFlowable(width="100%", thickness=0.5, color=LINE, spaceBefore=5, spaceAfter=5)
-        if field["type"] in ("photo", "attachment", "textarea", "corrective_actions"):
+        if field["type"] in ("photo", "attachment", "textarea", "corrective_actions", "table"):
             # Long answers flow on to the next page; the label stays with the first part.
             story += [KeepTogether(block[:2]), *block[2:], rule]
         else:

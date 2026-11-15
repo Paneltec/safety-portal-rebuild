@@ -17,7 +17,19 @@ export function Shell() {
   // Only screens that exist are listed, so no menu item leads to a blank page.
   const groups: { label: string; items: NavItem[] }[] = [
     { label: "Overview", items: [{ to: "/app/home", label: "Home", show: true }] },
-    { label: "Capture", items: [{ to: "/app/forms", label: "Forms", show: can("forms", "view") }] },
+    {
+      label: "Capture",
+      items: [
+        { to: "/app/r/swms", label: "SWMS", show: can("swms", "view") },
+        { to: "/app/r/pre-starts", label: "Pre-starts", show: can("pre_starts", "view") },
+        { to: "/app/r/site-diary", label: "Site diary", show: can("site_diary", "view") },
+        { to: "/app/r/incidents", label: "Incidents & hazards", show: can("incidents", "view") || can("hazards", "view") },
+        { to: "/app/r/inspections", label: "Inspections", show: can("inspections", "view") },
+        { to: "/app/r/risk-assessments", label: "Risk assessments", show: can("risk_assessments", "view") },
+        { to: "/app/r/ssra", label: "SSRA", show: can("risk_assessments", "view") },
+        { to: "/app/forms", label: "Forms", show: can("forms", "view") },
+      ],
+    },
     { label: "Compliance", items: [{ to: "/app/documents", label: "Document library", show: can("documents", "view") }] },
     {
       label: "Settings",
@@ -58,7 +70,7 @@ export function Shell() {
             </div>
           );
         })}
-        <div className="nav-note">Capture, compliance, fleet, fuel and pay arrive in later build stages. See Home for progress.</div>
+        <div className="nav-note">Workers, suppliers, fleet, fuel and pay arrive in later build stages. See Home for progress.</div>
       </nav>
       <div className="content">
         <header className="topbar">

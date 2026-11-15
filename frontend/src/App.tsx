@@ -10,6 +10,7 @@ import { FormSubmissions, Forms } from "./pages/Forms";
 import { SubmissionPage } from "./pages/Submission";
 import { Home } from "./pages/Home";
 import { Profile } from "./pages/Profile";
+import { RegisterList, RegisterNew, RegisterRecord } from "./pages/Register";
 import { Roles } from "./pages/Roles";
 import { Sessions } from "./pages/Sessions";
 import { UserDetail } from "./pages/UserDetail";
@@ -38,6 +39,9 @@ export function App() {
         <Route index element={<Navigate to="/app/home" replace />} />
         <Route path="home" element={<Home />} />
         <Route path="profile" element={<Profile />} />
+        <Route path="r/:register" element={<RegisterList />} />
+        <Route path="r/:register/new" element={<RegisterNew />} />
+        <Route path="r/:register/:recordId" element={<RegisterRecord />} />
         <Route path="forms" element={<Forms />} />
         <Route path="forms/templates/:templateId/edit" element={<FormEditor />} />
         <Route path="forms/templates/:templateId/submissions" element={<FormSubmissions />} />
