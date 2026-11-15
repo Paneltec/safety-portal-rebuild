@@ -1,0 +1,83 @@
+# Safety Portal (independent rebuild)
+
+A new implementation of the Paneltec Safety Portal, built from the written reconstruction pack only. It is separate from the existing portal: it has its own database, its own secrets and synthetic demo data. Nothing here connects to the live system.
+
+**Current state: stage 1 of 9 is built and tested** (sign-in, sessions, invitations and resets, users, roles, permission matrix, per-person overrides, presets, audit). See `docs/STAGED_PLAN.md` for what comes next and `docs/ledger/` for status per requirement and per API operation.
+
+## What is in the repository
+
+| Path | Contents |
+|---|---|
+| `backend/` | FastAPI service, PostgreSQL models, Alembic migrations, tests |
+| `frontend/` | React + TypeScript office web app |
+| `docs/ADR-001-architecture.md` | Stack choice and every recorded decision |
+| `docs/STAGED_PLAN.md` | The nine build stages |
+| `docs/DESIGN_SYSTEM.md` | Colours, type and interface rules |
+| `docs/DATA_MODEL.md` | Tables and relationships |
+| `docs/openapi.json` | OpenAPI generated from the running handlers |
+| `docs/ledger/` | Feature and endpoint coverage ledgers |
+| `docker-compose.yml`, `.env.example` | Deployment |
+
+## Run with Docker (NAS, Portainer or Umbrel)
+
+```bash
+cp .env.example .env          # then set POSTGRES_PASSWORD (and PUBLIC_BASE_URL if you have one)
+docker compose up -d --build
+```
+
+Create the first admin. This prints a one-time path for setting the password:
+
+```bash
+docker compose exec api python -m app.seed create-admin --org "Paneltec" --name "Your Name" --email you@example.com
+```
+
+Open `http://<server>:3960` followed by the printed path (for example `/accept-invite?token=...`).
+
+Optional synthetic demo data (two organisations, nine invented people each):
+
+```bash
+docker compose exec -e DEMO_PASSWORD='choose-a-demo-password' api python -m app.seed demo
+```
+
+Database migrations run automatically each time the `api` container starts. Business data lives in the `db-data` volume; rebuilding or replacing the containers does not touch it.
+
+> The Docker files were written but could not be run in the build environment (no Docker daemon there). The same code was run directly, as described below.
+
+## Run for development
+
+Needs Python 3.13, Node 22 and PostgreSQL 16.
+
+```bash
+# database (once)
+createuser portal --pwprompt && createdb portal -O portal && createdb portal_test -O portal
+
+# API
+cd backend
+python -m venv .venv && .venv/bin/pip install -r requirements-dev.txt
+export DATABASE_URL=postgresql+psycopg://portal:<password>@localhost:5432/portal
+.venv/bin/alembic upgrade head
+.venv/bin/uvicorn app.main:app --reload --port 8000
+
+# web app (second terminal)
+cd frontend
+npm ci
+npm run dev        # http://localhost:5173, proxies /api to port 8000
+```
+
+API documentation is served at `/api/docs`.
+
+## Tests
+
+```bash
+cd backend
+TEST_DATABASE_URL=postgresql+psycopg://portal:<password>@localhost:5432/portal_test .venv/bin/python -m pytest
+cd ../frontend && npm run build     # type-check and production build
+```
+
+The backend suite runs against a real PostgreSQL database that it migrates with Alembic and empties before each test. It covers allowed and denied paths, two organisations with identically named people, single-use links, session revocation and that the migrations match the models.
+
+## Safety boundaries
+
+- No email, SMS, payment or lodgement is sent by this build. Invitation and reset links are shown once to the admin and logged as "held".
+- Payroll access is denied to everyone except the address in `PAYROLL_OWNER_EMAIL`; an ordinary admin has none.
+- Secrets come from `.env`, which is never committed. There are no default passwords.

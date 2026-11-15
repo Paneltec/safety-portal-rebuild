@@ -1,0 +1,46 @@
+"""Application factory."""
+import uuid
+
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
+
+from .config import get_settings
+from .routers import auth, org, presets, roles, sessions, users
+
+
+def create_app() -> FastAPI:
+    settings = get_settings()
+    app = FastAPI(
+        title="Safety Portal API",
+        version=settings.app_version,
+        description="Independent reconstruction. Stage 1: identity, sessions, roles and permissions.",
+        docs_url="/api/docs",
+        openapi_url="/api/openapi.json",
+        redoc_url=None,
+    )
+
+    @app.middleware("http")
+    async def request_id(request: Request, call_next):
+        # A request ID links audit entries and error reports without exposing secrets.
+        rid = uuid.uuid4().hex
+        request.state.request_id = rid
+        try:
+            response = await call_next(request)
+        except Exception:  # noqa: BLE001 - never leak internals to the client
+            response = JSONResponse({"detail": "Something went wrong on the server", "request_id": rid}, status_code=500)
+        response.headers["X-Request-ID"] = rid
+        response.headers.setdefault("Cache-Control", "no-store")
+        response.headers.setdefault("X-Content-Type-Options", "nosniff")
+        return response
+
+    # Static paths are registered before parameterised ones inside each router.
+    app.include_router(org.router)
+    app.include_router(auth.router)
+    app.include_router(users.router)
+    app.include_router(roles.router)
+    app.include_router(presets.router)
+    app.include_router(sessions.router)
+    return app
+
+
+app = create_app()

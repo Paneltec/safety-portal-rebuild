@@ -1,0 +1,1244 @@
+{
+ "actions": [
+  "open",
+  "view",
+  "edit",
+  "delete",
+  "email",
+  "team_view",
+  "use",
+  "approve",
+  "reveal_pii",
+  "archive",
+  "reimport",
+  "audit_view"
+ ],
+ "team_scoped_resources": [
+  "hazards",
+  "incidents",
+  "inductions",
+  "inspections",
+  "pre_starts",
+  "site_diary",
+  "workers"
+ ],
+ "resources": {
+  "swms": {
+   "label": "SWMS",
+   "email_supported": true,
+   "delete_supported": true
+  },
+  "pre_starts": {
+   "label": "Pre-starts",
+   "email_supported": true,
+   "delete_supported": true
+  },
+  "site_diary": {
+   "label": "Site diary",
+   "email_supported": true,
+   "delete_supported": true
+  },
+  "hazards": {
+   "label": "Hazards",
+   "email_supported": true,
+   "delete_supported": true
+  },
+  "incidents": {
+   "label": "Incidents",
+   "email_supported": true,
+   "delete_supported": true
+  },
+  "inspections": {
+   "label": "Inspections",
+   "email_supported": true,
+   "delete_supported": true
+  },
+  "risk_assessments": {
+   "label": "Risk Assessments",
+   "email_supported": true,
+   "delete_supported": true
+  },
+  "contractors": {
+   "label": "Contractors",
+   "email_supported": true,
+   "delete_supported": true
+  },
+  "renewals": {
+   "label": "Renewal links",
+   "email_supported": true,
+   "delete_supported": true
+  },
+  "audit_exports": {
+   "label": "Audit exports",
+   "email_supported": true,
+   "delete_supported": false
+  },
+  "vehicles": {
+   "label": "Vehicles",
+   "email_supported": false,
+   "delete_supported": true
+  },
+  "assets": {
+   "label": "Plant & Vehicles",
+   "email_supported": false,
+   "delete_supported": true
+  },
+  "integrations": {
+   "label": "Integrations",
+   "email_supported": false,
+   "delete_supported": false
+  },
+  "users": {
+   "label": "Users & permissions",
+   "email_supported": false,
+   "delete_supported": true
+  },
+  "workers": {
+   "label": "Workers",
+   "email_supported": false,
+   "delete_supported": true
+  },
+  "inductions": {
+   "label": "Inductions",
+   "email_supported": true,
+   "delete_supported": true
+  },
+  "certifications": {
+   "label": "Certifications",
+   "email_supported": true,
+   "delete_supported": true
+  },
+  "documents": {
+   "label": "Documents",
+   "email_supported": false,
+   "delete_supported": true
+  },
+  "forms": {
+   "label": "Forms",
+   "email_supported": false,
+   "delete_supported": true
+  },
+  "suppliers": {
+   "label": "Suppliers",
+   "email_supported": false,
+   "delete_supported": true
+  },
+  "ai": {
+   "label": "AI features",
+   "email_supported": false,
+   "delete_supported": false
+  },
+  "reference_library": {
+   "label": "Reference Library",
+   "email_supported": false,
+   "delete_supported": true
+  },
+  "notifications": {
+   "label": "Notifications",
+   "email_supported": false,
+   "delete_supported": true
+  },
+  "help": {
+   "label": "Help / User Manual",
+   "email_supported": false,
+   "delete_supported": true
+  },
+  "sites": {
+   "label": "Sites (QR sign-on)",
+   "email_supported": false,
+   "delete_supported": true
+  },
+  "hr_employees": {
+   "label": "HR Employees",
+   "email_supported": false,
+   "delete_supported": true
+  },
+  "payroll": {
+   "label": "Paneltec Pay (named administrators only)",
+   "email_supported": false,
+   "delete_supported": false
+  },
+  "comms_safe_mode": {
+   "label": "Comms Safe Mode",
+   "email_supported": false,
+   "delete_supported": false
+  },
+  "sites_visitors": {
+   "label": "Site visitors",
+   "email_supported": false,
+   "delete_supported": true
+  },
+  "mobile_preview": {
+   "label": "Mobile phone preview",
+   "email_supported": false,
+   "delete_supported": false
+  }
+ },
+ "role_defaults": {
+  "admin": {
+   "swms": [
+    "open",
+    "view",
+    "edit",
+    "delete",
+    "email",
+    "team_view",
+    "use",
+    "approve",
+    "reveal_pii",
+    "archive",
+    "reimport",
+    "audit_view"
+   ],
+   "pre_starts": [
+    "open",
+    "view",
+    "edit",
+    "delete",
+    "email",
+    "team_view",
+    "use",
+    "approve",
+    "reveal_pii",
+    "archive",
+    "reimport",
+    "audit_view"
+   ],
+   "site_diary": [
+    "open",
+    "view",
+    "edit",
+    "delete",
+    "email",
+    "team_view",
+    "use",
+    "approve",
+    "reveal_pii",
+    "archive",
+    "reimport",
+    "audit_view"
+   ],
+   "hazards": [
+    "open",
+    "view",
+    "edit",
+    "delete",
+    "email",
+    "team_view",
+    "use",
+    "approve",
+    "reveal_pii",
+    "archive",
+    "reimport",
+    "audit_view"
+   ],
+   "incidents": [
+    "open",
+    "view",
+    "edit",
+    "delete",
+    "email",
+    "team_view",
+    "use",
+    "approve",
+    "reveal_pii",
+    "archive",
+    "reimport",
+    "audit_view"
+   ],
+   "inspections": [
+    "open",
+    "view",
+    "edit",
+    "delete",
+    "email",
+    "team_view",
+    "use",
+    "approve",
+    "reveal_pii",
+    "archive",
+    "reimport",
+    "audit_view"
+   ],
+   "risk_assessments": [
+    "open",
+    "view",
+    "edit",
+    "delete",
+    "email",
+    "team_view",
+    "use",
+    "approve",
+    "reveal_pii",
+    "archive",
+    "reimport",
+    "audit_view"
+   ],
+   "contractors": [
+    "open",
+    "view",
+    "edit",
+    "delete",
+    "email",
+    "team_view",
+    "use",
+    "approve",
+    "reveal_pii",
+    "archive",
+    "reimport",
+    "audit_view"
+   ],
+   "renewals": [
+    "open",
+    "view",
+    "edit",
+    "delete",
+    "email",
+    "team_view",
+    "use",
+    "approve",
+    "reveal_pii",
+    "archive",
+    "reimport",
+    "audit_view"
+   ],
+   "audit_exports": [
+    "open",
+    "view",
+    "edit",
+    "delete",
+    "email",
+    "team_view",
+    "use",
+    "approve",
+    "reveal_pii",
+    "archive",
+    "reimport",
+    "audit_view"
+   ],
+   "vehicles": [
+    "open",
+    "view",
+    "edit",
+    "delete",
+    "team_view",
+    "use",
+    "approve",
+    "reveal_pii",
+    "archive",
+    "reimport",
+    "audit_view"
+   ],
+   "assets": [
+    "open",
+    "view",
+    "edit",
+    "delete",
+    "team_view",
+    "use",
+    "approve",
+    "reveal_pii",
+    "archive",
+    "reimport",
+    "audit_view"
+   ],
+   "integrations": [
+    "open",
+    "view",
+    "edit",
+    "delete",
+    "team_view",
+    "use",
+    "approve",
+    "reveal_pii",
+    "archive",
+    "reimport",
+    "audit_view"
+   ],
+   "users": [
+    "open",
+    "view",
+    "edit",
+    "delete",
+    "team_view",
+    "use",
+    "approve",
+    "reveal_pii",
+    "archive",
+    "reimport",
+    "audit_view"
+   ],
+   "workers": [
+    "open",
+    "view",
+    "edit",
+    "delete",
+    "team_view",
+    "use",
+    "approve",
+    "reveal_pii",
+    "archive",
+    "reimport",
+    "audit_view"
+   ],
+   "inductions": [
+    "open",
+    "view",
+    "edit",
+    "delete",
+    "email",
+    "team_view",
+    "use",
+    "approve",
+    "reveal_pii",
+    "archive",
+    "reimport",
+    "audit_view"
+   ],
+   "certifications": [
+    "open",
+    "view",
+    "edit",
+    "delete",
+    "email",
+    "team_view",
+    "use",
+    "approve",
+    "reveal_pii",
+    "archive",
+    "reimport",
+    "audit_view"
+   ],
+   "documents": [
+    "open",
+    "view",
+    "edit",
+    "delete",
+    "team_view",
+    "use",
+    "approve",
+    "reveal_pii",
+    "archive",
+    "reimport",
+    "audit_view"
+   ],
+   "forms": [
+    "open",
+    "view",
+    "edit",
+    "delete",
+    "team_view",
+    "use",
+    "approve",
+    "reveal_pii",
+    "archive",
+    "reimport",
+    "audit_view"
+   ],
+   "suppliers": [
+    "open",
+    "view",
+    "edit",
+    "delete",
+    "team_view",
+    "use",
+    "approve",
+    "reveal_pii",
+    "archive",
+    "reimport",
+    "audit_view"
+   ],
+   "ai": [
+    "open",
+    "view",
+    "edit",
+    "delete",
+    "team_view",
+    "use",
+    "approve",
+    "reveal_pii",
+    "archive",
+    "reimport",
+    "audit_view"
+   ],
+   "reference_library": [
+    "open",
+    "view",
+    "edit",
+    "delete",
+    "team_view",
+    "use",
+    "approve",
+    "reveal_pii",
+    "archive",
+    "reimport",
+    "audit_view"
+   ],
+   "notifications": [
+    "open",
+    "view",
+    "edit",
+    "delete",
+    "team_view",
+    "use",
+    "approve",
+    "reveal_pii",
+    "archive",
+    "reimport",
+    "audit_view"
+   ],
+   "help": [
+    "open",
+    "view",
+    "edit",
+    "delete",
+    "team_view",
+    "use",
+    "approve",
+    "reveal_pii",
+    "archive",
+    "reimport",
+    "audit_view"
+   ],
+   "sites": [
+    "open",
+    "view",
+    "edit",
+    "delete",
+    "team_view",
+    "use",
+    "approve",
+    "reveal_pii",
+    "archive",
+    "reimport",
+    "audit_view"
+   ],
+   "hr_employees": [
+    "open",
+    "view",
+    "edit",
+    "delete",
+    "team_view",
+    "use",
+    "approve",
+    "reveal_pii",
+    "archive",
+    "reimport",
+    "audit_view"
+   ],
+   "payroll": [
+    "open",
+    "view",
+    "edit",
+    "delete",
+    "team_view",
+    "use",
+    "approve",
+    "reveal_pii",
+    "archive",
+    "reimport",
+    "audit_view"
+   ],
+   "comms_safe_mode": [
+    "open",
+    "view",
+    "edit",
+    "delete",
+    "team_view",
+    "use",
+    "approve",
+    "reveal_pii",
+    "archive",
+    "reimport",
+    "audit_view"
+   ],
+   "sites_visitors": [
+    "view",
+    "edit",
+    "delete"
+   ],
+   "mobile_preview": [
+    "open",
+    "view",
+    "edit",
+    "delete",
+    "team_view",
+    "use",
+    "approve",
+    "reveal_pii",
+    "archive",
+    "reimport",
+    "audit_view"
+   ]
+  },
+  "hseq_lead": {
+   "swms": [
+    "open",
+    "view",
+    "edit",
+    "email",
+    "team_view",
+    "use",
+    "reveal_pii",
+    "archive",
+    "reimport",
+    "audit_view"
+   ],
+   "pre_starts": [
+    "open",
+    "view",
+    "edit",
+    "email",
+    "team_view",
+    "use",
+    "reveal_pii",
+    "archive",
+    "reimport",
+    "audit_view"
+   ],
+   "site_diary": [
+    "open",
+    "view",
+    "edit",
+    "email",
+    "team_view",
+    "use",
+    "reveal_pii",
+    "archive",
+    "reimport",
+    "audit_view"
+   ],
+   "hazards": [
+    "open",
+    "view",
+    "edit",
+    "email",
+    "team_view",
+    "use",
+    "reveal_pii",
+    "archive",
+    "reimport",
+    "audit_view"
+   ],
+   "incidents": [
+    "open",
+    "view",
+    "edit",
+    "email",
+    "team_view",
+    "use",
+    "reveal_pii",
+    "archive",
+    "reimport",
+    "audit_view"
+   ],
+   "inspections": [
+    "open",
+    "view",
+    "edit",
+    "email",
+    "team_view",
+    "use",
+    "reveal_pii",
+    "archive",
+    "reimport",
+    "audit_view"
+   ],
+   "risk_assessments": [
+    "open",
+    "view",
+    "edit",
+    "email",
+    "team_view",
+    "use",
+    "reveal_pii",
+    "archive",
+    "reimport",
+    "audit_view"
+   ],
+   "contractors": [
+    "open",
+    "view",
+    "edit",
+    "email",
+    "team_view",
+    "use",
+    "reveal_pii",
+    "archive",
+    "reimport",
+    "audit_view"
+   ],
+   "renewals": [
+    "open",
+    "view",
+    "edit",
+    "email",
+    "team_view",
+    "use",
+    "reveal_pii",
+    "archive",
+    "reimport",
+    "audit_view"
+   ],
+   "audit_exports": [
+    "open",
+    "view",
+    "edit",
+    "email",
+    "team_view",
+    "use",
+    "reveal_pii",
+    "archive",
+    "reimport",
+    "audit_view"
+   ],
+   "vehicles": [
+    "open",
+    "view",
+    "edit",
+    "team_view",
+    "use",
+    "reveal_pii",
+    "archive",
+    "reimport",
+    "audit_view"
+   ],
+   "assets": [
+    "open",
+    "view",
+    "edit",
+    "team_view",
+    "use",
+    "reveal_pii",
+    "archive",
+    "reimport",
+    "audit_view"
+   ],
+   "integrations": [
+    "open",
+    "view",
+    "edit",
+    "team_view",
+    "use",
+    "reveal_pii",
+    "archive",
+    "reimport",
+    "audit_view"
+   ],
+   "users": [
+    "open",
+    "view",
+    "edit",
+    "team_view",
+    "use",
+    "reveal_pii",
+    "archive",
+    "reimport",
+    "audit_view"
+   ],
+   "workers": [
+    "open",
+    "view",
+    "edit",
+    "team_view",
+    "use",
+    "reveal_pii",
+    "archive",
+    "reimport",
+    "audit_view"
+   ],
+   "inductions": [
+    "open",
+    "view",
+    "edit",
+    "email",
+    "team_view",
+    "use",
+    "reveal_pii",
+    "archive",
+    "reimport",
+    "audit_view"
+   ],
+   "certifications": [
+    "open",
+    "view",
+    "edit",
+    "email",
+    "team_view",
+    "use",
+    "reveal_pii",
+    "archive",
+    "reimport",
+    "audit_view"
+   ],
+   "documents": [
+    "open",
+    "view",
+    "edit",
+    "team_view",
+    "use",
+    "reveal_pii",
+    "archive",
+    "reimport",
+    "audit_view"
+   ],
+   "forms": [
+    "open",
+    "view",
+    "edit",
+    "team_view",
+    "use",
+    "reveal_pii",
+    "archive",
+    "reimport",
+    "audit_view"
+   ],
+   "suppliers": [
+    "open",
+    "view",
+    "edit",
+    "team_view",
+    "use",
+    "reveal_pii",
+    "archive",
+    "reimport",
+    "audit_view"
+   ],
+   "reference_library": [
+    "open",
+    "view",
+    "edit",
+    "team_view",
+    "use",
+    "reveal_pii",
+    "archive",
+    "reimport",
+    "audit_view"
+   ],
+   "sites": [
+    "open",
+    "view",
+    "edit",
+    "team_view",
+    "use",
+    "reveal_pii",
+    "archive",
+    "reimport",
+    "audit_view"
+   ],
+   "hr_employees": [
+    "open",
+    "view"
+   ]
+  },
+  "contractor_rep": {
+   "contractors": [
+    "open",
+    "view",
+    "edit",
+    "email"
+   ],
+   "workers": [
+    "open",
+    "view",
+    "edit"
+   ],
+   "certifications": [
+    "open",
+    "view",
+    "edit",
+    "email"
+   ],
+   "inductions": [
+    "open",
+    "view",
+    "edit",
+    "email"
+   ],
+   "documents": [
+    "open",
+    "view",
+    "edit"
+   ]
+  },
+  "contractor_rep_submit_only": {
+   "contractors": [
+    "view"
+   ],
+   "documents": [
+    "open",
+    "view",
+    "edit"
+   ],
+   "certifications": [
+    "view",
+    "edit"
+   ],
+   "forms": [
+    "open",
+    "view",
+    "edit"
+   ]
+  },
+  "supervisor": {
+   "swms": [
+    "open",
+    "view",
+    "edit",
+    "email",
+    "team_view",
+    "use",
+    "reveal_pii",
+    "archive",
+    "reimport",
+    "audit_view"
+   ],
+   "pre_starts": [
+    "open",
+    "view",
+    "edit",
+    "email",
+    "team_view",
+    "use",
+    "reveal_pii",
+    "archive",
+    "reimport",
+    "audit_view"
+   ],
+   "site_diary": [
+    "open",
+    "view",
+    "edit",
+    "email",
+    "team_view",
+    "use",
+    "reveal_pii",
+    "archive",
+    "reimport",
+    "audit_view"
+   ],
+   "hazards": [
+    "open",
+    "view",
+    "edit",
+    "email",
+    "team_view",
+    "use",
+    "reveal_pii",
+    "archive",
+    "reimport",
+    "audit_view"
+   ],
+   "incidents": [
+    "open",
+    "view",
+    "edit",
+    "email",
+    "team_view",
+    "use",
+    "reveal_pii",
+    "archive",
+    "reimport",
+    "audit_view"
+   ],
+   "inspections": [
+    "open",
+    "view",
+    "edit",
+    "email",
+    "team_view",
+    "use",
+    "reveal_pii",
+    "archive",
+    "reimport",
+    "audit_view"
+   ],
+   "risk_assessments": [
+    "open",
+    "view",
+    "edit",
+    "email",
+    "team_view",
+    "use",
+    "reveal_pii",
+    "archive",
+    "reimport",
+    "audit_view"
+   ],
+   "contractors": [
+    "open",
+    "view",
+    "edit",
+    "email",
+    "team_view",
+    "use",
+    "reveal_pii",
+    "archive",
+    "reimport",
+    "audit_view"
+   ],
+   "renewals": [
+    "open",
+    "view",
+    "edit",
+    "email",
+    "team_view",
+    "use",
+    "reveal_pii",
+    "archive",
+    "reimport",
+    "audit_view"
+   ],
+   "audit_exports": [
+    "open",
+    "view",
+    "email"
+   ],
+   "vehicles": [
+    "open",
+    "view"
+   ],
+   "assets": [
+    "open",
+    "view"
+   ],
+   "integrations": [],
+   "users": [],
+   "workers": [
+    "open",
+    "view",
+    "team_view"
+   ],
+   "inductions": [
+    "open",
+    "view",
+    "edit",
+    "team_view"
+   ],
+   "certifications": [
+    "open",
+    "view"
+   ],
+   "documents": [
+    "open",
+    "view"
+   ],
+   "forms": [
+    "open",
+    "view",
+    "edit",
+    "team_view"
+   ],
+   "suppliers": [
+    "open",
+    "view"
+   ],
+   "ai": [
+    "open",
+    "view",
+    "edit",
+    "use"
+   ]
+  },
+  "worker": {
+   "swms": [
+    "open",
+    "view"
+   ],
+   "pre_starts": [
+    "open",
+    "view",
+    "edit"
+   ],
+   "site_diary": [
+    "open",
+    "view",
+    "edit"
+   ],
+   "hazards": [
+    "open",
+    "view",
+    "edit"
+   ],
+   "incidents": [
+    "open",
+    "view",
+    "edit"
+   ],
+   "inspections": [
+    "open",
+    "view"
+   ],
+   "risk_assessments": [
+    "open",
+    "view"
+   ],
+   "contractors": [],
+   "renewals": [],
+   "audit_exports": [],
+   "vehicles": [],
+   "assets": [],
+   "integrations": [],
+   "users": [],
+   "workers": [
+    "open",
+    "view"
+   ],
+   "inductions": [
+    "open",
+    "view"
+   ],
+   "certifications": [
+    "open",
+    "view"
+   ],
+   "documents": [],
+   "forms": [
+    "open",
+    "view",
+    "edit"
+   ],
+   "suppliers": [],
+   "ai": []
+  },
+  "auditor": {
+   "swms": [
+    "open",
+    "view",
+    "email"
+   ],
+   "pre_starts": [
+    "open",
+    "view",
+    "email",
+    "team_view"
+   ],
+   "site_diary": [
+    "open",
+    "view",
+    "email",
+    "team_view"
+   ],
+   "hazards": [
+    "open",
+    "view",
+    "email",
+    "team_view"
+   ],
+   "incidents": [
+    "open",
+    "view",
+    "email",
+    "team_view"
+   ],
+   "inspections": [
+    "open",
+    "view",
+    "email",
+    "team_view"
+   ],
+   "risk_assessments": [
+    "open",
+    "view",
+    "email"
+   ],
+   "contractors": [
+    "open",
+    "view",
+    "email"
+   ],
+   "renewals": [
+    "open",
+    "view",
+    "email"
+   ],
+   "audit_exports": [
+    "open",
+    "view",
+    "email"
+   ],
+   "vehicles": [
+    "open",
+    "view"
+   ],
+   "assets": [
+    "open",
+    "view"
+   ],
+   "integrations": [
+    "open",
+    "view"
+   ],
+   "workers": [
+    "open",
+    "view",
+    "team_view"
+   ],
+   "inductions": [
+    "open",
+    "view",
+    "email",
+    "team_view"
+   ],
+   "certifications": [
+    "open",
+    "view",
+    "email"
+   ],
+   "documents": [
+    "open",
+    "view"
+   ],
+   "forms": [
+    "open",
+    "view"
+   ],
+   "suppliers": [
+    "open",
+    "view"
+   ],
+   "ai": [
+    "open",
+    "view"
+   ],
+   "reference_library": [
+    "open",
+    "view"
+   ],
+   "notifications": [
+    "open",
+    "view"
+   ],
+   "help": [
+    "open",
+    "view"
+   ],
+   "sites": [
+    "open",
+    "view"
+   ],
+   "hr_employees": [
+    "open",
+    "view",
+    "audit_view"
+   ],
+   "payroll": [
+    "open",
+    "view"
+   ],
+   "comms_safe_mode": [
+    "open",
+    "view"
+   ],
+   "sites_visitors": [
+    "open",
+    "view"
+   ],
+   "mobile_preview": [
+    "open",
+    "view"
+   ],
+   "users": []
+  }
+ }
+}

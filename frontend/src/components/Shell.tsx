@@ -1,0 +1,78 @@
+import { useState } from "react";
+import { NavLink, Outlet } from "react-router-dom";
+import { useAuth } from "../auth";
+
+interface NavItem {
+  to: string;
+  label: string;
+  show: boolean;
+}
+
+export function Shell() {
+  const { me, can, signOut } = useAuth();
+  const [open, setOpen] = useState(false);
+  if (!me) return null;
+
+  const isAdmin = me.role_id === "admin";
+  // Only screens that exist are listed, so no menu item leads to a blank page.
+  const groups: { label: string; items: NavItem[] }[] = [
+    { label: "Overview", items: [{ to: "/app/home", label: "Home", show: true }] },
+    {
+      label: "Settings",
+      items: [
+        { to: "/app/settings/users", label: "Users", show: can("users", "view") },
+        { to: "/app/settings/roles", label: "Roles & permissions", show: can("users", "view") },
+        { to: "/app/settings/sessions", label: "Active sessions", show: isAdmin },
+        { to: "/app/profile", label: "My profile", show: true },
+      ],
+    },
+  ];
+
+  return (
+    <div className="shell">
+      <nav className={`sidebar${open ? " open" : ""}`} aria-label="Main menu">
+        <div className="brand">
+          <div className="brand-logo">LOGO</div>
+          <div>
+            <div className="brand-name">{me.org_name}</div>
+            <div className="brand-sub">Safety Portal</div>
+          </div>
+          <button type="button" className="btn on-ink small menu-toggle" aria-expanded={open} onClick={() => setOpen(!open)}>
+            Menu
+          </button>
+        </div>
+        {groups.map((group) => {
+          const items = group.items.filter((item) => item.show);
+          if (items.length === 0) return null;
+          return (
+            <div className="nav-group" key={group.label}>
+              <div className="nav-label">{group.label}</div>
+              {items.map((item) => (
+                <NavLink key={item.to} to={item.to} className={({ isActive }) => `nav-link${isActive ? " active" : ""}`} onClick={() => setOpen(false)}>
+                  {item.label}
+                </NavLink>
+              ))}
+            </div>
+          );
+        })}
+        <div className="nav-note">Capture, compliance, fleet, fuel and pay arrive in later build stages. See Home for progress.</div>
+      </nav>
+      <div className="content">
+        <header className="topbar">
+          <div className="topbar-user">
+            <span style={{ fontWeight: 600 }}>{me.name}</span>
+            <span className="small muted">
+              {me.role_name} · {me.org_name}
+            </span>
+          </div>
+          <button type="button" className="btn" onClick={() => void signOut()}>
+            Sign out
+          </button>
+        </header>
+        <main className="page">
+          <Outlet />
+        </main>
+      </div>
+    </div>
+  );
+}
