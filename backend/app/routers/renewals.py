@@ -47,6 +47,7 @@ STATUS_LABELS = {
 }
 PUBLIC_UPLOAD_MAX_BYTES = 15 * 1024 * 1024
 DELIVERY_NOTE = "Email delivery is not connected yet, so nothing was sent. Pass this link to the person directly."
+NO_RECIPIENT_NOTE = "No email address is recorded for them, so no message was prepared. Pass this link to the person directly."
 
 
 # ---------- bodies ----------
@@ -229,9 +230,12 @@ def _mint(db: Session, request: Request, caller: Caller, *, entity_type: str, en
     return link, token
 
 
-def _link_payload(request: Request, token: str) -> dict[str, Any]:
+def _link_payload(request: Request, token: str, link: RenewalLink) -> dict[str, Any]:
     # Shown once. Only the hash is stored, so it cannot be shown again; reissue to get a new one.
-    return {"link": f"{portal_base_url(request)}/renew/{token}", "delivery": "held", "delivery_note": DELIVERY_NOTE}
+    # `delivery` itself comes from the outbox record, so it is never reported as held when no
+    # message exists.
+    note = DELIVERY_NOTE if link.outbox_message_id else NO_RECIPIENT_NOTE
+    return {"link": f"{portal_base_url(request)}/renew/{token}", "delivery_note": note}
 
 
 # ---------- office: list and create ----------
@@ -271,7 +275,7 @@ def create_renewal(
     link, token = _mint(db, request, caller, entity_type=body.entity_type, entity=entity, doc_types=doc_types,
                         days=body.expires_in_days, recipient=recipient, subject=body.subject, message=body.message)
     db.commit()
-    return {**renewal_out(db, link, detail=True), **_link_payload(request, token)}
+    return {**renewal_out(db, link, detail=True), **_link_payload(request, token, link)}
 
 
 @router.post("/bulk", status_code=201)
@@ -296,7 +300,7 @@ def bulk_create(
             continue
         link, token = _mint(db, request, caller, entity_type="supplier", entity=supplier, doc_types=doc_types, days=body.expires_in_days,
                             recipient=supplier.contact_email, subject=body.subject, message=body.message)
-        created.append({"id": link.id, "entity_id": supplier.id, "entity_name": supplier.name, **_link_payload(request, token)})
+        created.append({"id": link.id, "entity_id": supplier.id, "entity_name": supplier.name, **_link_payload(request, token, link)})
     db.commit()
     return {"created": created, "skipped": skipped}
 
@@ -422,7 +426,7 @@ def reissue(
     audit(db, request, org_id=caller.org_id, actor_id=caller.user.id, action="renewal.reissued",
           target_type="renewal_link", target_id=link.id, detail={"round": link.round_no, "expires_at": iso(link.expires_at)})
     db.commit()
-    return {**renewal_out(db, link, detail=True), **_link_payload(request, token)}
+    return {**renewal_out(db, link, detail=True), **_link_payload(request, token, link)}
 
 
 @router.get("/{renewal_id}/uploads/{upload_id}/file")
