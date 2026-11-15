@@ -37,7 +37,7 @@ const STAGES: { name: string; detail: string; built: boolean | "partial" }[] = [
   { name: "1. Sign-in, users, roles and permissions", detail: "Logins, invitations, sessions, role catalogue, per-person access", built: true },
   { name: "2. Organisation, documents and the form engine", detail: "Organisation settings, logo, file storage, document library, form builder, form PDFs and assignments", built: true },
   { name: "3. Safety capture", detail: "SWMS, pre-starts, site diary, incidents and hazards, inspections, risk assessments, SSRA", built: true },
-  { name: "4. Workers, suppliers, sites and jobs", detail: "Workers, certifications, sites, QR sign-in and visitors are built. Still to come: suppliers and renewals, inductions, daily jobs", built: "partial" },
+  { name: "4. Workers, suppliers, sites and jobs", detail: "Workers, certifications, sites, QR sign-in, visitors, suppliers and renewal links are built. Still to come: inductions and daily jobs", built: "partial" },
   { name: "5. Integrations and communications", detail: "Simpro, Navixy, SmartFill, Microsoft 365, TextMagic, outbox, safe mode", built: false },
   { name: "6. Fleet, service and fuel", detail: "Fleet register, service schedules, weekly diesel rate, fuel reports, anomalies", built: false },
   { name: "7. Leave, timesheets and pay (test-only)", detail: "Approvals, weekly workbench, reports, payslips, ABA export", built: false },

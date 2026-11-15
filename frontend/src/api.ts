@@ -448,3 +448,88 @@ export async function downloadFile(path: string, filename: string, method = "GET
   link.remove();
   setTimeout(() => URL.revokeObjectURL(url), 60_000);
 }
+
+// ---------- suppliers and renewals ----------
+
+export interface Supplier {
+  id: string;
+  name: string;
+  abn: string | null;
+  trade: string | null;
+  contact_name: string | null;
+  contact_email: string | null;
+  contact_phone: string | null;
+  address: string | null;
+  suburb: string | null;
+  state: string | null;
+  postcode: string | null;
+  address_full: string;
+  is_contractor: boolean;
+  active: boolean;
+  status: "active" | "inactive" | "archived" | "deleted";
+  source: { system: string; company: string | null; id: string } | null;
+  compliance: { valid: number; expiring: number; expired: number; unknown: number; missing: { slug: string; label: string }[] };
+  can_edit: boolean;
+  locally_edited?: string[];
+  logins?: { id: string; name: string; email: string; status: string; role_id: string }[];
+  possible_duplicates?: { id: string; name: string; abn: string | null }[];
+}
+
+export interface SupplierDoc {
+  id: string;
+  doc_type: { slug: string; label: string };
+  reference: string | null;
+  issue_date: string | null;
+  expiry_date: string | null;
+  no_expiry: boolean;
+  status: "valid" | "expiring" | "expired" | "unknown";
+  status_label: string;
+  days_left: number | null;
+  source: string;
+  current: boolean;
+  file: { name: string } | null;
+  file_url: string;
+}
+
+export interface DocType {
+  id: string;
+  slug: string;
+  label: string;
+  description: string | null;
+  required_for_contractors: boolean;
+  active: boolean;
+}
+
+export interface RenewalUpload {
+  id: string;
+  doc_type: { slug: string; label: string };
+  reference: string | null;
+  issue_date: string | null;
+  expiry_date: string | null;
+  decision: "pending" | "accepted" | "rejected";
+  decision_note: string | null;
+  file: { name: string } | null;
+  file_url: string;
+}
+
+export interface Renewal {
+  id: string;
+  entity_type: "supplier" | "worker";
+  entity_id: string;
+  entity_name: string;
+  doc_types: { slug: string; label: string }[];
+  status: string;
+  status_label: string;
+  recipient_email: string | null;
+  message: string | null;
+  expires_at: string;
+  created_at: string;
+  submitted_at: string | null;
+  uploaded: number;
+  requested: number;
+  delivery: string;
+  uploads?: RenewalUpload[];
+  earlier_uploads?: RenewalUpload[];
+  link?: string;
+  delivery_note?: string;
+}

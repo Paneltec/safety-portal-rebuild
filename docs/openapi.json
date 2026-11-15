@@ -153,6 +153,61 @@
     "title": "Body_pre_start_upload_file_api_pre_starts__record_id__files_post",
     "type": "object"
    },
+   "Body_public_upload_api_public_renewals__token__upload_post": {
+    "properties": {
+     "doc_type": {
+      "title": "Doc Type",
+      "type": "string"
+     },
+     "expiry_date": {
+      "anyOf": [
+       {
+        "format": "date",
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Expiry Date"
+     },
+     "file": {
+      "contentMediaType": "application/octet-stream",
+      "title": "File",
+      "type": "string"
+     },
+     "issue_date": {
+      "anyOf": [
+       {
+        "format": "date",
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Issue Date"
+     },
+     "reference": {
+      "anyOf": [
+       {
+        "maxLength": 80,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Reference"
+     }
+    },
+    "required": [
+     "doc_type",
+     "file"
+    ],
+    "title": "Body_public_upload_api_public_renewals__token__upload_post",
+    "type": "object"
+   },
    "Body_replace_binary_api_document_library_files__file_id__replace_binary_post": {
     "properties": {
      "file": {
@@ -260,6 +315,76 @@
      "file"
     ],
     "title": "Body_upload_attachment_api_forms_submissions__submission_id__attachments_post",
+    "type": "object"
+   },
+   "Body_upload_document_api_suppliers__supplier_id__documents_post": {
+    "properties": {
+     "doc_type": {
+      "title": "Doc Type",
+      "type": "string"
+     },
+     "expiry_date": {
+      "anyOf": [
+       {
+        "format": "date",
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Expiry Date"
+     },
+     "file": {
+      "contentMediaType": "application/octet-stream",
+      "title": "File",
+      "type": "string"
+     },
+     "issue_date": {
+      "anyOf": [
+       {
+        "format": "date",
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Issue Date"
+     },
+     "no_expiry": {
+      "default": false,
+      "title": "No Expiry",
+      "type": "boolean"
+     },
+     "notes": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Notes"
+     },
+     "reference": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Reference"
+     }
+    },
+    "required": [
+     "doc_type",
+     "file"
+    ],
+    "title": "Body_upload_document_api_suppliers__supplier_id__documents_post",
     "type": "object"
    },
    "Body_upload_evidence_api_workers__worker_id__certifications__cert_id__upload_post": {
@@ -774,6 +899,179 @@
     "title": "CreateUserIn",
     "type": "object"
    },
+   "Decision": {
+    "properties": {
+     "decision": {
+      "enum": [
+       "accept",
+       "reject"
+      ],
+      "title": "Decision",
+      "type": "string"
+     },
+     "expiry_date": {
+      "anyOf": [
+       {
+        "format": "date",
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Expiry Date"
+     },
+     "issue_date": {
+      "anyOf": [
+       {
+        "format": "date",
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Issue Date"
+     },
+     "no_expiry": {
+      "default": false,
+      "title": "No Expiry",
+      "type": "boolean"
+     },
+     "note": {
+      "anyOf": [
+       {
+        "maxLength": 400,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Note"
+     },
+     "reference": {
+      "anyOf": [
+       {
+        "maxLength": 80,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Reference"
+     },
+     "upload_id": {
+      "title": "Upload Id",
+      "type": "string"
+     }
+    },
+    "required": [
+     "upload_id",
+     "decision"
+    ],
+    "title": "Decision",
+    "type": "object"
+   },
+   "DocTypeIn": {
+    "properties": {
+     "description": {
+      "anyOf": [
+       {
+        "maxLength": 400,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Description"
+     },
+     "label": {
+      "maxLength": 160,
+      "minLength": 2,
+      "title": "Label",
+      "type": "string"
+     },
+     "required_for_contractors": {
+      "default": false,
+      "title": "Required For Contractors",
+      "type": "boolean"
+     }
+    },
+    "required": [
+     "label"
+    ],
+    "title": "DocTypeIn",
+    "type": "object"
+   },
+   "DocTypePatch": {
+    "properties": {
+     "active": {
+      "anyOf": [
+       {
+        "type": "boolean"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Active"
+     },
+     "description": {
+      "anyOf": [
+       {
+        "maxLength": 400,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Description"
+     },
+     "label": {
+      "anyOf": [
+       {
+        "maxLength": 160,
+        "minLength": 2,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Label"
+     },
+     "required_for_contractors": {
+      "anyOf": [
+       {
+        "type": "boolean"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Required For Contractors"
+     },
+     "sort_order": {
+      "anyOf": [
+       {
+        "maximum": 1000.0,
+        "minimum": 0.0,
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Sort Order"
+     }
+    },
+    "title": "DocTypePatch",
+    "type": "object"
+   },
    "FieldValue": {
     "properties": {
      "id": {
@@ -1174,6 +1472,143 @@
      "password"
     ],
     "title": "LoginIn",
+    "type": "object"
+   },
+   "MemberIn": {
+    "properties": {
+     "email": {
+      "anyOf": [
+       {
+        "format": "email",
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Email"
+     },
+     "is_primary_contact": {
+      "default": false,
+      "title": "Is Primary Contact",
+      "type": "boolean"
+     },
+     "name": {
+      "maxLength": 200,
+      "minLength": 2,
+      "title": "Name",
+      "type": "string"
+     },
+     "phone": {
+      "anyOf": [
+       {
+        "maxLength": 40,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Phone"
+     },
+     "role": {
+      "anyOf": [
+       {
+        "maxLength": 120,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Role"
+     }
+    },
+    "required": [
+     "name"
+    ],
+    "title": "MemberIn",
+    "type": "object"
+   },
+   "MemberPatch": {
+    "properties": {
+     "email": {
+      "anyOf": [
+       {
+        "format": "email",
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Email"
+     },
+     "is_primary_contact": {
+      "anyOf": [
+       {
+        "type": "boolean"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Is Primary Contact"
+     },
+     "name": {
+      "anyOf": [
+       {
+        "maxLength": 200,
+        "minLength": 2,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Name"
+     },
+     "phone": {
+      "anyOf": [
+       {
+        "maxLength": 40,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Phone"
+     },
+     "role": {
+      "anyOf": [
+       {
+        "maxLength": 120,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Role"
+     }
+    },
+    "title": "MemberPatch",
+    "type": "object"
+   },
+   "NoteIn": {
+    "properties": {
+     "body": {
+      "maxLength": 8000,
+      "minLength": 1,
+      "title": "Body",
+      "type": "string"
+     }
+    },
+    "required": [
+     "body"
+    ],
+    "title": "NoteIn",
     "type": "object"
    },
    "OrgPatch": {
@@ -1654,6 +2089,19 @@
     "title": "RedeemIn",
     "type": "object"
    },
+   "ReissueIn": {
+    "properties": {
+     "expires_in_days": {
+      "default": 14,
+      "maximum": 90.0,
+      "minimum": 1.0,
+      "title": "Expires In Days",
+      "type": "integer"
+     }
+    },
+    "title": "ReissueIn",
+    "type": "object"
+   },
    "RenewIn": {
     "properties": {
      "expiry_date": {
@@ -1713,13 +2161,34 @@
     "title": "RenewIn",
     "type": "object"
    },
-   "ReviewIn": {
+   "RenewalBulkCreate": {
     "properties": {
-     "action": {
-      "title": "Action",
-      "type": "string"
+     "contractor_ids": {
+      "items": {
+       "type": "string"
+      },
+      "maxItems": 200,
+      "minItems": 1,
+      "title": "Contractor Ids",
+      "type": "array"
      },
-     "note": {
+     "doc_types_requested": {
+      "items": {
+       "type": "string"
+      },
+      "maxItems": 20,
+      "minItems": 1,
+      "title": "Doc Types Requested",
+      "type": "array"
+     },
+     "expires_in_days": {
+      "default": 14,
+      "maximum": 90.0,
+      "minimum": 1.0,
+      "title": "Expires In Days",
+      "type": "integer"
+     },
+     "message": {
       "anyOf": [
        {
         "maxLength": 2000,
@@ -1729,13 +2198,171 @@
         "type": "null"
        }
       ],
-      "title": "Note"
+      "title": "Message"
+     },
+     "subject": {
+      "anyOf": [
+       {
+        "maxLength": 200,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Subject"
      }
     },
     "required": [
-     "action"
+     "contractor_ids",
+     "doc_types_requested"
     ],
-    "title": "ReviewIn",
+    "title": "RenewalBulkCreate",
+    "type": "object"
+   },
+   "RenewalCreate": {
+    "properties": {
+     "doc_types_requested": {
+      "items": {
+       "type": "string"
+      },
+      "maxItems": 20,
+      "minItems": 1,
+      "title": "Doc Types Requested",
+      "type": "array"
+     },
+     "entity_id": {
+      "title": "Entity Id",
+      "type": "string"
+     },
+     "entity_type": {
+      "default": "supplier",
+      "enum": [
+       "supplier",
+       "worker"
+      ],
+      "title": "Entity Type",
+      "type": "string"
+     },
+     "expires_in_days": {
+      "default": 14,
+      "maximum": 90.0,
+      "minimum": 1.0,
+      "title": "Expires In Days",
+      "type": "integer"
+     },
+     "message": {
+      "anyOf": [
+       {
+        "maxLength": 2000,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Message"
+     },
+     "recipient_email": {
+      "anyOf": [
+       {
+        "format": "email",
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Recipient Email"
+     },
+     "subject": {
+      "anyOf": [
+       {
+        "maxLength": 200,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Subject"
+     }
+    },
+    "required": [
+     "entity_id",
+     "doc_types_requested"
+    ],
+    "title": "RenewalCreate",
+    "type": "object"
+   },
+   "RenewalPatch": {
+    "properties": {
+     "doc_types_requested": {
+      "anyOf": [
+       {
+        "items": {
+         "type": "string"
+        },
+        "maxItems": 20,
+        "minItems": 1,
+        "type": "array"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Doc Types Requested"
+     },
+     "expires_at": {
+      "anyOf": [
+       {
+        "format": "date-time",
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Expires At"
+     },
+     "message": {
+      "anyOf": [
+       {
+        "maxLength": 2000,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Message"
+     },
+     "recipient_email": {
+      "anyOf": [
+       {
+        "format": "email",
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Recipient Email"
+     },
+     "subject": {
+      "anyOf": [
+       {
+        "maxLength": 200,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Subject"
+     }
+    },
+    "title": "RenewalPatch",
     "type": "object"
    },
    "RoleCreate": {
@@ -2511,6 +3138,444 @@
      "fields"
     ],
     "title": "SubmissionPatch",
+    "type": "object"
+   },
+   "SupplierIn": {
+    "properties": {
+     "abn": {
+      "anyOf": [
+       {
+        "maxLength": 20,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Abn"
+     },
+     "active": {
+      "default": true,
+      "title": "Active",
+      "type": "boolean"
+     },
+     "address": {
+      "anyOf": [
+       {
+        "maxLength": 300,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Address"
+     },
+     "contact_email": {
+      "anyOf": [
+       {
+        "format": "email",
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Contact Email"
+     },
+     "contact_name": {
+      "anyOf": [
+       {
+        "maxLength": 160,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Contact Name"
+     },
+     "contact_phone": {
+      "anyOf": [
+       {
+        "maxLength": 40,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Contact Phone"
+     },
+     "is_contractor": {
+      "default": false,
+      "title": "Is Contractor",
+      "type": "boolean"
+     },
+     "name": {
+      "maxLength": 200,
+      "minLength": 2,
+      "title": "Name",
+      "type": "string"
+     },
+     "postcode": {
+      "anyOf": [
+       {
+        "maxLength": 12,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Postcode"
+     },
+     "state": {
+      "anyOf": [
+       {
+        "maxLength": 40,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "State"
+     },
+     "suburb": {
+      "anyOf": [
+       {
+        "maxLength": 100,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Suburb"
+     },
+     "trade": {
+      "anyOf": [
+       {
+        "maxLength": 120,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Trade"
+     }
+    },
+    "required": [
+     "name"
+    ],
+    "title": "SupplierIn",
+    "type": "object"
+   },
+   "SupplierPatch": {
+    "properties": {
+     "abn": {
+      "anyOf": [
+       {
+        "maxLength": 20,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Abn"
+     },
+     "active": {
+      "anyOf": [
+       {
+        "type": "boolean"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Active"
+     },
+     "address": {
+      "anyOf": [
+       {
+        "maxLength": 300,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Address"
+     },
+     "contact_email": {
+      "anyOf": [
+       {
+        "format": "email",
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Contact Email"
+     },
+     "contact_name": {
+      "anyOf": [
+       {
+        "maxLength": 160,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Contact Name"
+     },
+     "contact_phone": {
+      "anyOf": [
+       {
+        "maxLength": 40,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Contact Phone"
+     },
+     "is_contractor": {
+      "anyOf": [
+       {
+        "type": "boolean"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Is Contractor"
+     },
+     "name": {
+      "anyOf": [
+       {
+        "maxLength": 200,
+        "minLength": 2,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Name"
+     },
+     "postcode": {
+      "anyOf": [
+       {
+        "maxLength": 12,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Postcode"
+     },
+     "state": {
+      "anyOf": [
+       {
+        "maxLength": 40,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "State"
+     },
+     "suburb": {
+      "anyOf": [
+       {
+        "maxLength": 100,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Suburb"
+     },
+     "trade": {
+      "anyOf": [
+       {
+        "maxLength": 120,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Trade"
+     }
+    },
+    "title": "SupplierPatch",
+    "type": "object"
+   },
+   "TaskIn": {
+    "properties": {
+     "assigned_to": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Assigned To"
+     },
+     "description": {
+      "anyOf": [
+       {
+        "maxLength": 4000,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Description"
+     },
+     "due_date": {
+      "anyOf": [
+       {
+        "format": "date",
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Due Date"
+     },
+     "priority": {
+      "default": "normal",
+      "enum": [
+       "low",
+       "normal",
+       "high"
+      ],
+      "title": "Priority",
+      "type": "string"
+     },
+     "status": {
+      "default": "open",
+      "enum": [
+       "open",
+       "in_progress",
+       "done"
+      ],
+      "title": "Status",
+      "type": "string"
+     },
+     "title": {
+      "maxLength": 200,
+      "minLength": 2,
+      "title": "Title",
+      "type": "string"
+     }
+    },
+    "required": [
+     "title"
+    ],
+    "title": "TaskIn",
+    "type": "object"
+   },
+   "TaskPatch": {
+    "properties": {
+     "assigned_to": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Assigned To"
+     },
+     "description": {
+      "anyOf": [
+       {
+        "maxLength": 4000,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Description"
+     },
+     "due_date": {
+      "anyOf": [
+       {
+        "format": "date",
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Due Date"
+     },
+     "priority": {
+      "anyOf": [
+       {
+        "enum": [
+         "low",
+         "normal",
+         "high"
+        ],
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Priority"
+     },
+     "status": {
+      "anyOf": [
+       {
+        "enum": [
+         "open",
+         "in_progress",
+         "done"
+        ],
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Status"
+     },
+     "title": {
+      "anyOf": [
+       {
+        "maxLength": 200,
+        "minLength": 2,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Title"
+     }
+    },
+    "title": "TaskPatch",
     "type": "object"
    },
    "TemplateIn": {
@@ -3658,6 +4723,49 @@
      }
     },
     "title": "WorkerSignOn",
+    "type": "object"
+   },
+   "app__routers__renewals__ReviewIn": {
+    "properties": {
+     "decisions": {
+      "items": {
+       "$ref": "#/components/schemas/Decision"
+      },
+      "maxItems": 40,
+      "minItems": 1,
+      "title": "Decisions",
+      "type": "array"
+     }
+    },
+    "required": [
+     "decisions"
+    ],
+    "title": "ReviewIn",
+    "type": "object"
+   },
+   "app__routers__safety__ReviewIn": {
+    "properties": {
+     "action": {
+      "title": "Action",
+      "type": "string"
+     },
+     "note": {
+      "anyOf": [
+       {
+        "maxLength": 2000,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Note"
+     }
+    },
+    "required": [
+     "action"
+    ],
+    "title": "ReviewIn",
     "type": "object"
    }
   }
@@ -5455,6 +6563,142 @@
     "summary": "Put Cert Settings",
     "tags": [
      "certifications"
+    ]
+   }
+  },
+  "/api/contractors": {
+   "get": {
+    "description": "The same directory, contractors only.",
+    "operationId": "list_contractors_api_contractors_get",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "q",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "maxLength": 100,
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Q"
+      }
+     },
+     {
+      "in": "query",
+      "name": "status",
+      "required": false,
+      "schema": {
+       "default": "active",
+       "enum": [
+        "active",
+        "inactive",
+        "archived",
+        "all"
+       ],
+       "title": "Status",
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "limit",
+      "required": false,
+      "schema": {
+       "default": 50,
+       "maximum": 200,
+       "minimum": 1,
+       "title": "Limit",
+       "type": "integer"
+      }
+     },
+     {
+      "in": "query",
+      "name": "offset",
+      "required": false,
+      "schema": {
+       "default": 0,
+       "minimum": 0,
+       "title": "Offset",
+       "type": "integer"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response List Contractors Api Contractors Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "List Contractors",
+    "tags": [
+     "suppliers"
+    ]
+   }
+  },
+  "/api/contractors/{supplier_id}": {
+   "get": {
+    "operationId": "get_contractor_api_contractors__supplier_id__get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "supplier_id",
+      "required": true,
+      "schema": {
+       "title": "Supplier Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Get Contractor Api Contractors  Supplier Id  Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Get Contractor",
+    "tags": [
+     "suppliers"
     ]
    }
   },
@@ -10496,7 +11740,7 @@
      "content": {
       "application/json": {
        "schema": {
-        "$ref": "#/components/schemas/ReviewIn"
+        "$ref": "#/components/schemas/app__routers__safety__ReviewIn"
        }
       }
      },
@@ -12023,7 +13267,7 @@
      "content": {
       "application/json": {
        "schema": {
-        "$ref": "#/components/schemas/ReviewIn"
+        "$ref": "#/components/schemas/app__routers__safety__ReviewIn"
        }
       }
      },
@@ -12185,6 +13429,151 @@
     "summary": "Public Branding",
     "tags": [
      "organisation"
+    ]
+   }
+  },
+  "/api/public/renewals/{token}": {
+   "get": {
+    "description": "What the recipient sees: who is asking, who it is for, and the documents requested.",
+    "operationId": "public_view_api_public_renewals__token__get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "token",
+      "required": true,
+      "schema": {
+       "title": "Token",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Public View Api Public Renewals  Token  Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Public View",
+    "tags": [
+     "renewals (public)"
+    ]
+   }
+  },
+  "/api/public/renewals/{token}/submit": {
+   "post": {
+    "description": "Send the uploaded files to the office. After this the link accepts nothing more.",
+    "operationId": "public_submit_api_public_renewals__token__submit_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "token",
+      "required": true,
+      "schema": {
+       "title": "Token",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Public Submit Api Public Renewals  Token  Submit Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Public Submit",
+    "tags": [
+     "renewals (public)"
+    ]
+   }
+  },
+  "/api/public/renewals/{token}/upload": {
+   "post": {
+    "description": "Attach one file for one of the requested documents. Uploading again replaces the earlier file.",
+    "operationId": "public_upload_api_public_renewals__token__upload_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "token",
+      "required": true,
+      "schema": {
+       "title": "Token",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "multipart/form-data": {
+       "schema": {
+        "$ref": "#/components/schemas/Body_public_upload_api_public_renewals__token__upload_post"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Public Upload Api Public Renewals  Token  Upload Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Public Upload",
+    "tags": [
+     "renewals (public)"
     ]
    }
   },
@@ -12393,6 +13782,790 @@
     "summary": "Visitor Sign Out",
     "tags": [
      "site sign-on (public)"
+    ]
+   }
+  },
+  "/api/renewals": {
+   "get": {
+    "operationId": "list_renewals_api_renewals_get",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "status",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "enum": [
+          "pending",
+          "submitted",
+          "accepted",
+          "partly_accepted",
+          "rejected",
+          "revoked",
+          "expired"
+         ],
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Status"
+      }
+     },
+     {
+      "in": "query",
+      "name": "entity_type",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "enum": [
+          "supplier",
+          "worker"
+         ],
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Entity Type"
+      }
+     },
+     {
+      "in": "query",
+      "name": "entity_id",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Entity Id"
+      }
+     },
+     {
+      "in": "query",
+      "name": "limit",
+      "required": false,
+      "schema": {
+       "default": 50,
+       "maximum": 200,
+       "minimum": 1,
+       "title": "Limit",
+       "type": "integer"
+      }
+     },
+     {
+      "in": "query",
+      "name": "offset",
+      "required": false,
+      "schema": {
+       "default": 0,
+       "minimum": 0,
+       "title": "Offset",
+       "type": "integer"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response List Renewals Api Renewals Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "List Renewals",
+    "tags": [
+     "renewals"
+    ]
+   },
+   "post": {
+    "description": "Create a request and its link. The link is returned once; nothing is emailed.",
+    "operationId": "create_renewal_api_renewals_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/RenewalCreate"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Create Renewal Api Renewals Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Create Renewal",
+    "tags": [
+     "renewals"
+    ]
+   }
+  },
+  "/api/renewals/bulk": {
+   "post": {
+    "description": "One request per supplier. A supplier that already has an open request covering every\ndocument asked for is skipped rather than given a second link.",
+    "operationId": "bulk_create_api_renewals_bulk_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/RenewalBulkCreate"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Bulk Create Api Renewals Bulk Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Bulk Create",
+    "tags": [
+     "renewals"
+    ]
+   }
+  },
+  "/api/renewals/bulk-delete": {
+   "post": {
+    "operationId": "bulk_delete_api_renewals_bulk_delete_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/BulkIds"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Bulk Delete Api Renewals Bulk Delete Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Bulk Delete",
+    "tags": [
+     "renewals"
+    ]
+   }
+  },
+  "/api/renewals/doc-types": {
+   "get": {
+    "operationId": "list_doc_types_api_renewals_doc_types_get",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "include_inactive",
+      "required": false,
+      "schema": {
+       "default": false,
+       "title": "Include Inactive",
+       "type": "boolean"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response List Doc Types Api Renewals Doc Types Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "List Doc Types",
+    "tags": [
+     "renewals"
+    ]
+   },
+   "post": {
+    "operationId": "create_doc_type_api_renewals_doc_types_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/DocTypeIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Create Doc Type Api Renewals Doc Types Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Create Doc Type",
+    "tags": [
+     "renewals"
+    ]
+   }
+  },
+  "/api/renewals/doc-types/{type_id}": {
+   "delete": {
+    "description": "Retire a type. Documents already held keep it, so nothing loses its label.",
+    "operationId": "retire_doc_type_api_renewals_doc_types__type_id__delete",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "type_id",
+      "required": true,
+      "schema": {
+       "title": "Type Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Retire Doc Type Api Renewals Doc Types  Type Id  Delete",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Retire Doc Type",
+    "tags": [
+     "renewals"
+    ]
+   },
+   "patch": {
+    "operationId": "update_doc_type_api_renewals_doc_types__type_id__patch",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "type_id",
+      "required": true,
+      "schema": {
+       "title": "Type Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/DocTypePatch"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Update Doc Type Api Renewals Doc Types  Type Id  Patch",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Update Doc Type",
+    "tags": [
+     "renewals"
+    ]
+   }
+  },
+  "/api/renewals/{renewal_id}": {
+   "delete": {
+    "operationId": "delete_renewal_api_renewals__renewal_id__delete",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "renewal_id",
+      "required": true,
+      "schema": {
+       "title": "Renewal Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Delete Renewal Api Renewals  Renewal Id  Delete",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Delete Renewal",
+    "tags": [
+     "renewals"
+    ]
+   },
+   "get": {
+    "operationId": "get_renewal_api_renewals__renewal_id__get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "renewal_id",
+      "required": true,
+      "schema": {
+       "title": "Renewal Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Get Renewal Api Renewals  Renewal Id  Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Get Renewal",
+    "tags": [
+     "renewals"
+    ]
+   },
+   "patch": {
+    "description": "Change the wording, the documents asked for or the expiry while the request is still open.\nThe recipient's link keeps working.",
+    "operationId": "update_renewal_api_renewals__renewal_id__patch",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "renewal_id",
+      "required": true,
+      "schema": {
+       "title": "Renewal Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/RenewalPatch"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Update Renewal Api Renewals  Renewal Id  Patch",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Update Renewal",
+    "tags": [
+     "renewals"
+    ]
+   }
+  },
+  "/api/renewals/{renewal_id}/reissue": {
+   "post": {
+    "description": "Give the recipient a fresh link: after an expiry, a rejection, or a lost link. The previous\nlink stops working. Files already accepted stay accepted; earlier uploads are kept as history.",
+    "operationId": "reissue_api_renewals__renewal_id__reissue_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "renewal_id",
+      "required": true,
+      "schema": {
+       "title": "Renewal Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ReissueIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Reissue Api Renewals  Renewal Id  Reissue Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Reissue",
+    "tags": [
+     "renewals"
+    ]
+   }
+  },
+  "/api/renewals/{renewal_id}/review": {
+   "post": {
+    "description": "Accept or reject each uploaded file. Every file must be decided in one go. An accepted file\nbecomes the supplier's current document (or the worker's renewed certificate).",
+    "operationId": "review_api_renewals__renewal_id__review_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "renewal_id",
+      "required": true,
+      "schema": {
+       "title": "Renewal Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/app__routers__renewals__ReviewIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Review Api Renewals  Renewal Id  Review Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Review",
+    "tags": [
+     "renewals"
+    ]
+   }
+  },
+  "/api/renewals/{renewal_id}/revoke": {
+   "post": {
+    "description": "Cancel the request. The link stops working immediately.",
+    "operationId": "revoke_api_renewals__renewal_id__revoke_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "renewal_id",
+      "required": true,
+      "schema": {
+       "title": "Renewal Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Revoke Api Renewals  Renewal Id  Revoke Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Revoke",
+    "tags": [
+     "renewals"
+    ]
+   }
+  },
+  "/api/renewals/{renewal_id}/uploads/{upload_id}/file": {
+   "get": {
+    "operationId": "upload_file_api_renewals__renewal_id__uploads__upload_id__file_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "renewal_id",
+      "required": true,
+      "schema": {
+       "title": "Renewal Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "path",
+      "name": "upload_id",
+      "required": true,
+      "schema": {
+       "title": "Upload Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "download",
+      "required": false,
+      "schema": {
+       "default": false,
+       "title": "Download",
+       "type": "boolean"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Upload File",
+    "tags": [
+     "renewals"
     ]
    }
   },
@@ -13179,7 +15352,7 @@
      "content": {
       "application/json": {
        "schema": {
-        "$ref": "#/components/schemas/ReviewIn"
+        "$ref": "#/components/schemas/app__routers__safety__ReviewIn"
        }
       }
      },
@@ -14360,7 +16533,7 @@
      "content": {
       "application/json": {
        "schema": {
-        "$ref": "#/components/schemas/ReviewIn"
+        "$ref": "#/components/schemas/app__routers__safety__ReviewIn"
        }
       }
      },
@@ -16107,7 +18280,7 @@
      "content": {
       "application/json": {
        "schema": {
-        "$ref": "#/components/schemas/ReviewIn"
+        "$ref": "#/components/schemas/app__routers__safety__ReviewIn"
        }
       }
      },
@@ -16245,6 +18418,1350 @@
     "summary": "Ssra Unarchive",
     "tags": [
      "Site-specific risk assessments"
+    ]
+   }
+  },
+  "/api/suppliers": {
+   "get": {
+    "operationId": "list_suppliers_api_suppliers_get",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "q",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "maxLength": 100,
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Q"
+      }
+     },
+     {
+      "in": "query",
+      "name": "status",
+      "required": false,
+      "schema": {
+       "default": "active",
+       "enum": [
+        "active",
+        "inactive",
+        "archived",
+        "all"
+       ],
+       "title": "Status",
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "kind",
+      "required": false,
+      "schema": {
+       "default": "all",
+       "enum": [
+        "all",
+        "contractor"
+       ],
+       "title": "Kind",
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "limit",
+      "required": false,
+      "schema": {
+       "default": 50,
+       "maximum": 200,
+       "minimum": 1,
+       "title": "Limit",
+       "type": "integer"
+      }
+     },
+     {
+      "in": "query",
+      "name": "offset",
+      "required": false,
+      "schema": {
+       "default": 0,
+       "minimum": 0,
+       "title": "Offset",
+       "type": "integer"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response List Suppliers Api Suppliers Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "List Suppliers",
+    "tags": [
+     "suppliers"
+    ]
+   },
+   "post": {
+    "operationId": "create_supplier_api_suppliers_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/SupplierIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Create Supplier Api Suppliers Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Create Supplier",
+    "tags": [
+     "suppliers"
+    ]
+   }
+  },
+  "/api/suppliers/members/{member_id}": {
+   "delete": {
+    "operationId": "delete_member_api_suppliers_members__member_id__delete",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "member_id",
+      "required": true,
+      "schema": {
+       "title": "Member Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Delete Member Api Suppliers Members  Member Id  Delete",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Delete Member",
+    "tags": [
+     "suppliers"
+    ]
+   },
+   "patch": {
+    "operationId": "edit_member_api_suppliers_members__member_id__patch",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "member_id",
+      "required": true,
+      "schema": {
+       "title": "Member Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/MemberPatch"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Edit Member Api Suppliers Members  Member Id  Patch",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Edit Member",
+    "tags": [
+     "suppliers"
+    ]
+   }
+  },
+  "/api/suppliers/notes/{note_id}": {
+   "delete": {
+    "operationId": "delete_note_api_suppliers_notes__note_id__delete",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "note_id",
+      "required": true,
+      "schema": {
+       "title": "Note Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Delete Note Api Suppliers Notes  Note Id  Delete",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Delete Note",
+    "tags": [
+     "suppliers"
+    ]
+   },
+   "patch": {
+    "operationId": "edit_note_api_suppliers_notes__note_id__patch",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "note_id",
+      "required": true,
+      "schema": {
+       "title": "Note Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/NoteIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Edit Note Api Suppliers Notes  Note Id  Patch",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Edit Note",
+    "tags": [
+     "suppliers"
+    ]
+   }
+  },
+  "/api/suppliers/panel-counts": {
+   "get": {
+    "description": "Open tasks, notes and members per supplier, for the badges on the list.",
+    "operationId": "panel_counts_api_suppliers_panel_counts_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Panel Counts Api Suppliers Panel Counts Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Panel Counts",
+    "tags": [
+     "suppliers"
+    ]
+   }
+  },
+  "/api/suppliers/tasks/{task_id}": {
+   "delete": {
+    "operationId": "delete_task_api_suppliers_tasks__task_id__delete",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "task_id",
+      "required": true,
+      "schema": {
+       "title": "Task Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Delete Task Api Suppliers Tasks  Task Id  Delete",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Delete Task",
+    "tags": [
+     "suppliers"
+    ]
+   },
+   "patch": {
+    "operationId": "edit_task_api_suppliers_tasks__task_id__patch",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "task_id",
+      "required": true,
+      "schema": {
+       "title": "Task Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/TaskPatch"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Edit Task Api Suppliers Tasks  Task Id  Patch",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Edit Task",
+    "tags": [
+     "suppliers"
+    ]
+   }
+  },
+  "/api/suppliers/{supplier_id}": {
+   "delete": {
+    "operationId": "handler_api_suppliers__supplier_id__delete",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "supplier_id",
+      "required": true,
+      "schema": {
+       "title": "Supplier Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Handler Api Suppliers  Supplier Id  Delete",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Handler",
+    "tags": [
+     "suppliers"
+    ]
+   },
+   "get": {
+    "operationId": "get_one_api_suppliers__supplier_id__get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "supplier_id",
+      "required": true,
+      "schema": {
+       "title": "Supplier Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Get One Api Suppliers  Supplier Id  Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Get One",
+    "tags": [
+     "suppliers"
+    ]
+   },
+   "patch": {
+    "operationId": "update_supplier_api_suppliers__supplier_id__patch",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "supplier_id",
+      "required": true,
+      "schema": {
+       "title": "Supplier Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/SupplierPatch"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Update Supplier Api Suppliers  Supplier Id  Patch",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Update Supplier",
+    "tags": [
+     "suppliers"
+    ]
+   }
+  },
+  "/api/suppliers/{supplier_id}/archive": {
+   "post": {
+    "operationId": "handler_api_suppliers__supplier_id__archive_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "supplier_id",
+      "required": true,
+      "schema": {
+       "title": "Supplier Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Handler Api Suppliers  Supplier Id  Archive Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Handler",
+    "tags": [
+     "suppliers"
+    ]
+   }
+  },
+  "/api/suppliers/{supplier_id}/documents": {
+   "get": {
+    "operationId": "list_documents_api_suppliers__supplier_id__documents_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "supplier_id",
+      "required": true,
+      "schema": {
+       "title": "Supplier Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "history",
+      "required": false,
+      "schema": {
+       "default": false,
+       "title": "History",
+       "type": "boolean"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response List Documents Api Suppliers  Supplier Id  Documents Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "List Documents",
+    "tags": [
+     "suppliers"
+    ]
+   },
+   "post": {
+    "description": "Add a compliance document from the office. A newer document of the same type replaces the\ncurrent one; the earlier one stays in the history.",
+    "operationId": "upload_document_api_suppliers__supplier_id__documents_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "supplier_id",
+      "required": true,
+      "schema": {
+       "title": "Supplier Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "multipart/form-data": {
+       "schema": {
+        "$ref": "#/components/schemas/Body_upload_document_api_suppliers__supplier_id__documents_post"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Upload Document Api Suppliers  Supplier Id  Documents Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Upload Document",
+    "tags": [
+     "suppliers"
+    ]
+   }
+  },
+  "/api/suppliers/{supplier_id}/documents/{doc_id}": {
+   "delete": {
+    "description": "Remove a document added by mistake. The one it replaced becomes current again.",
+    "operationId": "delete_document_api_suppliers__supplier_id__documents__doc_id__delete",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "supplier_id",
+      "required": true,
+      "schema": {
+       "title": "Supplier Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "path",
+      "name": "doc_id",
+      "required": true,
+      "schema": {
+       "title": "Doc Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Delete Document Api Suppliers  Supplier Id  Documents  Doc Id  Delete",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Delete Document",
+    "tags": [
+     "suppliers"
+    ]
+   }
+  },
+  "/api/suppliers/{supplier_id}/documents/{doc_id}/file": {
+   "get": {
+    "operationId": "document_file_api_suppliers__supplier_id__documents__doc_id__file_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "supplier_id",
+      "required": true,
+      "schema": {
+       "title": "Supplier Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "path",
+      "name": "doc_id",
+      "required": true,
+      "schema": {
+       "title": "Doc Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "download",
+      "required": false,
+      "schema": {
+       "default": false,
+       "title": "Download",
+       "type": "boolean"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Document File",
+    "tags": [
+     "suppliers"
+    ]
+   }
+  },
+  "/api/suppliers/{supplier_id}/link-user": {
+   "post": {
+    "description": "Tie a login to this supplier. With a contractor-representative role, that person then sees\nonly this supplier.",
+    "operationId": "link_login_api_suppliers__supplier_id__link_user_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "supplier_id",
+      "required": true,
+      "schema": {
+       "title": "Supplier Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/LinkUserIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Link Login Api Suppliers  Supplier Id  Link User Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Link Login",
+    "tags": [
+     "suppliers"
+    ]
+   }
+  },
+  "/api/suppliers/{supplier_id}/link-user/{user_id}": {
+   "delete": {
+    "operationId": "unlink_login_api_suppliers__supplier_id__link_user__user_id__delete",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "supplier_id",
+      "required": true,
+      "schema": {
+       "title": "Supplier Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "path",
+      "name": "user_id",
+      "required": true,
+      "schema": {
+       "title": "User Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Unlink Login Api Suppliers  Supplier Id  Link User  User Id  Delete",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Unlink Login",
+    "tags": [
+     "suppliers"
+    ]
+   }
+  },
+  "/api/suppliers/{supplier_id}/members": {
+   "get": {
+    "operationId": "list_members_api_suppliers__supplier_id__members_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "supplier_id",
+      "required": true,
+      "schema": {
+       "title": "Supplier Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response List Members Api Suppliers  Supplier Id  Members Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "List Members",
+    "tags": [
+     "suppliers"
+    ]
+   },
+   "post": {
+    "operationId": "add_member_api_suppliers__supplier_id__members_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "supplier_id",
+      "required": true,
+      "schema": {
+       "title": "Supplier Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/MemberIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Add Member Api Suppliers  Supplier Id  Members Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Add Member",
+    "tags": [
+     "suppliers"
+    ]
+   }
+  },
+  "/api/suppliers/{supplier_id}/notes": {
+   "get": {
+    "operationId": "list_notes_api_suppliers__supplier_id__notes_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "supplier_id",
+      "required": true,
+      "schema": {
+       "title": "Supplier Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response List Notes Api Suppliers  Supplier Id  Notes Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "List Notes",
+    "tags": [
+     "suppliers"
+    ]
+   },
+   "post": {
+    "operationId": "add_note_api_suppliers__supplier_id__notes_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "supplier_id",
+      "required": true,
+      "schema": {
+       "title": "Supplier Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/NoteIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Add Note Api Suppliers  Supplier Id  Notes Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Add Note",
+    "tags": [
+     "suppliers"
+    ]
+   }
+  },
+  "/api/suppliers/{supplier_id}/restore": {
+   "post": {
+    "operationId": "handler_api_suppliers__supplier_id__restore_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "supplier_id",
+      "required": true,
+      "schema": {
+       "title": "Supplier Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Handler Api Suppliers  Supplier Id  Restore Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Handler",
+    "tags": [
+     "suppliers"
+    ]
+   }
+  },
+  "/api/suppliers/{supplier_id}/tasks": {
+   "get": {
+    "operationId": "list_tasks_api_suppliers__supplier_id__tasks_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "supplier_id",
+      "required": true,
+      "schema": {
+       "title": "Supplier Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response List Tasks Api Suppliers  Supplier Id  Tasks Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "List Tasks",
+    "tags": [
+     "suppliers"
+    ]
+   },
+   "post": {
+    "operationId": "add_task_api_suppliers__supplier_id__tasks_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "supplier_id",
+      "required": true,
+      "schema": {
+       "title": "Supplier Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/TaskIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Add Task Api Suppliers  Supplier Id  Tasks Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Add Task",
+    "tags": [
+     "suppliers"
+    ]
+   }
+  },
+  "/api/suppliers/{supplier_id}/unarchive": {
+   "post": {
+    "operationId": "handler_api_suppliers__supplier_id__unarchive_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "supplier_id",
+      "required": true,
+      "schema": {
+       "title": "Supplier Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Handler Api Suppliers  Supplier Id  Unarchive Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Handler",
+    "tags": [
+     "suppliers"
     ]
    }
   },
@@ -17272,7 +20789,7 @@
      "content": {
       "application/json": {
        "schema": {
-        "$ref": "#/components/schemas/ReviewIn"
+        "$ref": "#/components/schemas/app__routers__safety__ReviewIn"
        }
       }
      },

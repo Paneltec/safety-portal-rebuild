@@ -223,6 +223,7 @@ def forms(browser) -> None:
     pg.get_by_label("Weather").select_option("Rain")
     pg.locator("input[type=file]").set_input_files({"name": "tyre.png", "mimeType": "image/png", "buffer": png()})
     expect(pg.get_by_role("button", name="tyre.png", exact=True)).to_be_visible()
+    pg.locator("canvas").scroll_into_view_if_needed()  # the drawing must land on the canvas, not above it
     box = pg.locator("canvas").bounding_box()
     pg.mouse.move(box["x"] + 30, box["y"] + 60)
     pg.mouse.down()
@@ -552,7 +553,106 @@ def sites_and_visitors(browser) -> None:
     print("sites and visitors walkthrough: ok")
 
 
-STEPS = [stage1_and_2a, documents, forms, safety_registers, workers, sites_and_visitors]
+def suppliers_and_renewals(browser) -> None:
+    from datetime import date, timedelta
+
+    pg = sign_in(browser)
+    errors: list[str] = []
+    pg.on("pageerror", lambda e: errors.append(str(e)))
+    future = (date.today() + timedelta(days=300)).isoformat()
+    pdf = b"%PDF-1.4\n1 0 obj<<>>endobj\ntrailer<<>>\n%%EOF"
+
+    # Add a contractor; the required documents show as missing.
+    pg.get_by_role("link", name="Suppliers", exact=True).click()
+    expect(pg.get_by_text("No suppliers yet.")).to_be_visible()
+    pg.get_by_role("button", name="Add supplier").click()
+    dialog = pg.get_by_role("dialog")
+    dialog.get_by_label("Business name").fill("Acme Earthworks")
+    dialog.get_by_label("ABN (optional)").fill("51 824 753 557")
+    dialog.get_by_label("This is a contractor").check()
+    dialog.get_by_role("button", name="Add supplier").click()
+    expect(dialog.get_by_text("That ABN is not valid. Check the digits.")).to_be_visible()
+    dialog.get_by_label("ABN (optional)").fill("51 824 753 556")
+    dialog.get_by_role("button", name="Add supplier").click()
+    pg.wait_for_url("**/app/suppliers/*")
+    expect(pg.get_by_text("Missing required documents: Public liability insurance, Workers compensation insurance.")).to_be_visible()
+
+    # People, a task and a note.
+    people = pg.locator("section", has=pg.get_by_role("heading", name="People"))
+    people.get_by_label("Add a person").fill("Pat Lee")
+    people.get_by_role("button", name="Add").click()
+    expect(people.get_by_role("cell", name="Pat Lee")).to_be_visible()
+    tasks = pg.locator("section", has=pg.get_by_role("heading", name="Tasks"))
+    tasks.get_by_label("Add a task").fill("Check insurance before next job")
+    tasks.get_by_role("button", name="Add").click()
+    tasks.get_by_role("button", name="Mark done").click()
+    expect(tasks.get_by_text("Done", exact=True)).to_be_visible()
+    notes = pg.locator("section", has=pg.get_by_role("heading", name="Notes"))
+    notes.get_by_label("Add a note").fill("Good work on the Bridge Rd job.")
+    notes.get_by_role("button", name="Save note").click()
+    expect(notes.get_by_text("Good work on the Bridge Rd job.")).to_be_visible()
+
+    # Ask for both documents through a link.
+    requests = pg.locator("section", has=pg.get_by_role("heading", name="Document requests"))
+    requests.get_by_role("button", name="Ask for documents").click()
+    dialog.get_by_label("Public liability insurance").check()
+    dialog.get_by_label("Workers compensation insurance").check()
+    dialog.get_by_label("Message shown on their page (optional)").fill("Please send current certificates of currency.")
+    dialog.get_by_role("button", name="Create link").click()
+    expect(requests.get_by_text("It is shown once: copy it now.")).to_be_visible()
+    expect(requests.get_by_text("No email address is recorded for them")).to_be_visible()
+    link = requests.locator(".code-box").inner_text().strip()
+    path = link[link.index("/renew/"):]
+
+    # The supplier, with no login, uploads on their phone.
+    theirs = browser.new_context(viewport={"width": 390, "height": 844}).new_page()
+    theirs.on("pageerror", lambda e: errors.append(str(e)))
+    theirs.goto(BASE + path)
+    expect(theirs.get_by_role("heading", name="Acme Earthworks")).to_be_visible()
+    expect(theirs.get_by_text("Please send current certificates of currency.")).to_be_visible()
+    theirs.get_by_role("button", name="Send documents").click()
+    expect(theirs.get_by_text("Add at least one document before sending")).to_be_visible()
+    for label, number in (("Public liability insurance", "PL-2291"), ("Workers compensation insurance", "WC-7730")):
+        row = theirs.locator("div.stack", has=theirs.get_by_text(label, exact=True)).last
+        row.get_by_label("Policy, licence or certificate number (optional)").fill(number)
+        row.get_by_label("Expiry date (optional)").fill(future)
+        row.get_by_label(f"Choose a file for {label}").set_input_files({"name": f"{number}.pdf", "mimeType": "application/pdf", "buffer": pdf})
+        expect(row.get_by_text("Added", exact=True)).to_be_visible()
+    shot(theirs, "19-renew-public", full=True)
+    theirs.get_by_role("button", name="Send documents").click()
+    expect(theirs.get_by_text("Thank you. Your documents were sent")).to_be_visible()
+
+    # The office reviews: accept one, reject the other with a reason.
+    pg.get_by_role("link", name="Renewals", exact=True).click()
+    expect(pg.get_by_role("tab", name="Ready to review (1)")).to_be_visible()
+    pg.get_by_role("button", name="Review").click()
+    pl = dialog.locator("div.stack", has=pg.get_by_text("Public liability insurance", exact=True)).last
+    wc = dialog.locator("div.stack", has=pg.get_by_text("Workers compensation insurance", exact=True)).last
+    pl.get_by_role("button", name="Accept").click()
+    dialog.get_by_role("button", name="Save review").click()
+    expect(dialog.get_by_text("Choose Accept or Reject for every file.")).to_be_visible()
+    wc.get_by_role("button", name="Reject").click()
+    wc.get_by_label("Why is it rejected?").fill("Policy is in a different company name")
+    shot(pg, "20-renewal-review", full=True)
+    dialog.get_by_role("button", name="Save review").click()
+    expect(pg.get_by_text("Review saved.")).to_be_visible()
+    pg.get_by_role("tab", name="Partly accepted (1)").click()
+    pg.get_by_role("link", name="Acme Earthworks").click()
+    expect(pg.get_by_text("Missing required documents: Workers compensation insurance.")).to_be_visible()
+    docs = pg.locator("section", has=pg.get_by_role("heading", name="Compliance documents"))
+    expect(docs.get_by_role("cell", name="PL-2291", exact=True)).to_be_visible()
+    expect(docs.get_by_text("via renewal link")).to_be_visible()
+    expect(docs.get_by_text("Valid", exact=True)).to_be_visible()
+    shot(pg, "21-supplier", full=True)
+    # The used link shows the request is finished and accepts nothing more.
+    theirs.reload()
+    expect(theirs.get_by_text("This request is finished.")).to_be_visible()
+    assert theirs.get_by_role("button", name="Send documents").count() == 0
+    assert not errors, errors
+    print("suppliers and renewals walkthrough: ok")
+
+
+STEPS = [stage1_and_2a, documents, forms, safety_registers, workers, sites_and_visitors, suppliers_and_renewals]
 
 if __name__ == "__main__":
     with sync_playwright() as p:

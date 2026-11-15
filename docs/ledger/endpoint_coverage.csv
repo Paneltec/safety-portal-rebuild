@@ -187,14 +187,14 @@ POST,/api/completed-training/reimport,completed_training,reimport,CLASSIFY,,,NOT
 DELETE,/api/completed-training/{uid},completed_training,delete_row,CLASSIFY,,,NOT_STARTED,
 GET,/api/completed-training/{uid},completed_training,get_row,CLASSIFY,,,NOT_STARTED,
 PATCH,/api/completed-training/{uid},completed_training,patch_row,CLASSIFY,,,NOT_STARTED,
-GET,/api/contractors,contractors,list_contractors,CLASSIFY,,,NOT_STARTED,
-POST,/api/contractors,contractors,create_contractor,CLASSIFY,,,NOT_STARTED,
+GET,/api/contractors,contractors,list_contractors,team/resource,suppliers.list_contractors,tests/test_suppliers_renewals.py,IMPLEMENTED_TESTED,D-047 one directory; contractors are flagged suppliers
+POST,/api/contractors,contractors,create_contractor,team/resource,suppliers.create_supplier,tests/test_suppliers_renewals.py,IMPLEMENTED_TESTED,POST /api/suppliers with is_contractor
 POST,/api/contractors/import-from-simpro,contractors,import_from_simpro,CLASSIFY,,,NOT_STARTED,
-DELETE,/api/contractors/{cid},contractors,delete_contractor,CLASSIFY,,,NOT_STARTED,
-GET,/api/contractors/{cid},contractors,get_contractor,CLASSIFY,,,NOT_STARTED,
-PATCH,/api/contractors/{cid},contractors,patch_contractor,CLASSIFY,,,NOT_STARTED,
-POST,/api/contractors/{cid}/documents,contractors,upload_document,CLASSIFY,,,NOT_STARTED,
-DELETE,/api/contractors/{cid}/documents/{doc_id},contractors,delete_document,CLASSIFY,,,NOT_STARTED,
+DELETE,/api/contractors/{cid},contractors,delete_contractor,team/resource,suppliers.delete,tests/test_suppliers_renewals.py,IMPLEMENTED_TESTED,DELETE /api/suppliers/{id}; soft
+GET,/api/contractors/{cid},contractors,get_contractor,team/resource,suppliers.get_contractor,tests/test_suppliers_renewals.py,IMPLEMENTED_TESTED,
+PATCH,/api/contractors/{cid},contractors,patch_contractor,team/resource,suppliers.update_supplier,tests/test_suppliers_renewals.py,IMPLEMENTED_TESTED,PATCH /api/suppliers/{id}
+POST,/api/contractors/{cid}/documents,contractors,upload_document,team/resource,suppliers.upload_document,tests/test_suppliers_renewals.py,IMPLEMENTED_TESTED,POST /api/suppliers/{id}/documents
+DELETE,/api/contractors/{cid}/documents/{doc_id},contractors,delete_document,team/resource,suppliers.delete_document,tests/test_suppliers_renewals.py,IMPLEMENTED_TESTED,Earlier document becomes current again
 GET,/api/contractors/{contractor_id}/scan-pdf,suppliers_qr,contractor_scan_pdf,CLASSIFY,,,NOT_STARTED,
 GET,/api/cs-incident/,cs_incident,list_rows,CLASSIFY,,,NOT_STARTED,
 POST,/api/cs-incident/,cs_incident,create_row,CLASSIFY,,,NOT_STARTED,
@@ -317,7 +317,7 @@ POST,/api/files/inline-pdf,file_pdf,stash_inline_endpoint,CLASSIFY,,,NOT_STARTED
 GET,/api/files/inline/{stash_id},file_pdf,serve_inline_pdf,CLASSIFY,,,NOT_STARTED,
 POST,/api/files/pdf-bundle,file_pdf,file_pdf_bundle,CLASSIFY,,,NOT_STARTED,
 GET,/api/files/pdfs/{name},dashboard,serve_pdf,CLASSIFY,,,NOT_STARTED,
-GET,/api/files/renewals/{token}/{name},dashboard,serve_renewal,CLASSIFY,,,NOT_STARTED,
+GET,/api/files/renewals/{token}/{name},dashboard,serve_renewal,public-scoped,(not carried over),tests/test_suppliers_renewals.py,HISTORICAL_COMPATIBILITY,The public page never serves files back; the office opens uploads with its own session
 GET,/api/files/swms_scans/{name},dashboard,serve_swms_scan,CLASSIFY,,,NOT_STARTED,
 GET,/api/files/{file_id}/pdf,file_pdf,file_pdf,CLASSIFY,,,NOT_STARTED,
 GET,/api/files/{file_id}/pdf.pdf,file_pdf,file_pdf_aliased,CLASSIFY,,,NOT_STARTED,
@@ -779,23 +779,23 @@ DELETE,/api/program-schematic/overlays/{cluster_key}/{node_key},program_schemati
 PUT,/api/program-schematic/overlays/{cluster_key}/{node_key},program_schematic_overlays,upsert_overlay,CLASSIFY,,,NOT_STARTED,
 GET,/api/program-schematic/payroll-flow,program_schematic_overlays,get_payroll_flow,CLASSIFY,,,NOT_STARTED,
 PUT,/api/program-schematic/payroll-flow,program_schematic_overlays,save_payroll_flow,CLASSIFY,,,NOT_STARTED,
-GET,/api/public/renewals/{token},renewals,public_get,CLASSIFY,,,NOT_STARTED,
-POST,/api/public/renewals/{token}/submit,renewals,public_submit,CLASSIFY,,,NOT_STARTED,
+GET,/api/public/renewals/{token},renewals,public_get,public-scoped,renewals.public_view,tests/test_suppliers_renewals.py,IMPLEMENTED_TESTED,"Only this request: no ids, no other records"
+POST,/api/public/renewals/{token}/submit,renewals,public_submit,public-scoped,renewals.public_submit,tests/test_suppliers_renewals.py,IMPLEMENTED_TESTED,Idempotent; closes the link to further uploads
 GET,/api/public/site/{scan_token}/form,visitor_signins,public_visitor_form_info,public-scoped,sites.visitor_form,tests/test_sites.py,IMPLEMENTED_TESTED,
 POST,/api/public/visitor/site/{scan_token}/signin,visitor_signins,public_visitor_signin,public-scoped,sites.visitor_sign_in,tests/test_sites.py,IMPLEMENTED_TESTED,Declaration required; 10 an hour per address per site; idempotent
 POST,/api/public/visitor/{visitor_id}/sign-out,visitor_signins,public_visitor_signout,public-scoped,sites.visitor_sign_out,tests/test_sites.py,IMPLEMENTED_TESTED,Needs the site's QR token; first sign-out time stands
 GET,/api/redoc,server,_admin_redoc,CLASSIFY,,,NOT_STARTED,
-GET,/api/renewals,renewals,list_renewals,CLASSIFY,,,NOT_STARTED,
-POST,/api/renewals,renewals,create_renewal,CLASSIFY,,,NOT_STARTED,
-POST,/api/renewals/bulk,renewals,create_renewal_bulk,CLASSIFY,,,NOT_STARTED,
-POST,/api/renewals/bulk-delete,renewals,bulk_delete_renewals,CLASSIFY,,,NOT_STARTED,
-GET,/api/renewals/doc-types,renewals,list_doc_types,CLASSIFY,,,NOT_STARTED,
-POST,/api/renewals/doc-types,renewals,create_doc_type,CLASSIFY,,,NOT_STARTED,
-DELETE,/api/renewals/doc-types/{type_id},renewals,delete_doc_type,CLASSIFY,,,NOT_STARTED,
-PATCH,/api/renewals/doc-types/{type_id},renewals,update_doc_type,CLASSIFY,,,NOT_STARTED,
-DELETE,/api/renewals/{rid},renewals,delete_renewal,CLASSIFY,,,NOT_STARTED,
-PATCH,/api/renewals/{rid},renewals,update_renewal,CLASSIFY,,,NOT_STARTED,
-POST,/api/renewals/{rid}/revoke,renewals,revoke_renewal,CLASSIFY,,,NOT_STARTED,
+GET,/api/renewals,renewals,list_renewals,team/resource,renewals.list_renewals,tests/test_suppliers_renewals.py,IMPLEMENTED_TESTED,"Counts by status, including expired"
+POST,/api/renewals,renewals,create_renewal,team/resource,renewals.create_renewal,tests/test_suppliers_renewals.py,IMPLEMENTED_TESTED,Supplier or worker; link shown once; token stored as a hash
+POST,/api/renewals/bulk,renewals,create_renewal_bulk,team/resource,renewals.bulk_create,tests/test_suppliers_renewals.py,IMPLEMENTED_TESTED,Skips suppliers with an open request covering the same documents
+POST,/api/renewals/bulk-delete,renewals,bulk_delete_renewals,team/resource,renewals.bulk_delete,tests/test_suppliers_renewals.py,IMPLEMENTED_TESTED,
+GET,/api/renewals/doc-types,renewals,list_doc_types,team/resource,suppliers.list_doc_types,tests/test_suppliers_renewals.py,IMPLEMENTED_TESTED,Seeded with a default set (D-049)
+POST,/api/renewals/doc-types,renewals,create_doc_type,team/resource,suppliers.create_doc_type,tests/test_suppliers_renewals.py,IMPLEMENTED_TESTED,
+DELETE,/api/renewals/doc-types/{type_id},renewals,delete_doc_type,team/resource,suppliers.retire_doc_type,tests/test_suppliers_renewals.py,IMPLEMENTED_TESTED,Retires; held documents keep the type
+PATCH,/api/renewals/doc-types/{type_id},renewals,update_doc_type,team/resource,suppliers.update_doc_type,tests/test_suppliers_renewals.py,IMPLEMENTED_TESTED,
+DELETE,/api/renewals/{rid},renewals,delete_renewal,team/resource,renewals.delete_renewal,tests/test_suppliers_renewals.py,IMPLEMENTED_TESTED,Soft delete and revoke
+PATCH,/api/renewals/{rid},renewals,update_renewal,team/resource,renewals.update_renewal,tests/test_suppliers_renewals.py,IMPLEMENTED_TESTED,Open requests only; link unchanged
+POST,/api/renewals/{rid}/revoke,renewals,revoke_renewal,team/resource,renewals.revoke,tests/test_suppliers_renewals.py,IMPLEMENTED_TESTED,
 GET,/api/risk-assessments,crud,list_items,team/resource,safety.list_records,tests/test_safety.py,IMPLEMENTED_TESTED,Paginated; own-only without team_view on team-scoped registers
 POST,/api/risk-assessments,crud,create_item,team/resource,safety.create,tests/test_safety.py,IMPLEMENTED_TESTED,"D-030 body is {fields:[{id,value}]} validated against the register's form schema"
 POST,/api/risk-assessments/archive,crud,bulk_archive,team/resource,safety.bulk_archive,tests/test_safety.py,IMPLEMENTED_TESTED,Needs the archive right; dry run by default
@@ -859,23 +859,23 @@ GET,/api/sites/{site_id}/signon-log,sites_signon_v127,signon_log,team/resource,s
 POST,/api/sites/{site_id}/signon-log/export,sites_signon_v127,signon_log_export,team/resource,sites.export_log,tests/test_sites.py,IMPLEMENTED_TESTED,CSV; audited; formula cells neutralised
 POST,/api/sites/{site_id}/signon-v127,sites_signon_v127,signon_v127,authenticated-own,sites.worker_sign_on,tests/test_sites.py,IMPLEMENTED_TESTED,Signed-in sign-on is by QR token: POST /api/scan/site/{scan_token}/sign-on
 GET,/api/suppliers/address-lookup,suppliers,address_lookup,CLASSIFY,,,NOT_STARTED,
-DELETE,/api/suppliers/members/{member_id},supplier_panels,delete_member,CLASSIFY,,,NOT_STARTED,
-PATCH,/api/suppliers/members/{member_id},supplier_panels,update_member,CLASSIFY,,,NOT_STARTED,
-GET,/api/suppliers/meta,suppliers,list_meta,CLASSIFY,,,NOT_STARTED,
-DELETE,/api/suppliers/notes/{note_id},supplier_panels,delete_note,CLASSIFY,,,NOT_STARTED,
-PATCH,/api/suppliers/notes/{note_id},supplier_panels,update_note,CLASSIFY,,,NOT_STARTED,
-GET,/api/suppliers/panel-counts,supplier_panels,panel_counts,CLASSIFY,,,NOT_STARTED,
-DELETE,/api/suppliers/tasks/{task_id},supplier_panels,delete_task,CLASSIFY,,,NOT_STARTED,
-PATCH,/api/suppliers/tasks/{task_id},supplier_panels,update_task,CLASSIFY,,,NOT_STARTED,
-GET,/api/suppliers/{simpro_supplier_id}/meta,suppliers,get_meta,CLASSIFY,,,NOT_STARTED,
-PATCH,/api/suppliers/{simpro_supplier_id}/meta,suppliers,upsert_meta,CLASSIFY,,,NOT_STARTED,
-POST,/api/suppliers/{simpro_supplier_id}/send-renewal,suppliers,send_renewal,CLASSIFY,,,NOT_STARTED,
-GET,/api/suppliers/{supplier_id}/members,supplier_panels,list_members,CLASSIFY,,,NOT_STARTED,
-POST,/api/suppliers/{supplier_id}/members,supplier_panels,create_member,CLASSIFY,,,NOT_STARTED,
-GET,/api/suppliers/{supplier_id}/notes,supplier_panels,list_notes,CLASSIFY,,,NOT_STARTED,
-POST,/api/suppliers/{supplier_id}/notes,supplier_panels,create_note,CLASSIFY,,,NOT_STARTED,
-GET,/api/suppliers/{supplier_id}/tasks,supplier_panels,list_tasks,CLASSIFY,,,NOT_STARTED,
-POST,/api/suppliers/{supplier_id}/tasks,supplier_panels,create_task,CLASSIFY,,,NOT_STARTED,
+DELETE,/api/suppliers/members/{member_id},supplier_panels,delete_member,team/resource,suppliers.delete_member,tests/test_suppliers_renewals.py,IMPLEMENTED_TESTED,
+PATCH,/api/suppliers/members/{member_id},supplier_panels,update_member,team/resource,suppliers.edit_member,tests/test_suppliers_renewals.py,IMPLEMENTED_TESTED,
+GET,/api/suppliers/meta,suppliers,list_meta,team/resource,suppliers.list_suppliers,tests/test_suppliers_renewals.py,IMPLEMENTED_TESTED,Local details live on the supplier row; one list call
+DELETE,/api/suppliers/notes/{note_id},supplier_panels,delete_note,team/resource,suppliers.delete_note,tests/test_suppliers_renewals.py,IMPLEMENTED_TESTED,
+PATCH,/api/suppliers/notes/{note_id},supplier_panels,update_note,team/resource,suppliers.edit_note,tests/test_suppliers_renewals.py,IMPLEMENTED_TESTED,
+GET,/api/suppliers/panel-counts,supplier_panels,panel_counts,team/resource,suppliers.panel_counts,tests/test_suppliers_renewals.py,IMPLEMENTED_TESTED,
+DELETE,/api/suppliers/tasks/{task_id},supplier_panels,delete_task,team/resource,suppliers.delete_task,tests/test_suppliers_renewals.py,IMPLEMENTED_TESTED,
+PATCH,/api/suppliers/tasks/{task_id},supplier_panels,update_task,team/resource,suppliers.edit_task,tests/test_suppliers_renewals.py,IMPLEMENTED_TESTED,
+GET,/api/suppliers/{simpro_supplier_id}/meta,suppliers,get_meta,team/resource,suppliers.get_one,tests/test_suppliers_renewals.py,IMPLEMENTED_TESTED,Keyed by the portal's own id
+PATCH,/api/suppliers/{simpro_supplier_id}/meta,suppliers,upsert_meta,team/resource,suppliers.update_supplier,tests/test_suppliers_renewals.py,IMPLEMENTED_TESTED,Hand edits to imported rows are remembered (locally_edited)
+POST,/api/suppliers/{simpro_supplier_id}/send-renewal,suppliers,send_renewal,team/resource,renewals.create_renewal,tests/test_suppliers_renewals.py,IMPLEMENTED_TESTED,A renewal request is a scoped link; the email is held in the outbox
+GET,/api/suppliers/{supplier_id}/members,supplier_panels,list_members,team/resource,suppliers.list_members,tests/test_suppliers_renewals.py,IMPLEMENTED_TESTED,
+POST,/api/suppliers/{supplier_id}/members,supplier_panels,create_member,team/resource,suppliers.add_member,tests/test_suppliers_renewals.py,IMPLEMENTED_TESTED,One main contact
+GET,/api/suppliers/{supplier_id}/notes,supplier_panels,list_notes,team/resource,suppliers.list_notes,tests/test_suppliers_renewals.py,IMPLEMENTED_TESTED,
+POST,/api/suppliers/{supplier_id}/notes,supplier_panels,create_note,team/resource,suppliers.add_note,tests/test_suppliers_renewals.py,IMPLEMENTED_TESTED,
+GET,/api/suppliers/{supplier_id}/tasks,supplier_panels,list_tasks,team/resource,suppliers.list_tasks,tests/test_suppliers_renewals.py,IMPLEMENTED_TESTED,
+POST,/api/suppliers/{supplier_id}/tasks,supplier_panels,create_task,team/resource,suppliers.add_task,tests/test_suppliers_renewals.py,IMPLEMENTED_TESTED,
 GET,/api/swms,crud,list_items,team/resource,safety.list_records,tests/test_safety.py,IMPLEMENTED_TESTED,Paginated; own-only without team_view on team-scoped registers
 POST,/api/swms,crud,create_item,team/resource,safety.create,tests/test_safety.py,IMPLEMENTED_TESTED,"D-030 body is {fields:[{id,value}]} validated against the register's form schema"
 POST,/api/swms/archive,crud,bulk_archive,team/resource,safety.bulk_archive,tests/test_safety.py,IMPLEMENTED_TESTED,Needs the archive right; dry run by default
@@ -1071,3 +1071,20 @@ POST,/api/scan/site/{scan_token}/sign-off,sites,,authenticated-own,sites.worker_
 GET,/api/public/visitor/{visitor_id},sites,,public-scoped,sites.visitor_status,tests/test_sites.py,IMPLEMENTED_TESTED,New: lets the visitor's page survive a refresh
 PATCH,/api/admin/visitors/{visitor_id},sites,,team/resource,sites.correct_visitor,tests/test_sites.py,IMPLEMENTED_TESTED,New: reasoned correction with audit
 GET,/api/admin/visitors/export.csv,sites,,team/resource,sites.export_visitors,tests/test_sites.py,IMPLEMENTED_TESTED,New
+GET,/api/suppliers,suppliers,,team/resource,suppliers.list_suppliers,tests/test_suppliers_renewals.py,IMPLEMENTED_TESTED,New: paginated directory with compliance summary
+POST,/api/suppliers,suppliers,,team/resource,suppliers.create_supplier,tests/test_suppliers_renewals.py,IMPLEMENTED_TESTED,New: ABN checksum; duplicate warning
+GET,/api/suppliers/{supplier_id},suppliers,,team/resource,suppliers.get_one,tests/test_suppliers_renewals.py,IMPLEMENTED_TESTED,New
+PATCH,/api/suppliers/{supplier_id},suppliers,,team/resource,suppliers.update_supplier,tests/test_suppliers_renewals.py,IMPLEMENTED_TESTED,New
+DELETE,/api/suppliers/{supplier_id},suppliers,,team/resource,suppliers.delete,tests/test_suppliers_renewals.py,IMPLEMENTED_TESTED,New: soft delete
+POST,/api/suppliers/{supplier_id}/archive,suppliers,,team/resource,suppliers.archive,tests/test_suppliers_renewals.py,IMPLEMENTED_TESTED,New
+POST,/api/suppliers/{supplier_id}/unarchive,suppliers,,team/resource,suppliers.unarchive,tests/test_suppliers_renewals.py,IMPLEMENTED_TESTED,New
+POST,/api/suppliers/{supplier_id}/restore,suppliers,,team/resource,suppliers.restore,tests/test_suppliers_renewals.py,IMPLEMENTED_TESTED,New
+GET,/api/suppliers/{supplier_id}/documents,suppliers,,team/resource,suppliers.list_documents,tests/test_suppliers_renewals.py,IMPLEMENTED_TESTED,New: current and history
+GET,/api/suppliers/{supplier_id}/documents/{doc_id}/file,suppliers,,team/resource,suppliers.document_file,tests/test_suppliers_renewals.py,IMPLEMENTED_TESTED,New
+POST,/api/suppliers/{supplier_id}/link-user,suppliers,,admin-owner,suppliers.link_login,tests/test_suppliers_renewals.py,IMPLEMENTED_TESTED,New: external representative scope (D-048)
+DELETE,/api/suppliers/{supplier_id}/link-user/{user_id},suppliers,,admin-owner,suppliers.unlink_login,tests/test_suppliers_renewals.py,IMPLEMENTED_TESTED,New
+GET,/api/renewals/{renewal_id},renewals,,team/resource,renewals.get_renewal,tests/test_suppliers_renewals.py,IMPLEMENTED_TESTED,New: uploads and earlier rounds
+POST,/api/renewals/{renewal_id}/review,renewals,,team/resource,renewals.review,tests/test_suppliers_renewals.py,IMPLEMENTED_TESTED,New: accept or reject each file; accepted files become current documents or certificate renewals
+POST,/api/renewals/{renewal_id}/reissue,renewals,,team/resource,renewals.reissue,tests/test_suppliers_renewals.py,IMPLEMENTED_TESTED,"New: fresh link, previous one dies"
+GET,/api/renewals/{renewal_id}/uploads/{upload_id}/file,renewals,,team/resource,renewals.upload_file,tests/test_suppliers_renewals.py,IMPLEMENTED_TESTED,New
+POST,/api/public/renewals/{token}/upload,renewals,,public-scoped,renewals.public_upload,tests/test_suppliers_renewals.py,IMPLEMENTED_TESTED,New: one file per requested document; type and size checked

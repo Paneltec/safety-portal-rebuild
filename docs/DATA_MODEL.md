@@ -25,10 +25,16 @@ IDs are opaque strings. Every tenant-owned table carries `org_id`, and every que
 | `certifications` | One certificate held by a worker | `supersedes_id` / `superseded_by_id` chain keeps renewals; `no_expiry` explicit; evidence in `stored_files`; archive and soft delete |
 | `sites` | A place where work happens | Unique `scan_token` (the QR secret, rotatable); unique source key for imports; `signon_questions` JSONB; active flag; soft delete |
 | `site_attendance` | One visit by a signed-in worker or a visitor without a login | Partial unique `(site_id, user_id)` while open (workers); partial unique `(site_id, client_ref)`; answers stored with the wording asked; sign-out source and actor; archive and soft delete |
+| `suppliers` | One directory of external organisations; `is_contractor` marks those who do work for us | Unique source key for imports; `source_data` (last import) kept apart from local columns; `locally_edited` lists hand-edited fields; archive and soft delete |
+| `supplier_notes`, `supplier_tasks`, `supplier_members` | Local panels on a supplier | Never touched by an import; soft delete |
+| `compliance_doc_types` | What can be asked of a supplier | Unique `(org_id, slug)`; `required_for_contractors`; retire with `active=false` |
+| `supplier_documents` | Compliance documents held | `superseded_by_id` keeps earlier versions; source office or renewal |
+| `renewal_links` | A scoped request for documents from a supplier or worker | Unique `token_hash` (token never stored); status, expiry, round number; outbox message reference |
+| `renewal_uploads` | Files supplied through a link and the office's decision | Per round; `replaced_at` when re-uploaded; `result_id` points at the document or certificate created |
 | `stored_files` | Metadata for uploaded bytes: hash, size, MIME type, original name, purpose | Bytes on the files volume by organisation and SHA-256; identity separate from name |
 | `companies` | Divisions inside an organisation (for example Paneltec, Viatec) | Unique `(org_id, code)` |
 | `roles` | Role catalogue: built-in (read-only) and custom | Unique `(org_id, role_id)`; `permissions` is `{resource: {action: bool}}`; soft delete |
-| `users` | Login identity | Email unique and lower-case; `status` invited/active/disabled; `worker_id` links to `workers` (unique: one login per worker); soft delete before hard delete |
+| `users` | Login identity | Email unique and lower-case; `status` invited/active/disabled; `worker_id` links to `workers` (unique: one login per worker); `supplier_id` scopes an external representative to one supplier; soft delete before hard delete |
 | `user_permission_overrides` | Explicit per-user allow/deny cells with reasons | One row per user; survives role changes |
 | `permission_presets` | Named bundles of cells | Per organisation; soft delete |
 | `user_sessions` | One row per sign-in | Token stored as SHA-256 hash only; expiry, idle timeout, revoke reason, IP and device |

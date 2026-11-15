@@ -295,6 +295,72 @@ FEATURES.update({
     "SITE-01": ("PARTIAL", "tests/test_sites.py; e2e sites and visitors step", "Built: sites register, QR code and printable sign, sign-on questions, worker and visitor sign-in/out (idempotent), live occupancy, history, office sign-out, visitor register with corrections, archive, delete and CSV export; QR token reaches one site only. Outstanding: Simpro site import (stage 5), bulk archive by criteria, GPS distance checks, migration mapping for legacy sign-in collections (no legacy data in a rebuild)."),
 })
 
+T_SUP = "tests/test_suppliers_renewals.py"
+DONE.update({
+    ("GET", "/api/contractors"): ("team/resource", "suppliers.list_contractors", T_SUP, "IMPLEMENTED_TESTED", "D-047 one directory; contractors are flagged suppliers"),
+    ("POST", "/api/contractors"): ("team/resource", "suppliers.create_supplier", T_SUP, "IMPLEMENTED_TESTED", "POST /api/suppliers with is_contractor"),
+    ("GET", "/api/contractors/{cid}"): ("team/resource", "suppliers.get_contractor", T_SUP, "IMPLEMENTED_TESTED", ""),
+    ("PATCH", "/api/contractors/{cid}"): ("team/resource", "suppliers.update_supplier", T_SUP, "IMPLEMENTED_TESTED", "PATCH /api/suppliers/{id}"),
+    ("DELETE", "/api/contractors/{cid}"): ("team/resource", "suppliers.delete", T_SUP, "IMPLEMENTED_TESTED", "DELETE /api/suppliers/{id}; soft"),
+    ("POST", "/api/contractors/{cid}/documents"): ("team/resource", "suppliers.upload_document", T_SUP, "IMPLEMENTED_TESTED", "POST /api/suppliers/{id}/documents"),
+    ("DELETE", "/api/contractors/{cid}/documents/{doc_id}"): ("team/resource", "suppliers.delete_document", T_SUP, "IMPLEMENTED_TESTED", "Earlier document becomes current again"),
+    ("GET", "/api/suppliers/meta"): ("team/resource", "suppliers.list_suppliers", T_SUP, "IMPLEMENTED_TESTED", "Local details live on the supplier row; one list call"),
+    ("GET", "/api/suppliers/{simpro_supplier_id}/meta"): ("team/resource", "suppliers.get_one", T_SUP, "IMPLEMENTED_TESTED", "Keyed by the portal's own id"),
+    ("PATCH", "/api/suppliers/{simpro_supplier_id}/meta"): ("team/resource", "suppliers.update_supplier", T_SUP, "IMPLEMENTED_TESTED", "Hand edits to imported rows are remembered (locally_edited)"),
+    ("GET", "/api/suppliers/panel-counts"): ("team/resource", "suppliers.panel_counts", T_SUP, "IMPLEMENTED_TESTED", ""),
+    ("GET", "/api/suppliers/{supplier_id}/members"): ("team/resource", "suppliers.list_members", T_SUP, "IMPLEMENTED_TESTED", ""),
+    ("POST", "/api/suppliers/{supplier_id}/members"): ("team/resource", "suppliers.add_member", T_SUP, "IMPLEMENTED_TESTED", "One main contact"),
+    ("PATCH", "/api/suppliers/members/{member_id}"): ("team/resource", "suppliers.edit_member", T_SUP, "IMPLEMENTED_TESTED", ""),
+    ("DELETE", "/api/suppliers/members/{member_id}"): ("team/resource", "suppliers.delete_member", T_SUP, "IMPLEMENTED_TESTED", ""),
+    ("GET", "/api/suppliers/{supplier_id}/notes"): ("team/resource", "suppliers.list_notes", T_SUP, "IMPLEMENTED_TESTED", ""),
+    ("POST", "/api/suppliers/{supplier_id}/notes"): ("team/resource", "suppliers.add_note", T_SUP, "IMPLEMENTED_TESTED", ""),
+    ("PATCH", "/api/suppliers/notes/{note_id}"): ("team/resource", "suppliers.edit_note", T_SUP, "IMPLEMENTED_TESTED", ""),
+    ("DELETE", "/api/suppliers/notes/{note_id}"): ("team/resource", "suppliers.delete_note", T_SUP, "IMPLEMENTED_TESTED", ""),
+    ("GET", "/api/suppliers/{supplier_id}/tasks"): ("team/resource", "suppliers.list_tasks", T_SUP, "IMPLEMENTED_TESTED", ""),
+    ("POST", "/api/suppliers/{supplier_id}/tasks"): ("team/resource", "suppliers.add_task", T_SUP, "IMPLEMENTED_TESTED", ""),
+    ("PATCH", "/api/suppliers/tasks/{task_id}"): ("team/resource", "suppliers.edit_task", T_SUP, "IMPLEMENTED_TESTED", ""),
+    ("DELETE", "/api/suppliers/tasks/{task_id}"): ("team/resource", "suppliers.delete_task", T_SUP, "IMPLEMENTED_TESTED", ""),
+    ("POST", "/api/suppliers/{simpro_supplier_id}/send-renewal"): ("team/resource", "renewals.create_renewal", T_SUP, "IMPLEMENTED_TESTED", "A renewal request is a scoped link; the email is held in the outbox"),
+    ("GET", "/api/renewals"): ("team/resource", "renewals.list_renewals", T_SUP, "IMPLEMENTED_TESTED", "Counts by status, including expired"),
+    ("POST", "/api/renewals"): ("team/resource", "renewals.create_renewal", T_SUP, "IMPLEMENTED_TESTED", "Supplier or worker; link shown once; token stored as a hash"),
+    ("POST", "/api/renewals/bulk"): ("team/resource", "renewals.bulk_create", T_SUP, "IMPLEMENTED_TESTED", "Skips suppliers with an open request covering the same documents"),
+    ("POST", "/api/renewals/bulk-delete"): ("team/resource", "renewals.bulk_delete", T_SUP, "IMPLEMENTED_TESTED", ""),
+    ("PATCH", "/api/renewals/{rid}"): ("team/resource", "renewals.update_renewal", T_SUP, "IMPLEMENTED_TESTED", "Open requests only; link unchanged"),
+    ("DELETE", "/api/renewals/{rid}"): ("team/resource", "renewals.delete_renewal", T_SUP, "IMPLEMENTED_TESTED", "Soft delete and revoke"),
+    ("POST", "/api/renewals/{rid}/revoke"): ("team/resource", "renewals.revoke", T_SUP, "IMPLEMENTED_TESTED", ""),
+    ("GET", "/api/renewals/doc-types"): ("team/resource", "suppliers.list_doc_types", T_SUP, "IMPLEMENTED_TESTED", "Seeded with a default set (D-049)"),
+    ("POST", "/api/renewals/doc-types"): ("team/resource", "suppliers.create_doc_type", T_SUP, "IMPLEMENTED_TESTED", ""),
+    ("PATCH", "/api/renewals/doc-types/{type_id}"): ("team/resource", "suppliers.update_doc_type", T_SUP, "IMPLEMENTED_TESTED", ""),
+    ("DELETE", "/api/renewals/doc-types/{type_id}"): ("team/resource", "suppliers.retire_doc_type", T_SUP, "IMPLEMENTED_TESTED", "Retires; held documents keep the type"),
+    ("GET", "/api/public/renewals/{token}"): ("public-scoped", "renewals.public_view", T_SUP, "IMPLEMENTED_TESTED", "Only this request: no ids, no other records"),
+    ("POST", "/api/public/renewals/{token}/submit"): ("public-scoped", "renewals.public_submit", T_SUP, "IMPLEMENTED_TESTED", "Idempotent; closes the link to further uploads"),
+    ("GET", "/api/files/renewals/{token}/{name}"): ("public-scoped", "(not carried over)", T_SUP, "HISTORICAL_COMPATIBILITY", "The public page never serves files back; the office opens uploads with its own session"),
+})
+NEW_ROWS += [
+    ["GET", "/api/suppliers", "suppliers", "", "team/resource", "suppliers.list_suppliers", T_SUP, "IMPLEMENTED_TESTED", "New: paginated directory with compliance summary"],
+    ["POST", "/api/suppliers", "suppliers", "", "team/resource", "suppliers.create_supplier", T_SUP, "IMPLEMENTED_TESTED", "New: ABN checksum; duplicate warning"],
+    ["GET", "/api/suppliers/{supplier_id}", "suppliers", "", "team/resource", "suppliers.get_one", T_SUP, "IMPLEMENTED_TESTED", "New"],
+    ["PATCH", "/api/suppliers/{supplier_id}", "suppliers", "", "team/resource", "suppliers.update_supplier", T_SUP, "IMPLEMENTED_TESTED", "New"],
+    ["DELETE", "/api/suppliers/{supplier_id}", "suppliers", "", "team/resource", "suppliers.delete", T_SUP, "IMPLEMENTED_TESTED", "New: soft delete"],
+    ["POST", "/api/suppliers/{supplier_id}/archive", "suppliers", "", "team/resource", "suppliers.archive", T_SUP, "IMPLEMENTED_TESTED", "New"],
+    ["POST", "/api/suppliers/{supplier_id}/unarchive", "suppliers", "", "team/resource", "suppliers.unarchive", T_SUP, "IMPLEMENTED_TESTED", "New"],
+    ["POST", "/api/suppliers/{supplier_id}/restore", "suppliers", "", "team/resource", "suppliers.restore", T_SUP, "IMPLEMENTED_TESTED", "New"],
+    ["GET", "/api/suppliers/{supplier_id}/documents", "suppliers", "", "team/resource", "suppliers.list_documents", T_SUP, "IMPLEMENTED_TESTED", "New: current and history"],
+    ["GET", "/api/suppliers/{supplier_id}/documents/{doc_id}/file", "suppliers", "", "team/resource", "suppliers.document_file", T_SUP, "IMPLEMENTED_TESTED", "New"],
+    ["POST", "/api/suppliers/{supplier_id}/link-user", "suppliers", "", "admin-owner", "suppliers.link_login", T_SUP, "IMPLEMENTED_TESTED", "New: external representative scope (D-048)"],
+    ["DELETE", "/api/suppliers/{supplier_id}/link-user/{user_id}", "suppliers", "", "admin-owner", "suppliers.unlink_login", T_SUP, "IMPLEMENTED_TESTED", "New"],
+    ["GET", "/api/renewals/{renewal_id}", "renewals", "", "team/resource", "renewals.get_renewal", T_SUP, "IMPLEMENTED_TESTED", "New: uploads and earlier rounds"],
+    ["POST", "/api/renewals/{renewal_id}/review", "renewals", "", "team/resource", "renewals.review", T_SUP, "IMPLEMENTED_TESTED", "New: accept or reject each file; accepted files become current documents or certificate renewals"],
+    ["POST", "/api/renewals/{renewal_id}/reissue", "renewals", "", "team/resource", "renewals.reissue", T_SUP, "IMPLEMENTED_TESTED", "New: fresh link, previous one dies"],
+    ["GET", "/api/renewals/{renewal_id}/uploads/{upload_id}/file", "renewals", "", "team/resource", "renewals.upload_file", T_SUP, "IMPLEMENTED_TESTED", "New"],
+    ["POST", "/api/public/renewals/{token}/upload", "renewals", "", "public-scoped", "renewals.public_upload", T_SUP, "IMPLEMENTED_TESTED", "New: one file per requested document; type and size checked"],
+]
+FEATURES.update({
+    "SUP-01": ("PARTIAL", "tests/test_suppliers_renewals.py; e2e suppliers and renewals step", "Built: one supplier/contractor directory with search, status tabs, ABN check, local notes, tasks and members, compliance documents with expiry states and history, missing required documents, external representative scope. Outstanding: Simpro vendor import and address lookup (stage 5), supplier QR induction (4d), document folders."),
+    "REN-01": ("IMPLEMENTED_TESTED", "tests/test_suppliers_renewals.py; e2e suppliers and renewals step", "Scoped expiring revocable links for suppliers and workers; validated uploads; office accept/reject per file with reasons; reissue rounds; history and audit kept; delivery state shown (held until email is connected in stage 5)."),
+    "CERT-01": ("PARTIAL", "tests/test_workers.py; tests/test_suppliers_renewals.py; e2e workers step", "Built: kinds with alias normalisation, issue/expiry, evidence files, valid/expiring/expired/unknown/missing, renewal that keeps earlier evidence, register whose totals match its filters, own view, renewal links for workers. Outstanding: reminders (stage 5), bulk actions."),
+})
+
 
 def main() -> None:
     path = HERE / "endpoint_coverage.csv"

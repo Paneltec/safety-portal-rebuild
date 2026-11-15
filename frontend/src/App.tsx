@@ -21,6 +21,9 @@ import { Workers } from "./pages/Workers";
 import { SiteDetail, Sites } from "./pages/Sites";
 import { PublicSignOn, StaffSignOn } from "./pages/SiteSignOn";
 import { Visitors } from "./pages/Visitors";
+import { Renew } from "./pages/Renew";
+import { Renewals } from "./pages/Renewals";
+import { SupplierDetail, Suppliers } from "./pages/Suppliers";
 
 function Protected() {
   const { status, me } = useAuth();
@@ -42,6 +45,7 @@ export function App() {
       <Route path="/accept-invite" element={<RedeemLink kind="invite" />} />
       <Route path="/reset-password" element={<RedeemLink kind="reset" />} />
       <Route path="/sign-on/:token" element={<PublicSignOn />} />
+      <Route path="/renew/:token" element={<Renew />} />
       <Route path="/app" element={<Protected />}>
         <Route index element={<Navigate to="/app/home" replace />} />
         <Route path="home" element={<Home />} />
@@ -59,6 +63,9 @@ export function App() {
         <Route path="sites" element={<Sites />} />
         <Route path="sites/:siteId" element={<SiteDetail />} />
         <Route path="visitors" element={<Visitors />} />
+        <Route path="suppliers" element={<Suppliers />} />
+        <Route path="suppliers/:supplierId" element={<SupplierDetail />} />
+        <Route path="renewals" element={<Renewals />} />
         <Route path="site-sign-on/:token" element={<StaffSignOn />} />
         <Route path="documents" element={<Documents />} />
         <Route path="documents/:folderId" element={<Documents />} />

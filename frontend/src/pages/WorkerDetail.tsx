@@ -1,9 +1,10 @@
 import { useRef, useState, type FormEvent } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { api, formatDate, formatDateTime, openFile, type Cert, type CertKind, type Company, type Role, type User, type Worker } from "../api";
+import { api, formatDate, formatDateTime, openFile, type Cert, type CertKind, type Company, type Renewal, type Role, type User, type Worker } from "../api";
 import { useAuth } from "../auth";
 import { Avatar, CertChip, Chip, LoadError, Loading, Modal, Notice, StatusChip, errorMessage } from "../components/ui";
 import { useLoad } from "../hooks";
+import { LinkBox, NewRequest } from "./Renewals";
 import { WorkerStatus } from "./Workers";
 
 type Msg = { tone: "ok" | "bad"; text: string } | null;
@@ -537,6 +538,9 @@ export function CertsCard({ workerId, workerName, readOnly = false }: { workerId
   const [uploadFor, setUploadFor] = useState<string | null>(null);
   const canEdit = !readOnly && can("certifications", "edit");
   const canDelete = !readOnly && can("certifications", "delete");
+  const canAsk = canEdit && can("renewals", "edit") && can("workers", "team_view");
+  const [asking, setAsking] = useState(false);
+  const [issued, setIssued] = useState<Renewal | null>(null);
 
   async function upload(file: File | undefined) {
     if (!file || !uploadFor) return;
@@ -569,9 +573,12 @@ export function CertsCard({ workerId, workerName, readOnly = false }: { workerId
         <h2>Certificates</h2>
         <div className="row">
           <label className="check"><input type="checkbox" checked={history} onChange={(e) => setHistory(e.target.checked)} /> Show earlier and archived</label>
+          {canAsk && <button type="button" className="btn small" onClick={() => setAsking(true)}>Ask for certificates</button>}
           {canEdit && <button type="button" className="btn small primary" onClick={() => setForm({ mode: "add" })}>Add certificate</button>}
         </div>
       </div>
+      {issued && <div className="card-pad" style={{ paddingBottom: 0 }}><LinkBox renewal={issued} onClose={() => setIssued(null)} /></div>}
+      {asking && <NewRequest worker={{ id: workerId, name: workerName } as Worker} onClose={() => setAsking(false)} onCreated={(r) => { setAsking(false); setIssued(r); }} />}
       <input ref={fileInput} type="file" accept="application/pdf,image/png,image/jpeg,image/webp" className="sr-only" aria-label="Choose a certificate file"
         onChange={(e) => { void upload(e.target.files?.[0]); e.target.value = ""; }} />
       {message && <div className="card-pad" style={{ paddingBottom: 0 }}><Notice tone={message.tone}>{message.text}</Notice></div>}

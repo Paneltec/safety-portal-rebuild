@@ -14,10 +14,11 @@ Updated at the end of each finished part. The ledgers in `docs/ledger/` hold the
 | Stage 3 | Safety registers: SWMS (review, assignments, acknowledgements, versions), pre-starts, site diary, incidents, hazards, inspections, risk assessments, SSRA; review and tracking workflows, history, photos and signatures, PDFs, bulk archive; forms project into their register once | `backend/tests/test_safety.py`, `e2e/walkthrough.py` |
 | Stage 4a | Workers register (active/inactive/archived, details, photo, duplicate warning, history), privacy tiers with encrypted and masked protected fields and audited reveal, login link and provisioning, self-service edits; certifications (types with aliases, expiry states, evidence, renewals that keep earlier evidence, register with matching totals, expected certificates); certification gate on forms (two switches, checked on start and submit) | `backend/tests/test_workers.py`, `e2e/walkthrough.py` (workers step) |
 | Stage 4b | Sites register with sign-on questions and visitor rules, QR code and printable A4 gate sign, revocable codes; public gate page for visitors (sign in, sign out, remembered on the phone) and signed-in sign-on for workers; live occupancy, history, office sign-out; visitor register with counts, reasoned corrections, archive, delete and CSV export; site picker in forms | `backend/tests/test_sites.py`, `e2e/walkthrough.py` (sites and visitors step) |
+| Stage 4c | Supplier and contractor directory (ABN check, people, tasks, notes, status), compliance documents with expiry states, history and missing required documents; external representative logins scoped to one supplier; renewal links for suppliers and workers (scoped public upload page, office accept/reject per file, reissue, delivery state) | `backend/tests/test_suppliers_renewals.py`, `e2e/walkthrough.py` (suppliers and renewals step) |
 
 ## Next, in order
 
-1. **Stage 4 (rest)**: 4c suppliers and contractors with renewal links (scoped public upload token, office review); 4d inductions matrix and completed training, daily jobs and the job picker, HR documents. Outstanding from 4a/4b: Simpro import of workers and sites (stage 5), certificate reminders (stage 5, through the outbox and safe mode), worker ID card and QR, mobile PIN, GPS distance checks at sign-on.
+1. **Stage 4 (rest)**: 4d inductions matrix and completed training, daily jobs and the job picker, HR documents, supplier QR induction. Outstanding from 4a to 4c: Simpro import of workers, sites and vendors (stage 5), certificate and insurance reminders (stage 5, through the outbox and safe mode), worker ID card and QR, mobile PIN, GPS distance checks at sign-on, supplier document folders.
 1a. Carried forward: bulk pre-start import (IMP-01), reference catalogues (REF-01), AI drafting, positions and asset-type assignment rules, authorised corrections after submit.
 2. Stage 5 onwards as listed in `STAGED_PLAN.md`.
 
@@ -31,6 +32,7 @@ Updated at the end of each finished part. The ledgers in `docs/ledger/` hold the
 - A part is finished only with: migration, handlers with permission and tenant checks, tests for allowed and denied paths across two organisations, screens with empty/loading/denied/error states, a step in `e2e/walkthrough.py`, ledger entries in `docs/ledger/update_ledger.py`, and a refreshed `docs/openapi.json`.
 - `ENCRYPTION_KEY` must be set for protected worker fields; tests and `e2e/run.sh` generate a throwaway key. Never commit a real key.
 - Set `PUBLIC_BASE_URL` before printing site QR signs: the code embeds that address.
+- Before committing, check the test run itself succeeded (`pytest -q > log && tail -1 log`); piping pytest into `tail` hides a failure from `&&`.
 - Commands: `cd backend && .venv/bin/python -m pytest -q`; `cd frontend && npm run build`; `./e2e/run.sh`.
 - New migration: `cd backend && .venv/bin/python -m alembic upgrade head && .venv/bin/python -m alembic revision --autogenerate -m "<what>" --rev-id 000N`.
 - Regenerate OpenAPI: `cd backend && .venv/bin/python -c "import json; from app.main import app; json.dump(app.openapi(), open('../docs/openapi.json','w'), indent=1, sort_keys=True)"`.
