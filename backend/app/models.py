@@ -292,3 +292,84 @@ class DocumentRevision(Base):
     note: Mapped[str | None] = mapped_column(String(300))
     created_by: Mapped[str | None] = mapped_column(String(36))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class FormTemplate(Base):
+    """A form definition. `schema` is the working draft; published versions are immutable snapshots."""
+
+    __tablename__ = "form_templates"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    org_id: Mapped[str] = mapped_column(ForeignKey("organisations.id"), index=True)
+    name: Mapped[str] = mapped_column(String(200))
+    category: Mapped[str] = mapped_column(String(40), default="general")
+    description: Mapped[str] = mapped_column(Text, default="")
+    schema: Mapped[list[Any]] = mapped_column(JSONB, default=list)
+    status: Mapped[str] = mapped_column(String(20), default="draft")  # draft | published | archived
+    published_version: Mapped[int] = mapped_column(Integer, default=0)
+    has_unpublished_changes: Mapped[bool] = mapped_column(Boolean, default=True)
+    certification_gate_enabled: Mapped[bool] = mapped_column(Boolean, default=False)
+    required_certifications: Mapped[list[str]] = mapped_column(JSONB, default=list)
+    created_by: Mapped[str | None] = mapped_column(String(36))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+    deleted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
+class FormTemplateVersion(Base):
+    """An immutable published snapshot. Submissions point here, so later edits never change old records."""
+
+    __tablename__ = "form_template_versions"
+    __table_args__ = (UniqueConstraint("template_id", "version", name="uq_form_template_versions"),)
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    org_id: Mapped[str] = mapped_column(ForeignKey("organisations.id"), index=True)
+    template_id: Mapped[str] = mapped_column(ForeignKey("form_templates.id"), index=True)
+    version: Mapped[int] = mapped_column(Integer)
+    name: Mapped[str] = mapped_column(String(200))
+    category: Mapped[str] = mapped_column(String(40))
+    schema: Mapped[list[Any]] = mapped_column(JSONB)
+    published_by: Mapped[str | None] = mapped_column(String(36))
+    published_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class FormSubmission(Base):
+    """One completed (or in-progress) form. A client-supplied id makes offline retries idempotent."""
+
+    __tablename__ = "form_submissions"
+    __table_args__ = (
+        UniqueConstraint("org_id", "submitted_by", "client_submission_id", name="uq_form_submissions_client_id"),
+        Index("ix_form_submissions_template", "template_id", "status"),
+    )
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    org_id: Mapped[str] = mapped_column(ForeignKey("organisations.id"), index=True)
+    template_id: Mapped[str] = mapped_column(ForeignKey("form_templates.id"))
+    template_version_id: Mapped[str] = mapped_column(ForeignKey("form_template_versions.id"))
+    status: Mapped[str] = mapped_column(String(20), default="draft")  # draft | submitted
+    values: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict)
+    revision: Mapped[int] = mapped_column(Integer, default=1)
+    submitted_by: Mapped[str] = mapped_column(String(36), index=True)
+    client_submission_id: Mapped[str | None] = mapped_column(String(64))
+    launched_via: Mapped[str | None] = mapped_column(String(40))
+    source_scan_token: Mapped[str | None] = mapped_column(String(200))
+    source_asset_id: Mapped[str | None] = mapped_column(String(100))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+    submitted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    deleted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
+class FormSubmissionFile(Base):
+    """A photo, attachment or signature uploaded for one field of one submission."""
+
+    __tablename__ = "form_submission_files"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    org_id: Mapped[str] = mapped_column(ForeignKey("organisations.id"), index=True)
+    submission_id: Mapped[str] = mapped_column(ForeignKey("form_submissions.id", ondelete="CASCADE"), index=True)
+    field_id: Mapped[str] = mapped_column(String(64))
+    kind: Mapped[str] = mapped_column(String(20))  # photo | attachment | signature
+    stored_file_id: Mapped[str] = mapped_column(ForeignKey("stored_files.id"))
+    created_by: Mapped[str | None] = mapped_column(String(36))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)

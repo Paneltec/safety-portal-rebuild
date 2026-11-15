@@ -5,7 +5,7 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 
 from .config import get_settings
-from .routers import auth, documents, org, presets, roles, sessions, users
+from .routers import auth, documents, forms, org, presets, roles, sessions, users
 
 
 def create_app() -> FastAPI:
@@ -41,6 +41,7 @@ def create_app() -> FastAPI:
     app.include_router(presets.router)
     app.include_router(sessions.router)
     app.include_router(documents.router)
+    app.include_router(forms.router)
     return app
 
 
