@@ -213,3 +213,111 @@ def test_pickers_are_scoped_and_honest_about_what_is_not_built(world, client):
         result = client.get(f"{BASE}/{path}", headers=worker).json()
         assert result["available"] is False and result["items"] == [] and "built" in result["message"]
     assert client.get(f"{BASE}/pickers/workers").status_code == 401
+
+
+def test_submission_pdf_matches_the_saved_record(world, client):
+    from io import BytesIO
+
+    from PIL import Image as PILImage
+
+    admin, worker = world.auth("admin1"), world.auth("worker1")
+    def picture(colour):
+        buf = BytesIO()
+        PILImage.new("RGB", (120, 60), colour).save(buf, "PNG")
+        return buf.getvalue()
+
+    real_png, photo_png, sig_png = picture((194, 65, 12)), picture((27, 75, 143)), picture((11, 93, 74))
+    client.patch("/api/org", headers=admin, json={"suburb": "Launceston", "abn": "12 345 678 901", "public_portal_url": "https://portal.one.example"})
+    client.post("/api/org/logo/upload", headers=admin, files={"file": ("logo.png", real_png, "image/png")})
+    template = publish(client, admin, fields=FIELDS + [
+        {"id": "notes", "type": "textarea", "label": "Notes"},
+        {"id": "h", "type": "section_header", "label": "Follow up"},
+        {"id": "acts", "type": "corrective_actions", "label": "Actions"}])
+    sid = client.post(f"{BASE}/templates/{template['id']}/submissions", headers=worker, json={"status": "draft", "fields": []}).json()["id"]
+    photo = add_file(client, worker, sid, "photo", "tyre.png", photo_png).json()
+    sig = add_file(client, worker, sid, "sign", "sig.png", sig_png).json()
+    long_text = "A long paragraph about the site conditions. " * 400  # runs over several pages
+    done = client.post(f"{BASE}/submissions/{sid}/submit", headers=worker, json={"fields": answers(
+        rego="PT-031", tyres={"result": "fail", "note": "Nail in rear left <b>tyre</b> & rim"}, photo=[photo["id"]],
+        sign={"file_id": sig["id"], "signed_name": "Tom Okafor"}, notes=long_text,
+        acts=[{"description": "Replace tyre", "responsible": "Workshop", "due_date": "2026-11-16"}])})
+    assert done.status_code == 200, done.text
+
+    assert client.get(f"{BASE}/submissions/{sid}/pdf").status_code == 401
+    assert client.get(f"{BASE}/submissions/{sid}/pdf", headers=world.auth("admin2")).status_code == 404
+    assert client.get(f"{BASE}/submissions/{sid}/pdf", headers=world.auth("super1")).status_code == 200  # team view
+    r = client.get(f"{BASE}/submissions/{sid}/pdf", headers=worker)
+    assert r.status_code == 200 and r.headers["content-type"] == "application/pdf" and r.content.startswith(b"%PDF-")
+    assert r.headers["content-disposition"].startswith("inline")
+
+    from pypdf import PdfReader
+
+    reader = PdfReader(BytesIO(r.content))
+    text = "\n".join(page.extract_text() for page in reader.pages)
+    assert len(reader.pages) >= 3 and f"Page 1 of {len(reader.pages)}" in text
+    for expected in ("Org One", "ABN 12 345 678 901", "Launceston", "Daily pre-start", "Submitted", "Tom Okafor", "PT-031",
+                     "FAIL", "Nail in rear left <b>tyre</b> & rim", "Signed by Tom Okafor", "Follow up", "Replace tyre",
+                     "due 16/11/2026", "https://portal.one.example"):
+        assert expected in text, expected
+    assert "Emergent" not in text and "preview" not in text.lower()
+    # Both the photo and the signature are embedded, plus the logo on the first page.
+    assert sum(len(page.images) for page in reader.pages) >= 3
+
+    # A photo whose bytes are lost is declared in the PDF rather than breaking it.
+    from sqlalchemy import select as sa_select
+
+    from app.db import get_engine
+    from app.files import _path_for
+    from app.models import StoredFile
+    from sqlalchemy.orm import Session as SASession
+
+    with SASession(get_engine()) as s:
+        stored = s.scalars(sa_select(StoredFile).where(StoredFile.original_name == "tyre.png")).one()
+        _path_for(stored.org_id, stored.sha256).unlink()
+    again = client.get(f"{BASE}/submissions/{sid}/pdf?download=1", headers=worker)
+    assert again.status_code == 200 and again.headers["content-disposition"].startswith("attachment")
+    assert "content missing from storage" in "\n".join(p.extract_text() for p in PdfReader(BytesIO(again.content)).pages)
+
+
+def test_assignments_limit_who_sees_and_fills_a_form(world, client):
+    admin, worker, supervisor = world.auth("admin1"), world.auth("worker1"), world.auth("super1")
+    template = publish(client, admin, fields=[{"id": "q1", "type": "text", "label": "Q"}])
+    tid = template["id"]
+    url = f"{BASE}/templates/{tid}/assignments"
+    # With no rules a published form is open to everyone who can fill in forms.
+    assert client.get(url, headers=admin).json()["open_to_everyone"] is True
+    assert client.get(f"{BASE}/templates", headers=worker).json()["count"] == 1
+    assert client.put(url, headers=worker, json={"rules": []}).status_code == 403
+    assert client.put(url, headers=admin, json={"rules": [{"kind": "planet", "target_id": "mars"}]}).status_code == 422
+    # Targets must belong to this organisation.
+    assert client.put(url, headers=admin, json={"rules": [{"kind": "user", "target_id": world.id("worker2")}]}).status_code == 404
+    assert client.put(url, headers=admin, json={"rules": [{"kind": "role", "target_id": "nope"}]}).status_code == 404
+
+    r = client.put(url, headers=admin, json={"rules": [{"kind": "role", "target_id": "supervisor"}]})
+    assert r.status_code == 200 and r.json()["rules"] == [{"kind": "role", "target_id": "supervisor", "label": "Supervisor"}]
+    # The worker no longer sees it and cannot use it, even with the id.
+    assert client.get(f"{BASE}/templates", headers=worker).json()["count"] == 0
+    assert client.get(f"{BASE}/templates/{tid}", headers=worker).status_code == 404
+    assert client.get(f"{BASE}/templates/{tid}/access-check", headers=worker).json()["reason"] == "not_assigned"
+    assert client.post(f"{BASE}/templates/{tid}/submissions", headers=worker, json={"fields": []}).status_code == 403
+    assert client.post(f"{BASE}/templates/{tid}/submissions", headers=supervisor, json={"fields": []}).status_code == 201
+    # Managers always keep access to manage and test the form.
+    assert client.get(f"{BASE}/templates/{tid}", headers=admin).status_code == 200
+
+    # Naming the worker and their company both work, and the preview explains why.
+    companies = client.put("/api/org/companies", headers=admin, json={"companies": [{"name": "Paneltec Civil", "code": "PAN"}]}).json()["companies"]
+    client.patch(f"/api/users/{world.id('worker1')}", headers=admin, json={"company_id": companies[0]["id"]})
+    client.put(url, headers=admin, json={"rules": [{"kind": "user", "target_id": world.id("worker1")}, {"kind": "company", "target_id": companies[0]["id"]}]})
+    assert client.get(f"{BASE}/templates", headers=worker).json()["count"] == 1
+    preview = client.get(f"{BASE}/assignments/effective?user_id={world.id('worker1')}", headers=admin).json()
+    assert preview["forms"][0]["visible"] is True
+    assert sorted(preview["forms"][0]["reasons"]) == ["Assigned to Paneltec Civil", "Assigned to this person by name"]
+    hidden = client.get(f"{BASE}/assignments/effective?user_id={world.id('super1')}", headers=admin).json()
+    assert hidden["forms"][0]["visible"] is False and hidden["forms"][0]["reasons"] == []
+    auditor = client.get(f"{BASE}/assignments/effective?user_id={world.id('auditor1')}", headers=admin).json()
+    assert auditor["can_fill_in_forms"] is False and auditor["forms"][0]["blocked_by"]
+    assert client.get(f"{BASE}/assignments/effective?user_id={world.id('worker2')}", headers=admin).status_code == 404
+    assert client.get(f"{BASE}/assignments/effective?user_id={world.id('worker1')}", headers=worker).status_code == 403
+    # Clearing the rules opens the form again.
+    assert client.put(url, headers=admin, json={"rules": []}).json()["open_to_everyone"] is True
+    assert client.get(f"{BASE}/templates", headers=supervisor).json()["count"] == 1

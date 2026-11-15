@@ -126,6 +126,13 @@ def file_response(row: StoredFile, *, download_name: str | None = None, inline: 
     )
 
 
+def read_bytes(row: StoredFile | None, *, max_bytes: int = 15 * 1024 * 1024) -> bytes | None:
+    """Stored bytes for embedding (for example in a PDF). None when missing or too large to embed."""
+    if row is None or not file_exists(row) or row.size_bytes > max_bytes:
+        return None
+    return _path_for(row.org_id, row.sha256).read_bytes()
+
+
 def file_out(row: StoredFile) -> dict:
     return {
         "id": row.id,

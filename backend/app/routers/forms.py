@@ -8,7 +8,7 @@ Permissions (decision D-023):
 from datetime import datetime, timezone
 from typing import Any
 
-from fastapi import APIRouter, Depends, File, Form, HTTPException, Query, Request, UploadFile
+from fastapi import APIRouter, Depends, File, Form, HTTPException, Query, Request, Response, UploadFile
 from pydantic import BaseModel, Field
 from sqlalchemy import func, select
 from sqlalchemy.exc import IntegrityError
@@ -17,8 +17,9 @@ from sqlalchemy.orm import Session
 from .. import forms as engine
 from ..db import get_db
 from ..deps import Caller, require_permission
-from ..files import file_exists, file_response, save_upload
-from ..models import FormSubmission, FormSubmissionFile, FormTemplate, FormTemplateVersion, StoredFile, User, utcnow
+from ..files import file_exists, file_response, read_bytes, save_upload
+from ..models import Company, FormAssignment, FormSubmission, FormSubmissionFile, Role, FormTemplate, FormTemplateVersion, Organisation, StoredFile, User, utcnow
+from ..pdf import submission_pdf
 from ..services import audit, iso
 
 router = APIRouter(prefix="/api/forms", tags=["forms"])
@@ -126,6 +127,29 @@ def _template_out(db: Session, template: FormTemplate, *, detail: bool = False) 
         out["fields"] = template.schema or []
         out["published_fields"] = version.schema if version else None
     return out
+
+
+def _assignment_reasons(db: Session, template: FormTemplate, user: User) -> list[str] | None:
+    """Why this person may fill in this form, in plain words. None means it is not assigned to them."""
+    rules = db.scalars(select(FormAssignment).where(FormAssignment.template_id == template.id)).all()
+    if not rules:
+        return ["Open to everyone who can fill in forms"]
+    reasons: list[str] = []
+    for rule in rules:
+        if rule.target_kind == "role" and rule.target_id == user.role_id:
+            role = db.scalars(select(Role).where(Role.org_id == user.org_id, Role.role_id == user.role_id)).first()
+            reasons.append(f"Assigned to the {role.name if role else user.role_id} role")
+        elif rule.target_kind == "user" and rule.target_id == user.id:
+            reasons.append("Assigned to this person by name")
+        elif rule.target_kind == "company" and user.company_id and rule.target_id == user.company_id:
+            company = db.get(Company, user.company_id)
+            reasons.append(f"Assigned to {company.name if company else 'their company'}")
+    return reasons or None
+
+
+def _assigned(db: Session, caller: Caller, template: FormTemplate) -> bool:
+    """People who manage templates can always open them; everyone else needs an assignment."""
+    return caller.can("forms", "use") or _assignment_reasons(db, template, caller.user) is not None
 
 
 def _can_see_all(caller: Caller) -> bool:
@@ -278,6 +302,8 @@ def list_templates(
     if category:
         stmt = stmt.where(FormTemplate.category == category)
     rows = db.scalars(stmt.order_by(FormTemplate.category, func.lower(FormTemplate.name), FormTemplate.id)).all()
+    if not manager:
+        rows = [t for t in rows if _assigned(db, caller, t)]
     return {"count": len(rows), "templates": [_template_out(db, t) for t in rows]}
 
 
@@ -363,7 +389,7 @@ def get_template(
     template_id: str, caller: Caller = Depends(require_permission("forms", "view")), db: Session = Depends(get_db)
 ) -> dict[str, Any]:
     template = _template(db, caller, template_id)
-    if template.status != "published" and not caller.can("forms", "use"):
+    if (template.status != "published" and not caller.can("forms", "use")) or not _assigned(db, caller, template):
         raise HTTPException(404, "Form not found")
     out = _template_out(db, template, detail=True)
     if not caller.can("forms", "use"):
@@ -489,7 +515,113 @@ def access_check(
         return {"allowed": False, "reason": "not_published", "message": "This form is not available at the moment."}
     if not caller.can("forms", "edit"):
         return {"allowed": False, "reason": "no_permission", "message": "Your role cannot fill in forms."}
+    if not _assigned(db, caller, template):
+        return {"allowed": False, "reason": "not_assigned", "message": "This form is not assigned to you."}
     return {"allowed": True, "reason": None, "message": None, "template_version": template.published_version}
+
+
+# ---------- assignments ----------
+
+class RuleIn(BaseModel):
+    kind: str
+    target_id: str = Field(min_length=1, max_length=80)
+
+
+class AssignmentsIn(BaseModel):
+    rules: list[RuleIn] = Field(max_length=500)
+
+
+def _rules_out(db: Session, template: FormTemplate) -> dict[str, Any]:
+    rules = db.scalars(
+        select(FormAssignment).where(FormAssignment.template_id == template.id).order_by(FormAssignment.target_kind, FormAssignment.target_id)
+    ).all()
+    out = []
+    for rule in rules:
+        if rule.target_kind == "role":
+            role = db.scalars(select(Role).where(Role.org_id == template.org_id, Role.role_id == rule.target_id)).first()
+            label = role.name if role else rule.target_id
+        elif rule.target_kind == "user":
+            user = db.get(User, rule.target_id)
+            label = user.name if user else "Unknown person"
+        else:
+            company = db.get(Company, rule.target_id)
+            label = company.name if company else "Unknown company"
+        out.append({"kind": rule.target_kind, "target_id": rule.target_id, "label": label})
+    return {"template_id": template.id, "open_to_everyone": not out, "rules": out}
+
+
+@router.get("/templates/{template_id}/assignments")
+def get_assignments(
+    template_id: str, caller: Caller = Depends(require_permission("forms", "use")), db: Session = Depends(get_db)
+) -> dict[str, Any]:
+    return _rules_out(db, _template(db, caller, template_id))
+
+
+@router.put("/templates/{template_id}/assignments")
+def put_assignments(
+    template_id: str,
+    body: AssignmentsIn,
+    request: Request,
+    caller: Caller = Depends(require_permission("forms", "use")),
+    db: Session = Depends(get_db),
+) -> dict[str, Any]:
+    """Replace who may fill in this form. An empty list opens it to everyone who can fill in forms.
+    Every target must belong to this organisation."""
+    template = _template(db, caller, template_id)
+    wanted: set[tuple[str, str]] = set()
+    for rule in body.rules:
+        if rule.kind == "role":
+            ok = db.scalars(select(Role.id).where(Role.org_id == caller.org_id, Role.role_id == rule.target_id, Role.deleted_at.is_(None))).first()
+        elif rule.kind == "user":
+            user = db.get(User, rule.target_id)
+            ok = user is not None and user.org_id == caller.org_id and user.deleted_at is None
+        elif rule.kind == "company":
+            company = db.get(Company, rule.target_id)
+            ok = company is not None and company.org_id == caller.org_id
+        else:
+            raise HTTPException(422, "A rule's kind must be role, user or company")
+        if not ok:
+            raise HTTPException(404, f"The {rule.kind} in a rule was not found")
+        wanted.add((rule.kind, rule.target_id))
+    existing = {(r.target_kind, r.target_id): r for r in db.scalars(select(FormAssignment).where(FormAssignment.template_id == template.id))}
+    for key, row in existing.items():
+        if key not in wanted:
+            db.delete(row)
+    for kind, target_id in wanted - set(existing):
+        db.add(FormAssignment(org_id=caller.org_id, template_id=template.id, target_kind=kind, target_id=target_id, created_by=caller.user.id))
+    audit(db, request, org_id=caller.org_id, actor_id=caller.user.id, action="form_template.assignments_changed",
+          target_type="form_template", target_id=template.id,
+          detail={"before": sorted(f"{k}:{t}" for k, t in existing), "after": sorted(f"{k}:{t}" for k, t in wanted)})
+    db.commit()
+    return _rules_out(db, template)
+
+
+@router.get("/assignments/effective")
+def effective_assignments(
+    user_id: str, caller: Caller = Depends(require_permission("forms", "use")), db: Session = Depends(get_db)
+) -> dict[str, Any]:
+    """Which published forms a person sees, and why. Used to preview a change before relying on it."""
+    from ..services import effective_for
+    from .. import permissions as perms
+
+    user = db.get(User, user_id)
+    if user is None or user.org_id != caller.org_id or user.deleted_at is not None:
+        raise HTTPException(404, "User not found")
+    effective = effective_for(db, user)
+    can_fill = perms.can(effective, "forms", "edit")
+    manager = perms.can(effective, "forms", "use")
+    templates = db.scalars(
+        select(FormTemplate).where(FormTemplate.org_id == caller.org_id, FormTemplate.deleted_at.is_(None), FormTemplate.status == "published")
+        .order_by(func.lower(FormTemplate.name), FormTemplate.id)
+    ).all()
+    forms = []
+    for template in templates:
+        reasons = _assignment_reasons(db, template, user)
+        if manager and reasons is None:
+            reasons = ["Can manage form templates"]
+        forms.append({"template_id": template.id, "name": template.name, "visible": bool(reasons) and can_fill or manager and bool(reasons),
+                      "reasons": reasons or [], "blocked_by": None if can_fill or manager else "Their role cannot fill in forms"})
+    return {"user": {"id": user.id, "name": user.name}, "can_fill_in_forms": can_fill, "forms": forms}
 
 
 # ---------- submissions ----------
@@ -510,6 +642,8 @@ def create_submission(
     version = _current_version(db, template)
     if template.status != "published" or version is None:
         raise HTTPException(409, "This form is not available at the moment")
+    if not _assigned(db, caller, template):
+        raise HTTPException(403, "This form is not assigned to you")
     if body.client_submission_id:
         existing = db.scalars(
             select(FormSubmission).where(
@@ -645,6 +779,44 @@ def delete_submission(
           target_type="form_submission", target_id=sub.id, detail={"status": sub.status})
     db.commit()
     return {"ok": True}
+
+
+@router.get("/submissions/{submission_id}/pdf")
+def submission_pdf_report(
+    submission_id: str,
+    download: int = Query(0, ge=0, le=1),
+    caller: Caller = Depends(require_permission("forms", "view")),
+    db: Session = Depends(get_db),
+) -> Response:
+    """A branded PDF of the saved record, rendered from the version it was filled in on."""
+    from .org import org_out
+
+    sub = _submission(db, caller, submission_id)
+    version = db.get(FormTemplateVersion, sub.template_version_id)
+    org = db.get(Organisation, caller.org_id)
+    author = db.get(User, sub.submitted_by)
+    branding = org_out(db, org)
+    logo = read_bytes(db.get(StoredFile, org.logo_file_id)) if org.logo_file_id else None
+    files = {
+        link.id: {"name": stored.original_name, "mime": stored.mime_type, "data": read_bytes(stored)}
+        for link, stored in _files(db, sub.id)
+    }
+    from ..pdf import _when  # local import keeps the formatting in one place
+
+    meta = [
+        ("Status", "Submitted" if sub.status == "submitted" else "DRAFT - not submitted"),
+        ("Completed by", author.name if author else "Unknown"),
+        ("Submitted" if sub.status == "submitted" else "Started", _when(sub.submitted_at or sub.created_at, org.timezone)),
+        ("Form version", f"{version.version} ({engine.CATEGORIES.get(version.category, version.category)})"),
+        ("Record", sub.id),
+    ]
+    data = submission_pdf(org=branding, logo=logo, title=version.name, meta=meta, schema=version.schema,
+                          values=sub.values or {}, files=files, timezone=org.timezone)
+    name = "".join(c if c.isalnum() or c in " -_" else "_" for c in version.name).strip()[:80] or "form"
+    disposition = "attachment" if download else "inline"
+    return Response(data, media_type="application/pdf", headers={
+        "Content-Disposition": f'{disposition}; filename="{name}.pdf"', "Cache-Control": "no-store",
+        "X-Content-Type-Options": "nosniff"})
 
 
 # ---------- submission files ----------

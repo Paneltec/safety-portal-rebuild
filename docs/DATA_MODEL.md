@@ -14,6 +14,7 @@ IDs are opaque strings. Every tenant-owned table carries `org_id`, and every que
 | `form_template_versions` | Immutable published snapshots | Unique `(template_id, version)` |
 | `form_submissions` | Answers, status, revision, author, launch provenance | Unique `(org_id, submitted_by, client_submission_id)` for idempotent retries; points at the version it was filled in on |
 | `form_submission_files` | Photos, attachments and signatures per field | Bytes in `stored_files`; reachable only through the submission |
+| `form_assignments` | Who may fill in a form: role, person or company rules | Unique `(template_id, target_kind, target_id)`; no rules means open to all form users |
 | `stored_files` | Metadata for uploaded bytes: hash, size, MIME type, original name, purpose | Bytes on the files volume by organisation and SHA-256; identity separate from name |
 | `companies` | Divisions inside an organisation (for example Paneltec, Viatec) | Unique `(org_id, code)` |
 | `roles` | Role catalogue: built-in (read-only) and custom | Unique `(org_id, role_id)`; `permissions` is `{resource: {action: bool}}`; soft delete |

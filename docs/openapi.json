@@ -29,6 +29,23 @@
     "title": "ApplyPresetIn",
     "type": "object"
    },
+   "AssignmentsIn": {
+    "properties": {
+     "rules": {
+      "items": {
+       "$ref": "#/components/schemas/RuleIn"
+      },
+      "maxItems": 500,
+      "title": "Rules",
+      "type": "array"
+     }
+    },
+    "required": [
+     "rules"
+    ],
+    "title": "AssignmentsIn",
+    "type": "object"
+   },
    "Body_replace_binary_api_document_library_files__file_id__replace_binary_post": {
     "properties": {
      "file": {
@@ -1080,6 +1097,26 @@
      }
     },
     "title": "RolePatch",
+    "type": "object"
+   },
+   "RuleIn": {
+    "properties": {
+     "kind": {
+      "title": "Kind",
+      "type": "string"
+     },
+     "target_id": {
+      "maxLength": 80,
+      "minLength": 1,
+      "title": "Target Id",
+      "type": "string"
+     }
+    },
+    "required": [
+     "kind",
+     "target_id"
+    ],
+    "title": "RuleIn",
     "type": "object"
    },
    "SetPasswordIn": {
@@ -3499,6 +3536,51 @@
     ]
    }
   },
+  "/api/forms/assignments/effective": {
+   "get": {
+    "description": "Which published forms a person sees, and why. Used to preview a change before relying on it.",
+    "operationId": "effective_assignments_api_forms_assignments_effective_get",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "user_id",
+      "required": true,
+      "schema": {
+       "title": "User Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Effective Assignments Api Forms Assignments Effective Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Effective Assignments",
+    "tags": [
+     "forms"
+    ]
+   }
+  },
   "/api/forms/field-types": {
    "get": {
     "description": "The single definition of field families, shared by the office and phone apps.",
@@ -4006,6 +4088,59 @@
      }
     },
     "summary": "Download Submission File",
+    "tags": [
+     "forms"
+    ]
+   }
+  },
+  "/api/forms/submissions/{submission_id}/pdf": {
+   "get": {
+    "description": "A branded PDF of the saved record, rendered from the version it was filled in on.",
+    "operationId": "submission_pdf_report_api_forms_submissions__submission_id__pdf_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "submission_id",
+      "required": true,
+      "schema": {
+       "title": "Submission Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "download",
+      "required": false,
+      "schema": {
+       "default": 0,
+       "maximum": 1,
+       "minimum": 0,
+       "title": "Download",
+       "type": "integer"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Submission Pdf Report",
     "tags": [
      "forms"
     ]
@@ -4539,6 +4674,103 @@
      }
     },
     "summary": "Archive Template",
+    "tags": [
+     "forms"
+    ]
+   }
+  },
+  "/api/forms/templates/{template_id}/assignments": {
+   "get": {
+    "operationId": "get_assignments_api_forms_templates__template_id__assignments_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "template_id",
+      "required": true,
+      "schema": {
+       "title": "Template Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Get Assignments Api Forms Templates  Template Id  Assignments Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Get Assignments",
+    "tags": [
+     "forms"
+    ]
+   },
+   "put": {
+    "description": "Replace who may fill in this form. An empty list opens it to everyone who can fill in forms.\nEvery target must belong to this organisation.",
+    "operationId": "put_assignments_api_forms_templates__template_id__assignments_put",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "template_id",
+      "required": true,
+      "schema": {
+       "title": "Template Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/AssignmentsIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Put Assignments Api Forms Templates  Template Id  Assignments Put",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Put Assignments",
     "tags": [
      "forms"
     ]

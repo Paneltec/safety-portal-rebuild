@@ -5,7 +5,7 @@ import { Chip } from "../components/ui";
 // Honest build status. A stage is only "Built" once it works end to end with tests.
 const STAGES: { name: string; detail: string; built: boolean | "partial" }[] = [
   { name: "1. Sign-in, users, roles and permissions", detail: "Logins, invitations, sessions, role catalogue, per-person access", built: true },
-  { name: "2. Organisation, documents and the form engine", detail: "Organisation settings, document library and the form builder are built; form PDFs and assignments are next", built: "partial" },
+  { name: "2. Organisation, documents and the form engine", detail: "Organisation settings, logo, file storage, document library, form builder, form PDFs and assignments", built: true },
   { name: "3. Safety capture", detail: "SWMS, pre-starts, site diary, incidents and hazards, inspections, risk", built: false },
   { name: "4. Workers, suppliers, sites and jobs", detail: "Certifications, inductions, renewals, visitors, daily jobs", built: false },
   { name: "5. Integrations and communications", detail: "Simpro, Navixy, SmartFill, Microsoft 365, TextMagic, outbox, safe mode", built: false },

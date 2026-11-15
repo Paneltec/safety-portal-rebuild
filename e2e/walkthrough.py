@@ -195,6 +195,19 @@ def forms(browser) -> None:
     add("signature", "Operator signature", required=True)
     pg.get_by_role("button", name="Publish", exact=True).click()
     expect(pg.get_by_text("Published as version 1.")).to_be_visible()
+    # Limit the form to one role, and check what a named person will see.
+    pg.get_by_label("Only the roles, companies and people ticked below").check()
+    pg.get_by_role("group", name="Roles").get_by_label("Supervisor").check()
+    pg.get_by_role("button", name="Save who can fill this in").click()
+    expect(pg.get_by_text("Saved who can fill this in.")).to_be_visible()
+    pg.get_by_label("Check what one person sees").select_option(label="Nina Example")
+    expect(pg.get_by_text("No, they do not see this form. It is not assigned to them.")).to_be_visible()
+    pg.get_by_role("group", name="Roles").get_by_label("Worker").check()
+    pg.get_by_role("button", name="Save who can fill this in").click()
+    expect(pg.get_by_text("Saved who can fill this in.")).to_be_visible()
+    pg.get_by_label("Check what one person sees").select_option("")
+    pg.get_by_label("Check what one person sees").select_option(label="Nina Example")
+    expect(pg.get_by_text("Yes, they see this form. Assigned to the Worker role.")).to_be_visible()
     shot(pg, "07-form-editor", full=True)
 
     # Fill it in: a failed check needs a note, and the signature is required.
@@ -228,6 +241,16 @@ def forms(browser) -> None:
     expect(pg.get_by_text("Fail", exact=True)).to_be_visible()
     assert pg.get_by_role("button", name="Submit", exact=True).count() == 0
     shot(pg, "08-form-submitted", full=True)
+    # The PDF of the saved record is a real PDF, served only with the session.
+    pdf = pg.evaluate("""async () => {
+        const id = location.pathname.split('/').pop();
+        const token = sessionStorage.getItem('sp.token');
+        const r = await fetch(`/api/forms/submissions/${id}/pdf`, { headers: { Authorization: `Bearer ${token}` } });
+        const head = new TextDecoder().decode((await r.arrayBuffer()).slice(0, 5));
+        const anon = await fetch(`/api/forms/submissions/${id}/pdf`);
+        return [r.status, r.headers.get('content-type'), head, anon.status];
+    }""")
+    assert pdf == [200, "application/pdf", "%PDF-", 401], pdf
     pg.get_by_role("link", name="← Daily pre-start submissions").click()
     expect(pg.get_by_text("Showing 1–1 of 1")).to_be_visible()
     assert not errors, errors

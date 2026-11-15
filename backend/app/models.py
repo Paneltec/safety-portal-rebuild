@@ -373,3 +373,18 @@ class FormSubmissionFile(Base):
     stored_file_id: Mapped[str] = mapped_column(ForeignKey("stored_files.id"))
     created_by: Mapped[str | None] = mapped_column(String(36))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class FormAssignment(Base):
+    """Who may fill in a form. A form with no rules is open to everyone who can fill in forms."""
+
+    __tablename__ = "form_assignments"
+    __table_args__ = (UniqueConstraint("template_id", "target_kind", "target_id", name="uq_form_assignments"),)
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    org_id: Mapped[str] = mapped_column(ForeignKey("organisations.id"), index=True)
+    template_id: Mapped[str] = mapped_column(ForeignKey("form_templates.id", ondelete="CASCADE"), index=True)
+    target_kind: Mapped[str] = mapped_column(String(20))  # role | user | company
+    target_id: Mapped[str] = mapped_column(String(80))
+    created_by: Mapped[str | None] = mapped_column(String(36))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)

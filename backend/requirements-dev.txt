@@ -1,3 +1,4 @@
 -r requirements.lock
 pytest
 httpx
+pypdf

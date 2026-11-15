@@ -373,8 +373,8 @@ GET,/api/fleet/service-schedule-presets,fleet,list_service_schedule_presets,CLAS
 GET,/api/fleet/service-sheet-templates,fleet,list_sheet_templates,CLASSIFY,,,NOT_STARTED,
 GET,/api/fleet/service-status-rollup,fleet,get_service_status_rollup,CLASSIFY,,,NOT_STARTED,
 GET,/api/fleet/technicians,fleet,list_technicians,CLASSIFY,,,NOT_STARTED,
-GET,/api/form-templates/assignments,asset_service,list_assignments,CLASSIFY,,,NOT_STARTED,
-POST,/api/form-templates/assignments/bulk,asset_service,bulk_save_assignments,CLASSIFY,,,NOT_STARTED,
+GET,/api/form-templates/assignments,asset_service,list_assignments,team/resource,forms.get_assignments,tests/test_forms_api.py; tests/test_forms_engine.py,HISTORICAL_COMPATIBILITY,Replaced by GET /api/forms/templates/{id}/assignments (per template)
+POST,/api/form-templates/assignments/bulk,asset_service,bulk_save_assignments,team/resource,forms.put_assignments,tests/test_forms_api.py; tests/test_forms_engine.py,HISTORICAL_COMPATIBILITY,Replaced by PUT /api/forms/templates/{id}/assignments (replace rules per template)
 PUT,/api/form-templates/{template_id}/applies-to,asset_service,update_applies_to,CLASSIFY,,,NOT_STARTED,
 POST,/api/form-templates/{template_id}/notify-added-workers,asset_service,notify_added_workers,CLASSIFY,,,NOT_STARTED,
 POST,/api/form-templates/{template_id}/preview-recipients,asset_service,preview_recipients,CLASSIFY,,,NOT_STARTED,
@@ -392,7 +392,7 @@ DELETE,/api/forms/submissions/{submission_id},forms,delete_submission,team/resou
 GET,/api/forms/submissions/{submission_id},forms,get_submission,team/resource,forms.get_submission,tests/test_forms_api.py; tests/test_forms_engine.py,IMPLEMENTED_TESTED,Carries the schema snapshot
 POST,/api/forms/submissions/{submission_id}/attachments,forms,upload_submission_attachments,authenticated-own,forms.upload_attachment,tests/test_forms_api.py; tests/test_forms_engine.py,IMPLEMENTED_TESTED,Draft only; images and PDF
 GET,/api/forms/submissions/{submission_id}/attachments/{stored_name},forms,serve_submission_attachment,team/resource,forms.download_submission_file,tests/test_forms_api.py; tests/test_forms_engine.py,HISTORICAL_COMPATIBILITY,Replaced by GET /submissions/{id}/files/{file_id}
-GET,/api/forms/submissions/{submission_id}/pdf,forms,render_submission_pdf,CLASSIFY,,,NOT_STARTED,
+GET,/api/forms/submissions/{submission_id}/pdf,forms,render_submission_pdf,team/resource,forms.submission_pdf_report,tests/test_forms_api.py; tests/test_forms_engine.py,IMPLEMENTED_TESTED,Session-authorised; rendered from the saved version; branded from organisation settings
 POST,/api/forms/submissions/{submission_id}/photos,forms,upload_submission_photos,authenticated-own,forms.upload_photo,tests/test_forms_api.py; tests/test_forms_engine.py,IMPLEMENTED_TESTED,Draft only; images only
 GET,/api/forms/submissions/{submission_id}/photos/{stored_name},forms,serve_submission_photo,team/resource,forms.download_submission_file,tests/test_forms_api.py; tests/test_forms_engine.py,HISTORICAL_COMPATIBILITY,"Replaced by GET /submissions/{id}/files/{file_id}: files are addressed by id, not stored name"
 GET,/api/forms/templates,forms,list_templates,team/resource,forms.list_templates,tests/test_forms_api.py; tests/test_forms_engine.py,IMPLEMENTED_TESTED,Unpublished forms hidden from people who cannot manage templates; assignment filter arrives with FORM-02
@@ -1010,6 +1010,9 @@ POST,/mobile/sites/{site_id}/visitor-sign-in,mobile_sites,visitor_sign_in,RETIRE
 POST,/mobile/sites/{site_id}/visitor-sign-out,mobile_sites,visitor_sign_out,RETIRED,,,HISTORICAL,Removed mobile_sites router; functionality uses current site routes
 GET,/mobile/sites/{site_id}/current-occupancy,mobile_sites,current_occupancy,RETIRED,,,HISTORICAL,Removed mobile_sites router; functionality uses current site routes
 POST,/mobile/gps/heartbeat,mobile_sites,gps_heartbeat,RETIRED,,,HISTORICAL,Removed mobile_sites router; functionality uses current site routes
+GET,/api/forms/templates/{template_id}/assignments,(new),get_assignments,team/resource,forms.get_assignments,tests/test_forms_api.py; tests/test_forms_engine.py,IMPLEMENTED_TESTED,D-027
+PUT,/api/forms/templates/{template_id}/assignments,(new),put_assignments,team/resource,forms.put_assignments,tests/test_forms_api.py; tests/test_forms_engine.py,IMPLEMENTED_TESTED,"D-027 roles, people, companies; targets checked against the organisation"
+GET,/api/forms/assignments/effective,(new),effective_assignments,team/resource,forms.effective_assignments,tests/test_forms_api.py; tests/test_forms_engine.py,IMPLEMENTED_TESTED,Explains why a person sees each form
 GET,/api/forms/field-types,(new),field_types,authenticated-own,forms.field_types,tests/test_forms_api.py; tests/test_forms_engine.py,IMPLEMENTED_TESTED,One field-family contract for office and phone
 GET,/api/forms/templates/export,(new),export_templates,team/resource,forms.export_templates,tests/test_forms_api.py; tests/test_forms_engine.py,IMPLEMENTED_TESTED,"Definitions only, never answers"
 POST,/api/forms/templates/{template_id}/publish,(new),publish_template,team/resource,forms.publish_template,tests/test_forms_api.py; tests/test_forms_engine.py,IMPLEMENTED_TESTED,D-024

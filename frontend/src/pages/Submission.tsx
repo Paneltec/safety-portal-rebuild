@@ -102,9 +102,16 @@ export function SubmissionPage() {
             </span>
           </div>
         </div>
-        {!editable && can("forms", "delete") && sub.status === "submitted" && (
-          <button type="button" className="btn danger" onClick={() => setConfirmDiscard(true)}>Delete record</button>
-        )}
+        <div className="row">
+          <button type="button" className="btn" disabled={dirty}
+            title={dirty ? "Save the draft first" : undefined}
+            onClick={() => void openFile(`${base}/pdf`, `${sub.template_name}.pdf`, false).catch((e) => setMessage({ tone: "bad", text: errorMessage(e) }))}>
+            Open PDF
+          </button>
+          {!editable && can("forms", "delete") && sub.status === "submitted" && (
+            <button type="button" className="btn danger" onClick={() => setConfirmDiscard(true)}>Delete record</button>
+          )}
+        </div>
       </div>
 
       {message && <Notice tone={message.tone}>{message.text}</Notice>}

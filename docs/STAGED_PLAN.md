@@ -5,7 +5,7 @@ A stage is complete only when it has working persistence, server-side access con
 | Stage | Scope | Requirement IDs | Status |
 |---|---|---|---|
 | 1 | Sign-in, sessions, invitations and resets, users, role catalogue, permission matrix, per-user overrides, presets, audit log, office shell | CORE-01 (part), AUTH-01 (part), PERM-01 (part), NAV-01 (part) | **Built and tested** |
-| 2 | Organisation settings and branding, companies, file storage with hashes, document library, form engine (templates, field families, submissions, PDFs), assignments | ORG-01, DOC-01, FORM-01, FORM-02, REF-01 | Not started |
+| 2 | Organisation settings and branding, companies, file storage with hashes, document library, form engine (templates, field families, submissions, PDFs), assignments | ORG-01, DOC-01, FORM-01, FORM-02, REF-01 | **Built and tested** except the items carried forward in `PROGRESS.md` |
 | 3 | Safety capture: SWMS, pre-starts, site diary, incidents and hazards, inspections, risk and SSRA, bulk import | SWMS-01, PRE-01, DIARY-01, INC-01, INSP-01, RISK-01, IMP-01 | Not started |
 | 4 | Workers, HR privacy, certifications, inductions, suppliers, renewals, sites and visitors, daily jobs | WORK-01/02, CERT-01, IND-01, SUP-01, REN-01, SITE-01, JOB-01 | Not started |
 | 5 | Integration registry with encrypted config, adapters plus labelled simulators (Simpro, Navixy, SmartFill, Microsoft 365, TextMagic, Dropbox), outbox, safe mode, notifications | INT-01..05, DBX-01, COM-01 | Not started |

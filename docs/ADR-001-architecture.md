@@ -54,6 +54,8 @@ Cost: a later import of existing data is a mapped conversion, not a collection c
 | D-024 | A template has a working draft and immutable published versions. A submission stores the version it was filled in on and renders from that snapshot. | Spec section 7: later edits must not corrupt old reports. |
 | D-025 | Submitting is staged: create a draft, upload files to it, then submit. Required answers and files are checked on the server at submit; a failed check must carry a note; a submitted record is locked. A client-supplied id makes a repeated send return the first result. | Required uploads are durable before a record counts as submitted, and offline retries cannot duplicate. |
 | D-026 | Answers for field ids that are not in the schema are rejected, not dropped. Picker answers are `{id, label}` references. Sites, jobs, assets and the Navixy list answer "not available yet" until their stages; vehicles may be entered by hand and are labelled as such. | No silent data loss and no invented lists. |
+| D-027 | A published form with no assignment rules is open to everyone who can fill in forms. Once any rule exists, only matching roles, people or companies see it or can submit it; people who manage templates always keep access. | Avoids locking staff out by default, while making restriction explicit and previewable. |
+| D-028 | PDFs are generated on request from the saved record and its version snapshot, with name, logo, address, contact and portal address from organisation settings. Photos and signatures are embedded; a lost file is stated in the PDF. | Spec section 8: the PDF must match the saved version and show unavailable attachments honestly. |
 
 ## Security posture (applies to every stage)
 
