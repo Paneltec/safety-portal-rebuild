@@ -44,7 +44,10 @@ IDs are opaque strings. Every tenant-owned table carries `org_id`, and every que
 | `user_sessions` | One row per sign-in | Token stored as SHA-256 hash only; expiry, idle timeout, revoke reason, IP and device |
 | `auth_tokens` | Single-use invitation and reset links | Hash only; expiry; issuing a new link revokes the previous one |
 | `audit_log` | Actor, action, target, before/after detail, request ID | Secrets are stripped before writing |
-| `outbox_messages` | Record of every outbound message | Stage 1 only ever writes `held`; no body or link token is stored |
+| `outbox_messages` | Record of every outbound message | States held, queued, sent, simulated, failed, cancelled; hold code and reason; text stored only when it holds no one-time link; dedupe key; soft delete |
+| `outbox_attempts` | Each attempt to deliver a message | Outcome and a redacted detail |
+| `integration_configs` | One provider connection per organisation | Unique `(org_id, kind)`; settings JSON; secrets encrypted with the names set kept beside them; mode off/simulator/live; last test result and capabilities; last sync kept separately |
+| `notification_reads` | A person has read one notification | Unique `(user_id, notification_id)`; the notifications themselves are computed |
 
 ## Relationships to preserve as later stages add tables
 

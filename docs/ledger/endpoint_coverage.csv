@@ -9,11 +9,11 @@ GET,/api/admin/app-updates/check,app_updates,check,CLASSIFY,,,NOT_STARTED,
 POST,/api/admin/app-updates/install,app_updates,install,CLASSIFY,,,NOT_STARTED,
 POST,/api/admin/app-updates/rollback,app_updates,rollback,CLASSIFY,,,NOT_STARTED,
 GET,/api/admin/app-updates/status,app_updates,status,CLASSIFY,,,NOT_STARTED,
-DELETE,/api/admin/comms-outbox-blocked,comms_safe_mode,clear_blocked,CLASSIFY,,,NOT_STARTED,
-GET,/api/admin/comms-outbox-blocked,comms_safe_mode,list_blocked,CLASSIFY,,,NOT_STARTED,
-PATCH,/api/admin/comms-safe-mode,comms_safe_mode,patch_safe_mode,CLASSIFY,,,NOT_STARTED,
-GET,/api/admin/comms-safe-mode/status,comms_safe_mode,get_safe_mode_status,CLASSIFY,,,NOT_STARTED,
-GET,/api/admin/comms-safe-mode/who-can-toggle,comms_safe_mode,who_can_toggle,CLASSIFY,,,NOT_STARTED,
+DELETE,/api/admin/comms-outbox-blocked,comms_safe_mode,clear_blocked,team/resource,comms.bulk_delete,tests/test_comms.py,IMPLEMENTED_TESTED,POST /api/email/outbox/bulk-delete with status=held
+GET,/api/admin/comms-outbox-blocked,comms_safe_mode,list_blocked,team/resource,comms.list_outbox,tests/test_comms.py,IMPLEMENTED_TESTED,GET /api/email/outbox?status=held; each row carries its hold reason
+PATCH,/api/admin/comms-safe-mode,comms_safe_mode,patch_safe_mode,admin-owner,comms.set_safe_mode,tests/test_comms.py,IMPLEMENTED_TESTED,Explicit comms_safe_mode grant; server lock wins
+GET,/api/admin/comms-safe-mode/status,comms_safe_mode,get_safe_mode_status,authenticated-own,comms.safe_mode_status,tests/test_comms.py,IMPLEMENTED_TESTED,
+GET,/api/admin/comms-safe-mode/who-can-toggle,comms_safe_mode,who_can_toggle,team/resource,comms.who_can_toggle,tests/test_comms.py,IMPLEMENTED_TESTED,
 GET,/api/admin/files/{file_id}/search-text,file_pdf,admin_file_search_text,CLASSIFY,,,NOT_STARTED,
 POST,/api/admin/forms/auto-seed-asset-types,admin_forms_autoseed,auto_seed_asset_types,CLASSIFY,,,NOT_STARTED,
 GET,/api/admin/forms/auto-seed-preview,admin_forms_autoseed,auto_seed_preview,CLASSIFY,,,NOT_STARTED,
@@ -285,12 +285,12 @@ GET,/api/dropbox/mirror-status/{job_id},integrations_dropbox,dropbox_mirror_stat
 POST,/api/dropbox/oauth/callback,integrations_dropbox,dropbox_oauth_callback,CLASSIFY,,,NOT_STARTED,
 POST,/api/dropbox/oauth/complete,integrations_dropbox,dropbox_oauth_complete,CLASSIFY,,,NOT_STARTED,
 GET,/api/dropbox/oauth/start,integrations_dropbox,dropbox_oauth_start,CLASSIFY,,,NOT_STARTED,
-GET,/api/email/outbox,email_outbox,list_outbox,CLASSIFY,,,NOT_STARTED,
-POST,/api/email/outbox/bulk-delete,email_outbox,bulk_delete_outbox,CLASSIFY,,,NOT_STARTED,
-DELETE,/api/email/outbox/{email_id},email_outbox,delete_outbox,CLASSIFY,,,NOT_STARTED,
-GET,/api/email/outbox/{email_id},email_outbox,get_outbox,CLASSIFY,,,NOT_STARTED,
-POST,/api/email/outbox/{email_id}/cancel,email_outbox,cancel_outbox,CLASSIFY,,,NOT_STARTED,
-POST,/api/email/outbox/{email_id}/retry,email_outbox,retry_outbox,CLASSIFY,,,NOT_STARTED,
+GET,/api/email/outbox,email_outbox,list_outbox,team/resource,comms.list_outbox,tests/test_comms.py,IMPLEMENTED_TESTED,"All with notifications.view, otherwise own; email and SMS together"
+POST,/api/email/outbox/bulk-delete,email_outbox,bulk_delete_outbox,team/resource,comms.bulk_delete,tests/test_comms.py,IMPLEMENTED_TESTED,Queued is never deleted by filter
+DELETE,/api/email/outbox/{email_id},email_outbox,delete_outbox,team/resource,comms.delete_message,tests/test_comms.py,IMPLEMENTED_TESTED,Soft delete; own or with notifications.delete
+GET,/api/email/outbox/{email_id},email_outbox,get_outbox,team/resource,comms.get_message,tests/test_comms.py,IMPLEMENTED_TESTED,Attempt history
+POST,/api/email/outbox/{email_id}/cancel,email_outbox,cancel_outbox,team/resource,comms.cancel_message,tests/test_comms.py,IMPLEMENTED_TESTED,
+POST,/api/email/outbox/{email_id}/retry,email_outbox,retry_outbox,team/resource,comms.retry_message,tests/test_comms.py,IMPLEMENTED_TESTED,Never re-sends a sent message; no retry without stored text
 POST,/api/email/send,email_outbox,send_email,CLASSIFY,,,NOT_STARTED,
 GET,/api/equipment,equipment_register,list_equipment,CLASSIFY,,,NOT_STARTED,
 POST,/api/equipment,equipment_register,create_equipment,CLASSIFY,,,NOT_STARTED,
@@ -482,13 +482,13 @@ GET,/api/inspections/{item_id},crud,get_item,team/resource,safety.get_record,tes
 PATCH,/api/inspections/{item_id},crud,update_item,team/resource,safety.patch,tests/test_safety.py,IMPLEMENTED_TESTED,Earlier answers kept in history
 POST,/api/inspections/{item_id}/archive,crud,archive_item,team/resource,safety.archive,tests/test_safety.py,IMPLEMENTED_TESTED,
 POST,/api/inspections/{item_id}/unarchive,crud,unarchive_item,team/resource,safety.unarchive,tests/test_safety.py,IMPLEMENTED_TESTED,
-GET,/api/integrations,integrations,list_integrations,CLASSIFY,,,NOT_STARTED,
-POST,/api/integrations/admin/migrate-integration-secrets,integrations,migrate_integration_secrets,CLASSIFY,,,NOT_STARTED,
-DELETE,/api/integrations/microsoft365,integrations_m365,m365_disconnect,CLASSIFY,,,NOT_STARTED,
-POST,/api/integrations/microsoft365/test-connection,integrations_m365,m365_test,CLASSIFY,,,NOT_STARTED,
-POST,/api/integrations/navixy/get-hash,integrations,navixy_get_hash,CLASSIFY,,,NOT_STARTED,
+GET,/api/integrations,integrations,list_integrations,team/resource,comms.list_integrations,tests/test_comms.py,IMPLEMENTED_TESTED,"Catalogue with status, masked secret presence, key status"
+POST,/api/integrations/admin/migrate-integration-secrets,integrations,migrate_integration_secrets,admin-owner,(not carried over),tests/test_comms.py,HISTORICAL_COMPATIBILITY,"A rebuild never stored a secret in plain text, so there is nothing to migrate"
+DELETE,/api/integrations/microsoft365,integrations_m365,m365_disconnect,team/resource,comms.disconnect,tests/test_comms.py,IMPLEMENTED_TESTED,DELETE /api/integrations/{kind} for every provider
+POST,/api/integrations/microsoft365/test-connection,integrations_m365,m365_test,team/resource,comms.test_connection,tests/test_comms.py,IMPLEMENTED_TESTED,Token only; no self-test email is sent (D-057). Mock transport only
+POST,/api/integrations/navixy/get-hash,integrations,navixy_get_hash,team/resource,comms.test_connection,tests/test_comms.py,IMPLEMENTED_TESTED,The test obtains and stores the sign-in key encrypted
 GET,/api/integrations/navixy/tags,integrations,navixy_tags,CLASSIFY,,,NOT_STARTED,
-POST,/api/integrations/navixy/test-connection,integrations,navixy_test,CLASSIFY,,,NOT_STARTED,
+POST,/api/integrations/navixy/test-connection,integrations,navixy_test,team/resource,comms.test_connection,tests/test_comms.py,IMPLEMENTED_TESTED,POST /v2/user/auth on the configured region. Mock transport only
 GET,/api/integrations/navixy/vehicles,integrations,navixy_vehicles,CLASSIFY,,,NOT_STARTED,
 GET,/api/integrations/simpro/companies,integrations_simpro,simpro_companies,CLASSIFY,,,NOT_STARTED,
 POST,/api/integrations/simpro/connect,integrations_simpro,simpro_connect,CLASSIFY,,,NOT_STARTED,
@@ -517,11 +517,11 @@ GET,/api/integrations/simpro/workers/snapshots,integrations_simpro_workers,list_
 GET,/api/integrations/simpro/workers/snapshots/{snapshot_id},integrations_simpro_workers,snapshot_detail,CLASSIFY,,,NOT_STARTED,
 GET,/api/integrations/simpro/workers/unmatched-summary,simpro_zip_import,unmatched_summary,CLASSIFY,,,NOT_STARTED,
 GET,/api/integrations/simpro/workers/zip-status,simpro_zip_import,workers_zip_status,CLASSIFY,,,NOT_STARTED,
-POST,/api/integrations/smartfill/test-connection,integrations,smartfill_test_connection,CLASSIFY,,,NOT_STARTED,
+POST,/api/integrations/smartfill/test-connection,integrations,smartfill_test_connection,team/resource,comms.test_connection,tests/test_comms.py,IMPLEMENTED_TESTED,Tank:Level with the parameters envelope. Mock transport only
 POST,/api/integrations/textmagic/send-sms,integrations_textmagic,tm_send,CLASSIFY,,,NOT_STARTED,
-POST,/api/integrations/textmagic/test-connection,integrations_textmagic,tm_test,CLASSIFY,,,NOT_STARTED,
-GET,/api/integrations/{kind},integrations,get_integration,CLASSIFY,,,NOT_STARTED,
-PUT,/api/integrations/{kind},integrations,put_integration,CLASSIFY,,,NOT_STARTED,
+POST,/api/integrations/textmagic/test-connection,integrations_textmagic,tm_test,team/resource,comms.test_connection,tests/test_comms.py,IMPLEMENTED_TESTED,GET /user; no text is sent. Mock transport only
+GET,/api/integrations/{kind},integrations,get_integration,team/resource,comms.get_integration,tests/test_comms.py,IMPLEMENTED_TESTED,Secrets reported as set/not set only
+PUT,/api/integrations/{kind},integrations,put_integration,team/resource,comms.save_integration,tests/test_comms.py,IMPLEMENTED_TESTED,integrations.edit; omitted/blank/mask keeps a secret; clear is explicit (D-056)
 GET,/api/leave,leave_requests,list_leave,CLASSIFY,,,NOT_STARTED,
 POST,/api/leave/import-email,leave_requests,import_email,CLASSIFY,,,NOT_STARTED,
 GET,/api/leave/on-date,leave_requests,on_date,CLASSIFY,,,NOT_STARTED,
@@ -611,9 +611,9 @@ POST,/api/mobile/user/active-company,mobile_home,set_active_company,CLASSIFY,,,N
 GET,/api/mobile/weather,mobile_daily_jobs_admin,weather,CLASSIFY,,,NOT_STARTED,
 GET,/api/nas/health,integrations_nas,nas_health,CLASSIFY,,,NOT_STARTED,
 POST,/api/nas/probe,integrations_nas,nas_probe,CLASSIFY,,,NOT_STARTED,
-GET,/api/notifications,notifications,list_notifications,CLASSIFY,,,NOT_STARTED,
-POST,/api/notifications/mark-all-read,notifications,mark_all_read,CLASSIFY,,,NOT_STARTED,
-POST,/api/notifications/{notification_id}/read,notifications,mark_read,CLASSIFY,,,NOT_STARTED,
+GET,/api/notifications,notifications,list_notifications,authenticated-own,comms.list_notifications,tests/test_comms.py,IMPLEMENTED_TESTED,Signals computed per entitlement
+POST,/api/notifications/mark-all-read,notifications,mark_all_read,authenticated-own,comms.mark_all_read,tests/test_comms.py,IMPLEMENTED_TESTED,
+POST,/api/notifications/{notification_id}/read,notifications,mark_read,authenticated-own,comms.mark_read,tests/test_comms.py,IMPLEMENTED_TESTED,Idempotent; only an item the caller can see
 GET,/api/openapi.json,server,_admin_openapi,CLASSIFY,,,NOT_STARTED,
 GET,/api/org,org_settings,get_org,authenticated-own,org.get_org,tests/test_org_setup_files.py,IMPLEMENTED_TESTED,Insurance blocks arrive with documents
 PATCH,/api/org,org_settings,patch_org,admin-owner,org.patch_org,tests/test_org_setup_files.py,IMPLEMENTED_TESTED,D-020; slug and default_workspace_id deferred; insurance deferred
@@ -1096,3 +1096,5 @@ GET,/api/daily-jobs/{job_id},daily jobs,,authenticated-own,jobs.get_job,tests/te
 PATCH,/api/daily-jobs/{job_id},daily jobs,,admin-owner,jobs.update_job,tests/test_inductions_jobs.py,IMPLEMENTED_TESTED,New: open jobs only
 POST,/api/daily-jobs/{job_id}/cancel,daily jobs,,admin-owner,jobs.cancel_job,tests/test_inductions_jobs.py,IMPLEMENTED_TESTED,New
 POST,/api/daily-jobs/{job_id}/complete,daily jobs,,authenticated-own,jobs.complete_job,tests/test_inductions_jobs.py,IMPLEMENTED_TESTED,New: assignee marks done
+DELETE,/api/integrations/{kind},integrations,,team/resource,comms.disconnect,tests/test_comms.py,IMPLEMENTED_TESTED,New: remove saved details for any provider
+POST,/api/integrations/{kind}/test-connection,integrations,,team/resource,comms.test_connection,tests/test_comms.py,IMPLEMENTED_TESTED,"New: one test route for every provider, including Simpro and the simulator"

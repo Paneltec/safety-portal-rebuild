@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { NavLink, Outlet } from "react-router-dom";
 import { useAuth } from "../auth";
+import { Bell } from "./Bell";
 
 interface NavItem {
   to: string;
@@ -50,6 +51,8 @@ export function Shell() {
         { to: "/app/settings/organisation", label: "Organisation", show: true },
         { to: "/app/settings/users", label: "Users", show: can("users", "view") },
         { to: "/app/settings/roles", label: "Roles & permissions", show: can("users", "view") },
+        { to: "/app/settings/connections", label: "Connections", show: can("integrations", "view") },
+        { to: "/app/settings/outbox", label: "Outbox", show: can("notifications", "view") || can("users", "edit") || can("renewals", "edit") },
         { to: "/app/settings/sessions", label: "Active sessions", show: isAdmin },
         { to: "/app/profile", label: "My profile", show: true },
       ],
@@ -93,9 +96,12 @@ export function Shell() {
               {me.role_name} · {me.org_name}
             </span>
           </div>
-          <button type="button" className="btn" onClick={() => void signOut()}>
-            Sign out
-          </button>
+          <div className="row" style={{ gap: 8 }}>
+            <Bell />
+            <button type="button" className="btn" onClick={() => void signOut()}>
+              Sign out
+            </button>
+          </div>
         </header>
         <main className="page">
           <Outlet />

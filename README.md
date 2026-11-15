@@ -29,7 +29,9 @@ docker compose up -d
 
 `PUBLIC_BASE_URL` is the address people use to reach the portal (for example `https://portal.example.com.au`). Set it before printing site QR signs or sending invitation links: both embed that address.
 
-`ENCRYPTION_KEY` protects sensitive details in the database (dates of birth, tax file numbers). Keep a copy somewhere safe and separate from the database backups: if it is lost or changed, the protected details already saved cannot be read again. Everything else keeps working without it, but protected details cannot be saved or shown.
+`COMMS_SAFE_MODE` is `on` unless you change it, which means the portal never sends an email or text: it prepares them and keeps them in the Outbox. Leave it on until the Microsoft 365 and TextMagic connections are set up and tested and you want real messages to go out.
+
+`ENCRYPTION_KEY` protects sensitive details in the database (dates of birth, tax file numbers, and the passwords and keys for connections). Keep a copy somewhere safe and separate from the database backups: if it is lost or changed, the protected details already saved cannot be read again. Everything else keeps working without it, but protected details cannot be saved or shown.
 
 Open `http://<server>:3960`. An empty install shows the **first-time setup** screen: enter the `SETUP_KEY`, the organisation name, and your own name, email and password. That person becomes the **account holder**: the protected top-level admin and the payroll owner. Setup works once.
 

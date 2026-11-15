@@ -415,6 +415,43 @@ FEATURES.update({
     "WORK-02": ("PARTIAL", "tests/test_workers.py; tests/test_inductions_jobs.py", "Built: birth date, TFN and USI encrypted at rest, masked in listings, permissioned audited reveal; HR documents listed to HR viewers, opened only with the reveal permission, every open audited, archive and delete. Outstanding: HR spreadsheet import and link tools (the baseline's standalone HR roster is not recreated)."),
 })
 
+T_COM = "tests/test_comms.py"
+DONE.update({
+    ("GET", "/api/integrations"): ("team/resource", "comms.list_integrations", T_COM, "IMPLEMENTED_TESTED", "Catalogue with status, masked secret presence, key status"),
+    ("GET", "/api/integrations/{kind}"): ("team/resource", "comms.get_integration", T_COM, "IMPLEMENTED_TESTED", "Secrets reported as set/not set only"),
+    ("PUT", "/api/integrations/{kind}"): ("team/resource", "comms.save_integration", T_COM, "IMPLEMENTED_TESTED", "integrations.edit; omitted/blank/mask keeps a secret; clear is explicit (D-056)"),
+    ("DELETE", "/api/integrations/microsoft365"): ("team/resource", "comms.disconnect", T_COM, "IMPLEMENTED_TESTED", "DELETE /api/integrations/{kind} for every provider"),
+    ("POST", "/api/integrations/microsoft365/test-connection"): ("team/resource", "comms.test_connection", T_COM, "IMPLEMENTED_TESTED", "Token only; no self-test email is sent (D-057). Mock transport only"),
+    ("POST", "/api/integrations/navixy/test-connection"): ("team/resource", "comms.test_connection", T_COM, "IMPLEMENTED_TESTED", "POST /v2/user/auth on the configured region. Mock transport only"),
+    ("POST", "/api/integrations/navixy/get-hash"): ("team/resource", "comms.test_connection", T_COM, "IMPLEMENTED_TESTED", "The test obtains and stores the sign-in key encrypted"),
+    ("POST", "/api/integrations/smartfill/test-connection"): ("team/resource", "comms.test_connection", T_COM, "IMPLEMENTED_TESTED", "Tank:Level with the parameters envelope. Mock transport only"),
+    ("POST", "/api/integrations/textmagic/test-connection"): ("team/resource", "comms.test_connection", T_COM, "IMPLEMENTED_TESTED", "GET /user; no text is sent. Mock transport only"),
+    ("POST", "/api/integrations/admin/migrate-integration-secrets"): ("admin-owner", "(not carried over)", T_COM, "HISTORICAL_COMPATIBILITY", "A rebuild never stored a secret in plain text, so there is nothing to migrate"),
+    ("PATCH", "/api/admin/comms-safe-mode"): ("admin-owner", "comms.set_safe_mode", T_COM, "IMPLEMENTED_TESTED", "Explicit comms_safe_mode grant; server lock wins"),
+    ("GET", "/api/admin/comms-safe-mode/status"): ("authenticated-own", "comms.safe_mode_status", T_COM, "IMPLEMENTED_TESTED", ""),
+    ("GET", "/api/admin/comms-safe-mode/who-can-toggle"): ("team/resource", "comms.who_can_toggle", T_COM, "IMPLEMENTED_TESTED", ""),
+    ("GET", "/api/admin/comms-outbox-blocked"): ("team/resource", "comms.list_outbox", T_COM, "IMPLEMENTED_TESTED", "GET /api/email/outbox?status=held; each row carries its hold reason"),
+    ("DELETE", "/api/admin/comms-outbox-blocked"): ("team/resource", "comms.bulk_delete", T_COM, "IMPLEMENTED_TESTED", "POST /api/email/outbox/bulk-delete with status=held"),
+    ("GET", "/api/email/outbox"): ("team/resource", "comms.list_outbox", T_COM, "IMPLEMENTED_TESTED", "All with notifications.view, otherwise own; email and SMS together"),
+    ("GET", "/api/email/outbox/{email_id}"): ("team/resource", "comms.get_message", T_COM, "IMPLEMENTED_TESTED", "Attempt history"),
+    ("POST", "/api/email/outbox/{email_id}/retry"): ("team/resource", "comms.retry_message", T_COM, "IMPLEMENTED_TESTED", "Never re-sends a sent message; no retry without stored text"),
+    ("POST", "/api/email/outbox/{email_id}/cancel"): ("team/resource", "comms.cancel_message", T_COM, "IMPLEMENTED_TESTED", ""),
+    ("DELETE", "/api/email/outbox/{email_id}"): ("team/resource", "comms.delete_message", T_COM, "IMPLEMENTED_TESTED", "Soft delete; own or with notifications.delete"),
+    ("POST", "/api/email/outbox/bulk-delete"): ("team/resource", "comms.bulk_delete", T_COM, "IMPLEMENTED_TESTED", "Queued is never deleted by filter"),
+    ("GET", "/api/notifications"): ("authenticated-own", "comms.list_notifications", T_COM, "IMPLEMENTED_TESTED", "Signals computed per entitlement"),
+    ("POST", "/api/notifications/{notification_id}/read"): ("authenticated-own", "comms.mark_read", T_COM, "IMPLEMENTED_TESTED", "Idempotent; only an item the caller can see"),
+    ("POST", "/api/notifications/mark-all-read"): ("authenticated-own", "comms.mark_all_read", T_COM, "IMPLEMENTED_TESTED", ""),
+})
+NEW_ROWS += [
+    ["DELETE", "/api/integrations/{kind}", "integrations", "", "team/resource", "comms.disconnect", T_COM, "IMPLEMENTED_TESTED", "New: remove saved details for any provider"],
+    ["POST", "/api/integrations/{kind}/test-connection", "integrations", "", "team/resource", "comms.test_connection", T_COM, "IMPLEMENTED_TESTED", "New: one test route for every provider, including Simpro and the simulator"],
+]
+FEATURES.update({
+    "INT-01": ("PARTIAL", "tests/test_comms.py; e2e connections step", "Built: one catalogue for Simpro, Navixy, SmartFill, Microsoft 365 and TextMagic; encrypted secrets never returned, kept unless cleared, fail closed without the key; explicit non-destructive test per provider; labelled simulator; status kept separate from sync and delivery. NOT VERIFIED against any real provider (mock transport only). Outstanding: data imports, schedulers, Dropbox, key rotation."),
+    "INT-05": ("PARTIAL", "tests/test_comms.py", "Built: Microsoft 365 app-only token and sendMail, TextMagic headers and message send, both only through the guarded boundary with safe mode, outbox evidence and no double send. NOT VERIFIED against the real services (mock transport only); no real message has ever been sent by this build. Outstanding: attachments, cost preview before an explicit send."),
+    "COM-01": ("PARTIAL", "tests/test_comms.py; e2e connections step", "Built: single send boundary; safe mode on by default with a server lock and an explicit-grant switch; automatic callers never send; duplicate keys; daily text limit; outbox with history, retry (never twice), cancel, delete; one-time links sent in memory and never stored; notification bell with per-person read state. Outstanding: compose/send-report screens, attachments, scheduled reminders, real delivery (unverified)."),
+})
+
 
 def main() -> None:
     path = HERE / "endpoint_coverage.csv"

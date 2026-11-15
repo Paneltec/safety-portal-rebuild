@@ -742,7 +742,56 @@ def inductions_and_jobs(browser) -> None:
     print("inductions, training and daily jobs walkthrough: ok")
 
 
-STEPS = [stage1_and_2a, documents, forms, safety_registers, workers, sites_and_visitors, suppliers_and_renewals, inductions_and_jobs]
+def connections_and_outbox(browser) -> None:
+    pg = sign_in(browser)
+    errors: list[str] = []
+    pg.on("pageerror", lambda e: errors.append(str(e)))
+
+    # The bell: Nina's job was declined? No - but an expiring item or two may exist. It opens and closes.
+    pg.get_by_role("button", name="Notifications").click()
+    expect(pg.get_by_role("dialog", name="Notifications")).to_be_visible()
+    pg.keyboard.press("Escape")
+
+    # Connections: safe mode is locked on by the server in this run; nothing is set up.
+    pg.get_by_role("link", name="Connections").click()
+    expect(pg.get_by_text("On: nothing is sent")).to_be_visible()
+    expect(pg.get_by_text("Safe mode is locked on by the server setting")).to_be_visible()
+    simpro = pg.locator("section", has=pg.get_by_role("heading", name="Simpro"))
+    expect(simpro.get_by_text("Not set up")).to_be_visible()
+    simpro.get_by_role("button", name="Set up").click()
+    simpro.get_by_label("Your Simpro address").fill("http://insecure.example")
+    simpro.get_by_label("API token").fill("token-for-the-walkthrough")
+    simpro.get_by_label("This connection is").select_option("simulator")
+    simpro.get_by_role("button", name="Save").click()
+    expect(simpro.get_by_text("enter a full https:// address")).to_be_visible()
+    simpro.get_by_label("Your Simpro address").fill("https://example.simprosuite.com")
+    simpro.get_by_role("button", name="Save").click()
+    expect(simpro.get_by_text("Saved.", exact=True)).to_be_visible()
+    # The token is never shown again: the box is empty and says a value is saved.
+    assert simpro.get_by_label("API token").input_value() == ""
+    expect(simpro.get_by_text("A value is saved. It is never shown again.")).to_be_visible()
+    simpro.get_by_role("button", name="Test connection").click()
+    expect(simpro.get_by_text("Simulator answered. No real system was contacted")).to_be_visible()
+    expect(simpro.get_by_text("Simulator", exact=True)).to_be_visible()  # never "Connected"
+    assert simpro.get_by_text("Connected", exact=True).count() == 0
+    shot(pg, "25-connections", full=True)
+
+    # Outbox: the job text and the earlier invitation are held, each with its reason.
+    pg.get_by_role("link", name="Outbox").click()
+    expect(pg.get_by_role("tab", name="Sent (0)")).to_be_visible()
+    row = pg.get_by_role("row").filter(has_text="Daily job")
+    expect(row.get_by_text("Safe mode is on, so nothing is sent.")).to_be_visible()
+    row.get_by_role("button", name="Open").click()
+    dialog = pg.get_by_role("dialog")
+    expect(dialog.get_by_text("Bridge Rd upgrade")).to_be_visible()
+    dialog.get_by_role("button", name="Send now").click()
+    expect(pg.get_by_text("Still not sent. Safe mode is on")).to_be_visible()
+    shot(pg, "26-outbox", full=True)
+    assert not errors, errors
+    print("connections and outbox walkthrough: ok")
+
+
+STEPS = [stage1_and_2a, documents, forms, safety_registers, workers, sites_and_visitors, suppliers_and_renewals, inductions_and_jobs, connections_and_outbox]
 
 if __name__ == "__main__":
     with sync_playwright() as p:

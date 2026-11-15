@@ -605,6 +605,45 @@
     "title": "BulkAssignRoleIn",
     "type": "object"
    },
+   "BulkDeleteIn": {
+    "properties": {
+     "ids": {
+      "anyOf": [
+       {
+        "items": {
+         "type": "string"
+        },
+        "maxItems": 500,
+        "type": "array"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Ids"
+     },
+     "status": {
+      "anyOf": [
+       {
+        "enum": [
+         "held",
+         "sent",
+         "simulated",
+         "failed",
+         "cancelled"
+        ],
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Status"
+     }
+    },
+    "title": "BulkDeleteIn",
+    "type": "object"
+   },
    "BulkIds": {
     "properties": {
      "ids": {
@@ -1106,6 +1145,67 @@
      "name"
     ],
     "title": "CompanyIn",
+    "type": "object"
+   },
+   "ConfigIn": {
+    "properties": {
+     "clear_secrets": {
+      "anyOf": [
+       {
+        "items": {
+         "type": "string"
+        },
+        "maxItems": 10,
+        "type": "array"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Clear Secrets"
+     },
+     "mode": {
+      "anyOf": [
+       {
+        "enum": [
+         "off",
+         "simulator",
+         "live"
+        ],
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Mode"
+     },
+     "secrets": {
+      "anyOf": [
+       {
+        "additionalProperties": true,
+        "type": "object"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Secrets"
+     },
+     "settings": {
+      "anyOf": [
+       {
+        "additionalProperties": true,
+        "type": "object"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Settings"
+     }
+    },
+    "title": "ConfigIn",
     "type": "object"
    },
    "CreateUserIn": {
@@ -3028,6 +3128,23 @@
      "target_id"
     ],
     "title": "RuleIn",
+    "type": "object"
+   },
+   "SafeModeIn": {
+    "properties": {
+     "mode": {
+      "enum": [
+       "on",
+       "off"
+      ],
+      "title": "Mode",
+      "type": "string"
+     }
+    },
+    "required": [
+     "mode"
+    ],
+    "title": "SafeModeIn",
     "type": "object"
    },
    "SelfEdit": {
@@ -5602,6 +5719,97 @@
     "summary": "Revoke Session",
     "tags": [
      "sessions"
+    ]
+   }
+  },
+  "/api/admin/comms-safe-mode": {
+   "patch": {
+    "description": "Switch the organisation's safe mode. The server setting can lock it on regardless.",
+    "operationId": "set_safe_mode_api_admin_comms_safe_mode_patch",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/SafeModeIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Set Safe Mode Api Admin Comms Safe Mode Patch",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Set Safe Mode",
+    "tags": [
+     "communications"
+    ]
+   }
+  },
+  "/api/admin/comms-safe-mode/status": {
+   "get": {
+    "description": "Anyone signed in can see whether messages are being sent, so the badge always matches the server.",
+    "operationId": "safe_mode_status_api_admin_comms_safe_mode_status_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Safe Mode Status Api Admin Comms Safe Mode Status Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Safe Mode Status",
+    "tags": [
+     "communications"
+    ]
+   }
+  },
+  "/api/admin/comms-safe-mode/who-can-toggle": {
+   "get": {
+    "operationId": "who_can_toggle_api_admin_comms_safe_mode_who_can_toggle_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Who Can Toggle Api Admin Comms Safe Mode Who Can Toggle Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Who Can Toggle",
+    "tags": [
+     "communications"
     ]
    }
   },
@@ -9149,6 +9357,329 @@
     "summary": "Search",
     "tags": [
      "document library"
+    ]
+   }
+  },
+  "/api/email/outbox": {
+   "get": {
+    "description": "Every message the portal has prepared, newest first, with what happened to each.",
+    "operationId": "list_outbox_api_email_outbox_get",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "status",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "enum": [
+          "held",
+          "queued",
+          "sent",
+          "simulated",
+          "failed",
+          "cancelled"
+         ],
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Status"
+      }
+     },
+     {
+      "in": "query",
+      "name": "channel",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "enum": [
+          "email",
+          "sms"
+         ],
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Channel"
+      }
+     },
+     {
+      "in": "query",
+      "name": "limit",
+      "required": false,
+      "schema": {
+       "default": 50,
+       "maximum": 200,
+       "minimum": 1,
+       "title": "Limit",
+       "type": "integer"
+      }
+     },
+     {
+      "in": "query",
+      "name": "offset",
+      "required": false,
+      "schema": {
+       "default": 0,
+       "minimum": 0,
+       "title": "Offset",
+       "type": "integer"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response List Outbox Api Email Outbox Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "List Outbox",
+    "tags": [
+     "communications"
+    ]
+   }
+  },
+  "/api/email/outbox/bulk-delete": {
+   "post": {
+    "description": "Hide messages from the list. Anything still waiting to send is only removed when named by id.",
+    "operationId": "bulk_delete_api_email_outbox_bulk_delete_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/BulkDeleteIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Bulk Delete Api Email Outbox Bulk Delete Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Bulk Delete",
+    "tags": [
+     "communications"
+    ]
+   }
+  },
+  "/api/email/outbox/{message_id}": {
+   "delete": {
+    "description": "Hide a message from the list. Admins can hide any; others only their own.",
+    "operationId": "delete_message_api_email_outbox__message_id__delete",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "message_id",
+      "required": true,
+      "schema": {
+       "title": "Message Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Delete Message Api Email Outbox  Message Id  Delete",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Delete Message",
+    "tags": [
+     "communications"
+    ]
+   },
+   "get": {
+    "operationId": "get_message_api_email_outbox__message_id__get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "message_id",
+      "required": true,
+      "schema": {
+       "title": "Message Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Get Message Api Email Outbox  Message Id  Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Get Message",
+    "tags": [
+     "communications"
+    ]
+   }
+  },
+  "/api/email/outbox/{message_id}/cancel": {
+   "post": {
+    "operationId": "cancel_message_api_email_outbox__message_id__cancel_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "message_id",
+      "required": true,
+      "schema": {
+       "title": "Message Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Cancel Message Api Email Outbox  Message Id  Cancel Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Cancel Message",
+    "tags": [
+     "communications"
+    ]
+   }
+  },
+  "/api/email/outbox/{message_id}/retry": {
+   "post": {
+    "description": "Send again. A message that was sent is never sent twice, and one that carried a one-time\nlink cannot be retried because its text was never kept.",
+    "operationId": "retry_message_api_email_outbox__message_id__retry_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "message_id",
+      "required": true,
+      "schema": {
+       "title": "Message Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Retry Message Api Email Outbox  Message Id  Retry Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Retry Message",
+    "tags": [
+     "communications"
     ]
    }
   },
@@ -13604,6 +14135,306 @@
     "summary": "Inspection Unarchive",
     "tags": [
      "Inspections"
+    ]
+   }
+  },
+  "/api/integrations": {
+   "get": {
+    "operationId": "list_integrations_api_integrations_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response List Integrations Api Integrations Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "List Integrations",
+    "tags": [
+     "integrations"
+    ]
+   }
+  },
+  "/api/integrations/{kind}": {
+   "delete": {
+    "description": "Remove the saved details and switch the connection off.",
+    "operationId": "disconnect_api_integrations__kind__delete",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "kind",
+      "required": true,
+      "schema": {
+       "title": "Kind",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Disconnect Api Integrations  Kind  Delete",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Disconnect",
+    "tags": [
+     "integrations"
+    ]
+   },
+   "get": {
+    "operationId": "get_integration_api_integrations__kind__get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "kind",
+      "required": true,
+      "schema": {
+       "title": "Kind",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Get Integration Api Integrations  Kind  Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Get Integration",
+    "tags": [
+     "integrations"
+    ]
+   },
+   "put": {
+    "description": "Save details. A secret left out, empty, or sent back as dots is kept; list it in\n`clear_secrets` to remove it on purpose.",
+    "operationId": "save_integration_api_integrations__kind__put",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "kind",
+      "required": true,
+      "schema": {
+       "title": "Kind",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ConfigIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Save Integration Api Integrations  Kind  Put",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Save Integration",
+    "tags": [
+     "integrations"
+    ]
+   }
+  },
+  "/api/integrations/{kind}/test-connection": {
+   "post": {
+    "description": "Check the saved details against the provider. Reads only: nothing is sent or changed there.",
+    "operationId": "test_connection_api_integrations__kind__test_connection_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "kind",
+      "required": true,
+      "schema": {
+       "title": "Kind",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Test Connection Api Integrations  Kind  Test Connection Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Test Connection",
+    "tags": [
+     "integrations"
+    ]
+   }
+  },
+  "/api/notifications": {
+   "get": {
+    "description": "Unread items first. Read items stay only while the thing they point at is still true.",
+    "operationId": "list_notifications_api_notifications_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response List Notifications Api Notifications Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "List Notifications",
+    "tags": [
+     "notifications"
+    ]
+   }
+  },
+  "/api/notifications/mark-all-read": {
+   "post": {
+    "operationId": "mark_all_read_api_notifications_mark_all_read_post",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Mark All Read Api Notifications Mark All Read Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Mark All Read",
+    "tags": [
+     "notifications"
+    ]
+   }
+  },
+  "/api/notifications/{notification_id}/read": {
+   "post": {
+    "description": "Mark one as read. Only an item this person can actually see can be marked; repeating it is harmless.",
+    "operationId": "mark_read_api_notifications__notification_id__read_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "notification_id",
+      "required": true,
+      "schema": {
+       "title": "Notification Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Mark Read Api Notifications  Notification Id  Read Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Mark Read",
+    "tags": [
+     "notifications"
     ]
    }
   },

@@ -43,13 +43,13 @@ PAY-06,Payslips,Private snapshot PDF/own mobile/guarded idempotent delivery,NOT_
 PAY-07,Banking and completion,ABA validation/export/evidence; no automatic payment,NOT_STARTED,,
 PAY-08,Provider readiness,Truthful STP/super/accounting unavailable states,NOT_STARTED,,
 PAY-09,Payroll configuration,Work types/awards/funds/rules/branding/revision histories,NOT_STARTED,,
-INT-01,Integration registry,Encrypted masked config/apply-on-save/test/status,NOT_STARTED,,
+INT-01,Integration registry,Encrypted masked config/apply-on-save/test/status,PARTIAL,tests/test_comms.py; e2e connections step,"Built: one catalogue for Simpro, Navixy, SmartFill, Microsoft 365 and TextMagic; encrypted secrets never returned, kept unless cleared, fail closed without the key; explicit non-destructive test per provider; labelled simulator; status kept separate from sync and delivery. NOT VERIFIED against any real provider (mock transport only). Outstanding: data imports, schedulers, Dropbox, key rotation."
 INT-02,Navixy adapter,Region/hash/trackers/states/groups/tags/retry,NOT_STARTED,,
 INT-03,Simpro adapter,Multi-company people/jobs/sites/suppliers/delta/attachments,NOT_STARTED,,
 INT-04,SmartFill adapter,JSON-RPC parameters/rate limits/pagination/cron state,NOT_STARTED,,
-INT-05,M365 and TextMagic,App-only mail/SMS guards/safe mode/outbox/retries,NOT_STARTED,,
+INT-05,M365 and TextMagic,App-only mail/SMS guards/safe mode/outbox/retries,PARTIAL,tests/test_comms.py,"Built: Microsoft 365 app-only token and sendMail, TextMagic headers and message send, both only through the guarded boundary with safe mode, outbox evidence and no double send. NOT VERIFIED against the real services (mock transport only); no real message has ever been sent by this build. Outstanding: attachments, cost preview before an explicit send."
 DBX-01,Dropbox,OAuth/team namespace/browse/search/activity/live file operations,NOT_STARTED,,
-COM-01,Communications,Explicit guarded sends/read notifications/held/error evidence,NOT_STARTED,,
+COM-01,Communications,Explicit guarded sends/read notifications/held/error evidence,PARTIAL,tests/test_comms.py; e2e connections step,"Built: single send boundary; safe mode on by default with a server lock and an explicit-grant switch; automatic callers never send; duplicate keys; daily text limit; outbox with history, retry (never twice), cancel, delete; one-time links sent in memory and never stored; notification bell with per-person read state. Outstanding: compose/send-report screens, attachments, scheduled reminders, real delivery (unverified)."
 PHONE-01,Phone shell,Own home/My Work/forms/fleet/docs/profile/leave/pay features,NOT_STARTED,,
 PHONE-02,QR and preview,One request camera lifecycle/scoped preview/module parity,NOT_STARTED,,
 PHONE-03,Offline and builds,Persistent idempotent queue/deep links/signed artifact status,NOT_STARTED,,

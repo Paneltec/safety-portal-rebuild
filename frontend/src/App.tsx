@@ -21,7 +21,9 @@ import { Workers } from "./pages/Workers";
 import { SiteDetail, Sites } from "./pages/Sites";
 import { PublicSignOn, StaffSignOn } from "./pages/SiteSignOn";
 import { Visitors } from "./pages/Visitors";
+import { Connections } from "./pages/Connections";
 import { Inductions } from "./pages/Inductions";
+import { Outbox } from "./pages/Outbox";
 import { DailyJobs, MyWork } from "./pages/Jobs";
 import { Renew } from "./pages/Renew";
 import { Renewals } from "./pages/Renewals";
@@ -78,6 +80,8 @@ export function App() {
         <Route path="settings/users" element={<Users />} />
         <Route path="settings/users/:userId" element={<UserDetail />} />
         <Route path="settings/roles" element={<Roles />} />
+        <Route path="settings/connections" element={<Connections />} />
+        <Route path="settings/outbox" element={<Outbox />} />
         <Route path="settings/sessions" element={<Sessions />} />
         <Route path="*" element={<Navigate to="/app/home" replace />} />
       </Route>

@@ -212,3 +212,16 @@ tr.clickable:hover td { background: #f7f9fb; }
 .cell-btn.not_applicable { color: var(--muted); font-style: italic; }
 .cell-btn .cell-word { font-weight: 600; }
 .job-card { border: 1px solid var(--line); border-left: 4px solid var(--accent); border-radius: 6px; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; background: var(--surface); }
+
+/* ---------- notification bell ---------- */
+.bell { position: relative; }
+.bell > .btn { position: relative; display: inline-flex; align-items: center; gap: 6px; min-width: 44px; justify-content: center; }
+.bell-count { background: var(--accent); color: #fff; border-radius: 10px; padding: 0 6px; font-size: 12px; font-weight: 600; line-height: 18px; font-variant-numeric: tabular-nums; }
+.bell-panel { position: absolute; right: 0; top: calc(100% + 6px); width: min(360px, calc(100vw - 28px)); max-height: 70vh; overflow-y: auto; background: var(--surface); border: 1px solid var(--line-strong); border-radius: 8px; box-shadow: 0 8px 24px rgba(22, 34, 46, 0.18); z-index: 15; }
+.bell-panel ul { list-style: none; margin: 0; padding: 0; }
+.bell-item { display: flex; flex-direction: column; gap: 2px; width: 100%; min-height: 44px; padding: 9px 12px; border: 0; border-top: 1px solid var(--line-soft); border-left: 4px solid var(--line); background: none; font: inherit; text-align: left; color: var(--text); cursor: pointer; }
+.bell-item:hover { background: var(--ground); }
+.bell-item.warn { border-left-color: var(--warn); }
+.bell-item.bad { border-left-color: var(--bad); }
+.bell-item.info { border-left-color: var(--link); }
+.bell-item.read { border-left-color: var(--line); color: var(--muted); }

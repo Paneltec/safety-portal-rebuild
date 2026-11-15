@@ -53,7 +53,7 @@ const STAGES: { name: string; detail: string; built: boolean | "partial" }[] = [
   { name: "2. Organisation, documents and the form engine", detail: "Organisation settings, logo, file storage, document library, form builder, form PDFs and assignments", built: true },
   { name: "3. Safety capture", detail: "SWMS, pre-starts, site diary, incidents and hazards, inspections, risk assessments, SSRA", built: true },
   { name: "4. Workers, suppliers, sites and jobs", detail: "Workers, certifications, inductions and training, sites, QR sign-in, visitors, suppliers, renewal links and daily jobs are built. Still to come: Simpro imports (stage 5), worker ID cards, supplier QR induction, spreadsheet import of inductions", built: "partial" },
-  { name: "5. Integrations and communications", detail: "Simpro, Navixy, SmartFill, Microsoft 365, TextMagic, outbox, safe mode", built: false },
+  { name: "5. Integrations and communications", detail: "Connections with encrypted details and tests, safe mode, the outbox and notifications are built. Still to come: importing from Simpro, Navixy and SmartFill, and reminders", built: "partial" },
   { name: "6. Fleet, service and fuel", detail: "Fleet register, service schedules, weekly diesel rate, fuel reports, anomalies", built: false },
   { name: "7. Leave, timesheets and pay (test-only)", detail: "Approvals, weekly workbench, reports, payslips, ABA export", built: false },
   { name: "8. Phone app", detail: "Home, My Work, forms, QR scanning, offline queue, preview", built: false },
