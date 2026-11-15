@@ -222,34 +222,34 @@ POST,/api/document-library/admin/backfill-extracted-text,document_library,start_
 POST,/api/document-library/admin/backfill-extracted-text/cancel,document_library,cancel_backfill,CLASSIFY,,,NOT_STARTED,
 GET,/api/document-library/admin/backfill-extracted-text/status,document_library,backfill_status,CLASSIFY,,,NOT_STARTED,
 POST,/api/document-library/admin/seed-shares-from-shared-reference,document_library_shares,seed_shares_from_shared_reference,CLASSIFY,,,NOT_STARTED,
-GET,/api/document-library/counts,document_library,library_counts,CLASSIFY,,,NOT_STARTED,
-GET,/api/document-library/counts/missing-binary,document_library,list_missing_binary,CLASSIFY,,,NOT_STARTED,
+GET,/api/document-library/counts,document_library,library_counts,team/resource,documents.counts,tests/test_documents.py,IMPLEMENTED_TESTED,
+GET,/api/document-library/counts/missing-binary,document_library,list_missing_binary,team/resource,documents.missing_binary,tests/test_documents.py,IMPLEMENTED_TESTED,
 POST,/api/document-library/download/bulk,document_library_shares,bulk_download,CLASSIFY,,,NOT_STARTED,
 GET,/api/document-library/expiries,document_library_shares,list_by_expiry,CLASSIFY,,,NOT_STARTED,
-DELETE,/api/document-library/files/{file_id},document_library,delete_file,CLASSIFY,,,NOT_STARTED,
-PATCH,/api/document-library/files/{file_id},document_library,rename_or_update_file,CLASSIFY,,,NOT_STARTED,
-POST,/api/document-library/files/{file_id}/archive,document_library,archive_file,CLASSIFY,,,NOT_STARTED,
-GET,/api/document-library/files/{file_id}/download,document_library,download_file,CLASSIFY,,,NOT_STARTED,
+DELETE,/api/document-library/files/{file_id},document_library,delete_file,team/resource,documents.delete_file,tests/test_documents.py,IMPLEMENTED_TESTED,Soft delete; needs documents.delete
+PATCH,/api/document-library/files/{file_id},document_library,rename_or_update_file,team/resource,documents.patch_file,tests/test_documents.py,IMPLEMENTED_TESTED,Adds tags
+POST,/api/document-library/files/{file_id}/archive,document_library,archive_file,team/resource,documents.archive_file,tests/test_documents.py,IMPLEMENTED_TESTED,
+GET,/api/document-library/files/{file_id}/download,document_library,download_file,team/resource,documents.download_file,tests/test_documents.py,IMPLEMENTED_TESTED,Inline only for PDF and images; revision query added
 DELETE,/api/document-library/files/{file_id}/hard,document_library_shares,hard_delete_file,CLASSIFY,,,NOT_STARTED,
-POST,/api/document-library/files/{file_id}/mark-gone,document_library,mark_binary_gone,CLASSIFY,,,NOT_STARTED,
-POST,/api/document-library/files/{file_id}/replace-binary,document_library,replace_missing_binary,CLASSIFY,,,NOT_STARTED,
-POST,/api/document-library/files/{file_id}/restore,document_library,restore_file,CLASSIFY,,,NOT_STARTED,
+POST,/api/document-library/files/{file_id}/mark-gone,document_library,mark_binary_gone,team/resource,documents.mark_gone,tests/test_documents.py,IMPLEMENTED_TESTED,Only when bytes are really missing
+POST,/api/document-library/files/{file_id}/replace-binary,document_library,replace_missing_binary,team/resource,documents.replace_binary,tests/test_documents.py,IMPLEMENTED_TESTED,Creates a new revision; earlier bytes kept
+POST,/api/document-library/files/{file_id}/restore,document_library,restore_file,team/resource,documents.restore_file,tests/test_documents.py,IMPLEMENTED_TESTED,
 POST,/api/document-library/files/{file_id}/retry-extract-ai,document_library,retry_extract_ai,CLASSIFY,,,NOT_STARTED,
 GET,/api/document-library/files/{file_id}/shares,document_library_shares,list_shares,CLASSIFY,,,NOT_STARTED,
 POST,/api/document-library/files/{file_id}/shares,document_library_shares,create_share,CLASSIFY,,,NOT_STARTED,
-GET,/api/document-library/folders,document_library,list_folders,CLASSIFY,,,NOT_STARTED,
-POST,/api/document-library/folders,document_library,create_folder,CLASSIFY,,,NOT_STARTED,
-GET,/api/document-library/folders/all,document_library,list_all_folders,CLASSIFY,,,NOT_STARTED,
-DELETE,/api/document-library/folders/{folder_id},document_library,delete_folder,CLASSIFY,,,NOT_STARTED,
-PATCH,/api/document-library/folders/{folder_id},document_library,rename_folder,CLASSIFY,,,NOT_STARTED,
+GET,/api/document-library/folders,document_library,list_folders,team/resource,documents.list_root_folders,tests/test_documents.py,IMPLEMENTED_TESTED,Requires documents.view
+POST,/api/document-library/folders,document_library,create_folder,team/resource,documents.create_folder,tests/test_documents.py,IMPLEMENTED_TESTED,Duplicate name in same parent is 409
+GET,/api/document-library/folders/all,document_library,list_all_folders,team/resource,documents.list_all_folders,tests/test_documents.py,IMPLEMENTED_TESTED,
+DELETE,/api/document-library/folders/{folder_id},document_library,delete_folder,team/resource,documents.delete_folder,tests/test_documents.py,IMPLEMENTED_TESTED,Refuses a non-empty folder (409)
+PATCH,/api/document-library/folders/{folder_id},document_library,rename_folder,team/resource,documents.patch_folder,tests/test_documents.py,IMPLEMENTED_TESTED,Cycle check
 GET,/api/document-library/folders/{folder_id}/download-zip,document_library_shares,folder_download_zip,CLASSIFY,,,NOT_STARTED,
-GET,/api/document-library/folders/{folder_id}/files,document_library,list_files,CLASSIFY,,,NOT_STARTED,
-POST,/api/document-library/folders/{folder_id}/files,document_library,upload_files,CLASSIFY,,,NOT_STARTED,
+GET,/api/document-library/folders/{folder_id}/files,document_library,list_files,team/resource,documents.list_files,tests/test_documents.py,IMPLEMENTED_TESTED,Paginated envelope
+POST,/api/document-library/folders/{folder_id}/files,document_library,upload_files,team/resource,documents.upload_files,tests/test_documents.py,IMPLEMENTED_TESTED,Per-file saved/rejected; type allowlist; duplicate-safe
 DELETE,/api/document-library/folders/{folder_id}/hard,document_library_shares,hard_delete_folder,CLASSIFY,,,NOT_STARTED,
-GET,/api/document-library/folders/{folder_id}/subfolders,document_library,list_subfolders,CLASSIFY,,,NOT_STARTED,
+GET,/api/document-library/folders/{folder_id}/subfolders,document_library,list_subfolders,team/resource,documents.list_subfolders,tests/test_documents.py,IMPLEMENTED_TESTED,
 POST,/api/document-library/folders/{folder_id}/upload-tree,document_library_shares,upload_tree,CLASSIFY,,,NOT_STARTED,
 POST,/api/document-library/reorganise,document_library,reorganise,CLASSIFY,,,NOT_STARTED,
-GET,/api/document-library/search,document_library,search,CLASSIFY,,,NOT_STARTED,
+GET,/api/document-library/search,document_library,search,team/resource,documents.search,tests/test_documents.py,IMPLEMENTED_TESTED,Name and tag search; extracted-text search arrives with AI stage
 GET,/api/document-library/shared-with-me,document_library_shares,shared_with_me,CLASSIFY,,,NOT_STARTED,
 GET,/api/document-library/shared-with-me/files/{file_id}/download,document_library_shares,shared_download,CLASSIFY,,,NOT_STARTED,
 DELETE,/api/document-library/shares/{share_id},document_library_shares,revoke_share,CLASSIFY,,,NOT_STARTED,
@@ -1010,6 +1010,8 @@ POST,/mobile/sites/{site_id}/visitor-sign-in,mobile_sites,visitor_sign_in,RETIRE
 POST,/mobile/sites/{site_id}/visitor-sign-out,mobile_sites,visitor_sign_out,RETIRED,,,HISTORICAL,Removed mobile_sites router; functionality uses current site routes
 GET,/mobile/sites/{site_id}/current-occupancy,mobile_sites,current_occupancy,RETIRED,,,HISTORICAL,Removed mobile_sites router; functionality uses current site routes
 POST,/mobile/gps/heartbeat,mobile_sites,gps_heartbeat,RETIRED,,,HISTORICAL,Removed mobile_sites router; functionality uses current site routes
+GET,/api/document-library/folders/{folder_id},(new),get_folder,team/resource,documents.get_folder,tests/test_documents.py,IMPLEMENTED_TESTED,Folder with breadcrumb path
+GET,/api/document-library/files/{file_id},(new),get_file,team/resource,documents.get_file,tests/test_documents.py,IMPLEMENTED_TESTED,File with revision history
 GET,/api/setup/status,(new),setup_status,public-scoped,org.setup_status,tests/test_org_setup_files.py,IMPLEMENTED_TESTED,D-016
 POST,/api/setup,(new),run_setup,public-scoped,org.run_setup,tests/test_org_setup_files.py,IMPLEMENTED_TESTED,"D-016 first-run, key protected, once"
 POST,/api/org/account-holder,(new),transfer_account_holder,admin-owner,org.transfer_account_holder,tests/test_org_setup_files.py,IMPLEMENTED_TESTED,D-017

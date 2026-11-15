@@ -9,12 +9,12 @@ Updated at the end of each finished part. The ledgers in `docs/ledger/` hold the
 | Stage 1 | Sign-in, lockout, sessions (expiry, idle timeout, revoke), invitations, password resets, forced password change, users, role catalogue, custom roles, permission matrix, per-person overrides, presets, audit log, tenant isolation | `backend/tests/test_auth.py`, `test_users.py`, `test_permissions_unit.py`, `test_roles_sessions_tenancy.py` |
 | Account holder | First-run setup protected by `SETUP_KEY`; the account holder is the protected top-level admin and payroll owner; transfer by the holder only | `backend/tests/test_org_setup_files.py` |
 | Stage 2a | Organisation settings with validated addresses, contact details, logo upload/replace/remove, companies, file storage with hash/size/type and a clear "missing" state | `backend/tests/test_org_setup_files.py`, `e2e/walkthrough.py` |
+| Stage 2b | Document library: nested folders, multi-file upload with type allowlist, authorised download and inline preview, rename, move, expiry, tags, archive/restore, delete, revision history, missing-content repair, counts, search | `backend/tests/test_documents.py`, `e2e/walkthrough.py` |
 
 ## Next, in order
 
-1. **2b Document library**: folders, upload, metadata, tags, preview/download, move/rename, archive, authorised delete, revision history, missing-file state (DOC-01).
-2. **2c Form engine**: template editor, every field family with a documented value shape, immutable schema snapshot per submission, submissions, attachments, PDF, assignments and the double-switch certification gate (FORM-01, FORM-02, REF-01).
-3. Stage 3 onwards as listed in `STAGED_PLAN.md`.
+1. **2c Form engine**: template editor, every field family with a documented value shape, immutable schema snapshot per submission, submissions, attachments, PDF, assignments and the double-switch certification gate (FORM-01, FORM-02, REF-01).
+2. Stage 3 onwards as listed in `STAGED_PLAN.md`.
 
 ## Not verified
 

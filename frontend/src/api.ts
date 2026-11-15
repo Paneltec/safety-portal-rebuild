@@ -169,3 +169,46 @@ export interface Company {
   name: string;
   code: string;
 }
+
+/** Fetch a protected file with the session token, then open or save it. */
+export async function openFile(path: string, filename: string, download: boolean): Promise<void> {
+  const token = getToken();
+  let response: Response;
+  try {
+    response = await fetch(path, { headers: token ? { Authorization: `Bearer ${token}` } : {} });
+  } catch {
+    throw new ApiError(0, "Cannot reach the server. Check your connection and try again.");
+  }
+  if (!response.ok) {
+    let detail: unknown = null;
+    try {
+      detail = ((await response.json()) as { detail?: unknown }).detail;
+    } catch {
+      detail = null;
+    }
+    throw new ApiError(response.status, describe(detail, response.status));
+  }
+  const url = URL.createObjectURL(await response.blob());
+  const link = document.createElement("a");
+  link.href = url;
+  if (download) link.download = filename;
+  else link.target = "_blank";
+  link.rel = "noopener";
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 60_000);
+}
+
+export function formatDate(isoDate: string | null): string {
+  if (!isoDate) return "—";
+  const [y, m, d] = isoDate.slice(0, 10).split("-");
+  return `${d}/${m}/${y}`;
+}
+
+export function formatSize(bytes: number | null): string {
+  if (bytes === null) return "—";
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}

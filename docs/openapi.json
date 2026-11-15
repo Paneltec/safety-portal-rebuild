@@ -29,6 +29,37 @@
     "title": "ApplyPresetIn",
     "type": "object"
    },
+   "Body_replace_binary_api_document_library_files__file_id__replace_binary_post": {
+    "properties": {
+     "file": {
+      "contentMediaType": "application/octet-stream",
+      "title": "File",
+      "type": "string"
+     }
+    },
+    "required": [
+     "file"
+    ],
+    "title": "Body_replace_binary_api_document_library_files__file_id__replace_binary_post",
+    "type": "object"
+   },
+   "Body_upload_files_api_document_library_folders__folder_id__files_post": {
+    "properties": {
+     "files": {
+      "items": {
+       "contentMediaType": "application/octet-stream",
+       "type": "string"
+      },
+      "title": "Files",
+      "type": "array"
+     }
+    },
+    "required": [
+     "files"
+    ],
+    "title": "Body_upload_files_api_document_library_folders__folder_id__files_post",
+    "type": "object"
+   },
    "Body_upload_logo_api_org_logo_upload_post": {
     "properties": {
      "file": {
@@ -233,6 +264,176 @@
     "title": "CreateUserIn",
     "type": "object"
    },
+   "FilePatch": {
+    "properties": {
+     "clear_expiry": {
+      "default": false,
+      "title": "Clear Expiry",
+      "type": "boolean"
+     },
+     "expiry_date": {
+      "anyOf": [
+       {
+        "maxLength": 32,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Expiry Date"
+     },
+     "filename": {
+      "anyOf": [
+       {
+        "maxLength": 200,
+        "minLength": 1,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Filename"
+     },
+     "folder_id": {
+      "anyOf": [
+       {
+        "maxLength": 64,
+        "minLength": 1,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Folder Id"
+     },
+     "tags": {
+      "anyOf": [
+       {
+        "items": {
+         "type": "string"
+        },
+        "maxItems": 20,
+        "type": "array"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Tags"
+     }
+    },
+    "title": "FilePatch",
+    "type": "object"
+   },
+   "FolderIn": {
+    "properties": {
+     "color_key": {
+      "anyOf": [
+       {
+        "maxLength": 20,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Color Key"
+     },
+     "name": {
+      "maxLength": 80,
+      "minLength": 1,
+      "title": "Name",
+      "type": "string"
+     },
+     "parent_folder_id": {
+      "anyOf": [
+       {
+        "maxLength": 64,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Parent Folder Id"
+     }
+    },
+    "required": [
+     "name"
+    ],
+    "title": "FolderIn",
+    "type": "object"
+   },
+   "FolderPatch": {
+    "properties": {
+     "color_key": {
+      "anyOf": [
+       {
+        "maxLength": 20,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Color Key"
+     },
+     "name": {
+      "anyOf": [
+       {
+        "maxLength": 80,
+        "minLength": 1,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Name"
+     },
+     "parent_folder_id": {
+      "anyOf": [
+       {
+        "maxLength": 64,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Parent Folder Id"
+     },
+     "shared_reference": {
+      "anyOf": [
+       {
+        "type": "boolean"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Shared Reference"
+     },
+     "sort_order": {
+      "anyOf": [
+       {
+        "maximum": 1000000.0,
+        "minimum": 0.0,
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Sort Order"
+     }
+    },
+    "title": "FolderPatch",
+    "type": "object"
+   },
    "ForgotIn": {
     "properties": {
      "email": {
@@ -245,6 +446,21 @@
      "email"
     ],
     "title": "ForgotIn",
+    "type": "object"
+   },
+   "GoneIn": {
+    "properties": {
+     "reason": {
+      "maxLength": 300,
+      "minLength": 3,
+      "title": "Reason",
+      "type": "string"
+     }
+    },
+    "required": [
+     "reason"
+    ],
+    "title": "GoneIn",
     "type": "object"
    },
    "HTTPValidationError": {
@@ -996,7 +1212,7 @@
   }
  },
  "info": {
-  "description": "Independent reconstruction. Stage 1: identity, sessions, roles and permissions.",
+  "description": "Independent reconstruction of the Safety Portal. See docs/PROGRESS.md for what is built.",
   "title": "Safety Portal API",
   "version": "0.2.0"
  },
@@ -1965,6 +2181,959 @@
     "summary": "Update Profile",
     "tags": [
      "auth"
+    ]
+   }
+  },
+  "/api/document-library/counts": {
+   "get": {
+    "operationId": "counts_api_document_library_counts_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": {
+          "type": "integer"
+         },
+         "title": "Response Counts Api Document Library Counts Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Counts",
+    "tags": [
+     "document library"
+    ]
+   }
+  },
+  "/api/document-library/counts/missing-binary": {
+   "get": {
+    "operationId": "missing_binary_api_document_library_counts_missing_binary_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Missing Binary Api Document Library Counts Missing Binary Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Missing Binary",
+    "tags": [
+     "document library"
+    ]
+   }
+  },
+  "/api/document-library/files/{file_id}": {
+   "delete": {
+    "operationId": "delete_file_api_document_library_files__file_id__delete",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "file_id",
+      "required": true,
+      "schema": {
+       "title": "File Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "204": {
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Delete File",
+    "tags": [
+     "document library"
+    ]
+   },
+   "get": {
+    "operationId": "get_file_api_document_library_files__file_id__get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "file_id",
+      "required": true,
+      "schema": {
+       "title": "File Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Get File Api Document Library Files  File Id  Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Get File",
+    "tags": [
+     "document library"
+    ]
+   },
+   "patch": {
+    "operationId": "patch_file_api_document_library_files__file_id__patch",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "file_id",
+      "required": true,
+      "schema": {
+       "title": "File Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/FilePatch"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Patch File Api Document Library Files  File Id  Patch",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Patch File",
+    "tags": [
+     "document library"
+    ]
+   }
+  },
+  "/api/document-library/files/{file_id}/archive": {
+   "post": {
+    "description": "Archived files are hidden by default but stay readable and restorable.",
+    "operationId": "archive_file_api_document_library_files__file_id__archive_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "file_id",
+      "required": true,
+      "schema": {
+       "title": "File Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Archive File Api Document Library Files  File Id  Archive Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Archive File",
+    "tags": [
+     "document library"
+    ]
+   }
+  },
+  "/api/document-library/files/{file_id}/download": {
+   "get": {
+    "description": "Stream the current bytes, or an earlier revision. Only PDFs and images may open inline.",
+    "operationId": "download_file_api_document_library_files__file_id__download_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "file_id",
+      "required": true,
+      "schema": {
+       "title": "File Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "download",
+      "required": false,
+      "schema": {
+       "default": 0,
+       "maximum": 1,
+       "minimum": 0,
+       "title": "Download",
+       "type": "integer"
+      }
+     },
+     {
+      "in": "query",
+      "name": "revision",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "minimum": 1,
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Revision"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Download File",
+    "tags": [
+     "document library"
+    ]
+   }
+  },
+  "/api/document-library/files/{file_id}/mark-gone": {
+   "post": {
+    "description": "Record that a file's bytes cannot be recovered. Only allowed when they really are missing.",
+    "operationId": "mark_gone_api_document_library_files__file_id__mark_gone_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "file_id",
+      "required": true,
+      "schema": {
+       "title": "File Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/GoneIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Mark Gone Api Document Library Files  File Id  Mark Gone Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Mark Gone",
+    "tags": [
+     "document library"
+    ]
+   }
+  },
+  "/api/document-library/files/{file_id}/replace-binary": {
+   "post": {
+    "description": "Upload new bytes as the next revision (also repairs a missing file). Earlier revisions are kept.",
+    "operationId": "replace_binary_api_document_library_files__file_id__replace_binary_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "file_id",
+      "required": true,
+      "schema": {
+       "title": "File Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "multipart/form-data": {
+       "schema": {
+        "$ref": "#/components/schemas/Body_replace_binary_api_document_library_files__file_id__replace_binary_post"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Replace Binary Api Document Library Files  File Id  Replace Binary Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Replace Binary",
+    "tags": [
+     "document library"
+    ]
+   }
+  },
+  "/api/document-library/files/{file_id}/restore": {
+   "post": {
+    "operationId": "restore_file_api_document_library_files__file_id__restore_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "file_id",
+      "required": true,
+      "schema": {
+       "title": "File Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Restore File Api Document Library Files  File Id  Restore Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Restore File",
+    "tags": [
+     "document library"
+    ]
+   }
+  },
+  "/api/document-library/folders": {
+   "get": {
+    "operationId": "list_root_folders_api_document_library_folders_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "items": {
+          "additionalProperties": true,
+          "type": "object"
+         },
+         "title": "Response List Root Folders Api Document Library Folders Get",
+         "type": "array"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "List Root Folders",
+    "tags": [
+     "document library"
+    ]
+   },
+   "post": {
+    "operationId": "create_folder_api_document_library_folders_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/FolderIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Create Folder Api Document Library Folders Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Create Folder",
+    "tags": [
+     "document library"
+    ]
+   }
+  },
+  "/api/document-library/folders/all": {
+   "get": {
+    "description": "Flat list of every folder, with its path, for move pickers.",
+    "operationId": "list_all_folders_api_document_library_folders_all_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "items": {
+          "additionalProperties": true,
+          "type": "object"
+         },
+         "title": "Response List All Folders Api Document Library Folders All Get",
+         "type": "array"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "List All Folders",
+    "tags": [
+     "document library"
+    ]
+   }
+  },
+  "/api/document-library/folders/{folder_id}": {
+   "delete": {
+    "description": "Delete an empty folder. A folder that still holds files or subfolders is refused, so nothing vanishes by accident.",
+    "operationId": "delete_folder_api_document_library_folders__folder_id__delete",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "folder_id",
+      "required": true,
+      "schema": {
+       "title": "Folder Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": {
+          "type": "boolean"
+         },
+         "title": "Response Delete Folder Api Document Library Folders  Folder Id  Delete",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Delete Folder",
+    "tags": [
+     "document library"
+    ]
+   },
+   "get": {
+    "operationId": "get_folder_api_document_library_folders__folder_id__get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "folder_id",
+      "required": true,
+      "schema": {
+       "title": "Folder Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Get Folder Api Document Library Folders  Folder Id  Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Get Folder",
+    "tags": [
+     "document library"
+    ]
+   },
+   "patch": {
+    "operationId": "patch_folder_api_document_library_folders__folder_id__patch",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "folder_id",
+      "required": true,
+      "schema": {
+       "title": "Folder Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/FolderPatch"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Patch Folder Api Document Library Folders  Folder Id  Patch",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Patch Folder",
+    "tags": [
+     "document library"
+    ]
+   }
+  },
+  "/api/document-library/folders/{folder_id}/files": {
+   "get": {
+    "operationId": "list_files_api_document_library_folders__folder_id__files_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "folder_id",
+      "required": true,
+      "schema": {
+       "title": "Folder Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "include_archived",
+      "required": false,
+      "schema": {
+       "default": false,
+       "title": "Include Archived",
+       "type": "boolean"
+      }
+     },
+     {
+      "in": "query",
+      "name": "limit",
+      "required": false,
+      "schema": {
+       "default": 50,
+       "maximum": 200,
+       "minimum": 1,
+       "title": "Limit",
+       "type": "integer"
+      }
+     },
+     {
+      "in": "query",
+      "name": "offset",
+      "required": false,
+      "schema": {
+       "default": 0,
+       "minimum": 0,
+       "title": "Offset",
+       "type": "integer"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response List Files Api Document Library Folders  Folder Id  Files Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "List Files",
+    "tags": [
+     "document library"
+    ]
+   },
+   "post": {
+    "description": "Store one or more files. Each file is accepted or rejected on its own, with a reason.",
+    "operationId": "upload_files_api_document_library_folders__folder_id__files_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "folder_id",
+      "required": true,
+      "schema": {
+       "title": "Folder Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "multipart/form-data": {
+       "schema": {
+        "$ref": "#/components/schemas/Body_upload_files_api_document_library_folders__folder_id__files_post"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Upload Files Api Document Library Folders  Folder Id  Files Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Upload Files",
+    "tags": [
+     "document library"
+    ]
+   }
+  },
+  "/api/document-library/folders/{folder_id}/subfolders": {
+   "get": {
+    "operationId": "list_subfolders_api_document_library_folders__folder_id__subfolders_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "folder_id",
+      "required": true,
+      "schema": {
+       "title": "Folder Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "items": {
+          "additionalProperties": true,
+          "type": "object"
+         },
+         "title": "Response List Subfolders Api Document Library Folders  Folder Id  Subfolders Get",
+         "type": "array"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "List Subfolders",
+    "tags": [
+     "document library"
+    ]
+   }
+  },
+  "/api/document-library/search": {
+   "get": {
+    "description": "Find files by name or tag, within one folder (and its subfolders) or the whole library.",
+    "operationId": "search_api_document_library_search_get",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "q",
+      "required": true,
+      "schema": {
+       "maxLength": 120,
+       "minLength": 1,
+       "title": "Q",
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "folder_id",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Folder Id"
+      }
+     },
+     {
+      "in": "query",
+      "name": "recursive",
+      "required": false,
+      "schema": {
+       "default": true,
+       "title": "Recursive",
+       "type": "boolean"
+      }
+     },
+     {
+      "in": "query",
+      "name": "include_archived",
+      "required": false,
+      "schema": {
+       "default": false,
+       "title": "Include Archived",
+       "type": "boolean"
+      }
+     },
+     {
+      "in": "query",
+      "name": "limit",
+      "required": false,
+      "schema": {
+       "default": 50,
+       "maximum": 200,
+       "minimum": 1,
+       "title": "Limit",
+       "type": "integer"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Search Api Document Library Search Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Search",
+    "tags": [
+     "document library"
     ]
    }
   },

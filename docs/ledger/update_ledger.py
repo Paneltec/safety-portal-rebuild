@@ -5,6 +5,7 @@ from pathlib import Path
 HERE = Path(__file__).parent
 T_AUTH, T_USERS, T_RST = "tests/test_auth.py", "tests/test_users.py", "tests/test_roles_sessions_tenancy.py"
 T_ORG = "tests/test_org_setup_files.py"
+T_DOC = "tests/test_documents.py"
 
 # (method, baseline path) -> (classification, new handler, tests, status, decision)
 DONE = {
@@ -61,9 +62,31 @@ DONE = {
     ("PUT", "/api/org/companies"): ("admin-owner", "org.replace_companies", T_ORG, "IMPLEMENTED_TESTED", "D-020 stable ids"),
     ("POST", "/api/org/logo/upload"): ("admin-owner", "org.upload_logo", T_ORG, "IMPLEMENTED_TESTED", "D-018 content sniffing, 2 MB"),
     ("GET", "/api/org/logo/{gridfs_id}"): ("public-scoped", "org.get_logo", T_ORG, "IMPLEMENTED_TESTED", "D-019 logo-only public route"),
+
+    # ---- document library (stage 2b)
+    ("GET", "/api/document-library/counts"): ("team/resource", "documents.counts", T_DOC, "IMPLEMENTED_TESTED", ""),
+    ("GET", "/api/document-library/counts/missing-binary"): ("team/resource", "documents.missing_binary", T_DOC, "IMPLEMENTED_TESTED", ""),
+    ("DELETE", "/api/document-library/files/{file_id}"): ("team/resource", "documents.delete_file", T_DOC, "IMPLEMENTED_TESTED", "Soft delete; needs documents.delete"),
+    ("PATCH", "/api/document-library/files/{file_id}"): ("team/resource", "documents.patch_file", T_DOC, "IMPLEMENTED_TESTED", "Adds tags"),
+    ("POST", "/api/document-library/files/{file_id}/archive"): ("team/resource", "documents.archive_file", T_DOC, "IMPLEMENTED_TESTED", ""),
+    ("GET", "/api/document-library/files/{file_id}/download"): ("team/resource", "documents.download_file", T_DOC, "IMPLEMENTED_TESTED", "Inline only for PDF and images; revision query added"),
+    ("POST", "/api/document-library/files/{file_id}/mark-gone"): ("team/resource", "documents.mark_gone", T_DOC, "IMPLEMENTED_TESTED", "Only when bytes are really missing"),
+    ("POST", "/api/document-library/files/{file_id}/replace-binary"): ("team/resource", "documents.replace_binary", T_DOC, "IMPLEMENTED_TESTED", "Creates a new revision; earlier bytes kept"),
+    ("POST", "/api/document-library/files/{file_id}/restore"): ("team/resource", "documents.restore_file", T_DOC, "IMPLEMENTED_TESTED", ""),
+    ("GET", "/api/document-library/folders"): ("team/resource", "documents.list_root_folders", T_DOC, "IMPLEMENTED_TESTED", "Requires documents.view"),
+    ("POST", "/api/document-library/folders"): ("team/resource", "documents.create_folder", T_DOC, "IMPLEMENTED_TESTED", "Duplicate name in same parent is 409"),
+    ("GET", "/api/document-library/folders/all"): ("team/resource", "documents.list_all_folders", T_DOC, "IMPLEMENTED_TESTED", ""),
+    ("DELETE", "/api/document-library/folders/{folder_id}"): ("team/resource", "documents.delete_folder", T_DOC, "IMPLEMENTED_TESTED", "Refuses a non-empty folder (409)"),
+    ("PATCH", "/api/document-library/folders/{folder_id}"): ("team/resource", "documents.patch_folder", T_DOC, "IMPLEMENTED_TESTED", "Cycle check"),
+    ("GET", "/api/document-library/folders/{folder_id}/files"): ("team/resource", "documents.list_files", T_DOC, "IMPLEMENTED_TESTED", "Paginated envelope"),
+    ("POST", "/api/document-library/folders/{folder_id}/files"): ("team/resource", "documents.upload_files", T_DOC, "IMPLEMENTED_TESTED", "Per-file saved/rejected; type allowlist; duplicate-safe"),
+    ("GET", "/api/document-library/folders/{folder_id}/subfolders"): ("team/resource", "documents.list_subfolders", T_DOC, "IMPLEMENTED_TESTED", ""),
+    ("GET", "/api/document-library/search"): ("team/resource", "documents.search", T_DOC, "IMPLEMENTED_TESTED", "Name and tag search; extracted-text search arrives with AI stage"),
 }
 
 NEW_ROWS = [
+    ["GET", "/api/document-library/folders/{folder_id}", "(new)", "get_folder", "team/resource", "documents.get_folder", T_DOC, "IMPLEMENTED_TESTED", "Folder with breadcrumb path"],
+    ["GET", "/api/document-library/files/{file_id}", "(new)", "get_file", "team/resource", "documents.get_file", T_DOC, "IMPLEMENTED_TESTED", "File with revision history"],
     ["GET", "/api/setup/status", "(new)", "setup_status", "public-scoped", "org.setup_status", T_ORG, "IMPLEMENTED_TESTED", "D-016"],
     ["POST", "/api/setup", "(new)", "run_setup", "public-scoped", "org.run_setup", T_ORG, "IMPLEMENTED_TESTED", "D-016 first-run, key protected, once"],
     ["POST", "/api/org/account-holder", "(new)", "transfer_account_holder", "admin-owner", "org.transfer_account_holder", T_ORG, "IMPLEMENTED_TESTED", "D-017"],
@@ -78,6 +101,7 @@ FEATURES = {
     "AUTH-01": ("PARTIAL", "tests/test_auth.py", "Built: login, lockout, invitation, reset, password change, forced change, sessions, expiry, idle timeout, session admin. Outstanding: mobile PIN, admin-console PIN, Simpro sign-in, emailing links (held in outbox)."),
     "PERM-01": ("PARTIAL", "tests/test_permissions_unit.py; tests/test_users.py; tests/test_roles_sessions_tenancy.py", "Built: custom roles, action matrix, per-user overrides, presets, audit, grant guards. Outstanding: role form allowlist, payroll named grants, phone module allocation."),
     "ORG-01": ("PARTIAL", "tests/test_org_setup_files.py; e2e/walkthrough.py", "Built: name, time zone, contact details, validated portal and staff URLs with no host default, logo upload/replace/remove shown in shell and sign-in, companies, account holder. Outstanding: logo and branding in PDFs and email templates (arrive with those features), insurance certificates."),
+    "DOC-01": ("PARTIAL", "tests/test_documents.py; e2e/walkthrough.py", "Built: folders (nest, move, rename, delete when empty), upload with type allowlist and content check, hash/size/type, private authorised download, inline preview for PDF and images, rename, move, expiry, tags, archive/restore, delete, revision history, missing-content state with repair or record-as-lost, counts, name/tag search. Outstanding: extracted-text search and AI retry, categories, generated per-worker and per-supplier folders, sharing (historical/optional), reorganise tool."),
     "NAV-01": ("PARTIAL", "Browser walkthrough (login, users, roles, sessions, profile)", "Shell with permission-filtered menu for built screens only. Preferences, app directory and version display outstanding."),
 }
 

@@ -48,6 +48,8 @@ Cost: a later import of existing data is a mapped conversion, not a collection c
 | D-018 | Uploaded bytes are stored on a volume addressed by organisation and SHA-256, with a metadata row per file. Content is sniffed; a mislabelled file is refused. Missing bytes answer 410, never an empty file. | Spec section 8. Replaces the several GridFS buckets with one store. |
 | D-019 | The logo route needs no session and serves only files stored as a logo. Sign-in branding is shown only when the install has a single organisation. | Branding must appear before sign-in and in reports; nothing else is reachable that way. |
 | D-020 | Organisation contact fields live in one JSON column; companies keep stable ids across renames and cannot be removed while people are assigned. `slug` and `default_workspace_id` are deferred until sites exist. | Keeps foreign keys intact. |
+| D-021 | Document uploads use a file-type allowlist; anything a browser could run (HTML, SVG, scripts, executables) is refused, and a PDF or image whose content does not match is refused. Only PDFs and images open inline. | Stored files must never execute in the portal's origin. |
+| D-022 | Replacing a document's file creates a new revision and keeps the earlier bytes. A folder can only be deleted when empty. Re-uploading the same file to the same folder is rejected as a duplicate. | History is preserved and a retry cannot create duplicates. |
 
 ## Security posture (applies to every stage)
 

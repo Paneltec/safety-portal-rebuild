@@ -5,7 +5,7 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 
 from .config import get_settings
-from .routers import auth, org, presets, roles, sessions, users
+from .routers import auth, documents, org, presets, roles, sessions, users
 
 
 def create_app() -> FastAPI:
@@ -13,7 +13,7 @@ def create_app() -> FastAPI:
     app = FastAPI(
         title="Safety Portal API",
         version=settings.app_version,
-        description="Independent reconstruction. Stage 1: identity, sessions, roles and permissions.",
+        description="Independent reconstruction of the Safety Portal. See docs/PROGRESS.md for what is built.",
         docs_url="/api/docs",
         openapi_url="/api/openapi.json",
         redoc_url=None,
@@ -40,6 +40,7 @@ def create_app() -> FastAPI:
     app.include_router(roles.router)
     app.include_router(presets.router)
     app.include_router(sessions.router)
+    app.include_router(documents.router)
     return app
 
 

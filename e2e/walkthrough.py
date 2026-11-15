@@ -120,7 +120,55 @@ def sign_in(browser, width: int = 1280, height: int = 900):
     return page
 
 
-STEPS = [stage1_and_2a]
+def documents(browser) -> None:
+    pg = sign_in(browser)
+    errors: list[str] = []
+    pg.on("pageerror", lambda e: errors.append(str(e)))
+    pg.get_by_role("link", name="Document library").click()
+    expect(pg.get_by_text("No folders yet")).to_be_visible()
+    pg.get_by_role("button", name="New folder").click()
+    pg.get_by_role("dialog").get_by_label("Folder name").fill("Policies")
+    pg.get_by_role("dialog").get_by_role("button", name="Save").click()
+    pg.get_by_role("link", name="Policies").click()
+    expect(pg.get_by_text("No files in this folder yet.")).to_be_visible()
+    pdf = b"%PDF-1.4\n" + b"synthetic policy " * 40
+    pg.locator("input[type=file][multiple]").set_input_files([
+        {"name": "Safety policy.pdf", "mimeType": "application/pdf", "buffer": pdf},
+        {"name": "script.html", "mimeType": "text/html", "buffer": b"<html></html>"},
+    ])
+    expect(pg.get_by_text("1 file uploaded, 1 not accepted.")).to_be_visible()
+    expect(pg.get_by_text("script.html (This file type is not accepted)")).to_be_visible()
+    expect(pg.get_by_role("button", name="Safety policy.pdf")).to_be_visible()
+    # Download returns the same bytes that were uploaded.
+    with pg.expect_download() as download:
+        pg.get_by_role("button", name="Download").click()
+    assert Path(download.value.path()).read_bytes() == pdf
+    pg.get_by_role("button", name="Manage").click()
+    dialog = pg.get_by_role("dialog")
+    dialog.get_by_label("File name").fill("WHS policy.pdf")
+    dialog.get_by_label("Tags, separated by commas").fill("policy, 2026")
+    dialog.get_by_label("Expiry date (optional)").fill("2020-01-31")
+    dialog.get_by_role("button", name="Save details").click()
+    expect(pg.get_by_text("File details saved.")).to_be_visible()
+    expect(pg.get_by_role("button", name="WHS policy.pdf")).to_be_visible()
+    expect(pg.get_by_text("Expired", exact=True)).to_be_visible()
+    shot(pg, "06-documents")
+    pg.get_by_label("Search this folder and its subfolders").fill("2026")
+    expect(pg.get_by_text("1 found")).to_be_visible()
+    pg.get_by_label("Search this folder and its subfolders").fill("")
+    pg.get_by_role("button", name="Manage").click()
+    pg.get_by_role("dialog").get_by_role("button", name="Archive").click()
+    expect(pg.get_by_text("No files in this folder yet.")).to_be_visible()
+    pg.get_by_label("Show archived").check()
+    expect(pg.get_by_text("Archived", exact=True)).to_be_visible()
+    # A folder that still holds a file cannot be deleted.
+    pg.get_by_role("button", name="Delete folder").click()
+    expect(pg.get_by_role("alert")).to_contain_text("not empty")
+    assert not errors, errors
+    print("document library walkthrough: ok")
+
+
+STEPS = [stage1_and_2a, documents]
 
 if __name__ == "__main__":
     with sync_playwright() as p:

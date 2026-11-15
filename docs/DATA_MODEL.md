@@ -7,6 +7,9 @@ IDs are opaque strings. Every tenant-owned table carries `org_id`, and every que
 | Table | Purpose | Key rules |
 |---|---|---|
 | `organisations` | Tenant boundary: name, time zone, portal addresses, contact details, logo, account holder, payroll owner | Created with the eight built-in roles |
+| `document_folders` | Nested library folders | Unique name per parent (case-insensitive, enforced in the API); soft delete only when empty |
+| `documents` | A library file: display name, folder, current bytes, expiry, tags, archive and lost states | Identity is the id, not the name |
+| `document_revisions` | Every set of bytes a document has had | Unique `(document_id, revision)`; never overwritten |
 | `stored_files` | Metadata for uploaded bytes: hash, size, MIME type, original name, purpose | Bytes on the files volume by organisation and SHA-256; identity separate from name |
 | `companies` | Divisions inside an organisation (for example Paneltec, Viatec) | Unique `(org_id, code)` |
 | `roles` | Role catalogue: built-in (read-only) and custom | Unique `(org_id, role_id)`; `permissions` is `{resource: {action: bool}}`; soft delete |

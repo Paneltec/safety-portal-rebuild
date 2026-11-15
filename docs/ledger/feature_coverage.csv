@@ -14,7 +14,7 @@ RISK-01,Risk and SSRA,"Separate capture projections, risk/catalogue references",
 FORM-01,Form engine,"All field kinds, schema versioning, submission/file/PDF roundtrip",NOT_STARTED,,
 FORM-02,Assignments,Workers/roles/companies/positions/assets and double-switch cert gate,NOT_STARTED,,
 IMP-01,Bulk imports,"URL/PDF/ZIP staging, dryrun, mapping, dedup, cancel/resume",NOT_STARTED,,
-DOC-01,Document library,Folders/metadata/private bytes/search/preview/history/sharing,NOT_STARTED,,
+DOC-01,Document library,Folders/metadata/private bytes/search/preview/history/sharing,PARTIAL,tests/test_documents.py; e2e/walkthrough.py,"Built: folders (nest, move, rename, delete when empty), upload with type allowlist and content check, hash/size/type, private authorised download, inline preview for PDF and images, rename, move, expiry, tags, archive/restore, delete, revision history, missing-content state with repair or record-as-lost, counts, name/tag search. Outstanding: extracted-text search and AI retry, categories, generated per-worker and per-supplier folders, sharing (historical/optional), reorganise tool."
 DOC-02,Audit exports,Scoped manifest/records/binaries with errors/progress,NOT_STARTED,,
 WORK-01,Workers,Simpro-linked identity/profile/account provisioning and archive,NOT_STARTED,,
 WORK-02,HR and privacy,"Masked encrypted HR fields, reveal permissions and audit",NOT_STARTED,,

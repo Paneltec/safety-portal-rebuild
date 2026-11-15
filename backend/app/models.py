@@ -6,10 +6,10 @@ Conventions (spec section 3):
 - Instants are timezone-aware UTC.
 """
 import uuid
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 from typing import Any
 
-from sqlalchemy import Boolean, DateTime, ForeignKey, Index, Integer, String, Text, UniqueConstraint
+from sqlalchemy import Boolean, Date, DateTime, ForeignKey, Index, Integer, String, Text, UniqueConstraint
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
@@ -234,3 +234,61 @@ class StoredFile(Base):
     created_by: Mapped[str | None] = mapped_column(String(36))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
     deleted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
+class DocumentFolder(Base):
+    """A folder in the document library. Folders nest through parent_folder_id."""
+
+    __tablename__ = "document_folders"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    org_id: Mapped[str] = mapped_column(ForeignKey("organisations.id"), index=True)
+    parent_folder_id: Mapped[str | None] = mapped_column(ForeignKey("document_folders.id"), index=True)
+    name: Mapped[str] = mapped_column(String(80))
+    color_key: Mapped[str | None] = mapped_column(String(20))
+    sort_order: Mapped[int] = mapped_column(Integer, default=0)
+    is_system: Mapped[bool] = mapped_column(Boolean, default=False)  # generated folders cannot be renamed or deleted
+    shared_reference: Mapped[bool] = mapped_column(Boolean, default=False)
+    created_by: Mapped[str | None] = mapped_column(String(36))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+    deleted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
+class Document(Base):
+    """A library document. `stored_file_id` points at the current revision's bytes."""
+
+    __tablename__ = "documents"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    org_id: Mapped[str] = mapped_column(ForeignKey("organisations.id"), index=True)
+    folder_id: Mapped[str] = mapped_column(ForeignKey("document_folders.id"), index=True)
+    filename: Mapped[str] = mapped_column(String(200))  # display name; the file's identity is its id
+    stored_file_id: Mapped[str] = mapped_column(ForeignKey("stored_files.id"))
+    revision: Mapped[int] = mapped_column(Integer, default=1)
+    expiry_date: Mapped[date | None] = mapped_column(Date)
+    tags: Mapped[list[str]] = mapped_column(JSONB, default=list)
+    uploaded_by: Mapped[str | None] = mapped_column(String(36))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+    archived_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    deleted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    gone_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))  # bytes declared unrecoverable
+    gone_reason: Mapped[str | None] = mapped_column(String(300))
+
+
+class DocumentRevision(Base):
+    """Every set of bytes a document has had. Earlier revisions are kept, never overwritten."""
+
+    __tablename__ = "document_revisions"
+    __table_args__ = (UniqueConstraint("document_id", "revision", name="uq_document_revisions_doc_rev"),)
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    org_id: Mapped[str] = mapped_column(ForeignKey("organisations.id"), index=True)
+    document_id: Mapped[str] = mapped_column(ForeignKey("documents.id", ondelete="CASCADE"), index=True)
+    revision: Mapped[int] = mapped_column(Integer)
+    stored_file_id: Mapped[str] = mapped_column(ForeignKey("stored_files.id"))
+    filename: Mapped[str] = mapped_column(String(200))
+    note: Mapped[str | None] = mapped_column(String(300))
+    created_by: Mapped[str | None] = mapped_column(String(36))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
