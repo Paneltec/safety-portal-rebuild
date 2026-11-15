@@ -1071,7 +1071,7 @@ def put_cert_settings(
 
 def _kind_out(kind: CertificationKind) -> dict[str, Any]:
     return {"id": kind.id, "slug": kind.slug, "label": kind.label, "aliases": list(kind.aliases or []),
-            "is_system": kind.is_system, "active": kind.active}
+            "is_system": kind.is_system, "active": kind.active, "category": kind.category}
 
 
 @kinds_router.get("")

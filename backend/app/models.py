@@ -533,6 +533,8 @@ class CertificationKind(Base):
     aliases: Mapped[list[str]] = mapped_column(JSONB, default=list)
     is_system: Mapped[bool] = mapped_column(Boolean, default=False)
     active: Mapped[bool] = mapped_column(Boolean, default=True)
+    # "induction" kinds are the columns of the inductions matrix; they are still certificates.
+    category: Mapped[str] = mapped_column(String(20), default="certificate", server_default="certificate")
 
 
 class Certification(Base):
@@ -809,3 +811,90 @@ class RenewalUpload(Base):
     result_id: Mapped[str | None] = mapped_column(String(36))  # the supplier document or certification created
     uploaded_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
     replaced_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
+class InductionExemption(Base):
+    """A worker explicitly marked "not applicable" for one induction, so the blank is deliberate."""
+
+    __tablename__ = "induction_exemptions"
+    __table_args__ = (UniqueConstraint("worker_id", "kind_slug", name="uq_induction_exemptions"),)
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    org_id: Mapped[str] = mapped_column(ForeignKey("organisations.id"), index=True)
+    worker_id: Mapped[str] = mapped_column(ForeignKey("workers.id"))
+    kind_slug: Mapped[str] = mapped_column(String(60))
+    created_by: Mapped[str | None] = mapped_column(String(36))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class TrainingRecord(Base):
+    """A course a worker has completed (toolbox talk, in-house training, external course)."""
+
+    __tablename__ = "training_records"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    org_id: Mapped[str] = mapped_column(ForeignKey("organisations.id"), index=True)
+    worker_id: Mapped[str] = mapped_column(ForeignKey("workers.id"), index=True)
+    course: Mapped[str] = mapped_column(String(200))
+    provider: Mapped[str | None] = mapped_column(String(200))
+    completed_date: Mapped[date | None] = mapped_column(Date)
+    notes: Mapped[str | None] = mapped_column(Text)
+    evidence_file_id: Mapped[str | None] = mapped_column(String(36))
+    created_by: Mapped[str | None] = mapped_column(String(36))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+    deleted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
+class WorkerHrDocument(Base):
+    """A private and confidential file on a worker. Only people with HR access can list or open it."""
+
+    __tablename__ = "worker_hr_documents"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    org_id: Mapped[str] = mapped_column(ForeignKey("organisations.id"), index=True)
+    worker_id: Mapped[str] = mapped_column(ForeignKey("workers.id"), index=True)
+    file_id: Mapped[str] = mapped_column(String(36))
+    title: Mapped[str] = mapped_column(String(200))
+    notes: Mapped[str | None] = mapped_column(Text)
+    created_by: Mapped[str | None] = mapped_column(String(36))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    archived_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    deleted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
+class DailyJob(Base):
+    """A job issued to one worker for one day. A worker has at most one active job per day."""
+
+    __tablename__ = "daily_jobs"
+    __table_args__ = (
+        Index("uq_daily_jobs_active", "worker_id", "job_date", unique=True,
+              postgresql_where=text("status IN ('issued', 'accepted') AND deleted_at IS NULL")),
+        Index("ix_daily_jobs_date", "org_id", "job_date"),
+    )
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    org_id: Mapped[str] = mapped_column(ForeignKey("organisations.id"), index=True)
+    job_date: Mapped[date] = mapped_column(Date)
+    worker_id: Mapped[str] = mapped_column(ForeignKey("workers.id"))
+    worker_name: Mapped[str] = mapped_column(String(200))  # as it was when the job was issued
+    site_id: Mapped[str | None] = mapped_column(String(36))
+    site_name: Mapped[str | None] = mapped_column(String(200))
+    address: Mapped[str | None] = mapped_column(String(300))
+    customer: Mapped[str | None] = mapped_column(String(200))
+    truck: Mapped[str | None] = mapped_column(String(120))
+    start_time: Mapped[str | None] = mapped_column(String(5))  # HH:MM, local
+    staff: Mapped[list[str]] = mapped_column(JSONB, default=list)
+    notes: Mapped[str | None] = mapped_column(Text)
+    form_template_ids: Mapped[list[str]] = mapped_column(JSONB, default=list)
+    status: Mapped[str] = mapped_column(String(12), default="issued")  # issued | accepted | declined | completed | cancelled
+    decline_reason: Mapped[str | None] = mapped_column(String(400))
+    batch_id: Mapped[str | None] = mapped_column(String(36))
+    outbox_message_id: Mapped[str | None] = mapped_column(String(36))
+    issued_by: Mapped[str | None] = mapped_column(String(36))
+    issued_by_name: Mapped[str | None] = mapped_column(String(200))
+    issued_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    responded_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    cancelled_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    deleted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))

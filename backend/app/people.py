@@ -58,7 +58,8 @@ def ensure_kinds(db: Session, org_id: str) -> list[CertificationKind]:
     if not rows:
         for item in _reference_kinds():
             db.add(CertificationKind(org_id=org_id, slug=item["slug"], label=item["label"],
-                                     aliases=list(item.get("aliases") or []), is_system=True))
+                                     aliases=list(item.get("aliases") or []), is_system=True,
+                                     category="induction" if item["slug"].endswith("_induction") else "certificate"))
         db.flush()
         rows = db.scalars(select(CertificationKind).where(CertificationKind.org_id == org_id)).all()
     return sorted(rows, key=lambda k: k.label.lower())

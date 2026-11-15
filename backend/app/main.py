@@ -5,7 +5,7 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 
 from .config import get_settings
-from .routers import auth, documents, forms, org, presets, renewals, roles, safety, sessions, sites, suppliers, users, workers
+from .routers import auth, documents, forms, inductions, jobs, org, presets, renewals, roles, safety, sessions, sites, suppliers, users, workers
 
 
 def create_app() -> FastAPI:
@@ -42,6 +42,11 @@ def create_app() -> FastAPI:
     app.include_router(sessions.router)
     app.include_router(documents.router)
     app.include_router(forms.router)
+    app.include_router(inductions.matrix_router)  # before workers.router: /inductions must not be read as a worker id
+    app.include_router(inductions.types_router)
+    app.include_router(inductions.training_router)
+    app.include_router(inductions.hr_router)
+    app.include_router(jobs.router)
     app.include_router(workers.router)
     app.include_router(workers.cert_router)
     app.include_router(workers.kinds_router)

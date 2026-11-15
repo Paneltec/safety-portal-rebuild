@@ -310,8 +310,11 @@ def pick_sites(
 
 
 @router.get("/pickers/jobs")
-def pick_jobs(caller: Caller = Depends(require_permission("forms", "view"))) -> dict[str, Any]:
-    return _not_yet("Jobs", "daily jobs (stage 4)")
+def pick_jobs(caller: Caller = Depends(require_permission("forms", "view")), db: Session = Depends(get_db)) -> dict[str, Any]:
+    """Jobs a form can be attached to: the caller's own recent and current jobs (admins see everyone's)."""
+    from .jobs import picker_items
+
+    return {"available": True, "source": "daily_jobs", "items": picker_items(db, caller)}
 
 
 @router.get("/fleet/vehicles")
