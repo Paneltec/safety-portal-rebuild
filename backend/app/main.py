@@ -5,7 +5,7 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 
 from .config import get_settings
-from .routers import auth, documents, forms, org, presets, roles, safety, sessions, sites, users, workers
+from .routers import auth, documents, forms, org, presets, renewals, roles, safety, sessions, sites, suppliers, users, workers
 
 
 def create_app() -> FastAPI:
@@ -49,6 +49,11 @@ def create_app() -> FastAPI:
     app.include_router(sites.scan_router)
     app.include_router(sites.public_router)
     app.include_router(sites.visitors_router)
+    app.include_router(suppliers.router)
+    app.include_router(suppliers.contractors_router)
+    app.include_router(suppliers.doc_types_router)  # before renewals.router: /doc-types must not be read as an id
+    app.include_router(renewals.router)
+    app.include_router(renewals.public_router)
     app.include_router(safety.swms_router)
     for register in safety.routers:
         app.include_router(register)

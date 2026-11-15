@@ -99,6 +99,8 @@ class User(Base):
     company_id: Mapped[str | None] = mapped_column(ForeignKey("companies.id"))
     workspace_ids: Mapped[list[str]] = mapped_column(JSONB, default=list)
     worker_id: Mapped[str | None] = mapped_column(String(36))
+    # Set for an external login (a contractor's representative): limits what they see to that supplier.
+    supplier_id: Mapped[str | None] = mapped_column(String(36))
     status: Mapped[str] = mapped_column(String(20), default="invited")  # invited | active | disabled
     password_hash: Mapped[str | None] = mapped_column(String(500))
     must_change_password: Mapped[bool] = mapped_column(Boolean, default=False)
@@ -634,3 +636,176 @@ class SiteAttendance(Base):
     archived_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     deleted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     deleted_by: Mapped[str | None] = mapped_column(String(36))
+
+
+class Supplier(Base):
+    """An external organisation: a supplier, and when `is_contractor` is set, one that does work
+    for us and so must keep compliance documents current. One directory, not two rosters."""
+
+    __tablename__ = "suppliers"
+    __table_args__ = (UniqueConstraint("org_id", "source_system", "source_company", "source_id", name="uq_suppliers_source"),)
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    org_id: Mapped[str] = mapped_column(ForeignKey("organisations.id"), index=True)
+    name: Mapped[str] = mapped_column(String(200))
+    abn: Mapped[str | None] = mapped_column(String(20))
+    trade: Mapped[str | None] = mapped_column(String(120))
+    contact_name: Mapped[str | None] = mapped_column(String(160))
+    contact_email: Mapped[str | None] = mapped_column(String(320))
+    contact_phone: Mapped[str | None] = mapped_column(String(40))
+    address: Mapped[str | None] = mapped_column(String(300))
+    suburb: Mapped[str | None] = mapped_column(String(100))
+    state: Mapped[str | None] = mapped_column(String(40))
+    postcode: Mapped[str | None] = mapped_column(String(12))
+    is_contractor: Mapped[bool] = mapped_column(Boolean, default=False)
+    active: Mapped[bool] = mapped_column(Boolean, default=True)
+    # Import bookkeeping, kept apart from local edits so a sync never overwrites reviewed details.
+    source_system: Mapped[str | None] = mapped_column(String(20))
+    source_company: Mapped[str | None] = mapped_column(String(40))
+    source_id: Mapped[str | None] = mapped_column(String(80))
+    source_data: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict)
+    locally_edited: Mapped[list[str]] = mapped_column(JSONB, default=list)
+    created_by: Mapped[str | None] = mapped_column(String(36))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+    archived_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    deleted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
+class SupplierNote(Base):
+    __tablename__ = "supplier_notes"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    org_id: Mapped[str] = mapped_column(ForeignKey("organisations.id"), index=True)
+    supplier_id: Mapped[str] = mapped_column(ForeignKey("suppliers.id"), index=True)
+    body: Mapped[str] = mapped_column(Text)
+    created_by: Mapped[str | None] = mapped_column(String(36))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+    deleted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
+class SupplierTask(Base):
+    __tablename__ = "supplier_tasks"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    org_id: Mapped[str] = mapped_column(ForeignKey("organisations.id"), index=True)
+    supplier_id: Mapped[str] = mapped_column(ForeignKey("suppliers.id"), index=True)
+    title: Mapped[str] = mapped_column(String(200))
+    description: Mapped[str | None] = mapped_column(Text)
+    due_date: Mapped[date | None] = mapped_column(Date)
+    status: Mapped[str] = mapped_column(String(20), default="open")  # open | in_progress | done
+    priority: Mapped[str] = mapped_column(String(10), default="normal")  # low | normal | high
+    assigned_to: Mapped[str | None] = mapped_column(String(36))
+    created_by: Mapped[str | None] = mapped_column(String(36))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+    completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    deleted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
+class SupplierMember(Base):
+    """A person at the supplier (contact, or one of their people who comes to site)."""
+
+    __tablename__ = "supplier_members"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    org_id: Mapped[str] = mapped_column(ForeignKey("organisations.id"), index=True)
+    supplier_id: Mapped[str] = mapped_column(ForeignKey("suppliers.id"), index=True)
+    name: Mapped[str] = mapped_column(String(200))
+    role: Mapped[str | None] = mapped_column(String(120))
+    email: Mapped[str | None] = mapped_column(String(320))
+    phone: Mapped[str | None] = mapped_column(String(40))
+    is_primary_contact: Mapped[bool] = mapped_column(Boolean, default=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    deleted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
+class ComplianceDocType(Base):
+    """What a supplier can be asked for: public liability, workers compensation, licences..."""
+
+    __tablename__ = "compliance_doc_types"
+    __table_args__ = (UniqueConstraint("org_id", "slug", name="uq_compliance_doc_types"),)
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    org_id: Mapped[str] = mapped_column(ForeignKey("organisations.id"), index=True)
+    slug: Mapped[str] = mapped_column(String(60))
+    label: Mapped[str] = mapped_column(String(160))
+    description: Mapped[str | None] = mapped_column(String(400))
+    required_for_contractors: Mapped[bool] = mapped_column(Boolean, default=False)
+    active: Mapped[bool] = mapped_column(Boolean, default=True)
+    sort_order: Mapped[int] = mapped_column(Integer, default=0)
+
+
+class SupplierDocument(Base):
+    """A compliance document held for a supplier. A newer one supersedes the old; both are kept."""
+
+    __tablename__ = "supplier_documents"
+    __table_args__ = (Index("ix_supplier_documents_supplier", "supplier_id", "doc_type"),)
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    org_id: Mapped[str] = mapped_column(ForeignKey("organisations.id"), index=True)
+    supplier_id: Mapped[str] = mapped_column(ForeignKey("suppliers.id"))
+    doc_type: Mapped[str] = mapped_column(String(60))
+    file_id: Mapped[str] = mapped_column(String(36))
+    reference: Mapped[str | None] = mapped_column(String(80))  # policy or licence number
+    issue_date: Mapped[date | None] = mapped_column(Date)
+    expiry_date: Mapped[date | None] = mapped_column(Date)
+    no_expiry: Mapped[bool] = mapped_column(Boolean, default=False)
+    notes: Mapped[str | None] = mapped_column(Text)
+    source: Mapped[str] = mapped_column(String(20), default="office")  # office | renewal
+    renewal_id: Mapped[str | None] = mapped_column(String(36))
+    superseded_by_id: Mapped[str | None] = mapped_column(String(36))
+    created_by: Mapped[str | None] = mapped_column(String(36))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    deleted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
+class RenewalLink(Base):
+    """A scoped request for documents. The token opens one upload page for one supplier or worker
+    and nothing else. Only the hash of the token is stored."""
+
+    __tablename__ = "renewal_links"
+    __table_args__ = (UniqueConstraint("token_hash", name="uq_renewal_links_token"),)
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    org_id: Mapped[str] = mapped_column(ForeignKey("organisations.id"), index=True)
+    entity_type: Mapped[str] = mapped_column(String(10))  # supplier | worker
+    entity_id: Mapped[str] = mapped_column(String(36), index=True)
+    doc_types: Mapped[list[str]] = mapped_column(JSONB, default=list)
+    token_hash: Mapped[str] = mapped_column(String(64))
+    status: Mapped[str] = mapped_column(String(20), default="pending")  # pending | submitted | accepted | partly_accepted | rejected | revoked
+    recipient_email: Mapped[str | None] = mapped_column(String(320))
+    subject: Mapped[str | None] = mapped_column(String(200))
+    message: Mapped[str | None] = mapped_column(Text)
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    outbox_message_id: Mapped[str | None] = mapped_column(String(36))
+    created_by: Mapped[str | None] = mapped_column(String(36))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    submitted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    reviewed_by: Mapped[str | None] = mapped_column(String(36))
+    reviewed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    round_no: Mapped[int] = mapped_column(Integer, default=1)
+    deleted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
+class RenewalUpload(Base):
+    """One file supplied through a renewal link, and the office's decision on it."""
+
+    __tablename__ = "renewal_uploads"
+    __table_args__ = (Index("ix_renewal_uploads_renewal", "renewal_id"),)
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    org_id: Mapped[str] = mapped_column(ForeignKey("organisations.id"), index=True)
+    renewal_id: Mapped[str] = mapped_column(ForeignKey("renewal_links.id"))
+    doc_type: Mapped[str] = mapped_column(String(60))
+    file_id: Mapped[str] = mapped_column(String(36))
+    reference: Mapped[str | None] = mapped_column(String(80))
+    issue_date: Mapped[date | None] = mapped_column(Date)
+    expiry_date: Mapped[date | None] = mapped_column(Date)
+    round_no: Mapped[int] = mapped_column(Integer, default=1)  # goes up each time the link is reissued
+    decision: Mapped[str] = mapped_column(String(10), default="pending")  # pending | accepted | rejected
+    decision_note: Mapped[str | None] = mapped_column(String(400))
+    result_id: Mapped[str | None] = mapped_column(String(36))  # the supplier document or certification created
+    uploaded_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    replaced_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
