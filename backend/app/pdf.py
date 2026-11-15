@@ -209,3 +209,82 @@ def submission_pdf(
 
     doc.build(story, canvasmaker=lambda *a, **k: _NumberedCanvas(*a, footer=footer, **k))
     return buffer.getvalue()
+
+
+def site_sign_pdf(*, org_name: str, logo: bytes | None, site_name: str, address: str, url: str) -> bytes:
+    """A one-page A4 sign for the site gate: a large QR code and plain instructions."""
+    from reportlab.graphics import renderPDF
+    from reportlab.graphics.barcode.qr import QrCodeWidget
+    from reportlab.graphics.shapes import Drawing
+    from reportlab.lib.utils import ImageReader, simpleSplit
+
+    buffer = BytesIO()
+    page_w, page_h = A4
+    c = canvas.Canvas(buffer, pagesize=A4)
+    c.setTitle(f"Site sign-in: {site_name}")
+    c.setAuthor(org_name)
+    ink = colors.HexColor("#16222E")
+    accent = colors.HexColor("#C2410C")
+
+    # Header band
+    c.setFillColor(ink)
+    c.rect(0, page_h - 52 * mm, page_w, 52 * mm, stroke=0, fill=1)
+    c.setFillColor(accent)
+    c.rect(0, page_h - 54 * mm, page_w, 2 * mm, stroke=0, fill=1)
+    text_x = 18 * mm
+    if logo:
+        try:
+            image = ImageReader(BytesIO(logo))
+            iw, ih = image.getSize()
+            scale = min(40 * mm / iw, 26 * mm / ih)
+            c.setFillColor(colors.white)
+            c.roundRect(18 * mm, page_h - 40 * mm, iw * scale + 6 * mm, ih * scale + 6 * mm, 2 * mm, stroke=0, fill=1)
+            c.drawImage(image, 21 * mm, page_h - 37 * mm, iw * scale, ih * scale, mask="auto")
+            text_x = 18 * mm + iw * scale + 12 * mm
+        except Exception:  # an unreadable logo must not stop the sign printing
+            text_x = 18 * mm
+    c.setFillColor(colors.white)
+    c.setFont("Helvetica-Bold", 30)
+    c.drawString(text_x, page_h - 26 * mm, "SIGN IN HERE")
+    c.setFont("Helvetica", 13)
+    c.drawString(text_x, page_h - 35 * mm, org_name[:70])
+
+    # Site
+    c.setFillColor(ink)
+    c.setFont("Helvetica-Bold", 24)
+    y = page_h - 74 * mm
+    for line in simpleSplit(site_name, "Helvetica-Bold", 24, page_w - 36 * mm)[:2]:
+        c.drawCentredString(page_w / 2, y, line)
+        y -= 10 * mm
+    if address:
+        c.setFont("Helvetica", 13)
+        for line in simpleSplit(address, "Helvetica", 13, page_w - 36 * mm)[:2]:
+            c.drawCentredString(page_w / 2, y, line)
+            y -= 6 * mm
+
+    # QR code
+    size = 120 * mm
+    widget = QrCodeWidget(url, barLevel="M")
+    bounds = widget.getBounds()
+    w, h = bounds[2] - bounds[0], bounds[3] - bounds[1]
+    drawing = Drawing(size, size, transform=[size / w, 0, 0, size / h, 0, 0])
+    drawing.add(widget)
+    qr_y = y - size - 6 * mm
+    renderPDF.draw(drawing, c, (page_w - size) / 2, qr_y)
+
+    # Instructions
+    c.setFont("Helvetica-Bold", 15)
+    c.drawCentredString(page_w / 2, qr_y - 10 * mm, "Point your phone camera at the code")
+    c.setFont("Helvetica", 12)
+    steps = ["Workers: sign in with your portal login.", "Visitors: enter your name and accept the site rules.",
+             "Sign out the same way when you leave."]
+    sy = qr_y - 19 * mm
+    for step in steps:
+        c.drawCentredString(page_w / 2, sy, step)
+        sy -= 6.5 * mm
+    c.setFont("Helvetica", 8)
+    c.setFillColor(colors.HexColor("#4A5967"))
+    c.drawCentredString(page_w / 2, 12 * mm, url)
+    c.showPage()
+    c.save()
+    return buffer.getvalue()

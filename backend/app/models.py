@@ -9,7 +9,7 @@ import uuid
 from datetime import date, datetime, timezone
 from typing import Any
 
-from sqlalchemy import Boolean, Date, DateTime, ForeignKey, Index, Integer, String, Text, UniqueConstraint, text
+from sqlalchemy import Boolean, Date, DateTime, Float, ForeignKey, Index, Integer, String, Text, UniqueConstraint, text
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
@@ -557,3 +557,80 @@ class Certification(Base):
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
     archived_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     deleted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
+class Site(Base):
+    """A place where work happens. Has a QR token for sign-on; imports upsert on the source key."""
+
+    __tablename__ = "sites"
+    __table_args__ = (
+        UniqueConstraint("org_id", "source_system", "source_company", "source_id", name="uq_sites_source"),
+        UniqueConstraint("scan_token", name="uq_sites_scan_token"),
+    )
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    org_id: Mapped[str] = mapped_column(ForeignKey("organisations.id"), index=True)
+    name: Mapped[str] = mapped_column(String(200))
+    address: Mapped[str | None] = mapped_column(String(300))
+    suburb: Mapped[str | None] = mapped_column(String(100))
+    state: Mapped[str | None] = mapped_column(String(40))
+    postcode: Mapped[str | None] = mapped_column(String(12))
+    description: Mapped[str | None] = mapped_column(Text)
+    company_id: Mapped[str | None] = mapped_column(ForeignKey("companies.id"))
+    kind: Mapped[str] = mapped_column(String(20), default="project")  # project | depot | other
+    active: Mapped[bool] = mapped_column(Boolean, default=True)
+    gps_lat: Mapped[float | None] = mapped_column(Float)
+    gps_long: Mapped[float | None] = mapped_column(Float)
+    source_system: Mapped[str | None] = mapped_column(String(20))
+    source_company: Mapped[str | None] = mapped_column(String(40))
+    source_id: Mapped[str | None] = mapped_column(String(80))
+    # The secret in the printed QR code. Rotating it retires every sign printed before.
+    scan_token: Mapped[str] = mapped_column(String(64))
+    signon_questions: Mapped[list[Any]] = mapped_column(JSONB, default=list)
+    visitor_declaration: Mapped[str | None] = mapped_column(Text)
+    created_by: Mapped[str | None] = mapped_column(String(36))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+    deleted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
+class SiteAttendance(Base):
+    """One visit to a site by a signed-in person (kind=worker) or a visitor without a login.
+
+    A person can have at most one open visit per site, which is what keeps occupancy honest
+    when a sign-on is sent twice.
+    """
+
+    __tablename__ = "site_attendance"
+    __table_args__ = (
+        Index("uq_site_attendance_open_worker", "site_id", "user_id", unique=True,
+              postgresql_where=text("kind = 'worker' AND signed_out_at IS NULL AND deleted_at IS NULL")),
+        Index("uq_site_attendance_client_ref", "site_id", "client_ref", unique=True,
+              postgresql_where=text("client_ref IS NOT NULL")),
+        Index("ix_site_attendance_site_time", "site_id", "signed_in_at"),
+    )
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    org_id: Mapped[str] = mapped_column(ForeignKey("organisations.id"), index=True)
+    site_id: Mapped[str] = mapped_column(ForeignKey("sites.id"))
+    kind: Mapped[str] = mapped_column(String(10))  # worker | visitor
+    user_id: Mapped[str | None] = mapped_column(String(36))
+    worker_id: Mapped[str | None] = mapped_column(String(36))
+    name: Mapped[str] = mapped_column(String(200))  # snapshot at sign-in
+    company: Mapped[str | None] = mapped_column(String(200))
+    phone: Mapped[str | None] = mapped_column(String(40))
+    purpose: Mapped[str | None] = mapped_column(String(300))
+    host: Mapped[str | None] = mapped_column(String(200))
+    declaration_acknowledged: Mapped[bool] = mapped_column(Boolean, default=False)
+    answers: Mapped[list[Any]] = mapped_column(JSONB, default=list)  # [{question_id, label, value}]
+    gps: Mapped[dict[str, Any] | None] = mapped_column(JSONB)
+    source: Mapped[str] = mapped_column(String(20), default="qr")  # qr | app | office
+    client_ref: Mapped[str | None] = mapped_column(String(64))
+    ip_hash: Mapped[str | None] = mapped_column(String(64))
+    signed_in_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    signed_out_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    sign_out_source: Mapped[str | None] = mapped_column(String(20))  # self | office
+    signed_out_by: Mapped[str | None] = mapped_column(String(36))
+    archived_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    deleted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    deleted_by: Mapped[str | None] = mapped_column(String(36))

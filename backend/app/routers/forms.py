@@ -19,7 +19,7 @@ from .. import people
 from ..db import get_db
 from ..deps import Caller, require_permission
 from ..files import file_exists, file_response, read_bytes, save_upload
-from ..models import Company, FormAssignment, FormSubmission, FormSubmissionFile, Role, FormTemplate, FormTemplateVersion, Organisation, StoredFile, User, Worker, utcnow
+from ..models import Company, FormAssignment, FormSubmission, FormSubmissionFile, Role, FormTemplate, FormTemplateVersion, Organisation, Site, StoredFile, User, Worker, utcnow
 from ..pdf import submission_pdf
 from ..services import audit, iso
 from .safety import project_submission
@@ -295,8 +295,18 @@ def _not_yet(what: str, stage: str) -> dict[str, Any]:
 
 
 @router.get("/pickers/sites")
-def pick_sites(caller: Caller = Depends(require_permission("forms", "view"))) -> dict[str, Any]:
-    return _not_yet("Sites", "the sites register (stage 4)")
+def pick_sites(
+    q: str | None = Query(None, max_length=100),
+    caller: Caller = Depends(require_permission("forms", "view")),
+    db: Session = Depends(get_db),
+) -> dict[str, Any]:
+    """Active sites, by name. Only the name and address are returned, never the QR token."""
+    stmt = select(Site).where(Site.org_id == caller.org_id, Site.deleted_at.is_(None), Site.active.is_(True))
+    if q and q.strip():
+        stmt = stmt.where(func.lower(Site.name).like(f"%{q.strip().lower()}%"))
+    rows = db.scalars(stmt.order_by(func.lower(Site.name), Site.id).limit(200)).all()
+    return {"available": True, "source": "sites", "items": [
+        {"id": s.id, "label": s.name, "address": ", ".join(x for x in (s.address, s.suburb) if x) or None} for s in rows]}
 
 
 @router.get("/pickers/jobs")
