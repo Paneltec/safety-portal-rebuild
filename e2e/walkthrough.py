@@ -326,7 +326,140 @@ def safety_registers(browser) -> None:
     print("safety registers walkthrough: ok")
 
 
-STEPS = [stage1_and_2a, documents, forms, safety_registers]
+def workers(browser) -> None:
+    from datetime import date, timedelta
+
+    pg = sign_in(browser)
+    errors: list[str] = []
+    pg.on("pageerror", lambda e: errors.append(str(e)))
+    past = (date.today() - timedelta(days=10)).isoformat()
+    future = (date.today() + timedelta(days=400)).isoformat()
+
+    # Add a worker and fill in details.
+    pg.get_by_role("link", name="Workers", exact=True).click()
+    expect(pg.get_by_text("No workers yet. Add the first one to get started.")).to_be_visible()
+    pg.get_by_role("button", name="Add worker").click()
+    dialog = pg.get_by_role("dialog")
+    dialog.get_by_label("First name").fill("Nina")
+    dialog.get_by_label("Last name").fill("Example")
+    dialog.get_by_label("Position (optional)").fill("Traffic controller")
+    dialog.get_by_role("button", name="Add worker").click()
+    pg.wait_for_url("**/app/workers/*")
+    expect(pg.get_by_role("heading", name="Nina Example")).to_be_visible()
+    pg.get_by_role("button", name="Edit details").click()
+    dialog.get_by_label("Suburb").fill("Invermay")
+    dialog.get_by_label("Emergency contact name").fill("Sam Example")
+    dialog.get_by_role("button", name="Save").click()
+    expect(pg.get_by_text("Details saved.")).to_be_visible()
+    expect(pg.get_by_text("Sam Example")).to_be_visible()
+
+    # Protected details: saved encrypted, shown masked, revealed on request.
+    protected = pg.locator("section", has=pg.get_by_role("heading", name="Protected details"))
+    protected.get_by_role("button", name="Edit").click()
+    protected.get_by_label("Tax file number").fill("123 456 782")
+    protected.get_by_role("button", name="Save").click()
+    expect(protected.get_by_text("•••••• 782")).to_be_visible()
+    assert protected.get_by_text("123456782").count() == 0
+    protected.get_by_role("button", name="Show full values").click()
+    expect(protected.get_by_text("123456782")).to_be_visible()
+    protected.get_by_role("button", name="Hide").click()
+
+    # Link the existing login.
+    pg.get_by_role("button", name="Link existing login").click()
+    dialog.get_by_label("Login").select_option(label="Nina Example · nina@e2e.example")
+    dialog.get_by_role("button", name="Link login").click()
+    expect(pg.get_by_text("Login linked.")).to_be_visible()
+
+    # Certificates: an expired one, renewed; one with no expiry date recorded.
+    certs = pg.locator("section", has=pg.get_by_role("heading", name="Certificates", exact=True))
+    certs.get_by_role("button", name="Add certificate").click()
+    dialog.get_by_label("Type").select_option(label="First Aid")
+    dialog.get_by_label("Expiry date").fill(past)
+    dialog.get_by_role("button", name="Save").click()
+    expect(certs.get_by_text("Expired", exact=True)).to_be_visible()
+    certs.get_by_role("button", name="Renew").click()
+    dialog.get_by_label("Expiry date").fill(future)
+    dialog.get_by_role("button", name="Record renewal").click()
+    expect(certs.get_by_text("Valid", exact=True)).to_be_visible()
+    assert certs.get_by_text("Expired", exact=True).count() == 0
+    with pg.expect_file_chooser() as chooser:
+        certs.get_by_role("button", name="Attach file").click()
+    chooser.value.set_files({"name": "first-aid.png", "mimeType": "image/png", "buffer": png()})
+    expect(certs.get_by_role("button", name="first-aid.png")).to_be_visible()
+    certs.get_by_role("button", name="Add certificate").click()
+    dialog.get_by_label("Type").select_option(label="White Card (Construction Induction)")
+    dialog.get_by_role("button", name="Save").click()
+    expect(certs.get_by_text("Expiry not recorded", exact=True)).to_be_visible()
+    certs.get_by_label("Show earlier and archived").check()
+    expect(certs.get_by_text("Replaced by a renewal")).to_be_visible()
+    shot(pg, "12-worker", full=True)
+
+    # The register totals match what it lists.
+    pg.get_by_role("link", name="Certifications", exact=True).click()
+    expect(pg.get_by_role("button", name="1 Valid")).to_be_visible()
+    expect(pg.get_by_role("button", name="1 Expiry not recorded")).to_be_visible()
+    expect(pg.get_by_role("button", name="0 Expired")).to_be_visible()
+    pg.get_by_role("button", name="1 Expiry not recorded").click()
+    expect(pg.get_by_text("Showing 1–1 of 1 matching")).to_be_visible()
+    pg.get_by_role("button", name="1 Expiry not recorded").click()
+
+    # Settings: expect Traffic Control from everyone and switch the form gate on.
+    pg.get_by_role("button", name="Settings").click()
+    dialog.get_by_label("Traffic Control").check()
+    dialog.get_by_label("Allow forms to require certificates").check()
+    dialog.get_by_role("button", name="Save settings").click()
+    expect(pg.get_by_text("Certification settings saved.")).to_be_visible()
+    shot(pg, "13-certifications", full=True)
+    pg.get_by_role("link", name="Workers", exact=True).click()
+    expect(pg.get_by_text("1 missing")).to_be_visible()
+
+    # Require Traffic Control on the pre-start form.
+    pg.get_by_role("link", name="Forms", exact=True).click()
+    pg.get_by_role("link", name="Edit").click()
+    pg.get_by_label("Require certificates for this form").check()
+    gate = pg.locator("section", has=pg.get_by_role("heading", name="Certificates needed to fill this in"))
+    gate.get_by_label("Traffic Control").check()
+    pg.get_by_role("button", name="Save draft").click()
+    expect(pg.get_by_text("Draft saved.")).to_be_visible()
+
+    # The worker on a phone: own record only, and the gated form explains what is missing.
+    phone = sign_in(browser, 390, 844, "nina@e2e.example", "Nina-Pass-2026")
+    phone.on("pageerror", lambda e: errors.append(str(e)))
+    phone.get_by_role("button", name="Menu").click()
+    phone.get_by_role("link", name="My worker record").click()
+    expect(phone.get_by_role("link", name="Nina Example")).to_be_visible()
+    phone.get_by_role("button", name="Menu").click()
+    phone.get_by_role("link", name="Forms", exact=True).click()
+    phone.get_by_role("button", name="Fill in").click()
+    expect(phone.get_by_text("Traffic Control: no certificate on record")).to_be_visible()
+    phone.get_by_role("button", name="Menu").click()
+    phone.get_by_role("link", name="My profile").click()
+    mine = phone.locator("section", has=phone.get_by_role("heading", name="My worker record"))
+    mine.get_by_label("Mobile").fill("0400 000 123")
+    mine.get_by_role("button", name="Save my details").click()
+    expect(phone.get_by_text("Your details are saved.")).to_be_visible()
+    expect(phone.get_by_text("Expiry not recorded", exact=True)).to_be_visible()
+    shot(phone, "14-phone-my-record", full=True)
+
+    # Record the certificate, and the form opens.
+    pg.get_by_role("link", name="Workers", exact=True).click()
+    pg.get_by_role("link", name="Nina Example").click()
+    expect(pg.get_by_text("Missing expected certificates: Traffic Control.")).to_be_visible()
+    certs = pg.locator("section", has=pg.get_by_role("heading", name="Certificates", exact=True))
+    certs.get_by_role("button", name="Add certificate").click()
+    dialog.get_by_label("Type").select_option(label="Traffic Control")
+    dialog.get_by_label("Expiry date").fill(future)
+    dialog.get_by_role("button", name="Save").click()
+    expect(pg.get_by_text("Certificate added.")).to_be_visible()
+    phone.get_by_role("button", name="Menu").click()
+    phone.get_by_role("link", name="Forms", exact=True).click()
+    phone.get_by_role("button", name="Fill in").click()
+    phone.wait_for_url("**/forms/submissions/*")
+    assert not errors, errors
+    print("workers and certifications walkthrough: ok")
+
+
+STEPS = [stage1_and_2a, documents, forms, safety_registers, workers]
 
 if __name__ == "__main__":
     with sync_playwright() as p:

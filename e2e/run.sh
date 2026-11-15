@@ -9,6 +9,7 @@ psql -h localhost -U portal -d postgres -q -c "DROP DATABASE IF EXISTS $DB" -c "
 export DATABASE_URL="postgresql+psycopg://portal:${PGPASSWORD}@localhost:5432/$DB"
 export SETUP_KEY="e2e-setup-key" APP_ENV=test FILES_DIR="$(mktemp -d)"
 cd "$ROOT/backend"
+export ENCRYPTION_KEY="$(.venv/bin/python -m app.seed generate-key)"  # throwaway key for this run
 .venv/bin/python -m alembic upgrade head >/dev/null 2>&1
 .venv/bin/python -m uvicorn app.main:app --port 8000 >/tmp/e2e-api.log 2>&1 &
 API=$!

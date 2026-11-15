@@ -274,6 +274,21 @@ def pick_workers(
     return {"available": True, "source": "workers", "items": [{"id": w.id, "label": people.worker_name(w)} for w in rows]}
 
 
+@router.get("/pickers/people")
+def pick_people(
+    q: str | None = Query(None, max_length=100),
+    caller: Caller = Depends(require_permission("forms", "use")),
+    db: Session = Depends(get_db),
+) -> dict[str, Any]:
+    """People with a login, for assigning forms. Assignment is about who can sign in and see a form,
+    so it lists logins, not the worker roster."""
+    stmt = select(User).where(User.org_id == caller.org_id, User.status == "active", User.deleted_at.is_(None))
+    if q and q.strip():
+        stmt = stmt.where(func.lower(User.name).like(f"%{q.strip().lower()}%"))
+    rows = db.scalars(stmt.order_by(func.lower(User.name), User.id).limit(200)).all()
+    return {"available": True, "source": "users", "items": [{"id": u.id, "label": u.name} for u in rows]}
+
+
 def _not_yet(what: str, stage: str) -> dict[str, Any]:
     # An explicit unavailable state: never an invented list.
     return {"available": False, "source": None, "items": [], "message": f"{what} can be chosen once {stage} is built."}
@@ -638,8 +653,12 @@ def effective_assignments(
         reasons = _assignment_reasons(db, template, user)
         if manager and reasons is None:
             reasons = ["Can manage form templates"]
+        blocked = None if can_fill or manager else "Their role cannot fill in forms"
+        gate = people.gate_problems(db, db.get(Organisation, caller.org_id), template, user) if reasons else []
+        if blocked is None and gate:
+            blocked = "Certificates needed: " + "; ".join(g["message"] for g in gate)
         forms.append({"template_id": template.id, "name": template.name, "visible": bool(reasons) and can_fill or manager and bool(reasons),
-                      "reasons": reasons or [], "blocked_by": None if can_fill or manager else "Their role cannot fill in forms"})
+                      "reasons": reasons or [], "blocked_by": blocked, "certification_gate": gate})
     return {"user": {"id": user.id, "name": user.name}, "can_fill_in_forms": can_fill, "forms": forms}
 
 

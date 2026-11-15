@@ -191,6 +191,58 @@ FEATURES = {
     "NAV-01": ("PARTIAL", "Browser walkthrough (login, users, roles, sessions, profile)", "Shell with permission-filtered menu for built screens only. Preferences, app directory and version display outstanding."),
 }
 
+T_WORK = "tests/test_workers.py"
+DONE.update({
+    ("GET", "/api/workers"): ("team/resource", "workers.list_workers", T_WORK, "IMPLEMENTED_TESTED", "Own record only without workers.team_view"),
+    ("POST", "/api/workers"): ("team/resource", "workers.create_worker", T_WORK, "IMPLEMENTED_TESTED", "D-035 manual creation allowed until the Simpro sync exists"),
+    ("GET", "/api/workers/directory"): ("authenticated-own", "workers.directory", T_WORK, "IMPLEMENTED_TESTED", "Names only"),
+    ("GET", "/api/workers/{worker_id}"): ("team/resource", "workers.get_worker", T_WORK, "IMPLEMENTED_TESTED", "D-036 privacy tiers"),
+    ("PATCH", "/api/workers/{worker_id}"): ("team/resource", "workers.update_worker", T_WORK, "IMPLEMENTED_TESTED", "Protected fields need hr_employees.edit"),
+    ("DELETE", "/api/workers/{worker_id}"): ("team/resource", "workers.delete_worker", T_WORK, "IMPLEMENTED_TESTED", "Soft delete; login unlinked, not removed"),
+    ("POST", "/api/workers/{worker_id}/restore"): ("team/resource", "workers.restore_worker", T_WORK, "IMPLEMENTED_TESTED", ""),
+    ("POST", "/api/workers/{worker_id}/link-user"): ("team/resource", "workers.link_user", T_WORK, "IMPLEMENTED_TESTED", "One login per worker (unique index)"),
+    ("POST", "/api/workers/{worker_id}/provision-user"): ("team/resource", "workers.provision_user", T_WORK, "IMPLEMENTED_TESTED", "Invitation held, link shown once (D-012)"),
+    ("POST", "/api/workers/{worker_id}/photo"): ("team/resource", "workers.upload_photo", T_WORK, "IMPLEMENTED_TESTED", "Content sniffed; office or the worker themself"),
+    ("DELETE", "/api/workers/{worker_id}/photo"): ("team/resource", "workers.delete_photo", T_WORK, "IMPLEMENTED_TESTED", ""),
+    ("GET", "/api/workers/{worker_id}/photo/{gridfs_id}"): ("team/resource", "workers.get_photo", T_WORK, "IMPLEMENTED_TESTED", "Path is /photo (no storage id in the URL)"),
+    ("GET", "/api/workers/certifications/all"): ("team/resource", "workers.all_certifications", T_WORK, "IMPLEMENTED_TESTED", "Summary counts use the same filters as the rows"),
+    ("GET", "/api/workers/certifications/search"): ("team/resource", "workers.all_certifications", T_WORK, "IMPLEMENTED_TESTED", "Folded into /certifications/all?q="),
+    ("PATCH", "/api/workers/certifications/{cert_id}"): ("team/resource", "workers.update_certification", T_WORK, "IMPLEMENTED_TESTED", ""),
+    ("DELETE", "/api/workers/certifications/{cert_id}"): ("team/resource", "workers.delete_certification", T_WORK, "IMPLEMENTED_TESTED", "Earlier certificate becomes current again"),
+    ("POST", "/api/workers/certifications/{cert_id}/archive"): ("team/resource", "workers.archive_certification", T_WORK, "IMPLEMENTED_TESTED", ""),
+    ("POST", "/api/workers/certifications/{cert_id}/restore"): ("team/resource", "workers.restore_certification", T_WORK, "IMPLEMENTED_TESTED", ""),
+    ("GET", "/api/workers/{worker_id}/certifications"): ("team/resource", "workers.list_certifications", T_WORK, "IMPLEMENTED_TESTED", ""),
+    ("POST", "/api/workers/{worker_id}/certifications"): ("team/resource", "workers.add_certification", T_WORK, "IMPLEMENTED_TESTED", "Kind normalised to a known slug"),
+    ("POST", "/api/workers/{worker_id}/certifications/{cert_id}/upload"): ("team/resource", "workers.upload_evidence", T_WORK, "IMPLEMENTED_TESTED", ""),
+    ("POST", "/api/workers/{worker_id}/certifications/upload"): ("team/resource", "workers.add_certification + upload_evidence", T_WORK, "IMPLEMENTED_TESTED", "Two steps: create, then attach the file"),
+    ("GET", "/api/workers/{worker_id}/certifications/{cert_id}/file"): ("team/resource", "workers.evidence_file", T_WORK, "IMPLEMENTED_TESTED", ""),
+    ("GET", "/api/certifications/expiry-count"): ("team/resource", "workers.expiry_count", T_WORK, "IMPLEMENTED_TESTED", "Same population as the register default"),
+})
+
+NEW_ROWS += [
+    ["GET", "/api/workers/me", "workers", "", "authenticated-own", "workers.my_record", T_WORK, "IMPLEMENTED_TESTED", "New: own record and certificates"],
+    ["PATCH", "/api/workers/me", "workers", "", "authenticated-own", "workers.edit_my_record", T_WORK, "IMPLEMENTED_TESTED", "New: self-service fields only"],
+    ["POST", "/api/workers/{worker_id}/archive", "workers", "", "team/resource", "workers.archive_worker", T_WORK, "IMPLEMENTED_TESTED", "New: archive distinct from inactive"],
+    ["POST", "/api/workers/{worker_id}/unarchive", "workers", "", "team/resource", "workers.unarchive_worker", T_WORK, "IMPLEMENTED_TESTED", "New"],
+    ["POST", "/api/workers/{worker_id}/reveal", "workers", "", "team/resource", "workers.reveal_protected", T_WORK, "IMPLEMENTED_TESTED", "New: audited reveal of encrypted fields (D-036)"],
+    ["GET", "/api/workers/{worker_id}/history", "workers", "", "team/resource", "workers.worker_history", T_WORK, "IMPLEMENTED_TESTED", "New: change history"],
+    ["DELETE", "/api/workers/{worker_id}/link-user", "workers", "", "team/resource", "workers.unlink_user", T_WORK, "IMPLEMENTED_TESTED", "New"],
+    ["POST", "/api/workers/certifications/{cert_id}/renew", "workers", "", "team/resource", "workers.renew_certification", T_WORK, "IMPLEMENTED_TESTED", "New: renewal keeps the earlier certificate (D-037)"],
+    ["GET", "/api/certifications/settings", "certifications", "", "team/resource", "workers.get_cert_settings", T_WORK, "IMPLEMENTED_TESTED", "New"],
+    ["PUT", "/api/certifications/settings", "certifications", "", "admin-owner", "workers.put_cert_settings", T_WORK, "IMPLEMENTED_TESTED", "New: warning window, expected kinds, organisation gate switch"],
+    ["GET", "/api/certification-kinds", "certifications", "", "team/resource", "workers.list_kinds", T_WORK, "IMPLEMENTED_TESTED", "New: per-organisation vocabulary seeded from the reference list"],
+    ["POST", "/api/certification-kinds", "certifications", "", "team/resource", "workers.create_kind", T_WORK, "IMPLEMENTED_TESTED", "New"],
+    ["PATCH", "/api/certification-kinds/{kind_id}", "certifications", "", "team/resource", "workers.update_kind", T_WORK, "IMPLEMENTED_TESTED", "New: slug never changes"],
+    ["GET", "/api/forms/pickers/people", "forms", "", "team/resource", "forms.pick_people", T_WORK, "IMPLEMENTED_TESTED", "New: logins for form assignment"],
+]
+
+FEATURES.update({
+    "WORK-01": ("PARTIAL", "tests/test_workers.py; e2e workers step", "Built: roster (active/inactive/archived), details, photo, login link and provisioning, self-service edits, change history, duplicate warning. Outstanding: Simpro import (stage 5), ID card/QR, mobile PIN, worker documents."),
+    "WORK-02": ("PARTIAL", "tests/test_workers.py", "Built: birth date, TFN and USI encrypted at rest, masked in listings, permissioned audited reveal, clear failure when the key is missing or wrong. Outstanding: HR documents and the HR import/link tools."),
+    "CERT-01": ("PARTIAL", "tests/test_workers.py; e2e workers step", "Built: kinds with alias normalisation, issue/expiry, evidence files, valid/expiring/expired/unknown/missing, renewal that keeps earlier evidence, register whose totals match its filters, own view. Outstanding: reminders (stage 5), bulk actions, renewal links (4c)."),
+    "FORM-02": ("PARTIAL", "tests/test_forms_api.py; tests/test_workers.py", "Built: role/user/company assignment with effective preview; certification double-switch gate enforced on start and on submit, including expired, unknown-expiry and missing certificates and unlinked logins. Outstanding: positions and asset-type assignment."),
+})
+
 
 def main() -> None:
     path = HERE / "endpoint_coverage.csv"

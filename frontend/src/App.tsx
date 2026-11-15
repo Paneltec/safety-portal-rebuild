@@ -15,6 +15,9 @@ import { Roles } from "./pages/Roles";
 import { Sessions } from "./pages/Sessions";
 import { UserDetail } from "./pages/UserDetail";
 import { Users } from "./pages/Users";
+import { Certifications } from "./pages/Certifications";
+import { WorkerDetail } from "./pages/WorkerDetail";
+import { Workers } from "./pages/Workers";
 
 function Protected() {
   const { status, me } = useAuth();
@@ -46,6 +49,9 @@ export function App() {
         <Route path="forms/templates/:templateId/edit" element={<FormEditor />} />
         <Route path="forms/templates/:templateId/submissions" element={<FormSubmissions />} />
         <Route path="forms/submissions/:submissionId" element={<SubmissionPage />} />
+        <Route path="workers" element={<Workers />} />
+        <Route path="workers/:workerId" element={<WorkerDetail />} />
+        <Route path="certifications" element={<Certifications />} />
         <Route path="documents" element={<Documents />} />
         <Route path="documents/:folderId" element={<Documents />} />
         <Route path="settings/organisation" element={<OrganisationSettings />} />

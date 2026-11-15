@@ -2,6 +2,7 @@ import { useState, type FormEvent } from "react";
 import { api, formatDateTime, setToken } from "../api";
 import { useAuth } from "../auth";
 import { Notice, errorMessage } from "../components/ui";
+import { MyWorkerRecord } from "./WorkerDetail";
 
 export function Profile() {
   const { me, reload } = useAuth();
@@ -107,6 +108,7 @@ export function Profile() {
           </form>
         </section>
       </div>
+      {!forced && <MyWorkerRecord />}
     </>
   );
 }

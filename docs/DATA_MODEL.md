@@ -20,10 +20,13 @@ IDs are opaque strings. Every tenant-owned table carries `org_id`, and every que
 | `safety_record_events` | Append-only history: created, edited (with earlier answers), submitted, reviewed, status changes, archive | Never rewritten |
 | `safety_assignments` | Who a SWMS is assigned to | Unique `(record_id, target_kind, target_id)` |
 | `safety_acknowledgements` | A person's sign-off on one SWMS version | Unique `(record_id, user_id)` |
+| `workers` | The operational person record, separate from a login | Unique `(org_id, source_system, source_company, source_id)` for imports; `details` JSONB (address, emergency contact, notes, masked hints); `protected` is encrypted JSON (birth date, TFN, USI); active flag, `archived_at`, soft delete |
+| `certification_kinds` | Per-organisation certificate types with aliases | Unique `(org_id, slug)`; slug never changes; retire with `active=false` |
+| `certifications` | One certificate held by a worker | `supersedes_id` / `superseded_by_id` chain keeps renewals; `no_expiry` explicit; evidence in `stored_files`; archive and soft delete |
 | `stored_files` | Metadata for uploaded bytes: hash, size, MIME type, original name, purpose | Bytes on the files volume by organisation and SHA-256; identity separate from name |
 | `companies` | Divisions inside an organisation (for example Paneltec, Viatec) | Unique `(org_id, code)` |
 | `roles` | Role catalogue: built-in (read-only) and custom | Unique `(org_id, role_id)`; `permissions` is `{resource: {action: bool}}`; soft delete |
-| `users` | Login identity | Email unique and lower-case; `status` invited/active/disabled; `worker_id` link is separate from the account; soft delete before hard delete |
+| `users` | Login identity | Email unique and lower-case; `status` invited/active/disabled; `worker_id` links to `workers` (unique: one login per worker); soft delete before hard delete |
 | `user_permission_overrides` | Explicit per-user allow/deny cells with reasons | One row per user; survives role changes |
 | `permission_presets` | Named bundles of cells | Per organisation; soft delete |
 | `user_sessions` | One row per sign-in | Token stored as SHA-256 hash only; expiry, idle timeout, revoke reason, IP and device |

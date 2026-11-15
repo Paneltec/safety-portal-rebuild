@@ -1,4 +1,5 @@
-import { useEffect, useRef, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
+import { fetchBlobUrl } from "../api";
 
 type Tone = "ok" | "warn" | "bad" | "info" | "neutral" | "dashed";
 
@@ -110,4 +111,37 @@ export function StatusChip({ status }: { status: string }) {
 
 export function errorMessage(error: unknown): string {
   return error instanceof Error ? error.message : "Something went wrong";
+}
+
+/** An image that needs the session to load (worker photos). Shows initials until it arrives. */
+export function Avatar({ url, name, size = 40 }: { url: string | null; name: string; size?: number }) {
+  const [src, setSrc] = useState<string | null>(null);
+  useEffect(() => {
+    let cancelled = false;
+    let made: string | null = null;
+    setSrc(null);
+    if (url) {
+      fetchBlobUrl(url)
+        .then((blob) => {
+          made = blob;
+          if (!cancelled) setSrc(blob);
+        })
+        .catch(() => undefined);
+    }
+    return () => {
+      cancelled = true;
+      if (made) URL.revokeObjectURL(made);
+    };
+  }, [url]);
+  const initials = name.split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0]?.toUpperCase()).join("");
+  const style = { width: size, height: size, fontSize: Math.round(size * 0.38) };
+  return src ? <img className="avatar" style={style} src={src} alt="" /> : <span className="avatar" style={style} aria-hidden="true">{initials}</span>;
+}
+
+const CERT_TONE: Record<string, "ok" | "warn" | "bad" | "dashed"> = { valid: "ok", expiring: "warn", expired: "bad", unknown: "dashed", missing: "bad" };
+
+/** Certificate state: always a word, with colour and icon in support. */
+export function CertChip({ status, label }: { status: string; label: string }) {
+  const tone = CERT_TONE[status] ?? "dashed";
+  return <Chip tone={tone} icon={tone !== "dashed"}>{label}</Chip>;
 }

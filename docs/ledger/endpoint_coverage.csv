@@ -172,7 +172,7 @@ HEAD,/api/backup/snapshots/{snap_id}/data,backup_service,download_snapshot,CLASS
 POST,/api/backup/snapshots/{snap_id}/verify,backup_service,verify_snapshot,CLASSIFY,,,NOT_STARTED,
 GET,/api/backup/summary,backup_service,get_summary,CLASSIFY,,,NOT_STARTED,
 POST,/api/certifications/bulk-clear-pending-review,worker_certifications,bulk_clear_pending_review,CLASSIFY,,,NOT_STARTED,
-GET,/api/certifications/expiry-count,worker_certifications,certifications_expiry_count,CLASSIFY,,,NOT_STARTED,
+GET,/api/certifications/expiry-count,worker_certifications,certifications_expiry_count,team/resource,workers.expiry_count,tests/test_workers.py,IMPLEMENTED_TESTED,Same population as the register default
 GET,/api/companies/,companies,list_rows,CLASSIFY,,,NOT_STARTED,
 POST,/api/companies/,companies,create_row,CLASSIFY,,,NOT_STARTED,
 GET,/api/companies/columns,companies,columns_metadata,CLASSIFY,,,NOT_STARTED,
@@ -935,18 +935,18 @@ POST,/api/users/{user_id}/set-password,users,admin_set_password,admin-owner,user
 POST,/api/users/{user_id}/unlock,auth_invite,unlock_user,admin-owner,users.unlock_user,tests/test_auth.py,IMPLEMENTED_TESTED,
 GET,/api/whoami,server,whoami,CLASSIFY,,,NOT_STARTED,
 GET,/api/worker-user-mirror-status,worker_user_provisioning_routes,mirror_status,CLASSIFY,,,NOT_STARTED,
-GET,/api/workers,workers,list_workers,CLASSIFY,,,NOT_STARTED,
-POST,/api/workers,workers,create_worker_deprecated,CLASSIFY,,,NOT_STARTED,
+GET,/api/workers,workers,list_workers,team/resource,workers.list_workers,tests/test_workers.py,IMPLEMENTED_TESTED,Own record only without workers.team_view
+POST,/api/workers,workers,create_worker_deprecated,team/resource,workers.create_worker,tests/test_workers.py,IMPLEMENTED_TESTED,D-035 manual creation allowed until the Simpro sync exists
 POST,/api/workers/backfill-user-provision,worker_user_provisioning_routes,backfill,CLASSIFY,,,NOT_STARTED,
-GET,/api/workers/certifications/all,worker_certifications,list_all_certs,CLASSIFY,,,NOT_STARTED,
+GET,/api/workers/certifications/all,worker_certifications,list_all_certs,team/resource,workers.all_certifications,tests/test_workers.py,IMPLEMENTED_TESTED,Summary counts use the same filters as the rows
 POST,/api/workers/certifications/scan-reminders,worker_certifications,trigger_reminder_scan,CLASSIFY,,,NOT_STARTED,
-GET,/api/workers/certifications/search,worker_certifications,search_certs,CLASSIFY,,,NOT_STARTED,
-DELETE,/api/workers/certifications/{cert_id},worker_certifications,delete_cert,CLASSIFY,,,NOT_STARTED,
-PATCH,/api/workers/certifications/{cert_id},worker_certifications,update_cert,CLASSIFY,,,NOT_STARTED,
-POST,/api/workers/certifications/{cert_id}/archive,worker_certifications,archive_cert,CLASSIFY,,,NOT_STARTED,
-POST,/api/workers/certifications/{cert_id}/restore,worker_certifications,restore_cert,CLASSIFY,,,NOT_STARTED,
+GET,/api/workers/certifications/search,worker_certifications,search_certs,team/resource,workers.all_certifications,tests/test_workers.py,IMPLEMENTED_TESTED,Folded into /certifications/all?q=
+DELETE,/api/workers/certifications/{cert_id},worker_certifications,delete_cert,team/resource,workers.delete_certification,tests/test_workers.py,IMPLEMENTED_TESTED,Earlier certificate becomes current again
+PATCH,/api/workers/certifications/{cert_id},worker_certifications,update_cert,team/resource,workers.update_certification,tests/test_workers.py,IMPLEMENTED_TESTED,
+POST,/api/workers/certifications/{cert_id}/archive,worker_certifications,archive_cert,team/resource,workers.archive_certification,tests/test_workers.py,IMPLEMENTED_TESTED,
+POST,/api/workers/certifications/{cert_id}/restore,worker_certifications,restore_cert,team/resource,workers.restore_certification,tests/test_workers.py,IMPLEMENTED_TESTED,
 POST,/api/workers/certifications/{cert_id}/send-reminder,worker_certifications,manual_send_reminder,CLASSIFY,,,NOT_STARTED,
-GET,/api/workers/directory,workers,workers_directory,CLASSIFY,,,NOT_STARTED,
+GET,/api/workers/directory,workers,workers_directory,authenticated-own,workers.directory,tests/test_workers.py,IMPLEMENTED_TESTED,Names only
 PUT,/api/workers/inductions/cell,workers_inductions,edit_cell,CLASSIFY,,,NOT_STARTED,
 GET,/api/workers/inductions/export.xlsx,workers_inductions,export_matrix,CLASSIFY,,,NOT_STARTED,
 POST,/api/workers/inductions/import-xlsx,workers_inductions,import_xlsx_preview,CLASSIFY,,,NOT_STARTED,
@@ -955,14 +955,14 @@ POST,/api/workers/inductions/import-xlsx/upload,workers_inductions,import_xlsx_u
 GET,/api/workers/inductions/matrix,workers_inductions,induction_matrix,CLASSIFY,,,NOT_STARTED,
 POST,/api/workers/inductions/print,workers_inductions,print_inductions,CLASSIFY,,,NOT_STARTED,
 POST,/api/workers/sync-from-simpro,workers,sync_from_simpro,CLASSIFY,,,NOT_STARTED,
-DELETE,/api/workers/{worker_id},workers,delete_worker,CLASSIFY,,,NOT_STARTED,
-GET,/api/workers/{worker_id},workers,get_worker,CLASSIFY,,,NOT_STARTED,
-PATCH,/api/workers/{worker_id},workers,update_worker,CLASSIFY,,,NOT_STARTED,
-GET,/api/workers/{worker_id}/certifications,worker_certifications,list_certs,CLASSIFY,,,NOT_STARTED,
-POST,/api/workers/{worker_id}/certifications,worker_certifications,create_cert,CLASSIFY,,,NOT_STARTED,
-POST,/api/workers/{worker_id}/certifications/upload,worker_certifications,upload_cert_file,CLASSIFY,,,NOT_STARTED,
-GET,/api/workers/{worker_id}/certifications/{cert_id}/file,simpro_zip_import,stream_cert_file,CLASSIFY,,,NOT_STARTED,
-POST,/api/workers/{worker_id}/certifications/{cert_id}/upload,worker_certifications,attach_cert_file,CLASSIFY,,,NOT_STARTED,
+DELETE,/api/workers/{worker_id},workers,delete_worker,team/resource,workers.delete_worker,tests/test_workers.py,IMPLEMENTED_TESTED,"Soft delete; login unlinked, not removed"
+GET,/api/workers/{worker_id},workers,get_worker,team/resource,workers.get_worker,tests/test_workers.py,IMPLEMENTED_TESTED,D-036 privacy tiers
+PATCH,/api/workers/{worker_id},workers,update_worker,team/resource,workers.update_worker,tests/test_workers.py,IMPLEMENTED_TESTED,Protected fields need hr_employees.edit
+GET,/api/workers/{worker_id}/certifications,worker_certifications,list_certs,team/resource,workers.list_certifications,tests/test_workers.py,IMPLEMENTED_TESTED,
+POST,/api/workers/{worker_id}/certifications,worker_certifications,create_cert,team/resource,workers.add_certification,tests/test_workers.py,IMPLEMENTED_TESTED,Kind normalised to a known slug
+POST,/api/workers/{worker_id}/certifications/upload,worker_certifications,upload_cert_file,team/resource,workers.add_certification + upload_evidence,tests/test_workers.py,IMPLEMENTED_TESTED,"Two steps: create, then attach the file"
+GET,/api/workers/{worker_id}/certifications/{cert_id}/file,simpro_zip_import,stream_cert_file,team/resource,workers.evidence_file,tests/test_workers.py,IMPLEMENTED_TESTED,
+POST,/api/workers/{worker_id}/certifications/{cert_id}/upload,worker_certifications,attach_cert_file,team/resource,workers.upload_evidence,tests/test_workers.py,IMPLEMENTED_TESTED,
 GET,/api/workers/{worker_id}/hr-documents,simpro_zip_import,list_hr_documents,CLASSIFY,,,NOT_STARTED,
 POST,/api/workers/{worker_id}/hr-documents,simpro_zip_import,upload_hr_document,CLASSIFY,,,NOT_STARTED,
 DELETE,/api/workers/{worker_id}/hr-documents/{doc_id},simpro_zip_import,delete_hr_document,CLASSIFY,,,NOT_STARTED,
@@ -976,15 +976,15 @@ DELETE,/api/workers/{worker_id}/inductions/{induction_id},workers_inductions,del
 GET,/api/workers/{worker_id}/inductions/{induction_id},workers_inductions,get_induction,CLASSIFY,,,NOT_STARTED,
 PATCH,/api/workers/{worker_id}/inductions/{induction_id},workers_inductions,patch_induction,CLASSIFY,,,NOT_STARTED,
 POST,/api/workers/{worker_id}/inductions/{induction_id}/file,workers_inductions,upload_induction_file,CLASSIFY,,,NOT_STARTED,
-POST,/api/workers/{worker_id}/link-user,worker_user_provisioning_routes,link_existing,CLASSIFY,,,NOT_STARTED,
+POST,/api/workers/{worker_id}/link-user,worker_user_provisioning_routes,link_existing,team/resource,workers.link_user,tests/test_workers.py,IMPLEMENTED_TESTED,One login per worker (unique index)
 DELETE,/api/workers/{worker_id}/nfc-pair,workers_qr,nfc_unpair,CLASSIFY,,,NOT_STARTED,
 POST,/api/workers/{worker_id}/nfc-pair,workers_qr,nfc_pair,CLASSIFY,,,NOT_STARTED,
-DELETE,/api/workers/{worker_id}/photo,workers,delete_worker_photo,CLASSIFY,,,NOT_STARTED,
-POST,/api/workers/{worker_id}/photo,workers,upload_worker_photo,CLASSIFY,,,NOT_STARTED,
-GET,/api/workers/{worker_id}/photo/{gridfs_id},simpro_zip_import,stream_worker_photo,CLASSIFY,,,NOT_STARTED,
-POST,/api/workers/{worker_id}/provision-user,worker_user_provisioning_routes,provision_single,CLASSIFY,,,NOT_STARTED,
+DELETE,/api/workers/{worker_id}/photo,workers,delete_worker_photo,team/resource,workers.delete_photo,tests/test_workers.py,IMPLEMENTED_TESTED,
+POST,/api/workers/{worker_id}/photo,workers,upload_worker_photo,team/resource,workers.upload_photo,tests/test_workers.py,IMPLEMENTED_TESTED,Content sniffed; office or the worker themself
+GET,/api/workers/{worker_id}/photo/{gridfs_id},simpro_zip_import,stream_worker_photo,team/resource,workers.get_photo,tests/test_workers.py,IMPLEMENTED_TESTED,Path is /photo (no storage id in the URL)
+POST,/api/workers/{worker_id}/provision-user,worker_user_provisioning_routes,provision_single,team/resource,workers.provision_user,tests/test_workers.py,IMPLEMENTED_TESTED,"Invitation held, link shown once (D-012)"
 GET,/api/workers/{worker_id}/qr.png,workers_qr,worker_qr_png,CLASSIFY,,,NOT_STARTED,
-POST,/api/workers/{worker_id}/restore,workers,restore_worker,CLASSIFY,,,NOT_STARTED,
+POST,/api/workers/{worker_id}/restore,workers,restore_worker,team/resource,workers.restore_worker,tests/test_workers.py,IMPLEMENTED_TESTED,
 POST,/api/workers/{worker_id}/simpro-zip-import,simpro_zip_import,worker_zip_import,CLASSIFY,,,NOT_STARTED,
 GET,/api/workers/{worker_id}/smartfill-cards,workers,list_smartfill_cards,CLASSIFY,,,NOT_STARTED,
 POST,/api/workers/{worker_id}/smartfill-cards,workers,add_smartfill_card,CLASSIFY,,,NOT_STARTED,
@@ -1047,3 +1047,17 @@ DELETE,/api/org/logo,(new),remove_logo,admin-owner,org.remove_logo,tests/test_or
 GET,/api/public/branding,(new),public_branding,public-scoped,org.public_branding,tests/test_org_setup_files.py,IMPLEMENTED_TESTED,D-019
 GET,/api/health,(new),health,public-scoped,org.health,tests/test_auth.py,IMPLEMENTED_TESTED,New readiness endpoint
 GET,/api/permissions/schema,(new),permissions_schema,authenticated-own,org.permissions_schema,tests/test_roles_sessions_tenancy.py,IMPLEMENTED_TESTED,New: catalogue for the matrix UI
+GET,/api/workers/me,workers,,authenticated-own,workers.my_record,tests/test_workers.py,IMPLEMENTED_TESTED,New: own record and certificates
+PATCH,/api/workers/me,workers,,authenticated-own,workers.edit_my_record,tests/test_workers.py,IMPLEMENTED_TESTED,New: self-service fields only
+POST,/api/workers/{worker_id}/archive,workers,,team/resource,workers.archive_worker,tests/test_workers.py,IMPLEMENTED_TESTED,New: archive distinct from inactive
+POST,/api/workers/{worker_id}/unarchive,workers,,team/resource,workers.unarchive_worker,tests/test_workers.py,IMPLEMENTED_TESTED,New
+POST,/api/workers/{worker_id}/reveal,workers,,team/resource,workers.reveal_protected,tests/test_workers.py,IMPLEMENTED_TESTED,New: audited reveal of encrypted fields (D-036)
+GET,/api/workers/{worker_id}/history,workers,,team/resource,workers.worker_history,tests/test_workers.py,IMPLEMENTED_TESTED,New: change history
+DELETE,/api/workers/{worker_id}/link-user,workers,,team/resource,workers.unlink_user,tests/test_workers.py,IMPLEMENTED_TESTED,New
+POST,/api/workers/certifications/{cert_id}/renew,workers,,team/resource,workers.renew_certification,tests/test_workers.py,IMPLEMENTED_TESTED,New: renewal keeps the earlier certificate (D-037)
+GET,/api/certifications/settings,certifications,,team/resource,workers.get_cert_settings,tests/test_workers.py,IMPLEMENTED_TESTED,New
+PUT,/api/certifications/settings,certifications,,admin-owner,workers.put_cert_settings,tests/test_workers.py,IMPLEMENTED_TESTED,"New: warning window, expected kinds, organisation gate switch"
+GET,/api/certification-kinds,certifications,,team/resource,workers.list_kinds,tests/test_workers.py,IMPLEMENTED_TESTED,New: per-organisation vocabulary seeded from the reference list
+POST,/api/certification-kinds,certifications,,team/resource,workers.create_kind,tests/test_workers.py,IMPLEMENTED_TESTED,New
+PATCH,/api/certification-kinds/{kind_id},certifications,,team/resource,workers.update_kind,tests/test_workers.py,IMPLEMENTED_TESTED,New: slug never changes
+GET,/api/forms/pickers/people,forms,,team/resource,forms.pick_people,tests/test_workers.py,IMPLEMENTED_TESTED,New: logins for form assignment

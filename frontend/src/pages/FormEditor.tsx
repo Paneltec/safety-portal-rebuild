@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { api, type FieldDef, type FormTemplate } from "../api";
+import { api, type CertKind, type FieldDef, type FormTemplate } from "../api";
 import { AssignmentRules } from "../components/AssignmentRules";
 import { FormRenderer } from "../components/FormRenderer";
 import { Chip, LoadError, Loading, Notice, errorMessage } from "../components/ui";
@@ -37,6 +37,10 @@ export function FormEditor() {
   const [message, setMessage] = useState<Msg>(null);
   const [busy, setBusy] = useState(false);
   const [preview, setPreview] = useState<Record<string, unknown>>({});
+  const [gate, setGate] = useState(false);
+  const [required, setRequired] = useState<string[]>([]);
+  const kinds = useLoad(() => api<{ items: CertKind[] }>("/api/certification-kinds"), []);
+  const certSettings = useLoad(() => api<{ gate_enabled: boolean }>("/api/certifications/settings").catch(() => null), []);
 
   useEffect(() => {
     if (!template.data) return;
@@ -44,13 +48,16 @@ export function FormEditor() {
     setCategory(template.data.category);
     setDescription(template.data.description);
     setFields(template.data.fields ?? []);
+    setGate(Boolean(template.data.certification_gate_enabled));
+    setRequired(template.data.required_certifications ?? []);
   }, [template.data]);
 
   if (template.error) return <LoadError message={template.error} onRetry={template.reload} />;
   if (!template.data || !catalogue.data) return <Loading />;
   const saved = template.data;
   const types = Object.fromEntries(catalogue.data.field_types.map((t) => [t.type, t]));
-  const dirty = name !== saved.name || category !== saved.category || description !== saved.description || JSON.stringify(fields) !== JSON.stringify(saved.fields ?? []);
+  const dirty = name !== saved.name || category !== saved.category || description !== saved.description || JSON.stringify(fields) !== JSON.stringify(saved.fields ?? [])
+    || gate !== Boolean(saved.certification_gate_enabled) || JSON.stringify(required) !== JSON.stringify(saved.required_certifications ?? []);
 
   const update = (index: number, patch: Partial<FieldDef>) => setFields(fields.map((f, i) => (i === index ? { ...f, ...patch } : f)));
   const setConfig = (index: number, key: string, value: unknown) => {
@@ -71,7 +78,7 @@ export function FormEditor() {
     setMessage(null);
     try {
       let result = saved;
-      if (dirty) result = await api<FormTemplate>(`/api/forms/templates/${saved.id}`, { method: "PATCH", body: { name, category, description, fields } });
+      if (dirty) result = await api<FormTemplate>(`/api/forms/templates/${saved.id}`, { method: "PATCH", body: { name, category, description, fields, certification_gate_enabled: gate, required_certifications: required } });
       if (publish) result = await api<FormTemplate>(`/api/forms/templates/${saved.id}/publish`, { method: "POST" });
       template.setData(result);
       setMessage({ tone: "ok", text: publish ? `Published as version ${result.published_version}. Earlier submissions keep the version they were filled in on.` : "Draft saved. People filling in forms still see the published version." });
@@ -126,6 +133,34 @@ export function FormEditor() {
             </select>
           </label>
           <label className="field">Description (optional)<input value={description} onChange={(e) => setDescription(e.target.value)} /></label>
+        </div>
+      </section>
+
+      <section className="card">
+        <div className="card-head"><h2>Certificates needed to fill this in</h2></div>
+        <div className="card-pad stack" style={{ paddingTop: 4 }}>
+          <label className="check">
+            <input type="checkbox" checked={gate} onChange={(e) => setGate(e.target.checked)} /> Require certificates for this form
+          </label>
+          {gate && (
+            <>
+              {certSettings.data && !certSettings.data.gate_enabled && (
+                <Notice tone="info">The organisation-wide switch is off, so this form is not restricted yet. An admin turns it on under Certifications → Settings.</Notice>
+              )}
+              {certSettings.data?.gate_enabled && required.length > 0 && (
+                <Notice tone="warn">People without a current certificate of every type ticked below, or whose login is not linked to a worker record, cannot fill this form in. This takes effect as soon as you save.</Notice>
+              )}
+              <div className="grid-2">
+                {(kinds.data?.items ?? []).map((k) => (
+                  <label className="check" key={k.slug}>
+                    <input type="checkbox" checked={required.includes(k.slug)}
+                      onChange={(e) => setRequired(e.target.checked ? [...required, k.slug] : required.filter((x) => x !== k.slug))} /> {k.label}
+                  </label>
+                ))}
+              </div>
+            </>
+          )}
+          {!gate && <p className="small muted">Off: anyone the form is assigned to can fill it in.</p>}
         </div>
       </section>
 
@@ -234,6 +269,7 @@ export function FormEditor() {
           const result = await api<{ forms: { template_id: string; visible: boolean; reasons: string[]; blocked_by: string | null }[] }>(`/api/forms/assignments/effective?user_id=${userId}`);
           const form = result.forms.find((f) => f.template_id === saved.id);
           return !form ? "This form is not published yet, so nobody sees it."
+            : form.visible && form.blocked_by ? `They see this form but cannot fill it in yet. ${form.blocked_by}.`
             : form.visible ? `Yes, they see this form. ${form.reasons.join("; ")}.`
             : `No, they do not see this form. ${form.blocked_by ?? "It is not assigned to them"}.`;
         }}

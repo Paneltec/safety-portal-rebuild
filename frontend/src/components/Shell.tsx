@@ -30,7 +30,14 @@ export function Shell() {
         { to: "/app/forms", label: "Forms", show: can("forms", "view") },
       ],
     },
-    { label: "Compliance", items: [{ to: "/app/documents", label: "Document library", show: can("documents", "view") }] },
+    {
+      label: "Compliance",
+      items: [
+        { to: "/app/workers", label: can("workers", "team_view") ? "Workers" : "My worker record", show: can("workers", "view") },
+        { to: "/app/certifications", label: "Certifications", show: can("certifications", "view") },
+        { to: "/app/documents", label: "Document library", show: can("documents", "view") },
+      ],
+    },
     {
       label: "Settings",
       items: [
@@ -70,7 +77,7 @@ export function Shell() {
             </div>
           );
         })}
-        <div className="nav-note">Workers, suppliers, fleet, fuel and pay arrive in later build stages. See Home for progress.</div>
+        <div className="nav-note">Suppliers, sites, fleet, fuel and pay arrive in later build stages. See Home for progress.</div>
       </nav>
       <div className="content">
         <header className="topbar">

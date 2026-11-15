@@ -48,7 +48,10 @@ function describe(detail: unknown, status: number): string {
       .join("; ");
   }
   if (detail && typeof detail === "object" && typeof (detail as { message?: unknown }).message === "string") {
-    return (detail as { message: string }).message;
+    const gate = (detail as { certification_gate?: { message: string }[] }).certification_gate;
+    const base = (detail as { message: string }).message;
+    // The certification gate lists exactly what is missing or out of date.
+    return Array.isArray(gate) && gate.length > 0 ? `${base} ${gate.map((g) => g.message).join("; ")}.` : base;
   }
   if (status >= 500) return "The server had a problem. Please try again.";
   return `Request failed (${status})`;
@@ -113,6 +116,7 @@ export interface User {
   created_at: string;
   deleted_at: string | null;
   is_account_holder: boolean;
+  worker_id?: string | null;
 }
 
 export interface Me extends User {
@@ -260,6 +264,8 @@ export interface FormTemplate {
   updated_at: string;
   fields?: FieldDef[];
   published_fields?: FieldDef[] | null;
+  certification_gate_enabled?: boolean;
+  required_certifications?: string[];
 }
 
 export interface Submission {
@@ -277,4 +283,85 @@ export interface Submission {
   schema?: FieldDef[];
   values?: Record<string, unknown>;
   files?: SubmissionFile[];
+}
+
+// ---------- workers and certifications ----------
+
+export interface CertCounts {
+  valid: number;
+  expiring: number;
+  expired: number;
+  unknown: number;
+  missing?: number;
+}
+
+export interface ProtectedHint {
+  field: string;
+  label: string;
+  recorded: boolean;
+  masked: string | null;
+}
+
+export interface Worker {
+  id: string;
+  name: string;
+  first_name: string;
+  last_name: string;
+  preferred_name: string | null;
+  position: string | null;
+  company_id: string | null;
+  active: boolean;
+  status: "active" | "inactive" | "archived" | "deleted";
+  is_me: boolean;
+  photo_url: string | null;
+  source: { system: string; company: string | null; id: string } | null;
+  email?: string | null;
+  phone?: string | null;
+  mobile?: string | null;
+  has_login?: boolean;
+  certifications?: CertCounts;
+  linked_user?: { id: string; name: string; email: string | null; status: string; role_id: string } | null;
+  can_see_personal?: boolean;
+  can_reveal_protected?: boolean;
+  protected?: ProtectedHint[];
+  missing_certifications?: { slug: string; label: string }[];
+  possible_duplicates?: { id: string; name: string; email: string | null; status: string; match: string }[];
+  [key: string]: unknown;
+}
+
+export interface Cert {
+  id: string;
+  worker: { id: string; name: string; status: string };
+  kind: { slug: string; label: string };
+  number: string | null;
+  issue_date: string | null;
+  expiry_date: string | null;
+  no_expiry: boolean;
+  status: "valid" | "expiring" | "expired" | "unknown";
+  status_label: string;
+  days_left: number | null;
+  notes: string | null;
+  evidence: { id: string; name: string; size_bytes: number } | null;
+  evidence_url: string | null;
+  current: boolean;
+  supersedes_id: string | null;
+  superseded_by_id: string | null;
+  archived_at: string | null;
+}
+
+export interface CertKind {
+  id: string;
+  slug: string;
+  label: string;
+  aliases: string[];
+  is_system: boolean;
+  active: boolean;
+}
+
+/** Fetch a protected image and return a temporary address for an <img>. */
+export async function fetchBlobUrl(path: string): Promise<string> {
+  const token = getToken();
+  const response = await fetch(path, { headers: token ? { Authorization: `Bearer ${token}` } : {} });
+  if (!response.ok) throw new ApiError(response.status, "Could not load the image");
+  return URL.createObjectURL(await response.blob());
 }

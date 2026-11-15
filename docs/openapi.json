@@ -246,6 +246,20 @@
     "title": "Body_upload_attachment_api_forms_submissions__submission_id__attachments_post",
     "type": "object"
    },
+   "Body_upload_evidence_api_workers__worker_id__certifications__cert_id__upload_post": {
+    "properties": {
+     "file": {
+      "contentMediaType": "application/octet-stream",
+      "title": "File",
+      "type": "string"
+     }
+    },
+    "required": [
+     "file"
+    ],
+    "title": "Body_upload_evidence_api_workers__worker_id__certifications__cert_id__upload_post",
+    "type": "object"
+   },
    "Body_upload_files_api_document_library_folders__folder_id__files_post": {
     "properties": {
      "files": {
@@ -294,6 +308,20 @@
      "file"
     ],
     "title": "Body_upload_photo_api_forms_submissions__submission_id__photos_post",
+    "type": "object"
+   },
+   "Body_upload_photo_api_workers__worker_id__photo_post": {
+    "properties": {
+     "file": {
+      "contentMediaType": "application/octet-stream",
+      "title": "File",
+      "type": "string"
+     }
+    },
+    "required": [
+     "file"
+    ],
+    "title": "Body_upload_photo_api_workers__worker_id__photo_post",
     "type": "object"
    },
    "Body_upload_submission_file_api_forms_submissions__submission_id__files_post": {
@@ -442,6 +470,165 @@
      }
     },
     "title": "BulkRevokeIn",
+    "type": "object"
+   },
+   "CertIn": {
+    "properties": {
+     "expiry_date": {
+      "anyOf": [
+       {
+        "format": "date",
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Expiry Date"
+     },
+     "issue_date": {
+      "anyOf": [
+       {
+        "format": "date",
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Issue Date"
+     },
+     "kind": {
+      "maxLength": 160,
+      "minLength": 1,
+      "title": "Kind",
+      "type": "string"
+     },
+     "no_expiry": {
+      "default": false,
+      "title": "No Expiry",
+      "type": "boolean"
+     },
+     "notes": {
+      "anyOf": [
+       {
+        "maxLength": 2000,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Notes"
+     },
+     "number": {
+      "anyOf": [
+       {
+        "maxLength": 80,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Number"
+     }
+    },
+    "required": [
+     "kind"
+    ],
+    "title": "CertIn",
+    "type": "object"
+   },
+   "CertPatch": {
+    "properties": {
+     "expiry_date": {
+      "anyOf": [
+       {
+        "format": "date",
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Expiry Date"
+     },
+     "issue_date": {
+      "anyOf": [
+       {
+        "format": "date",
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Issue Date"
+     },
+     "no_expiry": {
+      "anyOf": [
+       {
+        "type": "boolean"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "No Expiry"
+     },
+     "notes": {
+      "anyOf": [
+       {
+        "maxLength": 2000,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Notes"
+     },
+     "number": {
+      "anyOf": [
+       {
+        "maxLength": 80,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Number"
+     }
+    },
+    "title": "CertPatch",
+    "type": "object"
+   },
+   "CertSettingsIn": {
+    "properties": {
+     "expected_kinds": {
+      "items": {
+       "type": "string"
+      },
+      "maxItems": 60,
+      "title": "Expected Kinds",
+      "type": "array"
+     },
+     "expiry_window_days": {
+      "default": 30,
+      "maximum": 365.0,
+      "minimum": 1.0,
+      "title": "Expiry Window Days",
+      "type": "integer"
+     },
+     "gate_enabled": {
+      "default": false,
+      "title": "Gate Enabled",
+      "type": "boolean"
+     }
+    },
+    "title": "CertSettingsIn",
     "type": "object"
    },
    "ChangePasswordIn": {
@@ -844,6 +1031,87 @@
     "title": "ImportPayload",
     "type": "object"
    },
+   "KindIn": {
+    "properties": {
+     "aliases": {
+      "items": {
+       "type": "string"
+      },
+      "maxItems": 30,
+      "title": "Aliases",
+      "type": "array"
+     },
+     "label": {
+      "maxLength": 160,
+      "minLength": 2,
+      "title": "Label",
+      "type": "string"
+     }
+    },
+    "required": [
+     "label"
+    ],
+    "title": "KindIn",
+    "type": "object"
+   },
+   "KindPatch": {
+    "properties": {
+     "active": {
+      "anyOf": [
+       {
+        "type": "boolean"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Active"
+     },
+     "aliases": {
+      "anyOf": [
+       {
+        "items": {
+         "type": "string"
+        },
+        "maxItems": 30,
+        "type": "array"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Aliases"
+     },
+     "label": {
+      "anyOf": [
+       {
+        "maxLength": 160,
+        "minLength": 2,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Label"
+     }
+    },
+    "title": "KindPatch",
+    "type": "object"
+   },
+   "LinkUserIn": {
+    "properties": {
+     "user_id": {
+      "title": "User Id",
+      "type": "string"
+     }
+    },
+    "required": [
+     "user_id"
+    ],
+    "title": "LinkUserIn",
+    "type": "object"
+   },
    "LoginIn": {
     "properties": {
      "email": {
@@ -1186,6 +1454,29 @@
     "title": "PresetIn",
     "type": "object"
    },
+   "ProvisionIn": {
+    "properties": {
+     "email": {
+      "anyOf": [
+       {
+        "format": "email",
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Email"
+     },
+     "role_id": {
+      "default": "worker",
+      "title": "Role Id",
+      "type": "string"
+     }
+    },
+    "title": "ProvisionIn",
+    "type": "object"
+   },
    "RecordIn": {
     "properties": {
      "fields": {
@@ -1271,6 +1562,65 @@
      "confirm_password"
     ],
     "title": "RedeemIn",
+    "type": "object"
+   },
+   "RenewIn": {
+    "properties": {
+     "expiry_date": {
+      "anyOf": [
+       {
+        "format": "date",
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Expiry Date"
+     },
+     "issue_date": {
+      "anyOf": [
+       {
+        "format": "date",
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Issue Date"
+     },
+     "no_expiry": {
+      "default": false,
+      "title": "No Expiry",
+      "type": "boolean"
+     },
+     "notes": {
+      "anyOf": [
+       {
+        "maxLength": 2000,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Notes"
+     },
+     "number": {
+      "anyOf": [
+       {
+        "maxLength": 80,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Number"
+     }
+    },
+    "title": "RenewIn",
     "type": "object"
    },
    "ReviewIn": {
@@ -1421,6 +1771,157 @@
      "target_id"
     ],
     "title": "RuleIn",
+    "type": "object"
+   },
+   "SelfEdit": {
+    "description": "The fields a worker may change on their own record. Everything else is office-only.",
+    "properties": {
+     "country": {
+      "anyOf": [
+       {
+        "maxLength": 60,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Country"
+     },
+     "email": {
+      "anyOf": [
+       {
+        "format": "email",
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Email"
+     },
+     "emergency_contact_name": {
+      "anyOf": [
+       {
+        "maxLength": 160,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Emergency Contact Name"
+     },
+     "emergency_contact_phone": {
+      "anyOf": [
+       {
+        "maxLength": 40,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Emergency Contact Phone"
+     },
+     "emergency_contact_relationship": {
+      "anyOf": [
+       {
+        "maxLength": 80,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Emergency Contact Relationship"
+     },
+     "mobile": {
+      "anyOf": [
+       {
+        "maxLength": 40,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Mobile"
+     },
+     "phone": {
+      "anyOf": [
+       {
+        "maxLength": 40,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Phone"
+     },
+     "postal_code": {
+      "anyOf": [
+       {
+        "maxLength": 12,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Postal Code"
+     },
+     "preferred_name": {
+      "anyOf": [
+       {
+        "maxLength": 100,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Preferred Name"
+     },
+     "state": {
+      "anyOf": [
+       {
+        "maxLength": 40,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "State"
+     },
+     "street_address": {
+      "anyOf": [
+       {
+        "maxLength": 200,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Street Address"
+     },
+     "suburb": {
+      "anyOf": [
+       {
+        "maxLength": 100,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Suburb"
+     }
+    },
+    "title": "SelfEdit",
     "type": "object"
    },
    "SetPasswordIn": {
@@ -1935,6 +2436,552 @@
      "type"
     ],
     "title": "ValidationError",
+    "type": "object"
+   },
+   "WorkerIn": {
+    "properties": {
+     "active": {
+      "default": true,
+      "title": "Active",
+      "type": "boolean"
+     },
+     "additional_notes": {
+      "anyOf": [
+       {
+        "maxLength": 4000,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Additional Notes"
+     },
+     "birth_date": {
+      "anyOf": [
+       {
+        "format": "date",
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Birth Date"
+     },
+     "company_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Company Id"
+     },
+     "country": {
+      "anyOf": [
+       {
+        "maxLength": 60,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Country"
+     },
+     "date_employee_added": {
+      "anyOf": [
+       {
+        "format": "date",
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Date Employee Added"
+     },
+     "email": {
+      "anyOf": [
+       {
+        "format": "email",
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Email"
+     },
+     "emergency_contact_name": {
+      "anyOf": [
+       {
+        "maxLength": 160,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Emergency Contact Name"
+     },
+     "emergency_contact_phone": {
+      "anyOf": [
+       {
+        "maxLength": 40,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Emergency Contact Phone"
+     },
+     "emergency_contact_relationship": {
+      "anyOf": [
+       {
+        "maxLength": 80,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Emergency Contact Relationship"
+     },
+     "employee_id": {
+      "anyOf": [
+       {
+        "maxLength": 40,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Employee Id"
+     },
+     "first_name": {
+      "maxLength": 100,
+      "minLength": 1,
+      "title": "First Name",
+      "type": "string"
+     },
+     "last_name": {
+      "default": "",
+      "maxLength": 100,
+      "title": "Last Name",
+      "type": "string"
+     },
+     "mobile": {
+      "anyOf": [
+       {
+        "maxLength": 40,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Mobile"
+     },
+     "phone": {
+      "anyOf": [
+       {
+        "maxLength": 40,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Phone"
+     },
+     "position": {
+      "anyOf": [
+       {
+        "maxLength": 120,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Position"
+     },
+     "postal_code": {
+      "anyOf": [
+       {
+        "maxLength": 12,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Postal Code"
+     },
+     "preferred_name": {
+      "anyOf": [
+       {
+        "maxLength": 100,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Preferred Name"
+     },
+     "state": {
+      "anyOf": [
+       {
+        "maxLength": 40,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "State"
+     },
+     "street_address": {
+      "anyOf": [
+       {
+        "maxLength": 200,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Street Address"
+     },
+     "suburb": {
+      "anyOf": [
+       {
+        "maxLength": 100,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Suburb"
+     },
+     "tax_file_number": {
+      "anyOf": [
+       {
+        "maxLength": 20,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Tax File Number"
+     },
+     "usi_number": {
+      "anyOf": [
+       {
+        "maxLength": 20,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Usi Number"
+     }
+    },
+    "required": [
+     "first_name"
+    ],
+    "title": "WorkerIn",
+    "type": "object"
+   },
+   "WorkerPatch": {
+    "properties": {
+     "active": {
+      "anyOf": [
+       {
+        "type": "boolean"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Active"
+     },
+     "additional_notes": {
+      "anyOf": [
+       {
+        "maxLength": 4000,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Additional Notes"
+     },
+     "birth_date": {
+      "anyOf": [
+       {
+        "format": "date",
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Birth Date"
+     },
+     "company_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Company Id"
+     },
+     "country": {
+      "anyOf": [
+       {
+        "maxLength": 60,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Country"
+     },
+     "date_employee_added": {
+      "anyOf": [
+       {
+        "format": "date",
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Date Employee Added"
+     },
+     "email": {
+      "anyOf": [
+       {
+        "format": "email",
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Email"
+     },
+     "emergency_contact_name": {
+      "anyOf": [
+       {
+        "maxLength": 160,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Emergency Contact Name"
+     },
+     "emergency_contact_phone": {
+      "anyOf": [
+       {
+        "maxLength": 40,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Emergency Contact Phone"
+     },
+     "emergency_contact_relationship": {
+      "anyOf": [
+       {
+        "maxLength": 80,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Emergency Contact Relationship"
+     },
+     "employee_id": {
+      "anyOf": [
+       {
+        "maxLength": 40,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Employee Id"
+     },
+     "first_name": {
+      "anyOf": [
+       {
+        "maxLength": 100,
+        "minLength": 1,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "First Name"
+     },
+     "last_name": {
+      "anyOf": [
+       {
+        "maxLength": 100,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Last Name"
+     },
+     "mobile": {
+      "anyOf": [
+       {
+        "maxLength": 40,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Mobile"
+     },
+     "phone": {
+      "anyOf": [
+       {
+        "maxLength": 40,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Phone"
+     },
+     "position": {
+      "anyOf": [
+       {
+        "maxLength": 120,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Position"
+     },
+     "postal_code": {
+      "anyOf": [
+       {
+        "maxLength": 12,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Postal Code"
+     },
+     "preferred_name": {
+      "anyOf": [
+       {
+        "maxLength": 100,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Preferred Name"
+     },
+     "state": {
+      "anyOf": [
+       {
+        "maxLength": 40,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "State"
+     },
+     "street_address": {
+      "anyOf": [
+       {
+        "maxLength": 200,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Street Address"
+     },
+     "suburb": {
+      "anyOf": [
+       {
+        "maxLength": 100,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Suburb"
+     },
+     "tax_file_number": {
+      "anyOf": [
+       {
+        "maxLength": 20,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Tax File Number"
+     },
+     "usi_number": {
+      "anyOf": [
+       {
+        "maxLength": 20,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Usi Number"
+     }
+    },
+    "title": "WorkerPatch",
     "type": "object"
    }
   }
@@ -2909,6 +3956,236 @@
     "summary": "Update Profile",
     "tags": [
      "auth"
+    ]
+   }
+  },
+  "/api/certification-kinds": {
+   "get": {
+    "operationId": "list_kinds_api_certification_kinds_get",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "include_inactive",
+      "required": false,
+      "schema": {
+       "default": false,
+       "title": "Include Inactive",
+       "type": "boolean"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response List Kinds Api Certification Kinds Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "List Kinds",
+    "tags": [
+     "certifications"
+    ]
+   },
+   "post": {
+    "operationId": "create_kind_api_certification_kinds_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/KindIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Create Kind Api Certification Kinds Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Create Kind",
+    "tags": [
+     "certifications"
+    ]
+   }
+  },
+  "/api/certification-kinds/{kind_id}": {
+   "patch": {
+    "description": "Rename, add aliases or retire a type. The slug never changes, so old certificates keep their type.",
+    "operationId": "update_kind_api_certification_kinds__kind_id__patch",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "kind_id",
+      "required": true,
+      "schema": {
+       "title": "Kind Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/KindPatch"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Update Kind Api Certification Kinds  Kind Id  Patch",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Update Kind",
+    "tags": [
+     "certifications"
+    ]
+   }
+  },
+  "/api/certifications/expiry-count": {
+   "get": {
+    "description": "Badge numbers. Same population as the register's default view: current certificates of active workers.",
+    "operationId": "expiry_count_api_certifications_expiry_count_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Expiry Count Api Certifications Expiry Count Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Expiry Count",
+    "tags": [
+     "certifications"
+    ]
+   }
+  },
+  "/api/certifications/settings": {
+   "get": {
+    "operationId": "get_cert_settings_api_certifications_settings_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Get Cert Settings Api Certifications Settings Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Get Cert Settings",
+    "tags": [
+     "certifications"
+    ]
+   },
+   "put": {
+    "description": "Warning window, the certificates every worker is expected to hold, and the organisation-wide\nhalf of the form gate. A form is only gated when its own switch is on as well.",
+    "operationId": "put_cert_settings_api_certifications_settings_put",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/CertSettingsIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Put Cert Settings Api Certifications Settings Put",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Put Cert Settings",
+    "tags": [
+     "certifications"
     ]
    }
   },
@@ -3980,6 +5257,59 @@
     ]
    }
   },
+  "/api/forms/pickers/people": {
+   "get": {
+    "description": "People with a login, for assigning forms. Assignment is about who can sign in and see a form,\nso it lists logins, not the worker roster.",
+    "operationId": "pick_people_api_forms_pickers_people_get",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "q",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "maxLength": 100,
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Q"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Pick People Api Forms Pickers People Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Pick People",
+    "tags": [
+     "forms"
+    ]
+   }
+  },
   "/api/forms/pickers/sites": {
    "get": {
     "operationId": "pick_sites_api_forms_pickers_sites_get",
@@ -4005,7 +5335,7 @@
   },
   "/api/forms/pickers/workers": {
    "get": {
-    "description": "People who can be chosen in a worker field. Until the worker register is built (stage 4)\nthis lists active user accounts; the value shape {id, label} stays the same afterwards.",
+    "description": "People who can be chosen in a worker field: active workers from the register.",
     "operationId": "pick_workers_api_forms_pickers_workers_get",
     "parameters": [
      {
@@ -14446,6 +15776,1558 @@
     "summary": "Unlock User",
     "tags": [
      "users"
+    ]
+   }
+  },
+  "/api/workers": {
+   "get": {
+    "description": "The roster. Without team view a person sees only their own record.",
+    "operationId": "list_workers_api_workers_get",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "q",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "maxLength": 100,
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Q"
+      }
+     },
+     {
+      "in": "query",
+      "name": "status",
+      "required": false,
+      "schema": {
+       "default": "active",
+       "enum": [
+        "active",
+        "inactive",
+        "archived",
+        "all"
+       ],
+       "title": "Status",
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "company_id",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Company Id"
+      }
+     },
+     {
+      "in": "query",
+      "name": "linked",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "enum": [
+          "yes",
+          "no"
+         ],
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Linked"
+      }
+     },
+     {
+      "in": "query",
+      "name": "limit",
+      "required": false,
+      "schema": {
+       "default": 50,
+       "maximum": 200,
+       "minimum": 1,
+       "title": "Limit",
+       "type": "integer"
+      }
+     },
+     {
+      "in": "query",
+      "name": "offset",
+      "required": false,
+      "schema": {
+       "default": 0,
+       "minimum": 0,
+       "title": "Offset",
+       "type": "integer"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response List Workers Api Workers Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "List Workers",
+    "tags": [
+     "workers"
+    ]
+   },
+   "post": {
+    "description": "Add a worker by hand. Workers imported from Simpro arrive through the sync instead (stage 5).",
+    "operationId": "create_worker_api_workers_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/WorkerIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Create Worker Api Workers Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Create Worker",
+    "tags": [
+     "workers"
+    ]
+   }
+  },
+  "/api/workers/certifications/all": {
+   "get": {
+    "description": "The certification register. `summary` counts use exactly the same filters as the rows\n(apart from the status filter itself), so the totals always match what is listed.",
+    "operationId": "all_certifications_api_workers_certifications_all_get",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "status",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "enum": [
+          "valid",
+          "expiring",
+          "expired",
+          "unknown"
+         ],
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Status"
+      }
+     },
+     {
+      "in": "query",
+      "name": "kind",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Kind"
+      }
+     },
+     {
+      "in": "query",
+      "name": "worker_id",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Worker Id"
+      }
+     },
+     {
+      "in": "query",
+      "name": "q",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "maxLength": 100,
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Q"
+      }
+     },
+     {
+      "in": "query",
+      "name": "include_archived",
+      "required": false,
+      "schema": {
+       "default": false,
+       "title": "Include Archived",
+       "type": "boolean"
+      }
+     },
+     {
+      "in": "query",
+      "name": "include_inactive_workers",
+      "required": false,
+      "schema": {
+       "default": false,
+       "title": "Include Inactive Workers",
+       "type": "boolean"
+      }
+     },
+     {
+      "in": "query",
+      "name": "limit",
+      "required": false,
+      "schema": {
+       "default": 50,
+       "maximum": 200,
+       "minimum": 1,
+       "title": "Limit",
+       "type": "integer"
+      }
+     },
+     {
+      "in": "query",
+      "name": "offset",
+      "required": false,
+      "schema": {
+       "default": 0,
+       "minimum": 0,
+       "title": "Offset",
+       "type": "integer"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response All Certifications Api Workers Certifications All Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "All Certifications",
+    "tags": [
+     "workers"
+    ]
+   }
+  },
+  "/api/workers/certifications/{cert_id}": {
+   "delete": {
+    "description": "Remove a certificate entered by mistake. If it replaced an earlier one, that one becomes current again.",
+    "operationId": "delete_certification_api_workers_certifications__cert_id__delete",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "cert_id",
+      "required": true,
+      "schema": {
+       "title": "Cert Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Delete Certification Api Workers Certifications  Cert Id  Delete",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Delete Certification",
+    "tags": [
+     "workers"
+    ]
+   },
+   "patch": {
+    "operationId": "update_certification_api_workers_certifications__cert_id__patch",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "cert_id",
+      "required": true,
+      "schema": {
+       "title": "Cert Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/CertPatch"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Update Certification Api Workers Certifications  Cert Id  Patch",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Update Certification",
+    "tags": [
+     "workers"
+    ]
+   }
+  },
+  "/api/workers/certifications/{cert_id}/archive": {
+   "post": {
+    "operationId": "archive_certification_api_workers_certifications__cert_id__archive_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "cert_id",
+      "required": true,
+      "schema": {
+       "title": "Cert Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Archive Certification Api Workers Certifications  Cert Id  Archive Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Archive Certification",
+    "tags": [
+     "workers"
+    ]
+   }
+  },
+  "/api/workers/certifications/{cert_id}/renew": {
+   "post": {
+    "description": "Record a renewal. The old certificate and its evidence are kept as history.",
+    "operationId": "renew_certification_api_workers_certifications__cert_id__renew_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "cert_id",
+      "required": true,
+      "schema": {
+       "title": "Cert Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/RenewIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Renew Certification Api Workers Certifications  Cert Id  Renew Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Renew Certification",
+    "tags": [
+     "workers"
+    ]
+   }
+  },
+  "/api/workers/certifications/{cert_id}/restore": {
+   "post": {
+    "operationId": "restore_certification_api_workers_certifications__cert_id__restore_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "cert_id",
+      "required": true,
+      "schema": {
+       "title": "Cert Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Restore Certification Api Workers Certifications  Cert Id  Restore Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Restore Certification",
+    "tags": [
+     "workers"
+    ]
+   }
+  },
+  "/api/workers/directory": {
+   "get": {
+    "description": "Names only, for pickers. Open to anyone who can view workers or fill in forms.",
+    "operationId": "directory_api_workers_directory_get",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "q",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "maxLength": 100,
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Q"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Directory Api Workers Directory Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Directory",
+    "tags": [
+     "workers"
+    ]
+   }
+  },
+  "/api/workers/me": {
+   "get": {
+    "operationId": "my_record_api_workers_me_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response My Record Api Workers Me Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "My Record",
+    "tags": [
+     "workers"
+    ]
+   },
+   "patch": {
+    "operationId": "edit_my_record_api_workers_me_patch",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/SelfEdit"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Edit My Record Api Workers Me Patch",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Edit My Record",
+    "tags": [
+     "workers"
+    ]
+   }
+  },
+  "/api/workers/{worker_id}": {
+   "delete": {
+    "description": "Soft delete. The login (if any) is unlinked but not removed; restore brings the record back.",
+    "operationId": "delete_worker_api_workers__worker_id__delete",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "worker_id",
+      "required": true,
+      "schema": {
+       "title": "Worker Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Delete Worker Api Workers  Worker Id  Delete",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Delete Worker",
+    "tags": [
+     "workers"
+    ]
+   },
+   "get": {
+    "operationId": "get_worker_api_workers__worker_id__get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "worker_id",
+      "required": true,
+      "schema": {
+       "title": "Worker Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Get Worker Api Workers  Worker Id  Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Get Worker",
+    "tags": [
+     "workers"
+    ]
+   },
+   "patch": {
+    "operationId": "update_worker_api_workers__worker_id__patch",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "worker_id",
+      "required": true,
+      "schema": {
+       "title": "Worker Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/WorkerPatch"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Update Worker Api Workers  Worker Id  Patch",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Update Worker",
+    "tags": [
+     "workers"
+    ]
+   }
+  },
+  "/api/workers/{worker_id}/archive": {
+   "post": {
+    "description": "Archive keeps the record and its history but takes the person off the roster and pickers.",
+    "operationId": "archive_worker_api_workers__worker_id__archive_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "worker_id",
+      "required": true,
+      "schema": {
+       "title": "Worker Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Archive Worker Api Workers  Worker Id  Archive Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Archive Worker",
+    "tags": [
+     "workers"
+    ]
+   }
+  },
+  "/api/workers/{worker_id}/certifications": {
+   "get": {
+    "operationId": "list_certifications_api_workers__worker_id__certifications_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "worker_id",
+      "required": true,
+      "schema": {
+       "title": "Worker Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "history",
+      "required": false,
+      "schema": {
+       "default": false,
+       "title": "History",
+       "type": "boolean"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response List Certifications Api Workers  Worker Id  Certifications Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "List Certifications",
+    "tags": [
+     "workers"
+    ]
+   },
+   "post": {
+    "operationId": "add_certification_api_workers__worker_id__certifications_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "worker_id",
+      "required": true,
+      "schema": {
+       "title": "Worker Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/CertIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Add Certification Api Workers  Worker Id  Certifications Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Add Certification",
+    "tags": [
+     "workers"
+    ]
+   }
+  },
+  "/api/workers/{worker_id}/certifications/{cert_id}/file": {
+   "get": {
+    "operationId": "evidence_file_api_workers__worker_id__certifications__cert_id__file_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "worker_id",
+      "required": true,
+      "schema": {
+       "title": "Worker Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "path",
+      "name": "cert_id",
+      "required": true,
+      "schema": {
+       "title": "Cert Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "download",
+      "required": false,
+      "schema": {
+       "default": false,
+       "title": "Download",
+       "type": "boolean"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Evidence File",
+    "tags": [
+     "workers"
+    ]
+   }
+  },
+  "/api/workers/{worker_id}/certifications/{cert_id}/upload": {
+   "post": {
+    "description": "Attach the certificate itself (PDF or photo). Replacing it is recorded in the worker's history.",
+    "operationId": "upload_evidence_api_workers__worker_id__certifications__cert_id__upload_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "worker_id",
+      "required": true,
+      "schema": {
+       "title": "Worker Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "path",
+      "name": "cert_id",
+      "required": true,
+      "schema": {
+       "title": "Cert Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "multipart/form-data": {
+       "schema": {
+        "$ref": "#/components/schemas/Body_upload_evidence_api_workers__worker_id__certifications__cert_id__upload_post"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Upload Evidence Api Workers  Worker Id  Certifications  Cert Id  Upload Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Upload Evidence",
+    "tags": [
+     "workers"
+    ]
+   }
+  },
+  "/api/workers/{worker_id}/history": {
+   "get": {
+    "operationId": "worker_history_api_workers__worker_id__history_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "worker_id",
+      "required": true,
+      "schema": {
+       "title": "Worker Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Worker History Api Workers  Worker Id  History Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Worker History",
+    "tags": [
+     "workers"
+    ]
+   }
+  },
+  "/api/workers/{worker_id}/link-user": {
+   "delete": {
+    "operationId": "unlink_user_api_workers__worker_id__link_user_delete",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "worker_id",
+      "required": true,
+      "schema": {
+       "title": "Worker Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Unlink User Api Workers  Worker Id  Link User Delete",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Unlink User",
+    "tags": [
+     "workers"
+    ]
+   },
+   "post": {
+    "operationId": "link_user_api_workers__worker_id__link_user_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "worker_id",
+      "required": true,
+      "schema": {
+       "title": "Worker Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/LinkUserIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Link User Api Workers  Worker Id  Link User Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Link User",
+    "tags": [
+     "workers"
+    ]
+   }
+  },
+  "/api/workers/{worker_id}/photo": {
+   "delete": {
+    "operationId": "delete_photo_api_workers__worker_id__photo_delete",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "worker_id",
+      "required": true,
+      "schema": {
+       "title": "Worker Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Delete Photo Api Workers  Worker Id  Photo Delete",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Delete Photo",
+    "tags": [
+     "workers"
+    ]
+   },
+   "get": {
+    "operationId": "get_photo_api_workers__worker_id__photo_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "worker_id",
+      "required": true,
+      "schema": {
+       "title": "Worker Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Get Photo",
+    "tags": [
+     "workers"
+    ]
+   },
+   "post": {
+    "operationId": "upload_photo_api_workers__worker_id__photo_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "worker_id",
+      "required": true,
+      "schema": {
+       "title": "Worker Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "multipart/form-data": {
+       "schema": {
+        "$ref": "#/components/schemas/Body_upload_photo_api_workers__worker_id__photo_post"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Upload Photo Api Workers  Worker Id  Photo Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Upload Photo",
+    "tags": [
+     "workers"
+    ]
+   }
+  },
+  "/api/workers/{worker_id}/provision-user": {
+   "post": {
+    "description": "Create a login for this worker and an invitation link. Nothing is emailed; the link is shown once.",
+    "operationId": "provision_user_api_workers__worker_id__provision_user_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "worker_id",
+      "required": true,
+      "schema": {
+       "title": "Worker Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ProvisionIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Provision User Api Workers  Worker Id  Provision User Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Provision User",
+    "tags": [
+     "workers"
+    ]
+   }
+  },
+  "/api/workers/{worker_id}/restore": {
+   "post": {
+    "operationId": "restore_worker_api_workers__worker_id__restore_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "worker_id",
+      "required": true,
+      "schema": {
+       "title": "Worker Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Restore Worker Api Workers  Worker Id  Restore Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Restore Worker",
+    "tags": [
+     "workers"
+    ]
+   }
+  },
+  "/api/workers/{worker_id}/reveal": {
+   "post": {
+    "description": "Show the protected values in full. Every reveal is written to the audit trail (never the values).",
+    "operationId": "reveal_protected_api_workers__worker_id__reveal_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "worker_id",
+      "required": true,
+      "schema": {
+       "title": "Worker Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Reveal Protected Api Workers  Worker Id  Reveal Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Reveal Protected",
+    "tags": [
+     "workers"
+    ]
+   }
+  },
+  "/api/workers/{worker_id}/unarchive": {
+   "post": {
+    "operationId": "unarchive_worker_api_workers__worker_id__unarchive_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "worker_id",
+      "required": true,
+      "schema": {
+       "title": "Worker Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Unarchive Worker Api Workers  Worker Id  Unarchive Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Unarchive Worker",
+    "tags": [
+     "workers"
     ]
    }
   }

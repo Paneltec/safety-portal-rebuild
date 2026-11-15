@@ -447,6 +447,13 @@ def test_gate_needs_both_switches_and_checks_the_callers_own_certificates(world,
     assert [(p["slug"], p["problem"]) for p in problems] == [("traffic_control", "expired"), ("first_aid", "unknown")]
     check = client.get(f"/api/forms/templates/{tid}/access-check", headers=worker).json()
     assert check["allowed"] is False and check["reason"] == "certification_gate" and len(check["certification_gate"]) == 2
+    # The office preview of what this person sees explains the same thing.
+    preview = client.get(f"/api/forms/assignments/effective?user_id={world.id('worker1')}", headers=admin).json()
+    row = next(f for f in preview["forms"] if f["template_id"] == tid)
+    assert row["blocked_by"].startswith("Certificates needed: Traffic Control: certificate has expired")
+    people = client.get("/api/forms/pickers/people?q=tom", headers=admin).json()["items"]
+    assert [p["id"] for p in people] == [world.id("worker1")]  # logins of this organisation only
+    assert client.get("/api/forms/pickers/people", headers=worker).status_code == 403
 
     client.post(f"{W}/certifications/{tc['id']}/renew", json={"expiry_date": iso(5)}, headers=admin)  # expiring still counts
     client.patch(f"{W}/certifications/{fa['id']}", json={"expiry_date": iso(200)}, headers=admin)

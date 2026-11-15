@@ -26,7 +26,7 @@ export function AssignmentRules({ url, title, everyoneLabel, note, readOnly = fa
   const rules = useLoad(() => api<{ rules: Rule[] }>(url), [url]);
   const roles = useLoad(() => api<{ roles: { role_id: string; name: string; is_active: boolean }[] }>("/api/admin/roles").catch(() => ({ roles: [] })), []);
   const companies = useLoad(() => api<{ companies: { id: string; name: string }[] }>("/api/org/companies"), []);
-  const people = useLoad(() => api<{ items: { id: string; label: string }[] }>("/api/forms/pickers/workers").catch(() => ({ items: [] })), []);
+  const people = useLoad(() => api<{ items: { id: string; label: string }[] }>("/api/forms/pickers/people").catch(() => ({ items: [] })), []);
   const [restricted, setRestricted] = useState(false);
   const [chosen, setChosen] = useState<Set<string>>(new Set());
   const [message, setMessage] = useState<Msg>(null);
