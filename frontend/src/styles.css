@@ -194,3 +194,21 @@ tr.clickable:hover td { background: #f7f9fb; }
 .gate-card { width: 100%; max-width: 480px; background: var(--surface); border-radius: 10px; padding: 24px 20px; display: flex; flex-direction: column; gap: 16px; }
 .gate-card h1 { font-size: 26px; }
 .big-btn { min-height: 56px; font-size: 17px; }
+
+/* ---------- inductions matrix ---------- */
+.matrix-wrap { overflow: auto; max-height: 70vh; border-top: 1px solid var(--line-soft); }
+.grid-matrix { border-collapse: separate; border-spacing: 0; font-size: 13px; }
+.grid-matrix th, .grid-matrix td { border-bottom: 1px solid var(--line-soft); border-right: 1px solid var(--line-soft); padding: 0; }
+.grid-matrix thead th { position: sticky; top: 0; z-index: 2; background: var(--surface); padding: 8px; min-width: 118px; max-width: 150px; vertical-align: bottom; text-align: left; font-weight: 600; white-space: normal; overflow-wrap: anywhere; }
+.grid-matrix tbody th { position: sticky; left: 0; z-index: 1; background: var(--surface); padding: 8px 10px; min-width: 170px; text-align: left; font-weight: 600; }
+.grid-matrix thead th:first-child { left: 0; z-index: 3; }
+.cell-btn { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 1px; width: 100%; min-height: 44px; padding: 5px 8px; border: 0; background: transparent; font: inherit; font-size: 12.5px; text-align: left; color: var(--text); cursor: pointer; }
+.cell-btn:disabled { cursor: default; }
+.cell-btn:not(:disabled):hover, .cell-btn:focus-visible { outline: 2px solid var(--link); outline-offset: -2px; }
+.cell-btn.valid { background: var(--ok-bg); color: var(--ok); }
+.cell-btn.expiring { background: var(--warn-bg); color: var(--warn); }
+.cell-btn.expired { background: var(--bad-bg); color: var(--bad); }
+.cell-btn.unknown { background: var(--ground); }
+.cell-btn.not_applicable { color: var(--muted); font-style: italic; }
+.cell-btn .cell-word { font-weight: 600; }
+.job-card { border: 1px solid var(--line); border-left: 4px solid var(--accent); border-radius: 6px; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; background: var(--surface); }

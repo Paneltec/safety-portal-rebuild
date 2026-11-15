@@ -180,13 +180,13 @@ POST,/api/companies/reimport,companies,reimport,CLASSIFY,,,NOT_STARTED,
 DELETE,/api/companies/{uid},companies,delete_row,CLASSIFY,,,NOT_STARTED,
 GET,/api/companies/{uid},companies,get_row,CLASSIFY,,,NOT_STARTED,
 PATCH,/api/companies/{uid},companies,patch_row,CLASSIFY,,,NOT_STARTED,
-GET,/api/completed-training/,completed_training,list_rows,CLASSIFY,,,NOT_STARTED,
-POST,/api/completed-training/,completed_training,create_row,CLASSIFY,,,NOT_STARTED,
+GET,/api/completed-training/,completed_training,list_rows,team/resource,inductions.list_training,tests/test_inductions_jobs.py,IMPLEMENTED_TESTED,"Typed records, own-only without team access (D-053)"
+POST,/api/completed-training/,completed_training,create_row,team/resource,inductions.add_training,tests/test_inductions_jobs.py,IMPLEMENTED_TESTED,
 GET,/api/completed-training/columns,completed_training,columns_metadata,CLASSIFY,,,NOT_STARTED,
 POST,/api/completed-training/reimport,completed_training,reimport,CLASSIFY,,,NOT_STARTED,
-DELETE,/api/completed-training/{uid},completed_training,delete_row,CLASSIFY,,,NOT_STARTED,
-GET,/api/completed-training/{uid},completed_training,get_row,CLASSIFY,,,NOT_STARTED,
-PATCH,/api/completed-training/{uid},completed_training,patch_row,CLASSIFY,,,NOT_STARTED,
+DELETE,/api/completed-training/{uid},completed_training,delete_row,team/resource,inductions.delete_training,tests/test_inductions_jobs.py,IMPLEMENTED_TESTED,Soft delete
+GET,/api/completed-training/{uid},completed_training,get_row,team/resource,inductions.get_training,tests/test_inductions_jobs.py,IMPLEMENTED_TESTED,
+PATCH,/api/completed-training/{uid},completed_training,patch_row,team/resource,inductions.edit_training,tests/test_inductions_jobs.py,IMPLEMENTED_TESTED,
 GET,/api/contractors,contractors,list_contractors,team/resource,suppliers.list_contractors,tests/test_suppliers_renewals.py,IMPLEMENTED_TESTED,D-047 one directory; contractors are flagged suppliers
 POST,/api/contractors,contractors,create_contractor,team/resource,suppliers.create_supplier,tests/test_suppliers_renewals.py,IMPLEMENTED_TESTED,POST /api/suppliers with is_contractor
 POST,/api/contractors/import-from-simpro,contractors,import_from_simpro,CLASSIFY,,,NOT_STARTED,
@@ -203,11 +203,11 @@ POST,/api/cs-incident/reimport,cs_incident,reimport,CLASSIFY,,,NOT_STARTED,
 DELETE,/api/cs-incident/{uid},cs_incident,delete_row,CLASSIFY,,,NOT_STARTED,
 GET,/api/cs-incident/{uid},cs_incident,get_row,CLASSIFY,,,NOT_STARTED,
 PATCH,/api/cs-incident/{uid},cs_incident,patch_row,CLASSIFY,,,NOT_STARTED,
-GET,/api/daily-jobs/admin/sites,daily_jobs_batch,admin_list_sites_v2,CLASSIFY,,,NOT_STARTED,
+GET,/api/daily-jobs/admin/sites,daily_jobs_batch,admin_list_sites_v2,admin-owner,sites.list_sites,tests/test_inductions_jobs.py,IMPLEMENTED_TESTED,The issue screen reads the sites register
 GET,/api/daily-jobs/admin/trucks,daily_jobs_batch,admin_list_trucks,CLASSIFY,,,NOT_STARTED,
-GET,/api/daily-jobs/admin/workers,daily_jobs_batch,admin_list_workers_v2,CLASSIFY,,,NOT_STARTED,
-POST,/api/daily-jobs/bulk-create,daily_jobs_batch,bulk_create_daily_jobs,CLASSIFY,,,NOT_STARTED,
-GET,/api/daily-jobs/today,daily_jobs_batch,admin_all_today,CLASSIFY,,,NOT_STARTED,
+GET,/api/daily-jobs/admin/workers,daily_jobs_batch,admin_list_workers_v2,admin-owner,workers.list_workers,tests/test_inductions_jobs.py,IMPLEMENTED_TESTED,The issue screen reads the worker roster
+POST,/api/daily-jobs/bulk-create,daily_jobs_batch,bulk_create_daily_jobs,admin-owner,jobs.bulk_create,tests/test_inductions_jobs.py,IMPLEMENTED_TESTED,trial_run saves nothing; override cancels the earlier job
+GET,/api/daily-jobs/today,daily_jobs_batch,admin_all_today,admin-owner,jobs.list_jobs,tests/test_inductions_jobs.py,IMPLEMENTED_TESTED,GET /api/daily-jobs?date=
 GET,/api/dashboard/metrics,dashboard,metrics,CLASSIFY,,,NOT_STARTED,
 GET,/api/dashboard/module-stats,dashboard,module_stats,CLASSIFY,,,NOT_STARTED,
 GET,/api/dashboards/{module},dashboards,module_dashboard,CLASSIFY,,,NOT_STARTED,
@@ -468,10 +468,10 @@ GET,/api/induction-columns/cleanup-suggestions,induction_columns,cleanup_suggest
 POST,/api/induction-columns/clear-column-key,induction_columns,clear_column_key,CLASSIFY,,,NOT_STARTED,
 POST,/api/induction-columns/merge,induction_columns,merge_columns,CLASSIFY,,,NOT_STARTED,
 POST,/api/induction-columns/move-to-certifications,induction_columns,move_to_certifications,CLASSIFY,,,NOT_STARTED,
-GET,/api/inductions/types,induction_types,list_types,CLASSIFY,,,NOT_STARTED,
-POST,/api/inductions/types,induction_types,create_type,CLASSIFY,,,NOT_STARTED,
-DELETE,/api/inductions/types/{tid},induction_types,delete_type,CLASSIFY,,,NOT_STARTED,
-PATCH,/api/inductions/types/{tid},induction_types,rename_type,CLASSIFY,,,NOT_STARTED,
+GET,/api/inductions/types,induction_types,list_types,team/resource,inductions.list_types,tests/test_inductions_jobs.py,IMPLEMENTED_TESTED,Induction types are certificate kinds in the induction category (D-052)
+POST,/api/inductions/types,induction_types,create_type,team/resource,inductions.create_type,tests/test_inductions_jobs.py,IMPLEMENTED_TESTED,"inductions.edit with team view, not admin-only"
+DELETE,/api/inductions/types/{tid},induction_types,delete_type,team/resource,inductions.retire_type,tests/test_inductions_jobs.py,IMPLEMENTED_TESTED,Retires; recorded completions keep the type
+PATCH,/api/inductions/types/{tid},induction_types,rename_type,team/resource,inductions.rename_type,tests/test_inductions_jobs.py,IMPLEMENTED_TESTED,
 GET,/api/inspections,crud,list_items,team/resource,safety.list_records,tests/test_safety.py,IMPLEMENTED_TESTED,Paginated; own-only without team_view on team-scoped registers
 POST,/api/inspections,crud,create_item,team/resource,safety.create,tests/test_safety.py,IMPLEMENTED_TESTED,"D-030 body is {fields:[{id,value}]} validated against the register's form schema"
 POST,/api/inspections/archive,crud,bulk_archive,team/resource,safety.bulk_archive,tests/test_safety.py,IMPLEMENTED_TESTED,Needs the archive right; dry run by default
@@ -577,17 +577,17 @@ GET,/api/mobile/ai/briefing,mobile_data,ai_briefing,CLASSIFY,,,NOT_STARTED,
 POST,/api/mobile/auth/pin-set,mobile_auth,pin_set,CLASSIFY,,,NOT_STARTED,
 POST,/api/mobile/auth/pin-status,mobile_auth,pin_status,CLASSIFY,,,NOT_STARTED,
 POST,/api/mobile/auth/pin-verify,mobile_auth,pin_verify,CLASSIFY,,,NOT_STARTED,
-POST,/api/mobile/daily-jobs,mobile_daily_jobs,create_daily_job,CLASSIFY,,,NOT_STARTED,
-GET,/api/mobile/daily-jobs/admin/assignments,mobile_daily_jobs_admin,admin_list_assignments,CLASSIFY,,,NOT_STARTED,
-GET,/api/mobile/daily-jobs/admin/sites,mobile_daily_jobs_admin,admin_list_sites,CLASSIFY,,,NOT_STARTED,
-GET,/api/mobile/daily-jobs/admin/workers,mobile_daily_jobs_admin,admin_list_workers,CLASSIFY,,,NOT_STARTED,
+POST,/api/mobile/daily-jobs,mobile_daily_jobs,create_daily_job,admin-owner,jobs.create_job,tests/test_inductions_jobs.py,IMPLEMENTED_TESTED,POST /api/daily-jobs
+GET,/api/mobile/daily-jobs/admin/assignments,mobile_daily_jobs_admin,admin_list_assignments,admin-owner,jobs.list_jobs,tests/test_inductions_jobs.py,IMPLEMENTED_TESTED,"Organisation timezone, not a fixed Sydney day"
+GET,/api/mobile/daily-jobs/admin/sites,mobile_daily_jobs_admin,admin_list_sites,admin-owner,sites.list_sites,tests/test_inductions_jobs.py,IMPLEMENTED_TESTED,Same
+GET,/api/mobile/daily-jobs/admin/workers,mobile_daily_jobs_admin,admin_list_workers,admin-owner,workers.list_workers,tests/test_inductions_jobs.py,IMPLEMENTED_TESTED,Same
 DELETE,/api/mobile/daily-jobs/admin/{assignment_id}/pdf,mobile_daily_jobs_admin,admin_soft_delete_assignment_pdf,CLASSIFY,,,NOT_STARTED,
 POST,/api/mobile/daily-jobs/admin/{assignment_id}/pdf/undelete,mobile_daily_jobs_admin,admin_undelete_assignment_pdf,CLASSIFY,,,NOT_STARTED,
 POST,/api/mobile/daily-jobs/parse-pdf,mobile_daily_jobs,parse_pdf,CLASSIFY,,,NOT_STARTED,
 GET,/api/mobile/daily-jobs/pdf/{pdf_id},mobile_daily_jobs,download_pdf,CLASSIFY,,,NOT_STARTED,
-GET,/api/mobile/daily-jobs/today,mobile_daily_jobs,get_today,CLASSIFY,,,NOT_STARTED,
-POST,/api/mobile/daily-jobs/{assignment_id}/accept,mobile_daily_jobs,accept,CLASSIFY,,,NOT_STARTED,
-POST,/api/mobile/daily-jobs/{assignment_id}/decline,mobile_daily_jobs,decline,CLASSIFY,,,NOT_STARTED,
+GET,/api/mobile/daily-jobs/today,mobile_daily_jobs,get_today,authenticated-own,jobs.my_job_today,tests/test_inductions_jobs.py,IMPLEMENTED_TESTED,GET /api/daily-jobs/mine/today; no earlier-day fallback
+POST,/api/mobile/daily-jobs/{assignment_id}/accept,mobile_daily_jobs,accept,authenticated-own,jobs.accept_job,tests/test_inductions_jobs.py,IMPLEMENTED_TESTED,Assignee only; idempotent
+POST,/api/mobile/daily-jobs/{assignment_id}/decline,mobile_daily_jobs,decline,authenticated-own,jobs.decline_job,tests/test_inductions_jobs.py,IMPLEMENTED_TESTED,Reason required
 POST,/api/mobile/daily-jobs/{assignment_id}/signon,mobile_daily_jobs,signon_stub,CLASSIFY,,,NOT_STARTED,
 POST,/api/mobile/downloads/android/ingest-from-eas,mobile_downloads,android_ingest_from_eas,CLASSIFY,,,NOT_STARTED,
 GET,/api/mobile/downloads/android/latest.apk,mobile_downloads,android_latest_apk,CLASSIFY,,,NOT_STARTED,
@@ -947,12 +947,12 @@ POST,/api/workers/certifications/{cert_id}/archive,worker_certifications,archive
 POST,/api/workers/certifications/{cert_id}/restore,worker_certifications,restore_cert,team/resource,workers.restore_certification,tests/test_workers.py,IMPLEMENTED_TESTED,
 POST,/api/workers/certifications/{cert_id}/send-reminder,worker_certifications,manual_send_reminder,CLASSIFY,,,NOT_STARTED,
 GET,/api/workers/directory,workers,workers_directory,authenticated-own,workers.directory,tests/test_workers.py,IMPLEMENTED_TESTED,Names only
-PUT,/api/workers/inductions/cell,workers_inductions,edit_cell,CLASSIFY,,,NOT_STARTED,
-GET,/api/workers/inductions/export.xlsx,workers_inductions,export_matrix,CLASSIFY,,,NOT_STARTED,
+PUT,/api/workers/inductions/cell,workers_inductions,edit_cell,team/resource,inductions.set_cell,tests/test_inductions_jobs.py,IMPLEMENTED_TESTED,"Exactly one of date, does-not-expire, not-applicable, clear"
+GET,/api/workers/inductions/export.xlsx,workers_inductions,export_matrix,team/resource,inductions.export_matrix,tests/test_inductions_jobs.py,IMPLEMENTED_TESTED,CSV at /export.csv (opens in Excel); the access sheet is not carried over
 POST,/api/workers/inductions/import-xlsx,workers_inductions,import_xlsx_preview,CLASSIFY,,,NOT_STARTED,
 POST,/api/workers/inductions/import-xlsx/commit,workers_inductions,import_xlsx_commit,CLASSIFY,,,NOT_STARTED,
 POST,/api/workers/inductions/import-xlsx/upload,workers_inductions,import_xlsx_upload,CLASSIFY,,,NOT_STARTED,
-GET,/api/workers/inductions/matrix,workers_inductions,induction_matrix,CLASSIFY,,,NOT_STARTED,
+GET,/api/workers/inductions/matrix,workers_inductions,induction_matrix,team/resource,inductions.matrix,tests/test_inductions_jobs.py,IMPLEMENTED_TESTED,Own row only without inductions.team_view
 POST,/api/workers/inductions/print,workers_inductions,print_inductions,CLASSIFY,,,NOT_STARTED,
 POST,/api/workers/sync-from-simpro,workers,sync_from_simpro,CLASSIFY,,,NOT_STARTED,
 DELETE,/api/workers/{worker_id},workers,delete_worker,team/resource,workers.delete_worker,tests/test_workers.py,IMPLEMENTED_TESTED,"Soft delete; login unlinked, not removed"
@@ -963,19 +963,19 @@ POST,/api/workers/{worker_id}/certifications,worker_certifications,create_cert,t
 POST,/api/workers/{worker_id}/certifications/upload,worker_certifications,upload_cert_file,team/resource,workers.add_certification + upload_evidence,tests/test_workers.py,IMPLEMENTED_TESTED,"Two steps: create, then attach the file"
 GET,/api/workers/{worker_id}/certifications/{cert_id}/file,simpro_zip_import,stream_cert_file,team/resource,workers.evidence_file,tests/test_workers.py,IMPLEMENTED_TESTED,
 POST,/api/workers/{worker_id}/certifications/{cert_id}/upload,worker_certifications,attach_cert_file,team/resource,workers.upload_evidence,tests/test_workers.py,IMPLEMENTED_TESTED,
-GET,/api/workers/{worker_id}/hr-documents,simpro_zip_import,list_hr_documents,CLASSIFY,,,NOT_STARTED,
-POST,/api/workers/{worker_id}/hr-documents,simpro_zip_import,upload_hr_document,CLASSIFY,,,NOT_STARTED,
-DELETE,/api/workers/{worker_id}/hr-documents/{doc_id},simpro_zip_import,delete_hr_document,CLASSIFY,,,NOT_STARTED,
-PATCH,/api/workers/{worker_id}/hr-documents/{doc_id},simpro_zip_import,patch_hr_document,CLASSIFY,,,NOT_STARTED,
-POST,/api/workers/{worker_id}/hr-documents/{doc_id}/archive,simpro_zip_import,archive_hr_document,CLASSIFY,,,NOT_STARTED,
-GET,/api/workers/{worker_id}/hr-documents/{doc_id}/file,simpro_zip_import,stream_hr_document,CLASSIFY,,,NOT_STARTED,
-POST,/api/workers/{worker_id}/hr-documents/{doc_id}/restore,simpro_zip_import,restore_hr_document,CLASSIFY,,,NOT_STARTED,
+GET,/api/workers/{worker_id}/hr-documents,simpro_zip_import,list_hr_documents,admin-owner,inductions.list_hr,tests/test_inductions_jobs.py,IMPLEMENTED_TESTED,hr_employees.view
+POST,/api/workers/{worker_id}/hr-documents,simpro_zip_import,upload_hr_document,admin-owner,inductions.upload_hr,tests/test_inductions_jobs.py,IMPLEMENTED_TESTED,hr_employees.edit
+DELETE,/api/workers/{worker_id}/hr-documents/{doc_id},simpro_zip_import,delete_hr_document,admin-owner,inductions.hr_delete,tests/test_inductions_jobs.py,IMPLEMENTED_TESTED,"Soft delete, audited"
+PATCH,/api/workers/{worker_id}/hr-documents/{doc_id},simpro_zip_import,patch_hr_document,admin-owner,inductions.edit_hr,tests/test_inductions_jobs.py,IMPLEMENTED_TESTED,Title and notes only
+POST,/api/workers/{worker_id}/hr-documents/{doc_id}/archive,simpro_zip_import,archive_hr_document,admin-owner,inductions.hr_archive,tests/test_inductions_jobs.py,IMPLEMENTED_TESTED,
+GET,/api/workers/{worker_id}/hr-documents/{doc_id}/file,simpro_zip_import,stream_hr_document,admin-owner,inductions.hr_file,tests/test_inductions_jobs.py,IMPLEMENTED_TESTED,hr_employees.reveal_pii; every open audited (D-054)
+POST,/api/workers/{worker_id}/hr-documents/{doc_id}/restore,simpro_zip_import,restore_hr_document,admin-owner,inductions.hr_restore,tests/test_inductions_jobs.py,IMPLEMENTED_TESTED,
 GET,/api/workers/{worker_id}/id-card.pdf,workers_qr,worker_id_card_pdf,CLASSIFY,,,NOT_STARTED,
-POST,/api/workers/{worker_id}/inductions,workers_inductions,create_induction,CLASSIFY,,,NOT_STARTED,
-DELETE,/api/workers/{worker_id}/inductions/{induction_id},workers_inductions,delete_induction,CLASSIFY,,,NOT_STARTED,
-GET,/api/workers/{worker_id}/inductions/{induction_id},workers_inductions,get_induction,CLASSIFY,,,NOT_STARTED,
-PATCH,/api/workers/{worker_id}/inductions/{induction_id},workers_inductions,patch_induction,CLASSIFY,,,NOT_STARTED,
-POST,/api/workers/{worker_id}/inductions/{induction_id}/file,workers_inductions,upload_induction_file,CLASSIFY,,,NOT_STARTED,
+POST,/api/workers/{worker_id}/inductions,workers_inductions,create_induction,team/resource,inductions.set_cell,tests/test_inductions_jobs.py,IMPLEMENTED_TESTED,Folded into the cell route and the certification routes
+DELETE,/api/workers/{worker_id}/inductions/{induction_id},workers_inductions,delete_induction,team/resource,inductions.set_cell,tests/test_inductions_jobs.py,IMPLEMENTED_TESTED,clear=true
+GET,/api/workers/{worker_id}/inductions/{induction_id},workers_inductions,get_induction,team/resource,workers.list_certifications,tests/test_inductions_jobs.py,IMPLEMENTED_TESTED,An induction is a certification row
+PATCH,/api/workers/{worker_id}/inductions/{induction_id},workers_inductions,patch_induction,team/resource,workers.update_certification,tests/test_inductions_jobs.py,IMPLEMENTED_TESTED,PATCH /api/workers/certifications/{cert_id}
+POST,/api/workers/{worker_id}/inductions/{induction_id}/file,workers_inductions,upload_induction_file,team/resource,workers.upload_evidence,tests/test_inductions_jobs.py,IMPLEMENTED_TESTED,Certificate evidence upload
 POST,/api/workers/{worker_id}/link-user,worker_user_provisioning_routes,link_existing,team/resource,workers.link_user,tests/test_workers.py,IMPLEMENTED_TESTED,One login per worker (unique index)
 DELETE,/api/workers/{worker_id}/nfc-pair,workers_qr,nfc_unpair,CLASSIFY,,,NOT_STARTED,
 POST,/api/workers/{worker_id}/nfc-pair,workers_qr,nfc_pair,CLASSIFY,,,NOT_STARTED,
@@ -1088,3 +1088,11 @@ POST,/api/renewals/{renewal_id}/review,renewals,,team/resource,renewals.review,t
 POST,/api/renewals/{renewal_id}/reissue,renewals,,team/resource,renewals.reissue,tests/test_suppliers_renewals.py,IMPLEMENTED_TESTED,"New: fresh link, previous one dies"
 GET,/api/renewals/{renewal_id}/uploads/{upload_id}/file,renewals,,team/resource,renewals.upload_file,tests/test_suppliers_renewals.py,IMPLEMENTED_TESTED,New
 POST,/api/public/renewals/{token}/upload,renewals,,public-scoped,renewals.public_upload,tests/test_suppliers_renewals.py,IMPLEMENTED_TESTED,New: one file per requested document; type and size checked
+POST,/api/inductions/types/{tid}/restore,inductions,,team/resource,inductions.restore_type,tests/test_inductions_jobs.py,IMPLEMENTED_TESTED,New
+POST,/api/completed-training/{uid}/file,training,,team/resource,inductions.training_evidence,tests/test_inductions_jobs.py,IMPLEMENTED_TESTED,New: certificate for a course
+GET,/api/completed-training/{uid}/file,training,,team/resource,inductions.training_file,tests/test_inductions_jobs.py,IMPLEMENTED_TESTED,New
+GET,/api/daily-jobs/mine,daily jobs,,authenticated-own,jobs.my_jobs,tests/test_inductions_jobs.py,IMPLEMENTED_TESTED,New: upcoming and recent
+GET,/api/daily-jobs/{job_id},daily jobs,,authenticated-own,jobs.get_job,tests/test_inductions_jobs.py,IMPLEMENTED_TESTED,New: admin or the assignee
+PATCH,/api/daily-jobs/{job_id},daily jobs,,admin-owner,jobs.update_job,tests/test_inductions_jobs.py,IMPLEMENTED_TESTED,New: open jobs only
+POST,/api/daily-jobs/{job_id}/cancel,daily jobs,,admin-owner,jobs.cancel_job,tests/test_inductions_jobs.py,IMPLEMENTED_TESTED,New
+POST,/api/daily-jobs/{job_id}/complete,daily jobs,,authenticated-own,jobs.complete_job,tests/test_inductions_jobs.py,IMPLEMENTED_TESTED,New: assignee marks done

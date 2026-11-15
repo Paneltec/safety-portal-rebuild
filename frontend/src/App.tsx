@@ -21,6 +21,8 @@ import { Workers } from "./pages/Workers";
 import { SiteDetail, Sites } from "./pages/Sites";
 import { PublicSignOn, StaffSignOn } from "./pages/SiteSignOn";
 import { Visitors } from "./pages/Visitors";
+import { Inductions } from "./pages/Inductions";
+import { DailyJobs, MyWork } from "./pages/Jobs";
 import { Renew } from "./pages/Renew";
 import { Renewals } from "./pages/Renewals";
 import { SupplierDetail, Suppliers } from "./pages/Suppliers";
@@ -66,6 +68,9 @@ export function App() {
         <Route path="suppliers" element={<Suppliers />} />
         <Route path="suppliers/:supplierId" element={<SupplierDetail />} />
         <Route path="renewals" element={<Renewals />} />
+        <Route path="inductions" element={<Inductions />} />
+        <Route path="daily-jobs" element={<DailyJobs />} />
+        <Route path="my-work" element={<MyWork />} />
         <Route path="site-sign-on/:token" element={<StaffSignOn />} />
         <Route path="documents" element={<Documents />} />
         <Route path="documents/:folderId" element={<Documents />} />

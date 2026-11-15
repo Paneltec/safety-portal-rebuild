@@ -258,12 +258,9 @@ function Input(props: Props & { field: FieldDef; value: unknown }) {
     case "site_picker":
       return <SitePicker field={field} value={value} set={set} />;
     case "job_picker":
+      return <JobPicker field={field} value={value} set={set} />;
     case "asset_qr":
-      return (
-        <Notice tone="info">
-          {field.type === "job_picker" ? "Jobs" : "Assets"} cannot be chosen yet. This part of the portal is built in a later stage.
-        </Notice>
-      );
+      return <Notice tone="info">Assets cannot be chosen yet. This part of the portal is built in a later stage.</Notice>;
     case "corrective_actions":
       return <ActionsInput value={(value as Action[]) ?? []} set={set} />;
     case "table":
@@ -532,6 +529,24 @@ function WorkerPicker({ field, value, set }: { field: FieldDef; value: unknown; 
       value={(value as Ref)?.id ?? ""} onChange={(e) => set(people.find((p) => p.id === e.target.value))}>
       <option value="">Choose…</option>
       {people.map((p) => <option key={p.id} value={p.id}>{p.label}</option>)}
+    </select>
+  );
+}
+
+function JobPicker({ field, value, set }: { field: FieldDef; value: unknown; set: (v: unknown) => void }) {
+  const [jobs, setJobs] = useState<Ref[] | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  useEffect(() => {
+    api<{ items: Ref[] }>("/api/forms/pickers/jobs").then((r) => setJobs(r.items)).catch((e) => setError(errorMessage(e)));
+  }, []);
+  if (error) return <Notice tone="bad">{error}</Notice>;
+  if (!jobs) return <span className="muted">Loading jobs…</span>;
+  if (jobs.length === 0) return <Notice tone="info">You have no jobs from the last week to choose from. The office issues jobs under Daily jobs.</Notice>;
+  return (
+    <select aria-labelledby={`label-${field.id}`} style={{ minHeight: 44, padding: "0 10px", border: "1px solid var(--control)", borderRadius: 6, font: "inherit" }}
+      value={(value as Ref)?.id ?? ""} onChange={(e) => set(jobs.find((j) => j.id === e.target.value))}>
+      <option value="">Choose…</option>
+      {jobs.map((j) => <option key={j.id} value={j.id}>{j.label}</option>)}
     </select>
   );
 }

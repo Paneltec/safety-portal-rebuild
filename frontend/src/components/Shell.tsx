@@ -16,7 +16,7 @@ export function Shell() {
   const isAdmin = me.role_id === "admin";
   // Only screens that exist are listed, so no menu item leads to a blank page.
   const groups: { label: string; items: NavItem[] }[] = [
-    { label: "Overview", items: [{ to: "/app/home", label: "Home", show: true }] },
+    { label: "Overview", items: [{ to: "/app/home", label: "Home", show: true }, { to: "/app/my-work", label: "My work", show: true }] },
     {
       label: "Capture",
       items: [
@@ -35,6 +35,8 @@ export function Shell() {
       items: [
         { to: "/app/workers", label: can("workers", "team_view") ? "Workers" : "My worker record", show: can("workers", "view") },
         { to: "/app/certifications", label: "Certifications", show: can("certifications", "view") },
+        { to: "/app/inductions", label: "Inductions & training", show: can("inductions", "view") },
+        { to: "/app/daily-jobs", label: "Daily jobs", show: isAdmin },
         { to: "/app/suppliers", label: can("suppliers", "view") ? "Suppliers" : "My company", show: can("suppliers", "view") || can("contractors", "view") },
         { to: "/app/renewals", label: "Renewals", show: can("renewals", "view") },
         { to: "/app/sites", label: "Sites", show: can("sites", "view") },

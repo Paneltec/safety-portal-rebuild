@@ -32,6 +32,20 @@ const HISTORY_LABELS: Record<string, string> = {
   "certification.archived": "Certificate archived",
   "certification.restored": "Certificate restored",
   "certification.evidence_uploaded": "Certificate file uploaded",
+  "induction.recorded": "Induction recorded",
+  "induction.cleared": "Induction cleared",
+  "induction.marked_not_applicable": "Induction marked not applicable",
+  "training.recorded": "Training recorded",
+  "training.updated": "Training changed",
+  "training.deleted": "Training removed",
+  "training.evidence_uploaded": "Training certificate uploaded",
+  "hr_document.uploaded": "HR document added",
+  "hr_document.opened": "HR document opened",
+  "hr_document.updated": "HR document details changed",
+  "hr_document.archived": "HR document archived",
+  "hr_document.restored": "HR document restored",
+  "hr_document.deleted": "HR document deleted",
+  "renewal.accepted_documents": "Certificates accepted from a renewal link",
 };
 
 export function WorkerDetail() {
@@ -160,6 +174,7 @@ export function WorkerDetail() {
       {w.protected && <ProtectedCard worker={w} onChanged={worker.reload} />}
       <LoginCard worker={w} onChanged={worker.reload} onMessage={setMessage} />
       <CertsCard workerId={w.id} workerName={w.name} />
+      {can("hr_employees", "view") && <HrDocsCard workerId={w.id} timezone={tz} />}
 
       {(can("workers", "archive") || can("workers", "delete")) && (
         <section className="card card-pad stack">
@@ -701,6 +716,78 @@ function CertForm({ workerId, workerName, mode, cert, onClose, onSaved }: {
         </div>
       </form>
     </Modal>
+  );
+}
+
+// ---------- HR documents ----------
+
+interface HrDoc { id: string; title: string; notes: string | null; file: { name: string } | null; file_url: string; uploaded_by: string; created_at: string; archived_at: string | null }
+
+function HrDocsCard({ workerId, timezone }: { workerId: string; timezone: string }) {
+  const [archived, setArchived] = useState(false);
+  const docs = useLoad(() => api<{ items: HrDoc[]; can_open: boolean; can_edit: boolean }>(`/api/workers/${workerId}/hr-documents?include_archived=${archived}`), [workerId, archived]);
+  const input = useRef<HTMLInputElement>(null);
+  const [message, setMessage] = useState<Msg>(null);
+
+  async function run(action: () => Promise<unknown>, done: string) {
+    setMessage(null);
+    try { await action(); setMessage({ tone: "ok", text: done }); docs.reload(); } catch (e) { setMessage({ tone: "bad", text: errorMessage(e) }); }
+  }
+
+  return (
+    <section className="card">
+      <div className="card-head">
+        <h2>HR documents</h2>
+        <div className="row">
+          <label className="check"><input type="checkbox" checked={archived} onChange={(e) => setArchived(e.target.checked)} /> Show archived</label>
+          {docs.data?.can_edit && (
+            <>
+              <input ref={input} type="file" className="sr-only" aria-label="Choose an HR document"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  e.target.value = "";
+                  if (!file) return;
+                  const form = new FormData();
+                  form.append("file", file);
+                  void run(() => api(`/api/workers/${workerId}/hr-documents`, { form }), "Document added.");
+                }} />
+              <button type="button" className="btn small primary" onClick={() => input.current?.click()}>Add document</button>
+            </>
+          )}
+        </div>
+      </div>
+      <div className="card-pad stack" style={{ paddingTop: 4, paddingBottom: 8 }}>
+        <p className="small muted">Private and confidential. Only people with HR access see this list, opening a file needs a further permission, and every time a file is opened it is written to this worker's history.</p>
+        {message && <Notice tone={message.tone}>{message.text}</Notice>}
+      </div>
+      {docs.error ? <div className="card-pad"><LoadError message={docs.error} onRetry={docs.reload} /></div> : !docs.data ? <Loading /> : docs.data.items.length === 0 ? (
+        <div className="empty">No HR documents.</div>
+      ) : (
+        <div className="table-wrap">
+          <table>
+            <thead><tr><th scope="col">Document</th><th scope="col">Added</th><th scope="col"><span className="sr-only">Actions</span></th></tr></thead>
+            <tbody>
+              {docs.data.items.map((d) => (
+                <tr key={d.id}>
+                  <td>{d.title}{d.archived_at ? <> <Chip tone="dashed" icon={false}>Archived</Chip></> : null}{d.notes ? <div className="small muted">{d.notes}</div> : null}</td>
+                  <td className="small">{d.uploaded_by} · {formatDateTime(d.created_at, timezone)}</td>
+                  <td>
+                    <span className="row" style={{ gap: 6, justifyContent: "flex-end" }}>
+                      {docs.data!.can_open
+                        ? <button type="button" className="btn small" onClick={() => void openFile(d.file_url, d.file?.name ?? d.title, false).catch((e) => setMessage({ tone: "bad", text: errorMessage(e) }))}>Open</button>
+                        : <span className="small muted">You cannot open HR files</span>}
+                      {docs.data!.can_edit && (d.archived_at
+                        ? <button type="button" className="btn small" onClick={() => void run(() => api(`/api/workers/${workerId}/hr-documents/${d.id}/restore`, { method: "POST" }), "Document restored.")}>Restore</button>
+                        : <button type="button" className="btn small" onClick={() => void run(() => api(`/api/workers/${workerId}/hr-documents/${d.id}/archive`, { method: "POST" }), "Document archived.")}>Archive</button>)}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </section>
   );
 }
 

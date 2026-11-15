@@ -361,6 +361,60 @@ FEATURES.update({
     "CERT-01": ("PARTIAL", "tests/test_workers.py; tests/test_suppliers_renewals.py; e2e workers step", "Built: kinds with alias normalisation, issue/expiry, evidence files, valid/expiring/expired/unknown/missing, renewal that keeps earlier evidence, register whose totals match its filters, own view, renewal links for workers. Outstanding: reminders (stage 5), bulk actions."),
 })
 
+T_IND = "tests/test_inductions_jobs.py"
+DONE.update({
+    ("GET", "/api/inductions/types"): ("team/resource", "inductions.list_types", T_IND, "IMPLEMENTED_TESTED", "Induction types are certificate kinds in the induction category (D-052)"),
+    ("POST", "/api/inductions/types"): ("team/resource", "inductions.create_type", T_IND, "IMPLEMENTED_TESTED", "inductions.edit with team view, not admin-only"),
+    ("PATCH", "/api/inductions/types/{tid}"): ("team/resource", "inductions.rename_type", T_IND, "IMPLEMENTED_TESTED", ""),
+    ("DELETE", "/api/inductions/types/{tid}"): ("team/resource", "inductions.retire_type", T_IND, "IMPLEMENTED_TESTED", "Retires; recorded completions keep the type"),
+    ("GET", "/api/workers/inductions/matrix"): ("team/resource", "inductions.matrix", T_IND, "IMPLEMENTED_TESTED", "Own row only without inductions.team_view"),
+    ("PUT", "/api/workers/inductions/cell"): ("team/resource", "inductions.set_cell", T_IND, "IMPLEMENTED_TESTED", "Exactly one of date, does-not-expire, not-applicable, clear"),
+    ("GET", "/api/workers/inductions/export.xlsx"): ("team/resource", "inductions.export_matrix", T_IND, "IMPLEMENTED_TESTED", "CSV at /export.csv (opens in Excel); the access sheet is not carried over"),
+    ("POST", "/api/workers/{worker_id}/inductions"): ("team/resource", "inductions.set_cell", T_IND, "IMPLEMENTED_TESTED", "Folded into the cell route and the certification routes"),
+    ("GET", "/api/workers/{worker_id}/inductions/{induction_id}"): ("team/resource", "workers.list_certifications", T_IND, "IMPLEMENTED_TESTED", "An induction is a certification row"),
+    ("PATCH", "/api/workers/{worker_id}/inductions/{induction_id}"): ("team/resource", "workers.update_certification", T_IND, "IMPLEMENTED_TESTED", "PATCH /api/workers/certifications/{cert_id}"),
+    ("DELETE", "/api/workers/{worker_id}/inductions/{induction_id}"): ("team/resource", "inductions.set_cell", T_IND, "IMPLEMENTED_TESTED", "clear=true"),
+    ("POST", "/api/workers/{worker_id}/inductions/{induction_id}/file"): ("team/resource", "workers.upload_evidence", T_IND, "IMPLEMENTED_TESTED", "Certificate evidence upload"),
+    ("GET", "/api/completed-training/"): ("team/resource", "inductions.list_training", T_IND, "IMPLEMENTED_TESTED", "Typed records, own-only without team access (D-053)"),
+    ("POST", "/api/completed-training/"): ("team/resource", "inductions.add_training", T_IND, "IMPLEMENTED_TESTED", ""),
+    ("GET", "/api/completed-training/{uid}"): ("team/resource", "inductions.get_training", T_IND, "IMPLEMENTED_TESTED", ""),
+    ("PATCH", "/api/completed-training/{uid}"): ("team/resource", "inductions.edit_training", T_IND, "IMPLEMENTED_TESTED", ""),
+    ("DELETE", "/api/completed-training/{uid}"): ("team/resource", "inductions.delete_training", T_IND, "IMPLEMENTED_TESTED", "Soft delete"),
+    ("GET", "/api/workers/{worker_id}/hr-documents"): ("admin-owner", "inductions.list_hr", T_IND, "IMPLEMENTED_TESTED", "hr_employees.view"),
+    ("POST", "/api/workers/{worker_id}/hr-documents"): ("admin-owner", "inductions.upload_hr", T_IND, "IMPLEMENTED_TESTED", "hr_employees.edit"),
+    ("PATCH", "/api/workers/{worker_id}/hr-documents/{doc_id}"): ("admin-owner", "inductions.edit_hr", T_IND, "IMPLEMENTED_TESTED", "Title and notes only"),
+    ("DELETE", "/api/workers/{worker_id}/hr-documents/{doc_id}"): ("admin-owner", "inductions.hr_delete", T_IND, "IMPLEMENTED_TESTED", "Soft delete, audited"),
+    ("POST", "/api/workers/{worker_id}/hr-documents/{doc_id}/archive"): ("admin-owner", "inductions.hr_archive", T_IND, "IMPLEMENTED_TESTED", ""),
+    ("POST", "/api/workers/{worker_id}/hr-documents/{doc_id}/restore"): ("admin-owner", "inductions.hr_restore", T_IND, "IMPLEMENTED_TESTED", ""),
+    ("GET", "/api/workers/{worker_id}/hr-documents/{doc_id}/file"): ("admin-owner", "inductions.hr_file", T_IND, "IMPLEMENTED_TESTED", "hr_employees.reveal_pii; every open audited (D-054)"),
+    ("GET", "/api/daily-jobs/today"): ("admin-owner", "jobs.list_jobs", T_IND, "IMPLEMENTED_TESTED", "GET /api/daily-jobs?date="),
+    ("POST", "/api/daily-jobs/bulk-create"): ("admin-owner", "jobs.bulk_create", T_IND, "IMPLEMENTED_TESTED", "trial_run saves nothing; override cancels the earlier job"),
+    ("POST", "/api/mobile/daily-jobs"): ("admin-owner", "jobs.create_job", T_IND, "IMPLEMENTED_TESTED", "POST /api/daily-jobs"),
+    ("GET", "/api/mobile/daily-jobs/admin/assignments"): ("admin-owner", "jobs.list_jobs", T_IND, "IMPLEMENTED_TESTED", "Organisation timezone, not a fixed Sydney day"),
+    ("GET", "/api/mobile/daily-jobs/today"): ("authenticated-own", "jobs.my_job_today", T_IND, "IMPLEMENTED_TESTED", "GET /api/daily-jobs/mine/today; no earlier-day fallback"),
+    ("POST", "/api/mobile/daily-jobs/{assignment_id}/accept"): ("authenticated-own", "jobs.accept_job", T_IND, "IMPLEMENTED_TESTED", "Assignee only; idempotent"),
+    ("POST", "/api/mobile/daily-jobs/{assignment_id}/decline"): ("authenticated-own", "jobs.decline_job", T_IND, "IMPLEMENTED_TESTED", "Reason required"),
+    ("GET", "/api/daily-jobs/admin/sites"): ("admin-owner", "sites.list_sites", T_IND, "IMPLEMENTED_TESTED", "The issue screen reads the sites register"),
+    ("GET", "/api/mobile/daily-jobs/admin/sites"): ("admin-owner", "sites.list_sites", T_IND, "IMPLEMENTED_TESTED", "Same"),
+    ("GET", "/api/daily-jobs/admin/workers"): ("admin-owner", "workers.list_workers", T_IND, "IMPLEMENTED_TESTED", "The issue screen reads the worker roster"),
+    ("GET", "/api/mobile/daily-jobs/admin/workers"): ("admin-owner", "workers.list_workers", T_IND, "IMPLEMENTED_TESTED", "Same"),
+})
+NEW_ROWS += [
+    ["POST", "/api/inductions/types/{tid}/restore", "inductions", "", "team/resource", "inductions.restore_type", T_IND, "IMPLEMENTED_TESTED", "New"],
+    ["POST", "/api/completed-training/{uid}/file", "training", "", "team/resource", "inductions.training_evidence", T_IND, "IMPLEMENTED_TESTED", "New: certificate for a course"],
+    ["GET", "/api/completed-training/{uid}/file", "training", "", "team/resource", "inductions.training_file", T_IND, "IMPLEMENTED_TESTED", "New"],
+    ["GET", "/api/daily-jobs/mine", "daily jobs", "", "authenticated-own", "jobs.my_jobs", T_IND, "IMPLEMENTED_TESTED", "New: upcoming and recent"],
+    ["GET", "/api/daily-jobs/{job_id}", "daily jobs", "", "authenticated-own", "jobs.get_job", T_IND, "IMPLEMENTED_TESTED", "New: admin or the assignee"],
+    ["PATCH", "/api/daily-jobs/{job_id}", "daily jobs", "", "admin-owner", "jobs.update_job", T_IND, "IMPLEMENTED_TESTED", "New: open jobs only"],
+    ["POST", "/api/daily-jobs/{job_id}/cancel", "daily jobs", "", "admin-owner", "jobs.cancel_job", T_IND, "IMPLEMENTED_TESTED", "New"],
+    ["POST", "/api/daily-jobs/{job_id}/complete", "daily jobs", "", "authenticated-own", "jobs.complete_job", T_IND, "IMPLEMENTED_TESTED", "New: assignee marks done"],
+]
+FEATURES.update({
+    "IND-01": ("PARTIAL", "tests/test_inductions_jobs.py; e2e inductions and jobs step", "Built: induction types (add, rename, retire), worker-by-induction matrix with date, does-not-expire, not-applicable and clear, evidence, own row on the phone, CSV export, completed training with evidence, audit on every change. Outstanding: spreadsheet import wizard, printable matrix PDF, column clean-up tools (not needed without legacy data)."),
+    "JOB-01": ("PARTIAL", "tests/test_inductions_jobs.py; e2e inductions and jobs step", "Built: issue to one or many workers with site, start time, truck, crew, instructions and linked forms; trial run; explicit replace; one active job per worker per day; accept, decline with reason, mark done; My work and Home card; job picker in forms; SMS prepared and held. Outstanding: PDF/SMS job import with confirmation, job site sign-on link, delivery once SMS is connected (stage 5)."),
+    "WORK-02": ("PARTIAL", "tests/test_workers.py; tests/test_inductions_jobs.py", "Built: birth date, TFN and USI encrypted at rest, masked in listings, permissioned audited reveal; HR documents listed to HR viewers, opened only with the reveal permission, every open audited, archive and delete. Outstanding: HR spreadsheet import and link tools (the baseline's standalone HR roster is not recreated)."),
+})
+
 
 def main() -> None:
     path = HERE / "endpoint_coverage.csv"

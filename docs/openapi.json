@@ -298,6 +298,20 @@
     "title": "Body_swms_upload_file_api_swms__record_id__files_post",
     "type": "object"
    },
+   "Body_training_evidence_api_completed_training__record_id__file_post": {
+    "properties": {
+     "file": {
+      "contentMediaType": "application/octet-stream",
+      "title": "File",
+      "type": "string"
+     }
+    },
+    "required": [
+     "file"
+    ],
+    "title": "Body_training_evidence_api_completed_training__record_id__file_post",
+    "type": "object"
+   },
    "Body_upload_attachment_api_forms_submissions__submission_id__attachments_post": {
     "properties": {
      "field_id": {
@@ -416,6 +430,42 @@
      "files"
     ],
     "title": "Body_upload_files_api_document_library_folders__folder_id__files_post",
+    "type": "object"
+   },
+   "Body_upload_hr_api_workers__worker_id__hr_documents_post": {
+    "properties": {
+     "file": {
+      "contentMediaType": "application/octet-stream",
+      "title": "File",
+      "type": "string"
+     },
+     "notes": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Notes"
+     },
+     "title": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Title"
+     }
+    },
+    "required": [
+     "file"
+    ],
+    "title": "Body_upload_hr_api_workers__worker_id__hr_documents_post",
     "type": "object"
    },
    "Body_upload_logo_api_org_logo_upload_post": {
@@ -572,6 +622,145 @@
     "title": "BulkIds",
     "type": "object"
    },
+   "BulkIn": {
+    "properties": {
+     "address": {
+      "anyOf": [
+       {
+        "maxLength": 300,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Address"
+     },
+     "customer": {
+      "anyOf": [
+       {
+        "maxLength": 200,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Customer"
+     },
+     "date": {
+      "anyOf": [
+       {
+        "format": "date",
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Date"
+     },
+     "form_template_ids": {
+      "items": {
+       "type": "string"
+      },
+      "maxItems": 10,
+      "title": "Form Template Ids",
+      "type": "array"
+     },
+     "notes": {
+      "anyOf": [
+       {
+        "maxLength": 4000,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Notes"
+     },
+     "override": {
+      "default": false,
+      "title": "Override",
+      "type": "boolean"
+     },
+     "site_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Site Id"
+     },
+     "site_name": {
+      "anyOf": [
+       {
+        "maxLength": 200,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Site Name"
+     },
+     "staff": {
+      "items": {
+       "type": "string"
+      },
+      "maxItems": 30,
+      "title": "Staff",
+      "type": "array"
+     },
+     "start_time": {
+      "anyOf": [
+       {
+        "maxLength": 5,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Start Time"
+     },
+     "trial_run": {
+      "default": false,
+      "title": "Trial Run",
+      "type": "boolean"
+     },
+     "truck": {
+      "anyOf": [
+       {
+        "maxLength": 120,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Truck"
+     },
+     "worker_ids": {
+      "items": {
+       "type": "string"
+      },
+      "maxItems": 100,
+      "minItems": 1,
+      "title": "Worker Ids",
+      "type": "array"
+     }
+    },
+    "required": [
+     "worker_ids"
+    ],
+    "title": "BulkIn",
+    "type": "object"
+   },
    "BulkRestrictIn": {
     "properties": {
      "action": {
@@ -628,6 +817,63 @@
      }
     },
     "title": "BulkRevokeIn",
+    "type": "object"
+   },
+   "CellIn": {
+    "properties": {
+     "clear": {
+      "default": false,
+      "title": "Clear",
+      "type": "boolean"
+     },
+     "column_key": {
+      "title": "Column Key",
+      "type": "string"
+     },
+     "expiry_date": {
+      "anyOf": [
+       {
+        "format": "date",
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Expiry Date"
+     },
+     "held_no_expiry": {
+      "default": false,
+      "title": "Held No Expiry",
+      "type": "boolean"
+     },
+     "issue_date": {
+      "anyOf": [
+       {
+        "format": "date",
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Issue Date"
+     },
+     "not_held": {
+      "default": false,
+      "title": "Not Held",
+      "type": "boolean"
+     },
+     "worker_id": {
+      "title": "Worker Id",
+      "type": "string"
+     }
+    },
+    "required": [
+     "worker_id",
+     "column_key"
+    ],
+    "title": "CellIn",
     "type": "object"
    },
    "CertIn": {
@@ -974,6 +1220,21 @@
     "title": "Decision",
     "type": "object"
    },
+   "DeclineIn": {
+    "properties": {
+     "reason": {
+      "maxLength": 400,
+      "minLength": 3,
+      "title": "Reason",
+      "type": "string"
+     }
+    },
+    "required": [
+     "reason"
+    ],
+    "title": "DeclineIn",
+    "type": "object"
+   },
    "DocTypeIn": {
     "properties": {
      "description": {
@@ -1300,6 +1561,37 @@
     "title": "HTTPValidationError",
     "type": "object"
    },
+   "HrPatch": {
+    "properties": {
+     "notes": {
+      "anyOf": [
+       {
+        "maxLength": 2000,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Notes"
+     },
+     "title": {
+      "anyOf": [
+       {
+        "maxLength": 200,
+        "minLength": 2,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Title"
+     }
+    },
+    "title": "HrPatch",
+    "type": "object"
+   },
    "ImportPayload": {
     "properties": {
      "app": {
@@ -1360,6 +1652,254 @@
      "templates"
     ],
     "title": "ImportPayload",
+    "type": "object"
+   },
+   "JobIn": {
+    "properties": {
+     "address": {
+      "anyOf": [
+       {
+        "maxLength": 300,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Address"
+     },
+     "customer": {
+      "anyOf": [
+       {
+        "maxLength": 200,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Customer"
+     },
+     "date": {
+      "anyOf": [
+       {
+        "format": "date",
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Date"
+     },
+     "form_template_ids": {
+      "items": {
+       "type": "string"
+      },
+      "maxItems": 10,
+      "title": "Form Template Ids",
+      "type": "array"
+     },
+     "notes": {
+      "anyOf": [
+       {
+        "maxLength": 4000,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Notes"
+     },
+     "override": {
+      "default": false,
+      "title": "Override",
+      "type": "boolean"
+     },
+     "site_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Site Id"
+     },
+     "site_name": {
+      "anyOf": [
+       {
+        "maxLength": 200,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Site Name"
+     },
+     "staff": {
+      "items": {
+       "type": "string"
+      },
+      "maxItems": 30,
+      "title": "Staff",
+      "type": "array"
+     },
+     "start_time": {
+      "anyOf": [
+       {
+        "maxLength": 5,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Start Time"
+     },
+     "truck": {
+      "anyOf": [
+       {
+        "maxLength": 120,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Truck"
+     },
+     "worker_id": {
+      "title": "Worker Id",
+      "type": "string"
+     }
+    },
+    "required": [
+     "worker_id"
+    ],
+    "title": "JobIn",
+    "type": "object"
+   },
+   "JobPatch": {
+    "properties": {
+     "address": {
+      "anyOf": [
+       {
+        "maxLength": 300,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Address"
+     },
+     "customer": {
+      "anyOf": [
+       {
+        "maxLength": 200,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Customer"
+     },
+     "form_template_ids": {
+      "anyOf": [
+       {
+        "items": {
+         "type": "string"
+        },
+        "maxItems": 10,
+        "type": "array"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Form Template Ids"
+     },
+     "notes": {
+      "anyOf": [
+       {
+        "maxLength": 4000,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Notes"
+     },
+     "site_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Site Id"
+     },
+     "site_name": {
+      "anyOf": [
+       {
+        "maxLength": 200,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Site Name"
+     },
+     "staff": {
+      "anyOf": [
+       {
+        "items": {
+         "type": "string"
+        },
+        "maxItems": 30,
+        "type": "array"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Staff"
+     },
+     "start_time": {
+      "anyOf": [
+       {
+        "maxLength": 5,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Start Time"
+     },
+     "truck": {
+      "anyOf": [
+       {
+        "maxLength": 120,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Truck"
+     }
+    },
+    "title": "JobPatch",
     "type": "object"
    },
    "KindIn": {
@@ -3725,6 +4265,117 @@
     "title": "TokenIn",
     "type": "object"
    },
+   "TrainingIn": {
+    "properties": {
+     "completed_date": {
+      "anyOf": [
+       {
+        "format": "date",
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Completed Date"
+     },
+     "course": {
+      "maxLength": 200,
+      "minLength": 2,
+      "title": "Course",
+      "type": "string"
+     },
+     "notes": {
+      "anyOf": [
+       {
+        "maxLength": 2000,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Notes"
+     },
+     "provider": {
+      "anyOf": [
+       {
+        "maxLength": 200,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Provider"
+     },
+     "worker_id": {
+      "title": "Worker Id",
+      "type": "string"
+     }
+    },
+    "required": [
+     "worker_id",
+     "course"
+    ],
+    "title": "TrainingIn",
+    "type": "object"
+   },
+   "TrainingPatch": {
+    "properties": {
+     "completed_date": {
+      "anyOf": [
+       {
+        "format": "date",
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Completed Date"
+     },
+     "course": {
+      "anyOf": [
+       {
+        "maxLength": 200,
+        "minLength": 2,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Course"
+     },
+     "notes": {
+      "anyOf": [
+       {
+        "maxLength": 2000,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Notes"
+     },
+     "provider": {
+      "anyOf": [
+       {
+        "maxLength": 200,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Provider"
+     }
+    },
+    "title": "TrainingPatch",
+    "type": "object"
+   },
    "TransferIn": {
     "properties": {
      "user_id": {
@@ -3736,6 +4387,21 @@
      "user_id"
     ],
     "title": "TransferIn",
+    "type": "object"
+   },
+   "TypeIn": {
+    "properties": {
+     "name": {
+      "maxLength": 160,
+      "minLength": 2,
+      "title": "Name",
+      "type": "string"
+     }
+    },
+    "required": [
+     "name"
+    ],
+    "title": "TypeIn",
     "type": "object"
    },
    "UpdateProfileIn": {
@@ -6566,6 +7232,369 @@
     ]
    }
   },
+  "/api/completed-training": {
+   "get": {
+    "description": "Completed courses, newest first. Without team access a person sees only their own.",
+    "operationId": "list_training_api_completed_training_get",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "worker_id",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Worker Id"
+      }
+     },
+     {
+      "in": "query",
+      "name": "q",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "maxLength": 100,
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Q"
+      }
+     },
+     {
+      "in": "query",
+      "name": "limit",
+      "required": false,
+      "schema": {
+       "default": 100,
+       "maximum": 500,
+       "minimum": 1,
+       "title": "Limit",
+       "type": "integer"
+      }
+     },
+     {
+      "in": "query",
+      "name": "offset",
+      "required": false,
+      "schema": {
+       "default": 0,
+       "minimum": 0,
+       "title": "Offset",
+       "type": "integer"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response List Training Api Completed Training Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "List Training",
+    "tags": [
+     "training"
+    ]
+   },
+   "post": {
+    "operationId": "add_training_api_completed_training_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/TrainingIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Add Training Api Completed Training Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Add Training",
+    "tags": [
+     "training"
+    ]
+   }
+  },
+  "/api/completed-training/{record_id}": {
+   "delete": {
+    "operationId": "delete_training_api_completed_training__record_id__delete",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Delete Training Api Completed Training  Record Id  Delete",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Delete Training",
+    "tags": [
+     "training"
+    ]
+   },
+   "get": {
+    "operationId": "get_training_api_completed_training__record_id__get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Get Training Api Completed Training  Record Id  Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Get Training",
+    "tags": [
+     "training"
+    ]
+   },
+   "patch": {
+    "operationId": "edit_training_api_completed_training__record_id__patch",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/TrainingPatch"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Edit Training Api Completed Training  Record Id  Patch",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Edit Training",
+    "tags": [
+     "training"
+    ]
+   }
+  },
+  "/api/completed-training/{record_id}/file": {
+   "get": {
+    "operationId": "training_file_api_completed_training__record_id__file_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Training File",
+    "tags": [
+     "training"
+    ]
+   },
+   "post": {
+    "operationId": "training_evidence_api_completed_training__record_id__file_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "record_id",
+      "required": true,
+      "schema": {
+       "title": "Record Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "multipart/form-data": {
+       "schema": {
+        "$ref": "#/components/schemas/Body_training_evidence_api_completed_training__record_id__file_post"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Training Evidence Api Completed Training  Record Id  File Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Training Evidence",
+    "tags": [
+     "training"
+    ]
+   }
+  },
   "/api/contractors": {
    "get": {
     "description": "The same directory, contractors only.",
@@ -6699,6 +7728,474 @@
     "summary": "Get Contractor",
     "tags": [
      "suppliers"
+    ]
+   }
+  },
+  "/api/daily-jobs": {
+   "get": {
+    "description": "Jobs for one day (today by default), newest first, with a count by status.",
+    "operationId": "list_jobs_api_daily_jobs_get",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "date",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "format": "date",
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Date"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response List Jobs Api Daily Jobs Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "List Jobs",
+    "tags": [
+     "daily jobs"
+    ]
+   },
+   "post": {
+    "operationId": "create_job_api_daily_jobs_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/JobIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Create Job Api Daily Jobs Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Create Job",
+    "tags": [
+     "daily jobs"
+    ]
+   }
+  },
+  "/api/daily-jobs/bulk-create": {
+   "post": {
+    "description": "Issue the same job to several workers. `trial_run` reports what would happen and saves nothing.",
+    "operationId": "bulk_create_api_daily_jobs_bulk_create_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/BulkIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Bulk Create Api Daily Jobs Bulk Create Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Bulk Create",
+    "tags": [
+     "daily jobs"
+    ]
+   }
+  },
+  "/api/daily-jobs/mine": {
+   "get": {
+    "description": "Today's and upcoming jobs, then the last 30 finished ones.",
+    "operationId": "my_jobs_api_daily_jobs_mine_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response My Jobs Api Daily Jobs Mine Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "My Jobs",
+    "tags": [
+     "daily jobs"
+    ]
+   }
+  },
+  "/api/daily-jobs/mine/today": {
+   "get": {
+    "description": "The caller's active job for today, or none. Never an earlier day's job.",
+    "operationId": "my_job_today_api_daily_jobs_mine_today_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response My Job Today Api Daily Jobs Mine Today Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "My Job Today",
+    "tags": [
+     "daily jobs"
+    ]
+   }
+  },
+  "/api/daily-jobs/{job_id}": {
+   "get": {
+    "operationId": "get_job_api_daily_jobs__job_id__get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "job_id",
+      "required": true,
+      "schema": {
+       "title": "Job Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Get Job Api Daily Jobs  Job Id  Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Get Job",
+    "tags": [
+     "daily jobs"
+    ]
+   },
+   "patch": {
+    "operationId": "update_job_api_daily_jobs__job_id__patch",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "job_id",
+      "required": true,
+      "schema": {
+       "title": "Job Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/JobPatch"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Update Job Api Daily Jobs  Job Id  Patch",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Update Job",
+    "tags": [
+     "daily jobs"
+    ]
+   }
+  },
+  "/api/daily-jobs/{job_id}/accept": {
+   "post": {
+    "operationId": "accept_job_api_daily_jobs__job_id__accept_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "job_id",
+      "required": true,
+      "schema": {
+       "title": "Job Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Accept Job Api Daily Jobs  Job Id  Accept Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Accept Job",
+    "tags": [
+     "daily jobs"
+    ]
+   }
+  },
+  "/api/daily-jobs/{job_id}/cancel": {
+   "post": {
+    "operationId": "cancel_job_api_daily_jobs__job_id__cancel_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "job_id",
+      "required": true,
+      "schema": {
+       "title": "Job Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Cancel Job Api Daily Jobs  Job Id  Cancel Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Cancel Job",
+    "tags": [
+     "daily jobs"
+    ]
+   }
+  },
+  "/api/daily-jobs/{job_id}/complete": {
+   "post": {
+    "operationId": "complete_job_api_daily_jobs__job_id__complete_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "job_id",
+      "required": true,
+      "schema": {
+       "title": "Job Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Complete Job Api Daily Jobs  Job Id  Complete Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Complete Job",
+    "tags": [
+     "daily jobs"
+    ]
+   }
+  },
+  "/api/daily-jobs/{job_id}/decline": {
+   "post": {
+    "operationId": "decline_job_api_daily_jobs__job_id__decline_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "job_id",
+      "required": true,
+      "schema": {
+       "title": "Job Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/DeclineIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Decline Job Api Daily Jobs  Job Id  Decline Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Decline Job",
+    "tags": [
+     "daily jobs"
     ]
    }
   },
@@ -7749,6 +9246,7 @@
   },
   "/api/forms/pickers/jobs": {
    "get": {
+    "description": "Jobs a form can be attached to: the caller's own recent and current jobs (admins see everyone's).",
     "operationId": "pick_jobs_api_forms_pickers_jobs_get",
     "responses": {
      "200": {
@@ -10954,6 +12452,234 @@
     "summary": "Incident Unarchive",
     "tags": [
      "Incidents"
+    ]
+   }
+  },
+  "/api/inductions/types": {
+   "get": {
+    "operationId": "list_types_api_inductions_types_get",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "include_inactive",
+      "required": false,
+      "schema": {
+       "default": false,
+       "title": "Include Inactive",
+       "type": "boolean"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response List Types Api Inductions Types Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "List Types",
+    "tags": [
+     "inductions"
+    ]
+   },
+   "post": {
+    "description": "Add a column to the matrix. The name must not clash with any certificate type.",
+    "operationId": "create_type_api_inductions_types_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/TypeIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Create Type Api Inductions Types Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Create Type",
+    "tags": [
+     "inductions"
+    ]
+   }
+  },
+  "/api/inductions/types/{type_id}": {
+   "delete": {
+    "description": "Retire a column. Completions already recorded keep it and stay in each worker's history.",
+    "operationId": "retire_type_api_inductions_types__type_id__delete",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "type_id",
+      "required": true,
+      "schema": {
+       "title": "Type Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Retire Type Api Inductions Types  Type Id  Delete",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Retire Type",
+    "tags": [
+     "inductions"
+    ]
+   },
+   "patch": {
+    "operationId": "rename_type_api_inductions_types__type_id__patch",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "type_id",
+      "required": true,
+      "schema": {
+       "title": "Type Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/TypeIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Rename Type Api Inductions Types  Type Id  Patch",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Rename Type",
+    "tags": [
+     "inductions"
+    ]
+   }
+  },
+  "/api/inductions/types/{type_id}/restore": {
+   "post": {
+    "operationId": "restore_type_api_inductions_types__type_id__restore_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "type_id",
+      "required": true,
+      "schema": {
+       "title": "Type Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Restore Type Api Inductions Types  Type Id  Restore Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Restore Type",
+    "tags": [
+     "inductions"
     ]
    }
   },
@@ -22427,6 +24153,132 @@
     ]
    }
   },
+  "/api/workers/inductions/cell": {
+   "put": {
+    "description": "Set one cell: a date, \"does not expire\", \"not applicable\", or clear it.",
+    "operationId": "set_cell_api_workers_inductions_cell_put",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/CellIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Set Cell Api Workers Inductions Cell Put",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Set Cell",
+    "tags": [
+     "inductions"
+    ]
+   }
+  },
+  "/api/workers/inductions/export.csv": {
+   "get": {
+    "operationId": "export_matrix_api_workers_inductions_export_csv_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Export Matrix",
+    "tags": [
+     "inductions"
+    ]
+   }
+  },
+  "/api/workers/inductions/matrix": {
+   "get": {
+    "description": "Workers down the side, inductions across the top. Without team view a person sees only their own row.",
+    "operationId": "matrix_api_workers_inductions_matrix_get",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "q",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "maxLength": 100,
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Q"
+      }
+     },
+     {
+      "in": "query",
+      "name": "include_inactive",
+      "required": false,
+      "schema": {
+       "default": false,
+       "title": "Include Inactive",
+       "type": "boolean"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Matrix Api Workers Inductions Matrix Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Matrix",
+    "tags": [
+     "inductions"
+    ]
+   }
+  },
   "/api/workers/me": {
    "get": {
     "operationId": "my_record_api_workers_me_get",
@@ -22945,6 +24797,383 @@
     "summary": "Worker History",
     "tags": [
      "workers"
+    ]
+   }
+  },
+  "/api/workers/{worker_id}/hr-documents": {
+   "get": {
+    "operationId": "list_hr_api_workers__worker_id__hr_documents_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "worker_id",
+      "required": true,
+      "schema": {
+       "title": "Worker Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "include_archived",
+      "required": false,
+      "schema": {
+       "default": false,
+       "title": "Include Archived",
+       "type": "boolean"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response List Hr Api Workers  Worker Id  Hr Documents Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "List Hr",
+    "tags": [
+     "hr documents"
+    ]
+   },
+   "post": {
+    "operationId": "upload_hr_api_workers__worker_id__hr_documents_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "worker_id",
+      "required": true,
+      "schema": {
+       "title": "Worker Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "multipart/form-data": {
+       "schema": {
+        "$ref": "#/components/schemas/Body_upload_hr_api_workers__worker_id__hr_documents_post"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Upload Hr Api Workers  Worker Id  Hr Documents Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Upload Hr",
+    "tags": [
+     "hr documents"
+    ]
+   }
+  },
+  "/api/workers/{worker_id}/hr-documents/{doc_id}": {
+   "delete": {
+    "operationId": "handler_api_workers__worker_id__hr_documents__doc_id__delete",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "worker_id",
+      "required": true,
+      "schema": {
+       "title": "Worker Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "path",
+      "name": "doc_id",
+      "required": true,
+      "schema": {
+       "title": "Doc Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Handler Api Workers  Worker Id  Hr Documents  Doc Id  Delete",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Handler",
+    "tags": [
+     "hr documents"
+    ]
+   },
+   "patch": {
+    "description": "Title and notes only. The file itself cannot be changed: upload a new document instead.",
+    "operationId": "edit_hr_api_workers__worker_id__hr_documents__doc_id__patch",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "worker_id",
+      "required": true,
+      "schema": {
+       "title": "Worker Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "path",
+      "name": "doc_id",
+      "required": true,
+      "schema": {
+       "title": "Doc Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/HrPatch"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Edit Hr Api Workers  Worker Id  Hr Documents  Doc Id  Patch",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Edit Hr",
+    "tags": [
+     "hr documents"
+    ]
+   }
+  },
+  "/api/workers/{worker_id}/hr-documents/{doc_id}/archive": {
+   "post": {
+    "operationId": "handler_api_workers__worker_id__hr_documents__doc_id__archive_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "worker_id",
+      "required": true,
+      "schema": {
+       "title": "Worker Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "path",
+      "name": "doc_id",
+      "required": true,
+      "schema": {
+       "title": "Doc Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Handler Api Workers  Worker Id  Hr Documents  Doc Id  Archive Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Handler",
+    "tags": [
+     "hr documents"
+    ]
+   }
+  },
+  "/api/workers/{worker_id}/hr-documents/{doc_id}/file": {
+   "get": {
+    "description": "Open a confidential file. Every open is written to the worker's history.",
+    "operationId": "hr_file_api_workers__worker_id__hr_documents__doc_id__file_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "worker_id",
+      "required": true,
+      "schema": {
+       "title": "Worker Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "path",
+      "name": "doc_id",
+      "required": true,
+      "schema": {
+       "title": "Doc Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Hr File",
+    "tags": [
+     "hr documents"
+    ]
+   }
+  },
+  "/api/workers/{worker_id}/hr-documents/{doc_id}/restore": {
+   "post": {
+    "operationId": "handler_api_workers__worker_id__hr_documents__doc_id__restore_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "worker_id",
+      "required": true,
+      "schema": {
+       "title": "Worker Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "path",
+      "name": "doc_id",
+      "required": true,
+      "schema": {
+       "title": "Doc Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Handler Api Workers  Worker Id  Hr Documents  Doc Id  Restore Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Handler",
+    "tags": [
+     "hr documents"
     ]
    }
   },

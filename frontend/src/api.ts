@@ -533,3 +533,57 @@ export interface Renewal {
   link?: string;
   delivery_note?: string;
 }
+
+// ---------- inductions, training and daily jobs ----------
+
+export interface MatrixCell {
+  status: "valid" | "expiring" | "expired" | "unknown" | "not_applicable" | "blank";
+  expiry_date?: string | null;
+  issue_date?: string | null;
+  no_expiry?: boolean;
+  days_left?: number | null;
+  certification_id?: string;
+  has_evidence?: boolean;
+}
+
+export interface Matrix2 {
+  columns: { column_key: string; name: string }[];
+  rows: { worker: { id: string; name: string; position: string | null; active: boolean }; cells: Record<string, MatrixCell> }[];
+  summary: Record<string, number>;
+  window_days: number;
+  can_edit: boolean;
+  truncated: boolean;
+}
+
+export interface Training {
+  id: string;
+  worker: { id: string; name: string };
+  course: string;
+  provider: string | null;
+  completed_date: string | null;
+  notes: string | null;
+  evidence: { name: string } | null;
+  evidence_url: string | null;
+}
+
+export interface Job {
+  id: string;
+  date: string;
+  worker_id: string;
+  worker_name: string;
+  site_id: string | null;
+  site_name: string | null;
+  address: string | null;
+  customer: string | null;
+  truck: string | null;
+  start_time: string | null;
+  staff: string[];
+  notes: string | null;
+  status: "issued" | "accepted" | "declined" | "completed" | "cancelled";
+  status_label: string;
+  decline_reason: string | null;
+  issued_by: string | null;
+  issued_at: string;
+  delivery: string;
+  forms?: { id: string; name: string; available: boolean }[];
+}

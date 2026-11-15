@@ -652,7 +652,97 @@ def suppliers_and_renewals(browser) -> None:
     print("suppliers and renewals walkthrough: ok")
 
 
-STEPS = [stage1_and_2a, documents, forms, safety_registers, workers, sites_and_visitors, suppliers_and_renewals]
+def inductions_and_jobs(browser) -> None:
+    from datetime import date, timedelta
+
+    pg = sign_in(browser)
+    errors: list[str] = []
+    pg.on("pageerror", lambda e: errors.append(str(e)))
+    future = (date.today() + timedelta(days=200)).isoformat()
+
+    # Inductions matrix: record a date, mark one not applicable, add a column.
+    pg.get_by_role("link", name="Inductions & training").click()
+    cell = pg.get_by_role("button", name="Nina Example, TasWater Induction: nothing recorded")
+    expect(cell).to_be_visible()
+    cell.click()
+    dialog = pg.get_by_role("dialog")
+    dialog.get_by_role("button", name="Save").click()
+    expect(dialog.get_by_text("Choose the expiry date, or pick another option.")).to_be_visible()
+    dialog.get_by_label("Expiry date").fill(future)
+    dialog.get_by_role("button", name="Save").click()
+    expect(pg.get_by_text("Induction recorded.")).to_be_visible()
+    expect(pg.get_by_role("button", name="Nina Example, TasWater Induction: Valid")).to_be_visible()
+    pg.get_by_role("button", name="Nina Example, TasRail Induction: nothing recorded").click()
+    dialog.get_by_label("Not applicable to this worker").check()
+    dialog.get_by_role("button", name="Save").click()
+    expect(pg.get_by_role("button", name="Nina Example, TasRail Induction: Not applicable")).to_be_visible()
+    pg.get_by_role("button", name="Induction types").click()
+    dialog.get_by_label("New induction").fill("Hydro Tasmania induction")
+    dialog.get_by_role("button", name="Add").click()
+    expect(dialog.get_by_role("cell", name="Hydro Tasmania induction")).to_be_visible()
+    dialog.get_by_role("button", name="Done").click()
+    expect(pg.get_by_role("columnheader", name="Hydro Tasmania induction")).to_be_visible()
+    shot(pg, "22-inductions", full=True)
+    # The induction is on the worker's certificate list too: one record, two views.
+    pg.get_by_role("link", name="Nina Example").click()
+    certs = pg.locator("section", has=pg.get_by_role("heading", name="Certificates", exact=True))
+    expect(certs.get_by_role("cell", name="TasWater Induction")).to_be_visible()
+
+    # HR document: add, then open (which is logged).
+    hr = pg.locator("section", has=pg.get_by_role("heading", name="HR documents"))
+    hr.get_by_label("Choose an HR document").set_input_files({"name": "contract.pdf", "mimeType": "application/pdf", "buffer": b"%PDF-1.4\n1 0 obj<<>>endobj\ntrailer<<>>\n%%EOF"})
+    expect(hr.get_by_role("cell", name="contract.pdf")).to_be_visible()
+
+    # Training.
+    pg.get_by_role("link", name="Inductions & training").click()
+    pg.get_by_role("tab", name="Completed training").click()
+    pg.get_by_role("button", name="Record training").click()
+    dialog.get_by_label("Worker").select_option(label="Nina Example")
+    dialog.get_by_label("Course").fill("Manual handling refresher")
+    dialog.get_by_role("button", name="Save").click()
+    expect(pg.get_by_role("cell", name="Manual handling refresher")).to_be_visible()
+
+    # Issue a job; the check step shows who gets it before anything is saved.
+    pg.get_by_role("link", name="Daily jobs").click()
+    pg.get_by_role("button", name="Issue a job").click()
+    dialog.get_by_label("Nina Example").check()
+    dialog.get_by_label("Site").select_option(label="Bridge Rd upgrade")
+    dialog.get_by_label("Start time (optional)").fill("06:30")
+    dialog.get_by_label("Instructions (optional)").fill("Meet at the depot first.")
+    dialog.get_by_label("Daily pre-start").check()
+    dialog.get_by_role("button", name="Check").click()
+    expect(dialog.get_by_text("Will go to: Nina Example.")).to_be_visible()
+    dialog.get_by_role("button", name="Issue 1 job").click()
+    expect(pg.get_by_text("1 job issued.")).to_be_visible()
+    expect(pg.get_by_text("Waiting for the worker")).to_be_visible()
+    shot(pg, "23-daily-jobs", full=True)
+
+    # The worker's phone: Home points at the job; accept, open the linked form, mark done.
+    phone = sign_in(browser, 390, 844, "nina@e2e.example", "Nina-Pass-2026")
+    phone.on("pageerror", lambda e: errors.append(str(e)))
+    expect(phone.get_by_text("Today's job: Bridge Rd upgrade")).to_be_visible()
+    phone.get_by_role("link", name="Open my work").click()
+    expect(phone.get_by_text("Meet at the depot first.")).to_be_visible()
+    shot(phone, "24-phone-my-work", full=True)
+    phone.get_by_role("button", name="Accept job").click()
+    expect(phone.get_by_text("Job accepted.")).to_be_visible()
+    phone.get_by_role("button", name="Daily pre-start").click()
+    phone.wait_for_url("**/forms/submissions/*")
+    phone.go_back()
+    phone.get_by_role("button", name="Mark as done").click()
+    expect(phone.get_by_text("Job marked as done.")).to_be_visible()
+    expect(phone.get_by_text("You have no job waiting.")).to_be_visible()
+    # Their own inductions only, read-only.
+    phone.get_by_role("button", name="Menu").click()
+    phone.get_by_role("link", name="Inductions & training").click()
+    expect(phone.get_by_role("button", name="Nina Example, TasWater Induction: Valid")).to_be_disabled()
+    pg.reload()
+    expect(pg.get_by_text("Done", exact=True).first).to_be_visible()
+    assert not errors, errors
+    print("inductions, training and daily jobs walkthrough: ok")
+
+
+STEPS = [stage1_and_2a, documents, forms, safety_registers, workers, sites_and_visitors, suppliers_and_renewals, inductions_and_jobs]
 
 if __name__ == "__main__":
     with sync_playwright() as p:
