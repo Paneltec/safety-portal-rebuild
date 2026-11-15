@@ -16,6 +16,22 @@
     "title": "AcknowledgeIn",
     "type": "object"
    },
+   "AnswerIn": {
+    "properties": {
+     "question_id": {
+      "title": "Question Id",
+      "type": "string"
+     },
+     "value": {
+      "title": "Value"
+     }
+    },
+    "required": [
+     "question_id"
+    ],
+    "title": "AnswerIn",
+    "type": "object"
+   },
    "ApplyPresetIn": {
     "properties": {
      "preset_id": {
@@ -412,6 +428,23 @@
      "role_id"
     ],
     "title": "BulkAssignRoleIn",
+    "type": "object"
+   },
+   "BulkIds": {
+    "properties": {
+     "ids": {
+      "items": {
+       "type": "string"
+      },
+      "maxItems": 500,
+      "title": "Ids",
+      "type": "array"
+     }
+    },
+    "required": [
+     "ids"
+    ],
+    "title": "BulkIds",
     "type": "object"
    },
    "BulkRestrictIn": {
@@ -1477,6 +1510,63 @@
     "title": "ProvisionIn",
     "type": "object"
    },
+   "QuestionIn": {
+    "properties": {
+     "choices": {
+      "anyOf": [
+       {
+        "items": {
+         "type": "string"
+        },
+        "maxItems": 12,
+        "type": "array"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Choices"
+     },
+     "id": {
+      "anyOf": [
+       {
+        "maxLength": 40,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Id"
+     },
+     "label": {
+      "maxLength": 200,
+      "minLength": 2,
+      "title": "Label",
+      "type": "string"
+     },
+     "required": {
+      "default": true,
+      "title": "Required",
+      "type": "boolean"
+     },
+     "type": {
+      "enum": [
+       "yesno",
+       "text",
+       "choice"
+      ],
+      "title": "Type",
+      "type": "string"
+     }
+    },
+    "required": [
+     "type",
+     "label"
+    ],
+    "title": "QuestionIn",
+    "type": "object"
+   },
    "RecordIn": {
     "properties": {
      "fields": {
@@ -1987,6 +2077,323 @@
     "title": "SetupIn",
     "type": "object"
    },
+   "SiteIn": {
+    "properties": {
+     "active": {
+      "default": true,
+      "title": "Active",
+      "type": "boolean"
+     },
+     "address": {
+      "anyOf": [
+       {
+        "maxLength": 300,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Address"
+     },
+     "company_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Company Id"
+     },
+     "description": {
+      "anyOf": [
+       {
+        "maxLength": 4000,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Description"
+     },
+     "gps_lat": {
+      "anyOf": [
+       {
+        "maximum": 90.0,
+        "minimum": -90.0,
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Gps Lat"
+     },
+     "gps_long": {
+      "anyOf": [
+       {
+        "maximum": 180.0,
+        "minimum": -180.0,
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Gps Long"
+     },
+     "kind": {
+      "default": "project",
+      "enum": [
+       "project",
+       "depot",
+       "other"
+      ],
+      "title": "Kind",
+      "type": "string"
+     },
+     "name": {
+      "maxLength": 200,
+      "minLength": 2,
+      "title": "Name",
+      "type": "string"
+     },
+     "postcode": {
+      "anyOf": [
+       {
+        "maxLength": 12,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Postcode"
+     },
+     "signon_questions": {
+      "items": {
+       "$ref": "#/components/schemas/QuestionIn"
+      },
+      "maxItems": 20,
+      "title": "Signon Questions",
+      "type": "array"
+     },
+     "state": {
+      "anyOf": [
+       {
+        "maxLength": 40,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "State"
+     },
+     "suburb": {
+      "anyOf": [
+       {
+        "maxLength": 100,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Suburb"
+     },
+     "visitor_declaration": {
+      "anyOf": [
+       {
+        "maxLength": 2000,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Visitor Declaration"
+     }
+    },
+    "required": [
+     "name"
+    ],
+    "title": "SiteIn",
+    "type": "object"
+   },
+   "SitePatch": {
+    "properties": {
+     "active": {
+      "anyOf": [
+       {
+        "type": "boolean"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Active"
+     },
+     "address": {
+      "anyOf": [
+       {
+        "maxLength": 300,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Address"
+     },
+     "company_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Company Id"
+     },
+     "description": {
+      "anyOf": [
+       {
+        "maxLength": 4000,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Description"
+     },
+     "gps_lat": {
+      "anyOf": [
+       {
+        "maximum": 90.0,
+        "minimum": -90.0,
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Gps Lat"
+     },
+     "gps_long": {
+      "anyOf": [
+       {
+        "maximum": 180.0,
+        "minimum": -180.0,
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Gps Long"
+     },
+     "kind": {
+      "anyOf": [
+       {
+        "enum": [
+         "project",
+         "depot",
+         "other"
+        ],
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Kind"
+     },
+     "name": {
+      "anyOf": [
+       {
+        "maxLength": 200,
+        "minLength": 2,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Name"
+     },
+     "postcode": {
+      "anyOf": [
+       {
+        "maxLength": 12,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Postcode"
+     },
+     "signon_questions": {
+      "anyOf": [
+       {
+        "items": {
+         "$ref": "#/components/schemas/QuestionIn"
+        },
+        "maxItems": 20,
+        "type": "array"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Signon Questions"
+     },
+     "state": {
+      "anyOf": [
+       {
+        "maxLength": 40,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "State"
+     },
+     "suburb": {
+      "anyOf": [
+       {
+        "maxLength": 100,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Suburb"
+     },
+     "visitor_declaration": {
+      "anyOf": [
+       {
+        "maxLength": 2000,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Visitor Declaration"
+     }
+    },
+    "title": "SitePatch",
+    "type": "object"
+   },
    "StatusIn": {
     "properties": {
      "note": {
@@ -2436,6 +2843,222 @@
      "type"
     ],
     "title": "ValidationError",
+    "type": "object"
+   },
+   "VisitorCorrection": {
+    "properties": {
+     "company": {
+      "anyOf": [
+       {
+        "maxLength": 200,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Company"
+     },
+     "host": {
+      "anyOf": [
+       {
+        "maxLength": 200,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Host"
+     },
+     "name": {
+      "anyOf": [
+       {
+        "maxLength": 200,
+        "minLength": 2,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Name"
+     },
+     "phone": {
+      "anyOf": [
+       {
+        "maxLength": 40,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Phone"
+     },
+     "purpose": {
+      "anyOf": [
+       {
+        "maxLength": 300,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Purpose"
+     },
+     "reason": {
+      "maxLength": 300,
+      "minLength": 3,
+      "title": "Reason",
+      "type": "string"
+     },
+     "signed_out_at": {
+      "anyOf": [
+       {
+        "format": "date-time",
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Signed Out At"
+     }
+    },
+    "required": [
+     "reason"
+    ],
+    "title": "VisitorCorrection",
+    "type": "object"
+   },
+   "VisitorSignIn": {
+    "properties": {
+     "answers": {
+      "items": {
+       "$ref": "#/components/schemas/AnswerIn"
+      },
+      "maxItems": 20,
+      "title": "Answers",
+      "type": "array"
+     },
+     "client_ref": {
+      "anyOf": [
+       {
+        "maxLength": 64,
+        "minLength": 8,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Client Ref"
+     },
+     "company": {
+      "anyOf": [
+       {
+        "maxLength": 200,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Company"
+     },
+     "gps_accuracy_m": {
+      "anyOf": [
+       {
+        "maximum": 100000.0,
+        "minimum": 0.0,
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Gps Accuracy M"
+     },
+     "gps_lat": {
+      "anyOf": [
+       {
+        "maximum": 90.0,
+        "minimum": -90.0,
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Gps Lat"
+     },
+     "gps_long": {
+      "anyOf": [
+       {
+        "maximum": 180.0,
+        "minimum": -180.0,
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Gps Long"
+     },
+     "host": {
+      "anyOf": [
+       {
+        "maxLength": 200,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Host"
+     },
+     "induction_acknowledged": {
+      "default": false,
+      "title": "Induction Acknowledged",
+      "type": "boolean"
+     },
+     "name": {
+      "maxLength": 200,
+      "minLength": 2,
+      "title": "Name",
+      "type": "string"
+     },
+     "phone": {
+      "anyOf": [
+       {
+        "maxLength": 40,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Phone"
+     },
+     "purpose": {
+      "anyOf": [
+       {
+        "maxLength": 300,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Purpose"
+     }
+    },
+    "required": [
+     "name"
+    ],
+    "title": "VisitorSignIn",
     "type": "object"
    },
    "WorkerIn": {
@@ -2983,6 +3606,59 @@
     },
     "title": "WorkerPatch",
     "type": "object"
+   },
+   "WorkerSignOn": {
+    "properties": {
+     "answers": {
+      "items": {
+       "$ref": "#/components/schemas/AnswerIn"
+      },
+      "maxItems": 20,
+      "title": "Answers",
+      "type": "array"
+     },
+     "gps_accuracy_m": {
+      "anyOf": [
+       {
+        "maximum": 100000.0,
+        "minimum": 0.0,
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Gps Accuracy M"
+     },
+     "gps_lat": {
+      "anyOf": [
+       {
+        "maximum": 90.0,
+        "minimum": -90.0,
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Gps Lat"
+     },
+     "gps_long": {
+      "anyOf": [
+       {
+        "maximum": 180.0,
+        "minimum": -180.0,
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Gps Long"
+     }
+    },
+    "title": "WorkerSignOn",
+    "type": "object"
    }
   }
  },
@@ -3511,6 +4187,599 @@
     "summary": "Session History",
     "tags": [
      "sessions"
+    ]
+   }
+  },
+  "/api/admin/visitors": {
+   "get": {
+    "description": "Visitor sign-ins, newest first. At most 500 rows; narrow the dates for older periods.",
+    "operationId": "list_visitors_api_admin_visitors_get",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "site_id",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Site Id"
+      }
+     },
+     {
+      "in": "query",
+      "name": "on_site",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "boolean"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "On Site"
+      }
+     },
+     {
+      "in": "query",
+      "name": "date_from",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "format": "date",
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Date From"
+      }
+     },
+     {
+      "in": "query",
+      "name": "date_to",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "format": "date",
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Date To"
+      }
+     },
+     {
+      "in": "query",
+      "name": "q",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "maxLength": 100,
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Q"
+      }
+     },
+     {
+      "in": "query",
+      "name": "include_archived",
+      "required": false,
+      "schema": {
+       "default": false,
+       "title": "Include Archived",
+       "type": "boolean"
+      }
+     },
+     {
+      "in": "query",
+      "name": "include_deleted",
+      "required": false,
+      "schema": {
+       "default": false,
+       "title": "Include Deleted",
+       "type": "boolean"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response List Visitors Api Admin Visitors Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "List Visitors",
+    "tags": [
+     "visitors"
+    ]
+   }
+  },
+  "/api/admin/visitors/bulk-delete": {
+   "post": {
+    "description": "Soft-delete up to 500 visitor rows. Rows that cannot be deleted are reported, not silently skipped.",
+    "operationId": "bulk_delete_visitors_api_admin_visitors_bulk_delete_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/BulkIds"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Bulk Delete Visitors Api Admin Visitors Bulk Delete Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Bulk Delete Visitors",
+    "tags": [
+     "visitors"
+    ]
+   }
+  },
+  "/api/admin/visitors/category-counts": {
+   "get": {
+    "description": "On site now, signed in today (local day), and all time. Same population as the default list.",
+    "operationId": "visitor_counts_api_admin_visitors_category_counts_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Visitor Counts Api Admin Visitors Category Counts Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Visitor Counts",
+    "tags": [
+     "visitors"
+    ]
+   }
+  },
+  "/api/admin/visitors/export.csv": {
+   "get": {
+    "operationId": "export_visitors_api_admin_visitors_export_csv_get",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "site_id",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Site Id"
+      }
+     },
+     {
+      "in": "query",
+      "name": "on_site",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "boolean"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "On Site"
+      }
+     },
+     {
+      "in": "query",
+      "name": "date_from",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "format": "date",
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Date From"
+      }
+     },
+     {
+      "in": "query",
+      "name": "date_to",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "format": "date",
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Date To"
+      }
+     },
+     {
+      "in": "query",
+      "name": "q",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "maxLength": 100,
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Q"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Export Visitors",
+    "tags": [
+     "visitors"
+    ]
+   }
+  },
+  "/api/admin/visitors/{visitor_id}": {
+   "delete": {
+    "operationId": "delete_visitor_api_admin_visitors__visitor_id__delete",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "visitor_id",
+      "required": true,
+      "schema": {
+       "title": "Visitor Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Delete Visitor Api Admin Visitors  Visitor Id  Delete",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Delete Visitor",
+    "tags": [
+     "visitors"
+    ]
+   },
+   "get": {
+    "operationId": "get_visitor_api_admin_visitors__visitor_id__get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "visitor_id",
+      "required": true,
+      "schema": {
+       "title": "Visitor Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Get Visitor Api Admin Visitors  Visitor Id  Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Get Visitor",
+    "tags": [
+     "visitors"
+    ]
+   },
+   "patch": {
+    "description": "An authorised correction. A reason is required and the earlier values go to the audit trail.",
+    "operationId": "correct_visitor_api_admin_visitors__visitor_id__patch",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "visitor_id",
+      "required": true,
+      "schema": {
+       "title": "Visitor Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/VisitorCorrection"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Correct Visitor Api Admin Visitors  Visitor Id  Patch",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Correct Visitor",
+    "tags": [
+     "visitors"
+    ]
+   }
+  },
+  "/api/admin/visitors/{visitor_id}/archive": {
+   "post": {
+    "operationId": "archive_visitor_api_admin_visitors__visitor_id__archive_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "visitor_id",
+      "required": true,
+      "schema": {
+       "title": "Visitor Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Archive Visitor Api Admin Visitors  Visitor Id  Archive Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Archive Visitor",
+    "tags": [
+     "visitors"
+    ]
+   }
+  },
+  "/api/admin/visitors/{visitor_id}/force-signout": {
+   "post": {
+    "description": "Sign a visitor out from the office. Writes a record only; nobody is notified.",
+    "operationId": "force_sign_out_api_admin_visitors__visitor_id__force_signout_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "visitor_id",
+      "required": true,
+      "schema": {
+       "title": "Visitor Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Force Sign Out Api Admin Visitors  Visitor Id  Force Signout Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Force Sign Out",
+    "tags": [
+     "visitors"
+    ]
+   }
+  },
+  "/api/admin/visitors/{visitor_id}/unarchive": {
+   "post": {
+    "operationId": "unarchive_visitor_api_admin_visitors__visitor_id__unarchive_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "visitor_id",
+      "required": true,
+      "schema": {
+       "title": "Visitor Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Unarchive Visitor Api Admin Visitors  Visitor Id  Unarchive Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Unarchive Visitor",
+    "tags": [
+     "visitors"
     ]
    }
   },
@@ -5312,7 +6581,27 @@
   },
   "/api/forms/pickers/sites": {
    "get": {
+    "description": "Active sites, by name. Only the name and address are returned, never the QR token.",
     "operationId": "pick_sites_api_forms_pickers_sites_get",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "q",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "maxLength": 100,
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Q"
+      }
+     }
+    ],
     "responses": {
      "200": {
       "content": {
@@ -5325,6 +6614,16 @@
        }
       },
       "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
      }
     },
     "summary": "Pick Sites",
@@ -10889,6 +12188,214 @@
     ]
    }
   },
+  "/api/public/site/{scan_token}/form": {
+   "get": {
+    "operationId": "visitor_form_api_public_site__scan_token__form_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "scan_token",
+      "required": true,
+      "schema": {
+       "title": "Scan Token",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Visitor Form Api Public Site  Scan Token  Form Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Visitor Form",
+    "tags": [
+     "site sign-on (public)"
+    ]
+   }
+  },
+  "/api/public/visitor/site/{scan_token}/signin": {
+   "post": {
+    "description": "Record a visitor arriving. Needs the site rules ticked. Limited to 10 an hour from one address.",
+    "operationId": "visitor_sign_in_api_public_visitor_site__scan_token__signin_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "scan_token",
+      "required": true,
+      "schema": {
+       "title": "Scan Token",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/VisitorSignIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Visitor Sign In Api Public Visitor Site  Scan Token  Signin Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Visitor Sign In",
+    "tags": [
+     "site sign-on (public)"
+    ]
+   }
+  },
+  "/api/public/visitor/{visitor_id}": {
+   "get": {
+    "operationId": "visitor_status_api_public_visitor__visitor_id__get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "visitor_id",
+      "required": true,
+      "schema": {
+       "title": "Visitor Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "token",
+      "required": true,
+      "schema": {
+       "maxLength": 80,
+       "title": "Token",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Visitor Status Api Public Visitor  Visitor Id  Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Visitor Status",
+    "tags": [
+     "site sign-on (public)"
+    ]
+   }
+  },
+  "/api/public/visitor/{visitor_id}/sign-out": {
+   "post": {
+    "description": "Sign a visitor out. Repeating it keeps the first sign-out time.",
+    "operationId": "visitor_sign_out_api_public_visitor__visitor_id__sign_out_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "visitor_id",
+      "required": true,
+      "schema": {
+       "title": "Visitor Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "token",
+      "required": true,
+      "schema": {
+       "maxLength": 80,
+       "title": "Token",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Visitor Sign Out Api Public Visitor  Visitor Id  Sign Out Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Visitor Sign Out",
+    "tags": [
+     "site sign-on (public)"
+    ]
+   }
+  },
   "/api/risk-assessments": {
    "get": {
     "operationId": "risk_assessment_list_api_risk_assessments_get",
@@ -11810,6 +13317,194 @@
     "summary": "Risk Assessment Unarchive",
     "tags": [
      "Risk assessments"
+    ]
+   }
+  },
+  "/api/scan/site/{scan_token}": {
+   "get": {
+    "description": "What anyone holding the QR code may see: the site's name and address, whose site it is,\nand what will be asked at sign-in. Nothing else.",
+    "operationId": "scan_site_api_scan_site__scan_token__get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "scan_token",
+      "required": true,
+      "schema": {
+       "title": "Scan Token",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Scan Site Api Scan Site  Scan Token  Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Scan Site",
+    "tags": [
+     "site sign-on"
+    ]
+   }
+  },
+  "/api/scan/site/{scan_token}/me": {
+   "get": {
+    "operationId": "scan_site_me_api_scan_site__scan_token__me_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "scan_token",
+      "required": true,
+      "schema": {
+       "title": "Scan Token",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Scan Site Me Api Scan Site  Scan Token  Me Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Scan Site Me",
+    "tags": [
+     "site sign-on"
+    ]
+   }
+  },
+  "/api/scan/site/{scan_token}/sign-off": {
+   "post": {
+    "operationId": "worker_sign_off_api_scan_site__scan_token__sign_off_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "scan_token",
+      "required": true,
+      "schema": {
+       "title": "Scan Token",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Worker Sign Off Api Scan Site  Scan Token  Sign Off Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Worker Sign Off",
+    "tags": [
+     "site sign-on"
+    ]
+   }
+  },
+  "/api/scan/site/{scan_token}/sign-on": {
+   "post": {
+    "description": "Sign the signed-in person on. Sending it twice returns the visit already open.",
+    "operationId": "worker_sign_on_api_scan_site__scan_token__sign_on_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "scan_token",
+      "required": true,
+      "schema": {
+       "title": "Scan Token",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/WorkerSignOn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Worker Sign On Api Scan Site  Scan Token  Sign On Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Worker Sign On",
+    "tags": [
+     "site sign-on"
     ]
    }
   },
@@ -12803,6 +14498,829 @@
     "summary": "Site Diary Unarchive",
     "tags": [
      "Site diary"
+    ]
+   }
+  },
+  "/api/sites": {
+   "get": {
+    "operationId": "list_sites_api_sites_get",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "q",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "maxLength": 100,
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Q"
+      }
+     },
+     {
+      "in": "query",
+      "name": "status",
+      "required": false,
+      "schema": {
+       "default": "active",
+       "enum": [
+        "active",
+        "inactive",
+        "all"
+       ],
+       "title": "Status",
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "limit",
+      "required": false,
+      "schema": {
+       "default": 50,
+       "maximum": 200,
+       "minimum": 1,
+       "title": "Limit",
+       "type": "integer"
+      }
+     },
+     {
+      "in": "query",
+      "name": "offset",
+      "required": false,
+      "schema": {
+       "default": 0,
+       "minimum": 0,
+       "title": "Offset",
+       "type": "integer"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response List Sites Api Sites Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "List Sites",
+    "tags": [
+     "sites"
+    ]
+   },
+   "post": {
+    "operationId": "create_site_api_sites_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/SiteIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Create Site Api Sites Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Create Site",
+    "tags": [
+     "sites"
+    ]
+   }
+  },
+  "/api/sites/my-attendance": {
+   "get": {
+    "description": "Where the signed-in person is currently signed on.",
+    "operationId": "my_attendance_api_sites_my_attendance_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response My Attendance Api Sites My Attendance Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "My Attendance",
+    "tags": [
+     "sites"
+    ]
+   }
+  },
+  "/api/sites/recycle-bin": {
+   "get": {
+    "operationId": "recycle_bin_api_sites_recycle_bin_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Recycle Bin Api Sites Recycle Bin Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Recycle Bin",
+    "tags": [
+     "sites"
+    ]
+   }
+  },
+  "/api/sites/{site_id}": {
+   "delete": {
+    "description": "Soft delete. Anyone still signed on is signed out by the office so occupancy stays true.",
+    "operationId": "delete_site_api_sites__site_id__delete",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "site_id",
+      "required": true,
+      "schema": {
+       "title": "Site Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Delete Site Api Sites  Site Id  Delete",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Delete Site",
+    "tags": [
+     "sites"
+    ]
+   },
+   "get": {
+    "operationId": "get_site_api_sites__site_id__get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "site_id",
+      "required": true,
+      "schema": {
+       "title": "Site Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Get Site Api Sites  Site Id  Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Get Site",
+    "tags": [
+     "sites"
+    ]
+   },
+   "patch": {
+    "operationId": "update_site_api_sites__site_id__patch",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "site_id",
+      "required": true,
+      "schema": {
+       "title": "Site Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/SitePatch"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Update Site Api Sites  Site Id  Patch",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Update Site",
+    "tags": [
+     "sites"
+    ]
+   }
+  },
+  "/api/sites/{site_id}/active-signons": {
+   "get": {
+    "operationId": "active_signons_api_sites__site_id__active_signons_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "site_id",
+      "required": true,
+      "schema": {
+       "title": "Site Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Active Signons Api Sites  Site Id  Active Signons Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Active Signons",
+    "tags": [
+     "sites"
+    ]
+   }
+  },
+  "/api/sites/{site_id}/active-signons/{signon_id}": {
+   "delete": {
+    "description": "Sign someone out from the office (for example at the end of the day). The visit stays in the log.",
+    "operationId": "office_sign_off_api_sites__site_id__active_signons__signon_id__delete",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "site_id",
+      "required": true,
+      "schema": {
+       "title": "Site Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "path",
+      "name": "signon_id",
+      "required": true,
+      "schema": {
+       "title": "Signon Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Office Sign Off Api Sites  Site Id  Active Signons  Signon Id  Delete",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Office Sign Off",
+    "tags": [
+     "sites"
+    ]
+   }
+  },
+  "/api/sites/{site_id}/qr-signage.pdf": {
+   "get": {
+    "description": "A printable A4 gate sign.",
+    "operationId": "qr_signage_api_sites__site_id__qr_signage_pdf_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "site_id",
+      "required": true,
+      "schema": {
+       "title": "Site Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Qr Signage",
+    "tags": [
+     "sites"
+    ]
+   }
+  },
+  "/api/sites/{site_id}/qr.png": {
+   "get": {
+    "operationId": "qr_png_api_sites__site_id__qr_png_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "site_id",
+      "required": true,
+      "schema": {
+       "title": "Site Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Qr Png",
+    "tags": [
+     "sites"
+    ]
+   }
+  },
+  "/api/sites/{site_id}/restore": {
+   "post": {
+    "operationId": "restore_site_api_sites__site_id__restore_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "site_id",
+      "required": true,
+      "schema": {
+       "title": "Site Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Restore Site Api Sites  Site Id  Restore Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Restore Site",
+    "tags": [
+     "sites"
+    ]
+   }
+  },
+  "/api/sites/{site_id}/rotate-token": {
+   "post": {
+    "description": "Issue a new QR code. Every sign printed before stops working, so reprint and replace it.",
+    "operationId": "rotate_token_api_sites__site_id__rotate_token_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "site_id",
+      "required": true,
+      "schema": {
+       "title": "Site Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Rotate Token Api Sites  Site Id  Rotate Token Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Rotate Token",
+    "tags": [
+     "sites"
+    ]
+   }
+  },
+  "/api/sites/{site_id}/signoff": {
+   "post": {
+    "description": "The signed-in person signs themself off a site. Repeating it changes nothing.",
+    "operationId": "sign_off_api_sites__site_id__signoff_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "site_id",
+      "required": true,
+      "schema": {
+       "title": "Site Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Sign Off Api Sites  Site Id  Signoff Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Sign Off",
+    "tags": [
+     "sites"
+    ]
+   }
+  },
+  "/api/sites/{site_id}/signon-log": {
+   "get": {
+    "description": "History for one site, newest first. At most 500 rows; narrow the dates for older periods.",
+    "operationId": "signon_log_api_sites__site_id__signon_log_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "site_id",
+      "required": true,
+      "schema": {
+       "title": "Site Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "date_from",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "format": "date",
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Date From"
+      }
+     },
+     {
+      "in": "query",
+      "name": "date_to",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "format": "date",
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Date To"
+      }
+     },
+     {
+      "in": "query",
+      "name": "kind",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "enum": [
+          "worker",
+          "visitor"
+         ],
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Kind"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Signon Log Api Sites  Site Id  Signon Log Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Signon Log",
+    "tags": [
+     "sites"
+    ]
+   }
+  },
+  "/api/sites/{site_id}/signon-log/export": {
+   "post": {
+    "operationId": "export_log_api_sites__site_id__signon_log_export_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "site_id",
+      "required": true,
+      "schema": {
+       "title": "Site Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "date_from",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "format": "date",
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Date From"
+      }
+     },
+     {
+      "in": "query",
+      "name": "date_to",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "format": "date",
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Date To"
+      }
+     },
+     {
+      "in": "query",
+      "name": "kind",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "enum": [
+          "worker",
+          "visitor"
+         ],
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Kind"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Export Log",
+    "tags": [
+     "sites"
     ]
    }
   },

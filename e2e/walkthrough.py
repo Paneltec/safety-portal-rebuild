@@ -459,7 +459,100 @@ def workers(browser) -> None:
     print("workers and certifications walkthrough: ok")
 
 
-STEPS = [stage1_and_2a, documents, forms, safety_registers, workers]
+def sites_and_visitors(browser) -> None:
+    pg = sign_in(browser)
+    errors: list[str] = []
+    pg.on("pageerror", lambda e: errors.append(str(e)))
+
+    # Add a site and set what people are asked at the gate.
+    pg.get_by_role("link", name="Sites", exact=True).click()
+    expect(pg.get_by_text("No sites yet. Add the first one to get its sign-in QR code.")).to_be_visible()
+    pg.get_by_role("button", name="Add site").click()
+    dialog = pg.get_by_role("dialog")
+    dialog.get_by_label("Site name").fill("Bridge Rd upgrade")
+    dialog.get_by_label("Street address (optional)").fill("Bridge Rd")
+    dialog.get_by_label("Suburb").fill("Launceston")
+    dialog.get_by_role("button", name="Add site").click()
+    pg.wait_for_url("**/app/sites/*")
+    expect(pg.get_by_text("Nobody is signed in at this site.")).to_be_visible()
+    expect(pg.get_by_role("img", name="QR code for signing in at Bridge Rd upgrade")).to_be_visible()
+    pg.get_by_role("button", name="Add a question").click()
+    pg.get_by_label("Question 1").fill("Are you fit for work today?")
+    pg.get_by_role("button", name="Save sign-in questions").click()
+    expect(pg.get_by_text("Sign-in questions saved.")).to_be_visible()
+    link = pg.locator(".code-box").inner_text().strip()
+    path = link[link.index("/sign-on/"):]
+    shot(pg, "15-site", full=True)
+
+    # A visitor at the gate, on a phone, with no login.
+    gate = browser.new_context(viewport={"width": 390, "height": 844}).new_page()
+    gate.on("pageerror", lambda e: errors.append(str(e)))
+    gate.goto(BASE + path)
+    expect(gate.get_by_role("heading", name="Bridge Rd upgrade")).to_be_visible()
+    gate.get_by_role("button", name="I am a visitor or contractor").click()
+    gate.get_by_label("Your full name").fill("Vera Visitor")
+    gate.get_by_label("Company (optional)").fill("Acme Surveying")
+    gate.get_by_label("Who are you here to see? (optional)").fill("Stephen")
+    expect(gate.get_by_role("button", name="Sign in", exact=True)).to_be_disabled()  # rules not accepted yet
+    gate.get_by_label("I have read and accept the site rules").check()
+    gate.get_by_role("button", name="Sign in", exact=True).click()
+    expect(gate.get_by_text("Are you fit for work today?: an answer is needed")).to_be_visible()
+    gate.get_by_role("button", name="Yes", exact=True).click()
+    gate.get_by_role("button", name="Sign in", exact=True).click()
+    expect(gate.get_by_text("you are signed in")).to_be_visible()
+    shot(gate, "16-gate-visitor", full=True)
+    gate.reload()  # the phone remembers the visit
+    expect(gate.get_by_role("button", name="Sign out")).to_be_visible()
+    assert gate.goto(BASE + "/sign-on/not-a-real-code") is not None
+    expect(gate.get_by_text("This sign-in code is not in use.")).to_be_visible()
+
+    # A worker scans the same code, signs in to the portal and signs on.
+    phone = browser.new_context(viewport={"width": 390, "height": 844}).new_page()
+    phone.on("pageerror", lambda e: errors.append(str(e)))
+    phone.goto(BASE + path)
+    phone.get_by_role("link", name="I work for E2E Civil").click()
+    phone.get_by_label("Email").fill("nina@e2e.example")
+    phone.get_by_label("Password").fill("Nina-Pass-2026")
+    phone.get_by_role("button", name="Sign in").click()
+    phone.wait_for_url("**/app/site-sign-on/*")
+    phone.get_by_role("button", name="Yes", exact=True).click()
+    phone.get_by_role("button", name="Sign on").click()
+    expect(phone.get_by_text("You are signed on.")).to_be_visible()
+    shot(phone, "17-phone-sign-on", full=True)
+    phone.get_by_role("button", name="Menu").click()
+    phone.get_by_role("link", name="Home").click()
+    expect(phone.get_by_text("You are signed on", exact=True)).to_be_visible()
+
+    # The office sees both, signs the visitor out, and the worker signs off from Home.
+    pg.reload()
+    on_site = pg.locator("section", has=pg.get_by_role("heading", name="On site now"))
+    expect(on_site.get_by_role("cell", name="Vera Visitor · Acme Surveying")).to_be_visible()
+    expect(on_site.get_by_role("cell", name="Nina Example")).to_be_visible()
+    pg.get_by_role("link", name="Visitors", exact=True).click()
+    expect(pg.get_by_role("button", name="1 On site now")).to_be_visible()
+    expect(pg.get_by_text("Are you fit for work today? Yes")).to_be_visible()
+    shot(pg, "18-visitors", full=True)
+    pg.get_by_role("button", name="Correct").click()
+    dialog.get_by_label("Company").fill("Acme Surveying Pty Ltd")
+    dialog.get_by_label("Why is this being corrected?").fill("Full company name")
+    dialog.get_by_role("button", name="Save correction").click()
+    expect(pg.get_by_text("Correction saved.")).to_be_visible()
+    pg.get_by_role("button", name="Sign visitor out").click()
+    expect(pg.get_by_text("Vera Visitor signed out.")).to_be_visible()
+    expect(pg.get_by_text("No visitors are on site.")).to_be_visible()
+    pg.get_by_role("button", name="1 Signed in today").click()
+    expect(pg.get_by_text("by the office")).to_be_visible()
+    gate.goto(BASE + path)  # the visitor's phone now offers a fresh sign-in
+    expect(gate.get_by_role("button", name="I am a visitor or contractor")).to_be_visible()
+    phone.get_by_role("button", name="Sign off").click()
+    expect(phone.get_by_text("You are signed on", exact=True)).to_have_count(0)
+    pg.get_by_role("link", name="Sites", exact=True).click()
+    expect(pg.get_by_role("cell", name="Nobody")).to_be_visible()
+    assert not errors, errors
+    print("sites and visitors walkthrough: ok")
+
+
+STEPS = [stage1_and_2a, documents, forms, safety_registers, workers, sites_and_visitors]
 
 if __name__ == "__main__":
     with sync_playwright() as p:

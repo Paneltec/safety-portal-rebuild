@@ -1,13 +1,43 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
+import { api, formatDateTime, formatDuration, type Attendance } from "../api";
 import { useAuth } from "../auth";
-import { Chip } from "../components/ui";
+import { Chip, Notice, errorMessage } from "../components/ui";
+import { useLoad } from "../hooks";
+
+/** Where the signed-in person is signed on right now, with a way to sign off without the QR code. */
+function SignedOnNow({ timezone }: { timezone: string }) {
+  const mine = useLoad(() => api<{ items: Attendance[] }>("/api/sites/my-attendance"), []);
+  const [error, setError] = useState<string | null>(null);
+  if (!mine.data || mine.data.items.length === 0) return null;
+  return (
+    <section className="card card-pad stack">
+      <h2>You are signed on</h2>
+      {error && <Notice tone="bad">{error}</Notice>}
+      {mine.data.items.map((visit) => (
+        <div key={visit.id} className="row" style={{ justifyContent: "space-between" }}>
+          <span>
+            <strong>{visit.site_name}</strong> since {formatDateTime(visit.signed_in_at, timezone)} ({formatDuration(visit.minutes)})
+          </span>
+          <button type="button" className="btn" onClick={async () => {
+            setError(null);
+            try {
+              await api(`/api/sites/${visit.site_id}/signoff`, { method: "POST" });
+              mine.reload();
+            } catch (e) { setError(errorMessage(e)); }
+          }}>Sign off</button>
+        </div>
+      ))}
+    </section>
+  );
+}
 
 // Honest build status. A stage is only "Built" once it works end to end with tests.
 const STAGES: { name: string; detail: string; built: boolean | "partial" }[] = [
   { name: "1. Sign-in, users, roles and permissions", detail: "Logins, invitations, sessions, role catalogue, per-person access", built: true },
   { name: "2. Organisation, documents and the form engine", detail: "Organisation settings, logo, file storage, document library, form builder, form PDFs and assignments", built: true },
   { name: "3. Safety capture", detail: "SWMS, pre-starts, site diary, incidents and hazards, inspections, risk assessments, SSRA", built: true },
-  { name: "4. Workers, suppliers, sites and jobs", detail: "Workers and certifications are built. Still to come: sites and visitors, suppliers and renewals, inductions, daily jobs", built: "partial" },
+  { name: "4. Workers, suppliers, sites and jobs", detail: "Workers, certifications, sites, QR sign-in and visitors are built. Still to come: suppliers and renewals, inductions, daily jobs", built: "partial" },
   { name: "5. Integrations and communications", detail: "Simpro, Navixy, SmartFill, Microsoft 365, TextMagic, outbox, safe mode", built: false },
   { name: "6. Fleet, service and fuel", detail: "Fleet register, service schedules, weekly diesel rate, fuel reports, anomalies", built: false },
   { name: "7. Leave, timesheets and pay (test-only)", detail: "Approvals, weekly workbench, reports, payslips, ABA export", built: false },
@@ -28,6 +58,8 @@ export function Home() {
           </p>
         </div>
       </div>
+
+      <SignedOnNow timezone={me.org_timezone} />
 
       <div className="grid-2">
         <section className="card">

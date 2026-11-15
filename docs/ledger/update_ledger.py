@@ -243,6 +243,58 @@ FEATURES.update({
     "FORM-02": ("PARTIAL", "tests/test_forms_api.py; tests/test_workers.py", "Built: role/user/company assignment with effective preview; certification double-switch gate enforced on start and on submit, including expired, unknown-expiry and missing certificates and unlinked logins. Outstanding: positions and asset-type assignment."),
 })
 
+T_SITE = "tests/test_sites.py"
+DONE.update({
+    ("GET", "/api/sites"): ("team/resource", "sites.list_sites", T_SITE, "IMPLEMENTED_TESTED", "Paginated; live on-site counts"),
+    ("POST", "/api/sites"): ("team/resource", "sites.create_site", T_SITE, "IMPLEMENTED_TESTED", "sites.edit (not admin-only)"),
+    ("GET", "/api/sites/admin"): ("team/resource", "sites.list_sites", T_SITE, "IMPLEMENTED_TESTED", "One sites register; the separate admin list is folded in"),
+    ("POST", "/api/sites/admin"): ("team/resource", "sites.create_site", T_SITE, "IMPLEMENTED_TESTED", "Folded into POST /api/sites"),
+    ("PATCH", "/api/sites/admin/{sid}"): ("team/resource", "sites.update_site", T_SITE, "IMPLEMENTED_TESTED", "Folded into PATCH /api/sites/{site_id}"),
+    ("DELETE", "/api/sites/admin/{sid}"): ("team/resource", "sites.delete_site", T_SITE, "IMPLEMENTED_TESTED", "Folded into DELETE /api/sites/{site_id}"),
+    ("PATCH", "/api/sites/{site_id}"): ("team/resource", "sites.update_site", T_SITE, "IMPLEMENTED_TESTED", "Includes sign-on questions and visitor declaration"),
+    ("GET", "/api/sites/recycle-bin"): ("team/resource", "sites.recycle_bin", T_SITE, "IMPLEMENTED_TESTED", ""),
+    ("POST", "/api/sites/{site_id}/restore"): ("team/resource", "sites.restore_site", T_SITE, "IMPLEMENTED_TESTED", ""),
+    ("GET", "/api/sites/{site_id}/active-signons"): ("team/resource", "sites.active_signons", T_SITE, "IMPLEMENTED_TESTED", ""),
+    ("DELETE", "/api/sites/{site_id}/active-signons/{signon_id}"): ("team/resource", "sites.office_sign_off", T_SITE, "IMPLEMENTED_TESTED", "D-044 closes the visit; history is kept, not deleted"),
+    ("GET", "/api/sites/{site_id}/qr-signage.pdf"): ("team/resource", "sites.qr_signage", T_SITE, "IMPLEMENTED_TESTED", "Needs sites.edit: the code is the key to the site"),
+    ("GET", "/api/sites/{site_id}/scan-pdf"): ("team/resource", "sites.qr_signage", T_SITE, "IMPLEMENTED_TESTED", "Same printable sign"),
+    ("GET", "/api/sites/{site_id}/signon-log"): ("team/resource", "sites.signon_log", T_SITE, "IMPLEMENTED_TESTED", "sites.view; 500-row cap with truncated flag"),
+    ("POST", "/api/sites/{site_id}/signon-log/export"): ("team/resource", "sites.export_log", T_SITE, "IMPLEMENTED_TESTED", "CSV; audited; formula cells neutralised"),
+    ("POST", "/api/sites/{site_id}/signoff"): ("authenticated-own", "sites.sign_off", T_SITE, "IMPLEMENTED_TESTED", "Idempotent"),
+    ("POST", "/api/sites/{site_id}/signon-v127"): ("authenticated-own", "sites.worker_sign_on", T_SITE, "IMPLEMENTED_TESTED", "Signed-in sign-on is by QR token: POST /api/scan/site/{scan_token}/sign-on"),
+    ("POST", "/api/mobile/sites/{site_id}/sign-on"): ("authenticated-own", "sites.worker_sign_on", T_SITE, "IMPLEMENTED_TESTED", "Same handler as the QR sign-on"),
+    ("GET", "/api/scan/site/{scan_token}"): ("public-scoped", "sites.scan_site", T_SITE, "IMPLEMENTED_TESTED", "Name, address, organisation name, questions, declaration only"),
+    ("POST", "/api/scan/site/{scan_token}/sign-on"): ("authenticated-own", "sites.worker_sign_on", T_SITE, "IMPLEMENTED_TESTED", "Unique open visit per person per site"),
+    ("POST", "/api/scan/site/{scan_token}/sign-on-visitor"): ("public-scoped", "sites.visitor_sign_in", T_SITE, "IMPLEMENTED_TESTED", "One visitor sign-in route (D-042)"),
+    ("GET", "/api/public/site/{scan_token}/form"): ("public-scoped", "sites.visitor_form", T_SITE, "IMPLEMENTED_TESTED", ""),
+    ("POST", "/api/public/visitor/site/{scan_token}/signin"): ("public-scoped", "sites.visitor_sign_in", T_SITE, "IMPLEMENTED_TESTED", "Declaration required; 10 an hour per address per site; idempotent"),
+    ("POST", "/api/public/visitor/{visitor_id}/sign-out"): ("public-scoped", "sites.visitor_sign_out", T_SITE, "IMPLEMENTED_TESTED", "Needs the site's QR token; first sign-out time stands"),
+    ("GET", "/api/sign-on/{site_id}"): ("public-scoped", "(not carried over)", T_SITE, "HISTORICAL_COMPATIBILITY", "D-043 the QR carries the revocable token, not the permanent site id"),
+    ("GET", "/api/admin/visitors"): ("team/resource", "sites.list_visitors", T_SITE, "IMPLEMENTED_TESTED", ""),
+    ("GET", "/api/admin/visitors/category-counts"): ("team/resource", "sites.visitor_counts", T_SITE, "IMPLEMENTED_TESTED", "On site, today (local day), total"),
+    ("GET", "/api/admin/visitors/{visitor_id}"): ("team/resource", "sites.get_visitor", T_SITE, "IMPLEMENTED_TESTED", ""),
+    ("DELETE", "/api/admin/visitors/{visitor_id}"): ("team/resource", "sites.delete_visitor", T_SITE, "IMPLEMENTED_TESTED", "Soft delete; idempotent"),
+    ("POST", "/api/admin/visitors/bulk-delete"): ("team/resource", "sites.bulk_delete_visitors", T_SITE, "IMPLEMENTED_TESTED", "Skipped rows reported with a reason"),
+    ("POST", "/api/admin/visitors/{visitor_id}/archive"): ("team/resource", "sites.archive_visitor", T_SITE, "IMPLEMENTED_TESTED", "Refused while still on site"),
+    ("POST", "/api/admin/visitors/{visitor_id}/unarchive"): ("team/resource", "sites.unarchive_visitor", T_SITE, "IMPLEMENTED_TESTED", ""),
+    ("POST", "/api/admin/visitors/{visitor_id}/force-signout"): ("team/resource", "sites.force_sign_out", T_SITE, "IMPLEMENTED_TESTED", "Record only; nobody is notified"),
+})
+NEW_ROWS += [
+    ["GET", "/api/sites/{site_id}", "sites", "", "team/resource", "sites.get_site", T_SITE, "IMPLEMENTED_TESTED", "New: site detail"],
+    ["DELETE", "/api/sites/{site_id}", "sites", "", "team/resource", "sites.delete_site", T_SITE, "IMPLEMENTED_TESTED", "New: soft delete that signs out anyone still on site"],
+    ["POST", "/api/sites/{site_id}/rotate-token", "sites", "", "team/resource", "sites.rotate_token", T_SITE, "IMPLEMENTED_TESTED", "New: retire printed codes (D-043)"],
+    ["GET", "/api/sites/{site_id}/qr.png", "sites", "", "team/resource", "sites.qr_png", T_SITE, "IMPLEMENTED_TESTED", "New"],
+    ["GET", "/api/sites/my-attendance", "sites", "", "authenticated-own", "sites.my_attendance", T_SITE, "IMPLEMENTED_TESTED", "New: where I am signed on"],
+    ["GET", "/api/scan/site/{scan_token}/me", "sites", "", "authenticated-own", "sites.scan_site_me", T_SITE, "IMPLEMENTED_TESTED", "New: my state at this site"],
+    ["POST", "/api/scan/site/{scan_token}/sign-off", "sites", "", "authenticated-own", "sites.worker_sign_off", T_SITE, "IMPLEMENTED_TESTED", "New"],
+    ["GET", "/api/public/visitor/{visitor_id}", "sites", "", "public-scoped", "sites.visitor_status", T_SITE, "IMPLEMENTED_TESTED", "New: lets the visitor's page survive a refresh"],
+    ["PATCH", "/api/admin/visitors/{visitor_id}", "sites", "", "team/resource", "sites.correct_visitor", T_SITE, "IMPLEMENTED_TESTED", "New: reasoned correction with audit"],
+    ["GET", "/api/admin/visitors/export.csv", "sites", "", "team/resource", "sites.export_visitors", T_SITE, "IMPLEMENTED_TESTED", "New"],
+]
+FEATURES.update({
+    "SITE-01": ("PARTIAL", "tests/test_sites.py; e2e sites and visitors step", "Built: sites register, QR code and printable sign, sign-on questions, worker and visitor sign-in/out (idempotent), live occupancy, history, office sign-out, visitor register with corrections, archive, delete and CSV export; QR token reaches one site only. Outstanding: Simpro site import (stage 5), bulk archive by criteria, GPS distance checks, migration mapping for legacy sign-in collections (no legacy data in a rebuild)."),
+})
+
 
 def main() -> None:
     path = HERE / "endpoint_coverage.csv"

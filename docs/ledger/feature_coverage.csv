@@ -22,7 +22,7 @@ CERT-01,Certifications,Kinds/evidence/expiry/renewal/bulk/own-phone view,PARTIAL
 IND-01,Inductions and training,Matrix/types/columns/completions/evidence,NOT_STARTED,,
 SUP-01,Suppliers and contractors,External directory/local panels/tasks/members/files/QR,NOT_STARTED,,
 REN-01,Renewal links,"Scoped upload links, office review and communication state",NOT_STARTED,,
-SITE-01,Sites and visitors,Site detail/QR/worker visitor sign-in-out/occupancy/history,NOT_STARTED,,
+SITE-01,Sites and visitors,Site detail/QR/worker visitor sign-in-out/occupancy/history,PARTIAL,tests/test_sites.py; e2e sites and visitors step,"Built: sites register, QR code and printable sign, sign-on questions, worker and visitor sign-in/out (idempotent), live occupancy, history, office sign-out, visitor register with corrections, archive, delete and CSV export; QR token reaches one site only. Outstanding: Simpro site import (stage 5), bulk archive by criteria, GPS distance checks, migration mapping for legacy sign-in collections (no legacy data in a rebuild)."
 JOB-01,Daily jobs,"Individual/batch assignments, issue job, phone acknowledgement",NOT_STARTED,,
 FLEET-01,Fleet,Navixy/group selection/local identity/telemetry/trips/QR,NOT_STARTED,,
 SERV-01,Asset service,Meter history/schedules/completions/checks/reminders,NOT_STARTED,,

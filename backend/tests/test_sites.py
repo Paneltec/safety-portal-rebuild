@@ -31,6 +31,7 @@ def test_site_crud_search_and_permissions(world, client):
     depot = new_site(client, admin, address="12 Test Rd", suburb="Invermay", state="TAS", postcode="7248", kind="depot")
     assert depot["address_full"] == "12 Test Rd, Invermay, TAS, 7248" and depot["on_site"] == {"workers": 0, "visitors": 0}
     assert depot["sign_on_url"].startswith("https://portal.test/sign-on/") and len(token_of(depot)) >= 24
+    assert depot["sign_on_address_configured"] is True
     job = new_site(client, hseq, name="Bridge Rd upgrade")
     assert client.post(S, json={"name": "x"}, headers=admin).status_code == 422
     assert client.post(S, json={"name": "Nope", "company_id": "missing"}, headers=admin).status_code == 404

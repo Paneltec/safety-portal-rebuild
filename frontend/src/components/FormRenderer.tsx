@@ -255,12 +255,13 @@ function Input(props: Props & { field: FieldDef; value: unknown }) {
       );
     case "worker_picker":
       return <WorkerPicker field={field} value={value} set={set} />;
-    case "job_picker":
     case "site_picker":
+      return <SitePicker field={field} value={value} set={set} />;
+    case "job_picker":
     case "asset_qr":
       return (
         <Notice tone="info">
-          {field.type === "job_picker" ? "Jobs" : field.type === "site_picker" ? "Sites" : "Assets"} cannot be chosen yet. This part of the portal is built in a later stage.
+          {field.type === "job_picker" ? "Jobs" : "Assets"} cannot be chosen yet. This part of the portal is built in a later stage.
         </Notice>
       );
     case "corrective_actions":
@@ -531,6 +532,28 @@ function WorkerPicker({ field, value, set }: { field: FieldDef; value: unknown; 
       value={(value as Ref)?.id ?? ""} onChange={(e) => set(people.find((p) => p.id === e.target.value))}>
       <option value="">Choose…</option>
       {people.map((p) => <option key={p.id} value={p.id}>{p.label}</option>)}
+    </select>
+  );
+}
+
+function SitePicker({ field, value, set }: { field: FieldDef; value: unknown; set: (v: unknown) => void }) {
+  const [sites, setSites] = useState<(Ref & { address?: string | null })[] | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  useEffect(() => {
+    api<{ items: (Ref & { address?: string | null })[] }>("/api/forms/pickers/sites").then((r) => setSites(r.items)).catch((e) => setError(errorMessage(e)));
+  }, []);
+  if (error) return <Notice tone="bad">{error}</Notice>;
+  if (!sites) return <span className="muted">Loading sites…</span>;
+  if (sites.length === 0) return <Notice tone="info">No sites have been added yet. The office adds them under Sites.</Notice>;
+  return (
+    <select aria-labelledby={`label-${field.id}`} style={{ minHeight: 44, padding: "0 10px", border: "1px solid var(--control)", borderRadius: 6, font: "inherit" }}
+      value={(value as Ref)?.id ?? ""}
+      onChange={(e) => {
+        const site = sites.find((s) => s.id === e.target.value);
+        set(site ? { id: site.id, label: site.label } : undefined);
+      }}>
+      <option value="">Choose…</option>
+      {sites.map((s) => <option key={s.id} value={s.id}>{s.label}{s.address ? ` · ${s.address}` : ""}</option>)}
     </select>
   );
 }

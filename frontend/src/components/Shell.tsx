@@ -35,6 +35,8 @@ export function Shell() {
       items: [
         { to: "/app/workers", label: can("workers", "team_view") ? "Workers" : "My worker record", show: can("workers", "view") },
         { to: "/app/certifications", label: "Certifications", show: can("certifications", "view") },
+        { to: "/app/sites", label: "Sites", show: can("sites", "view") },
+        { to: "/app/visitors", label: "Visitors", show: can("sites_visitors", "view") },
         { to: "/app/documents", label: "Document library", show: can("documents", "view") },
       ],
     },
@@ -77,7 +79,7 @@ export function Shell() {
             </div>
           );
         })}
-        <div className="nav-note">Suppliers, sites, fleet, fuel and pay arrive in later build stages. See Home for progress.</div>
+        <div className="nav-note">Suppliers, fleet, fuel and pay arrive in later build stages. See Home for progress.</div>
       </nav>
       <div className="content">
         <header className="topbar">

@@ -25,6 +25,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from .. import people
+from ..config import get_settings
 from ..db import get_db
 from ..deps import Caller, get_caller, require_permission
 from ..files import read_bytes
@@ -248,6 +249,9 @@ def site_out(db: Session, request: Request, caller: Caller, site: Site, *, detai
         # The QR address is the key to signing in at this site, so only people who manage sites see it.
         if caller.can("sites", "edit"):
             out["sign_on_url"] = f"{portal_base_url(request)}/sign-on/{site.scan_token}"
+            # Without PUBLIC_BASE_URL the address is taken from this request, which may not be the
+            # address a phone at the gate can reach. The screen warns before anyone prints a sign.
+            out["sign_on_address_configured"] = bool(get_settings().public_base_url.strip())
     return out
 
 

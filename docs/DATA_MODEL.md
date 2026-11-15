@@ -23,6 +23,8 @@ IDs are opaque strings. Every tenant-owned table carries `org_id`, and every que
 | `workers` | The operational person record, separate from a login | Unique `(org_id, source_system, source_company, source_id)` for imports; `details` JSONB (address, emergency contact, notes, masked hints); `protected` is encrypted JSON (birth date, TFN, USI); active flag, `archived_at`, soft delete |
 | `certification_kinds` | Per-organisation certificate types with aliases | Unique `(org_id, slug)`; slug never changes; retire with `active=false` |
 | `certifications` | One certificate held by a worker | `supersedes_id` / `superseded_by_id` chain keeps renewals; `no_expiry` explicit; evidence in `stored_files`; archive and soft delete |
+| `sites` | A place where work happens | Unique `scan_token` (the QR secret, rotatable); unique source key for imports; `signon_questions` JSONB; active flag; soft delete |
+| `site_attendance` | One visit by a signed-in worker or a visitor without a login | Partial unique `(site_id, user_id)` while open (workers); partial unique `(site_id, client_ref)`; answers stored with the wording asked; sign-out source and actor; archive and soft delete |
 | `stored_files` | Metadata for uploaded bytes: hash, size, MIME type, original name, purpose | Bytes on the files volume by organisation and SHA-256; identity separate from name |
 | `companies` | Divisions inside an organisation (for example Paneltec, Viatec) | Unique `(org_id, code)` |
 | `roles` | Role catalogue: built-in (read-only) and custom | Unique `(org_id, role_id)`; `permissions` is `{resource: {action: bool}}`; soft delete |

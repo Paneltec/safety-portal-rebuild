@@ -51,15 +51,15 @@ POST,/api/admin/test-activity-reset/execute,admin_test_activity_reset,execute,CL
 POST,/api/admin/test-activity-reset/preview,admin_test_activity_reset,preview,CLASSIFY,,,NOT_STARTED,
 GET,/api/admin/test-activity-reset/status,admin_test_activity_reset,status,CLASSIFY,,,NOT_STARTED,
 GET,/api/admin/users/{user_id}/session-history,session_history,list_session_history,admin-owner,sessions.session_history,tests/test_roles_sessions_tenancy.py,IMPLEMENTED_TESTED,
-GET,/api/admin/visitors,visitor_signins,admin_list_visitors,CLASSIFY,,,NOT_STARTED,
+GET,/api/admin/visitors,visitor_signins,admin_list_visitors,team/resource,sites.list_visitors,tests/test_sites.py,IMPLEMENTED_TESTED,
 POST,/api/admin/visitors/archive,visitor_signins,admin_bulk_archive_visitors,CLASSIFY,,,NOT_STARTED,
-POST,/api/admin/visitors/bulk-delete,visitor_signins,admin_bulk_delete_visitors,CLASSIFY,,,NOT_STARTED,
-GET,/api/admin/visitors/category-counts,category_counts,admin_visitors_category_counts,CLASSIFY,,,NOT_STARTED,
-DELETE,/api/admin/visitors/{visitor_id},visitor_signins,admin_delete_visitor,CLASSIFY,,,NOT_STARTED,
-GET,/api/admin/visitors/{visitor_id},visitor_signins,admin_get_visitor,CLASSIFY,,,NOT_STARTED,
-POST,/api/admin/visitors/{visitor_id}/archive,visitor_signins,admin_archive_visitor,CLASSIFY,,,NOT_STARTED,
-POST,/api/admin/visitors/{visitor_id}/force-signout,visitor_signins,admin_force_signout,CLASSIFY,,,NOT_STARTED,
-POST,/api/admin/visitors/{visitor_id}/unarchive,visitor_signins,admin_unarchive_visitor,CLASSIFY,,,NOT_STARTED,
+POST,/api/admin/visitors/bulk-delete,visitor_signins,admin_bulk_delete_visitors,team/resource,sites.bulk_delete_visitors,tests/test_sites.py,IMPLEMENTED_TESTED,Skipped rows reported with a reason
+GET,/api/admin/visitors/category-counts,category_counts,admin_visitors_category_counts,team/resource,sites.visitor_counts,tests/test_sites.py,IMPLEMENTED_TESTED,"On site, today (local day), total"
+DELETE,/api/admin/visitors/{visitor_id},visitor_signins,admin_delete_visitor,team/resource,sites.delete_visitor,tests/test_sites.py,IMPLEMENTED_TESTED,Soft delete; idempotent
+GET,/api/admin/visitors/{visitor_id},visitor_signins,admin_get_visitor,team/resource,sites.get_visitor,tests/test_sites.py,IMPLEMENTED_TESTED,
+POST,/api/admin/visitors/{visitor_id}/archive,visitor_signins,admin_archive_visitor,team/resource,sites.archive_visitor,tests/test_sites.py,IMPLEMENTED_TESTED,Refused while still on site
+POST,/api/admin/visitors/{visitor_id}/force-signout,visitor_signins,admin_force_signout,team/resource,sites.force_sign_out,tests/test_sites.py,IMPLEMENTED_TESTED,Record only; nobody is notified
+POST,/api/admin/visitors/{visitor_id}/unarchive,visitor_signins,admin_unarchive_visitor,team/resource,sites.unarchive_visitor,tests/test_sites.py,IMPLEMENTED_TESTED,
 POST,/api/ai/diary-structure,ai,diary_structure,CLASSIFY,,,NOT_STARTED,
 POST,/api/ai/hazard-vision,ai,hazard_vision,CLASSIFY,,,NOT_STARTED,
 POST,/api/ai/swms-draft,ai,swms_draft,CLASSIFY,,,NOT_STARTED,
@@ -605,7 +605,7 @@ GET,/api/mobile/preview-user/workers,mobile_preview,list_preview_workers,CLASSIF
 POST,/api/mobile/push/register,mobile_auth,push_register,CLASSIFY,,,NOT_STARTED,
 GET,/api/mobile/records/mine,mobile_data,records_mine,CLASSIFY,,,NOT_STARTED,
 POST,/api/mobile/sites/{site_id}/sign-off,mobile_data,mobile_site_sign_off,CLASSIFY,,,NOT_STARTED,
-POST,/api/mobile/sites/{site_id}/sign-on,mobile_data,mobile_site_sign_on,CLASSIFY,,,NOT_STARTED,
+POST,/api/mobile/sites/{site_id}/sign-on,mobile_data,mobile_site_sign_on,authenticated-own,sites.worker_sign_on,tests/test_sites.py,IMPLEMENTED_TESTED,Same handler as the QR sign-on
 POST,/api/mobile/sms/parse,mobile_sms_parse,parse_sms_endpoint,CLASSIFY,,,NOT_STARTED,
 POST,/api/mobile/user/active-company,mobile_home,set_active_company,CLASSIFY,,,NOT_STARTED,
 GET,/api/mobile/weather,mobile_daily_jobs_admin,weather,CLASSIFY,,,NOT_STARTED,
@@ -781,9 +781,9 @@ GET,/api/program-schematic/payroll-flow,program_schematic_overlays,get_payroll_f
 PUT,/api/program-schematic/payroll-flow,program_schematic_overlays,save_payroll_flow,CLASSIFY,,,NOT_STARTED,
 GET,/api/public/renewals/{token},renewals,public_get,CLASSIFY,,,NOT_STARTED,
 POST,/api/public/renewals/{token}/submit,renewals,public_submit,CLASSIFY,,,NOT_STARTED,
-GET,/api/public/site/{scan_token}/form,visitor_signins,public_visitor_form_info,CLASSIFY,,,NOT_STARTED,
-POST,/api/public/visitor/site/{scan_token}/signin,visitor_signins,public_visitor_signin,CLASSIFY,,,NOT_STARTED,
-POST,/api/public/visitor/{visitor_id}/sign-out,visitor_signins,public_visitor_signout,CLASSIFY,,,NOT_STARTED,
+GET,/api/public/site/{scan_token}/form,visitor_signins,public_visitor_form_info,public-scoped,sites.visitor_form,tests/test_sites.py,IMPLEMENTED_TESTED,
+POST,/api/public/visitor/site/{scan_token}/signin,visitor_signins,public_visitor_signin,public-scoped,sites.visitor_sign_in,tests/test_sites.py,IMPLEMENTED_TESTED,Declaration required; 10 an hour per address per site; idempotent
+POST,/api/public/visitor/{visitor_id}/sign-out,visitor_signins,public_visitor_signout,public-scoped,sites.visitor_sign_out,tests/test_sites.py,IMPLEMENTED_TESTED,Needs the site's QR token; first sign-out time stands
 GET,/api/redoc,server,_admin_redoc,CLASSIFY,,,NOT_STARTED,
 GET,/api/renewals,renewals,list_renewals,CLASSIFY,,,NOT_STARTED,
 POST,/api/renewals,renewals,create_renewal,CLASSIFY,,,NOT_STARTED,
@@ -807,9 +807,9 @@ PATCH,/api/risk-assessments/{item_id},crud,update_item,team/resource,safety.patc
 POST,/api/risk-assessments/{item_id}/archive,crud,archive_item,team/resource,safety.archive,tests/test_safety.py,IMPLEMENTED_TESTED,
 POST,/api/risk-assessments/{item_id}/unarchive,crud,unarchive_item,team/resource,safety.unarchive,tests/test_safety.py,IMPLEMENTED_TESTED,
 POST,/api/scan/quick-action,asset_service,scan_quick_action,CLASSIFY,,,NOT_STARTED,
-GET,/api/scan/site/{scan_token},sites_qr,resolve_site_scan,CLASSIFY,,,NOT_STARTED,
-POST,/api/scan/site/{scan_token}/sign-on,sites_qr,sign_on_to_site,CLASSIFY,,,NOT_STARTED,
-POST,/api/scan/site/{scan_token}/sign-on-visitor,sites_qr,sign_on_visitor,CLASSIFY,,,NOT_STARTED,
+GET,/api/scan/site/{scan_token},sites_qr,resolve_site_scan,public-scoped,sites.scan_site,tests/test_sites.py,IMPLEMENTED_TESTED,"Name, address, organisation name, questions, declaration only"
+POST,/api/scan/site/{scan_token}/sign-on,sites_qr,sign_on_to_site,authenticated-own,sites.worker_sign_on,tests/test_sites.py,IMPLEMENTED_TESTED,Unique open visit per person per site
+POST,/api/scan/site/{scan_token}/sign-on-visitor,sites_qr,sign_on_visitor,public-scoped,sites.visitor_sign_in,tests/test_sites.py,IMPLEMENTED_TESTED,One visitor sign-in route (D-042)
 GET,/api/scan/supplier/{scan_token},suppliers_qr,resolve_supplier_scan,CLASSIFY,,,NOT_STARTED,
 POST,/api/scan/supplier/{scan_token}/complete-induction,suppliers_qr,complete_supplier_induction,CLASSIFY,,,NOT_STARTED,
 GET,/api/scan/worker/{scan_token},workers_qr,scan_worker,CLASSIFY,,,NOT_STARTED,
@@ -828,7 +828,7 @@ GET,/api/settings/nav-layout,settings_nav,get_nav_layout,CLASSIFY,,,NOT_STARTED,
 PUT,/api/settings/nav-layout,settings_nav,put_nav_layout,CLASSIFY,,,NOT_STARTED,
 GET,/api/settings/session-timeout/me,session_timeout,session_timeout_me,CLASSIFY,,,NOT_STARTED,
 PATCH,/api/settings/session-timeout/me,session_timeout,patch_session_timeout_me,CLASSIFY,,,NOT_STARTED,
-GET,/api/sign-on/{site_id},sites_qr_v132dk,resolve_persistent_signon,CLASSIFY,,,NOT_STARTED,
+GET,/api/sign-on/{site_id},sites_qr_v132dk,resolve_persistent_signon,public-scoped,(not carried over),tests/test_sites.py,HISTORICAL_COMPATIBILITY,"D-043 the QR carries the revocable token, not the permanent site id"
 GET,/api/site-diary,crud,list_items,team/resource,safety.list_records,tests/test_safety.py,IMPLEMENTED_TESTED,Paginated; own-only without team_view on team-scoped registers
 POST,/api/site-diary,crud,create_item,team/resource,safety.create,tests/test_safety.py,IMPLEMENTED_TESTED,"D-030 body is {fields:[{id,value}]} validated against the register's form schema"
 POST,/api/site-diary/archive,crud,bulk_archive,team/resource,safety.bulk_archive,tests/test_safety.py,IMPLEMENTED_TESTED,Needs the archive right; dry run by default
@@ -839,25 +839,25 @@ GET,/api/site-diary/{item_id},crud,get_item,team/resource,safety.get_record,test
 PATCH,/api/site-diary/{item_id},crud,update_item,team/resource,safety.patch,tests/test_safety.py,IMPLEMENTED_TESTED,Earlier answers kept in history
 POST,/api/site-diary/{item_id}/archive,crud,archive_item,team/resource,safety.archive,tests/test_safety.py,IMPLEMENTED_TESTED,
 POST,/api/site-diary/{item_id}/unarchive,crud,unarchive_item,team/resource,safety.unarchive,tests/test_safety.py,IMPLEMENTED_TESTED,
-GET,/api/sites,sites_qr,list_sites,CLASSIFY,,,NOT_STARTED,
-POST,/api/sites,sites_signon_v127,create_manual_site,CLASSIFY,,,NOT_STARTED,
-GET,/api/sites/admin,sites_admin,list_sites,CLASSIFY,,,NOT_STARTED,
-POST,/api/sites/admin,sites_admin,create_site,CLASSIFY,,,NOT_STARTED,
-DELETE,/api/sites/admin/{sid},sites_admin,delete_site,CLASSIFY,,,NOT_STARTED,
-PATCH,/api/sites/admin/{sid},sites_admin,update_site,CLASSIFY,,,NOT_STARTED,
+GET,/api/sites,sites_qr,list_sites,team/resource,sites.list_sites,tests/test_sites.py,IMPLEMENTED_TESTED,Paginated; live on-site counts
+POST,/api/sites,sites_signon_v127,create_manual_site,team/resource,sites.create_site,tests/test_sites.py,IMPLEMENTED_TESTED,sites.edit (not admin-only)
+GET,/api/sites/admin,sites_admin,list_sites,team/resource,sites.list_sites,tests/test_sites.py,IMPLEMENTED_TESTED,One sites register; the separate admin list is folded in
+POST,/api/sites/admin,sites_admin,create_site,team/resource,sites.create_site,tests/test_sites.py,IMPLEMENTED_TESTED,Folded into POST /api/sites
+DELETE,/api/sites/admin/{sid},sites_admin,delete_site,team/resource,sites.delete_site,tests/test_sites.py,IMPLEMENTED_TESTED,Folded into DELETE /api/sites/{site_id}
+PATCH,/api/sites/admin/{sid},sites_admin,update_site,team/resource,sites.update_site,tests/test_sites.py,IMPLEMENTED_TESTED,Folded into PATCH /api/sites/{site_id}
 POST,/api/sites/bulk-delete,sites_signon_v127,bulk_delete_sites,CLASSIFY,,,NOT_STARTED,
 POST,/api/sites/dev/seed-one,sites_qr,dev_seed_site,CLASSIFY,,,NOT_STARTED,
-GET,/api/sites/recycle-bin,sites_signon_v127,list_recycle_bin,CLASSIFY,,,NOT_STARTED,
-PATCH,/api/sites/{site_id},sites_signon_v127,patch_site,CLASSIFY,,,NOT_STARTED,
-GET,/api/sites/{site_id}/active-signons,sites_qr,list_active_signons,CLASSIFY,,,NOT_STARTED,
-DELETE,/api/sites/{site_id}/active-signons/{signon_id},sites_qr,manual_sign_off,CLASSIFY,,,NOT_STARTED,
-GET,/api/sites/{site_id}/qr-signage.pdf,sites_qr_v132dk,site_qr_signage_pdf,CLASSIFY,,,NOT_STARTED,
-POST,/api/sites/{site_id}/restore,sites_signon_v127,restore_site,CLASSIFY,,,NOT_STARTED,
-GET,/api/sites/{site_id}/scan-pdf,sites_qr,site_scan_pdf,CLASSIFY,,,NOT_STARTED,
-POST,/api/sites/{site_id}/signoff,sites_signon_v127,signoff,CLASSIFY,,,NOT_STARTED,
-GET,/api/sites/{site_id}/signon-log,sites_signon_v127,signon_log,CLASSIFY,,,NOT_STARTED,
-POST,/api/sites/{site_id}/signon-log/export,sites_signon_v127,signon_log_export,CLASSIFY,,,NOT_STARTED,
-POST,/api/sites/{site_id}/signon-v127,sites_signon_v127,signon_v127,CLASSIFY,,,NOT_STARTED,
+GET,/api/sites/recycle-bin,sites_signon_v127,list_recycle_bin,team/resource,sites.recycle_bin,tests/test_sites.py,IMPLEMENTED_TESTED,
+PATCH,/api/sites/{site_id},sites_signon_v127,patch_site,team/resource,sites.update_site,tests/test_sites.py,IMPLEMENTED_TESTED,Includes sign-on questions and visitor declaration
+GET,/api/sites/{site_id}/active-signons,sites_qr,list_active_signons,team/resource,sites.active_signons,tests/test_sites.py,IMPLEMENTED_TESTED,
+DELETE,/api/sites/{site_id}/active-signons/{signon_id},sites_qr,manual_sign_off,team/resource,sites.office_sign_off,tests/test_sites.py,IMPLEMENTED_TESTED,"D-044 closes the visit; history is kept, not deleted"
+GET,/api/sites/{site_id}/qr-signage.pdf,sites_qr_v132dk,site_qr_signage_pdf,team/resource,sites.qr_signage,tests/test_sites.py,IMPLEMENTED_TESTED,Needs sites.edit: the code is the key to the site
+POST,/api/sites/{site_id}/restore,sites_signon_v127,restore_site,team/resource,sites.restore_site,tests/test_sites.py,IMPLEMENTED_TESTED,
+GET,/api/sites/{site_id}/scan-pdf,sites_qr,site_scan_pdf,team/resource,sites.qr_signage,tests/test_sites.py,IMPLEMENTED_TESTED,Same printable sign
+POST,/api/sites/{site_id}/signoff,sites_signon_v127,signoff,authenticated-own,sites.sign_off,tests/test_sites.py,IMPLEMENTED_TESTED,Idempotent
+GET,/api/sites/{site_id}/signon-log,sites_signon_v127,signon_log,team/resource,sites.signon_log,tests/test_sites.py,IMPLEMENTED_TESTED,sites.view; 500-row cap with truncated flag
+POST,/api/sites/{site_id}/signon-log/export,sites_signon_v127,signon_log_export,team/resource,sites.export_log,tests/test_sites.py,IMPLEMENTED_TESTED,CSV; audited; formula cells neutralised
+POST,/api/sites/{site_id}/signon-v127,sites_signon_v127,signon_v127,authenticated-own,sites.worker_sign_on,tests/test_sites.py,IMPLEMENTED_TESTED,Signed-in sign-on is by QR token: POST /api/scan/site/{scan_token}/sign-on
 GET,/api/suppliers/address-lookup,suppliers,address_lookup,CLASSIFY,,,NOT_STARTED,
 DELETE,/api/suppliers/members/{member_id},supplier_panels,delete_member,CLASSIFY,,,NOT_STARTED,
 PATCH,/api/suppliers/members/{member_id},supplier_panels,update_member,CLASSIFY,,,NOT_STARTED,
@@ -1061,3 +1061,13 @@ GET,/api/certification-kinds,certifications,,team/resource,workers.list_kinds,te
 POST,/api/certification-kinds,certifications,,team/resource,workers.create_kind,tests/test_workers.py,IMPLEMENTED_TESTED,New
 PATCH,/api/certification-kinds/{kind_id},certifications,,team/resource,workers.update_kind,tests/test_workers.py,IMPLEMENTED_TESTED,New: slug never changes
 GET,/api/forms/pickers/people,forms,,team/resource,forms.pick_people,tests/test_workers.py,IMPLEMENTED_TESTED,New: logins for form assignment
+GET,/api/sites/{site_id},sites,,team/resource,sites.get_site,tests/test_sites.py,IMPLEMENTED_TESTED,New: site detail
+DELETE,/api/sites/{site_id},sites,,team/resource,sites.delete_site,tests/test_sites.py,IMPLEMENTED_TESTED,New: soft delete that signs out anyone still on site
+POST,/api/sites/{site_id}/rotate-token,sites,,team/resource,sites.rotate_token,tests/test_sites.py,IMPLEMENTED_TESTED,New: retire printed codes (D-043)
+GET,/api/sites/{site_id}/qr.png,sites,,team/resource,sites.qr_png,tests/test_sites.py,IMPLEMENTED_TESTED,New
+GET,/api/sites/my-attendance,sites,,authenticated-own,sites.my_attendance,tests/test_sites.py,IMPLEMENTED_TESTED,New: where I am signed on
+GET,/api/scan/site/{scan_token}/me,sites,,authenticated-own,sites.scan_site_me,tests/test_sites.py,IMPLEMENTED_TESTED,New: my state at this site
+POST,/api/scan/site/{scan_token}/sign-off,sites,,authenticated-own,sites.worker_sign_off,tests/test_sites.py,IMPLEMENTED_TESTED,New
+GET,/api/public/visitor/{visitor_id},sites,,public-scoped,sites.visitor_status,tests/test_sites.py,IMPLEMENTED_TESTED,New: lets the visitor's page survive a refresh
+PATCH,/api/admin/visitors/{visitor_id},sites,,team/resource,sites.correct_visitor,tests/test_sites.py,IMPLEMENTED_TESTED,New: reasoned correction with audit
+GET,/api/admin/visitors/export.csv,sites,,team/resource,sites.export_visitors,tests/test_sites.py,IMPLEMENTED_TESTED,New

@@ -365,3 +365,86 @@ export async function fetchBlobUrl(path: string): Promise<string> {
   if (!response.ok) throw new ApiError(response.status, "Could not load the image");
   return URL.createObjectURL(await response.blob());
 }
+
+// ---------- sites and attendance ----------
+
+export interface SignOnQuestion {
+  id: string;
+  type: "yesno" | "text" | "choice";
+  label: string;
+  required: boolean;
+  choices?: string[];
+}
+
+export interface Site {
+  id: string;
+  name: string;
+  address: string | null;
+  suburb: string | null;
+  state: string | null;
+  postcode: string | null;
+  address_full: string;
+  kind: "project" | "depot" | "other";
+  active: boolean;
+  company_id: string | null;
+  source: { system: string; company: string | null; id: string } | null;
+  on_site: { workers: number; visitors: number };
+  deleted_at: string | null;
+  description?: string | null;
+  signon_questions?: SignOnQuestion[];
+  visitor_declaration?: string | null;
+  default_visitor_declaration?: string;
+  sign_on_url?: string;
+  sign_on_address_configured?: boolean;
+}
+
+export interface Attendance {
+  id: string;
+  kind: "worker" | "visitor";
+  site_id: string;
+  site_name: string | null;
+  name: string;
+  company: string | null;
+  phone: string | null;
+  purpose: string | null;
+  host: string | null;
+  answers: { question_id: string; label: string; value: string | boolean }[];
+  signed_in_at: string;
+  signed_out_at: string | null;
+  sign_out_source: string | null;
+  on_site: boolean;
+  minutes: number;
+  stale: boolean;
+  archived_at: string | null;
+  deleted_at: string | null;
+}
+
+export interface PublicSite {
+  site_name: string;
+  address: string;
+  organisation: string;
+  timezone: string;
+  questions: SignOnQuestion[];
+  visitor_declaration: string;
+}
+
+export function formatDuration(minutes: number): string {
+  if (minutes < 60) return `${minutes} min`;
+  const hours = Math.floor(minutes / 60);
+  return `${hours} h ${minutes % 60} min`;
+}
+
+/** Fetch a protected file and save it (used for CSV exports that are POST or need the session). */
+export async function downloadFile(path: string, filename: string, method = "GET"): Promise<void> {
+  const token = getToken();
+  const response = await fetch(path, { method, headers: token ? { Authorization: `Bearer ${token}` } : {} });
+  if (!response.ok) throw new ApiError(response.status, "The export could not be created");
+  const url = URL.createObjectURL(await response.blob());
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 60_000);
+}
