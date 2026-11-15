@@ -19,6 +19,7 @@ from ..services import (
     get_role,
     hold_message,
     iso,
+    is_account_holder,
     is_payroll_owner,
     issue_auth_token,
     link_for,
@@ -84,9 +85,20 @@ def _get_user(db: Session, caller: Caller, user_id: str, *, include_deleted: boo
     return user
 
 
+HOLDER_ONLY = "Only the account holder can do this to their own account"
+
+
+def _guard_holder(db: Session, caller: Caller, target: User, *, allow_self: bool = True) -> None:
+    """The account holder's account can only be changed by the holder themselves."""
+    if is_account_holder(db, target) and not (allow_self and target.id == caller.user.id):
+        raise HTTPException(403, HOLDER_ONLY)
+
+
 def _guard_role_change(db: Session, caller: Caller, target: User, new_role_id: str) -> None:
     if new_role_id == target.role_id:
         return
+    if is_account_holder(db, target):
+        raise HTTPException(400, "The account holder must stay an admin. Transfer the account first.")
     if (new_role_id == "admin" or target.role_id == "admin") and not caller.is_admin:
         raise HTTPException(403, "Only an admin can grant or remove the admin role")
     if target.role_id == "admin" and target.status == "active" and active_admin_count(db, caller.org_id, excluding_user_id=target.id) == 0:
@@ -101,7 +113,7 @@ def _guard_role_change(db: Session, caller: Caller, target: User, new_role_id: s
 def _permissions_payload(db: Session, user: User) -> dict[str, Any]:
     role = get_role(db, user.org_id, user.role_id, include_deleted=True)
     row = get_overrides(db, user.id)
-    owner = is_payroll_owner(user)
+    owner = is_payroll_owner(db, user)
     return {
         "user_id": user.id,
         "role": user.role_id,
@@ -201,6 +213,9 @@ def bulk_assign_role(
         if user.role_locked:
             skipped.append({"user_id": user_id, "reason": "role is locked"})
             continue
+        if is_account_holder(db, user):
+            skipped.append({"user_id": user_id, "reason": "account holder"})
+            continue
         try:
             _guard_role_change(db, caller, user, role.role_id)
         except HTTPException as exc:
@@ -246,7 +261,9 @@ def bulk_restrict(
         if user is None or user.org_id != caller.org_id or user.deleted_at is not None:
             missing.append(user_id)
             continue
-        if not caller.is_admin and (user.id == caller.user.id or user.role_id == "admin"):
+        if (not caller.is_admin and (user.id == caller.user.id or user.role_id == "admin")) or (
+            is_account_holder(db, user) and user.id != caller.user.id
+        ):
             skipped.append(user_id)
             continue
         row = get_overrides(db, user.id)
@@ -293,6 +310,7 @@ def update_user(
     if not patch:
         raise HTTPException(400, "No fields to update")
     user = _get_user(db, caller, user_id)
+    _guard_holder(db, caller, user)
     changes: dict[str, Any] = {}
 
     if "name" in patch and patch["name"] is not None:
@@ -321,6 +339,8 @@ def update_user(
     if "status" in patch and patch["status"] is not None and patch["status"] != user.status:
         new_status = patch["status"]
         if new_status == "disabled":
+            if is_account_holder(db, user):
+                raise HTTPException(400, "The account holder cannot be disabled. Transfer the account first.")
             if user.id == caller.user.id:
                 raise HTTPException(400, "Can't disable your own account")
             if user.role_id == "admin" and active_admin_count(db, caller.org_id, excluding_user_id=user.id) == 0:
@@ -368,6 +388,8 @@ def delete_user(
 ) -> dict[str, Any]:
     """Soft-delete (disable and hide). A hard delete is only allowed after a soft delete."""
     user = _get_user(db, caller, user_id, include_deleted=True)
+    if is_account_holder(db, user):
+        raise HTTPException(400, "The account holder cannot be deleted. Transfer the account first.")
     if user.id == caller.user.id:
         raise HTTPException(400, "Can't disable your own account")
     if hard:
@@ -403,6 +425,7 @@ def force_signout(
     db: Session = Depends(get_db),
 ) -> dict[str, Any]:
     user = _get_user(db, caller, user_id)
+    _guard_holder(db, caller, user)
     keep = caller.session.id if user.id == caller.user.id else None
     revoked = revoke_user_sessions(db, user.id, "forced_signout", except_session_id=keep)
     audit(db, request, org_id=caller.org_id, actor_id=caller.user.id, action="user.forced_signout",
@@ -434,6 +457,7 @@ def admin_set_password(
 ) -> dict[str, Any]:
     """An admin sets a temporary password. By default the user must change it at next sign-in."""
     user = _get_user(db, caller, user_id)
+    _guard_holder(db, caller, user, allow_self=False)
     error = password_policy_error(body.password)
     if error:
         raise HTTPException(400, error)
@@ -453,6 +477,7 @@ def admin_set_password(
 
 
 def _send_link(db: Session, request: Request, caller: Caller, user: User, kind: str) -> dict[str, Any]:
+    _guard_holder(db, caller, user)
     if user.status == "disabled":
         raise HTTPException(400, "This account is disabled. Re-enable it before sending a link.")
     row, token = issue_auth_token(db, user, kind, created_by=caller.user.id)
@@ -544,6 +569,7 @@ def _write_overrides(
         raise HTTPException(403, "You cannot change your own permissions")
     if user.role_id == "admin" and not caller.is_admin:
         raise HTTPException(403, "Only an admin can change an admin's permissions")
+    _guard_holder(db, caller, user)
     row = get_overrides(db, user.id)
     before = row.overrides if row else {}
     # Only newly granted cells need the "cannot grant what you do not hold" check.

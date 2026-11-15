@@ -2,7 +2,8 @@ import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { useAuth } from "./auth";
 import { Shell } from "./components/Shell";
 import { Loading } from "./components/ui";
-import { ForgotPassword, Login, RedeemLink } from "./pages/SignIn";
+import { ForgotPassword, Login, RedeemLink, Setup } from "./pages/SignIn";
+import { OrganisationSettings } from "./pages/Organisation";
 import { Home } from "./pages/Home";
 import { Profile } from "./pages/Profile";
 import { Roles } from "./pages/Roles";
@@ -25,6 +26,7 @@ export function App() {
     <Routes>
       <Route path="/" element={<Navigate to="/app/home" replace />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/setup" element={<Setup />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/accept-invite" element={<RedeemLink kind="invite" />} />
       <Route path="/reset-password" element={<RedeemLink kind="reset" />} />
@@ -32,6 +34,7 @@ export function App() {
         <Route index element={<Navigate to="/app/home" replace />} />
         <Route path="home" element={<Home />} />
         <Route path="profile" element={<Profile />} />
+        <Route path="settings/organisation" element={<OrganisationSettings />} />
         <Route path="settings/users" element={<Users />} />
         <Route path="settings/users/:userId" element={<UserDetail />} />
         <Route path="settings/roles" element={<Roles />} />

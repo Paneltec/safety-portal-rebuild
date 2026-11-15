@@ -9,7 +9,7 @@ interface NavItem {
 }
 
 export function Shell() {
-  const { me, can, signOut } = useAuth();
+  const { me, can, signOut, logoUrl } = useAuth();
   const [open, setOpen] = useState(false);
   if (!me) return null;
 
@@ -20,6 +20,7 @@ export function Shell() {
     {
       label: "Settings",
       items: [
+        { to: "/app/settings/organisation", label: "Organisation", show: true },
         { to: "/app/settings/users", label: "Users", show: can("users", "view") },
         { to: "/app/settings/roles", label: "Roles & permissions", show: can("users", "view") },
         { to: "/app/settings/sessions", label: "Active sessions", show: isAdmin },
@@ -32,7 +33,7 @@ export function Shell() {
     <div className="shell">
       <nav className={`sidebar${open ? " open" : ""}`} aria-label="Main menu">
         <div className="brand">
-          <div className="brand-logo">LOGO</div>
+          {logoUrl ? <img src={logoUrl} alt="" className="brand-img" /> : <div className="brand-logo" aria-hidden="true">LOGO</div>}
           <div>
             <div className="brand-name">{me.org_name}</div>
             <div className="brand-sub">Safety Portal</div>

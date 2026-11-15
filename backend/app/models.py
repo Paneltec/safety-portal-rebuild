@@ -36,6 +36,14 @@ class Organisation(Base):
     timezone: Mapped[str] = mapped_column(String(64), default="Australia/Hobart")
     staff_login_url: Mapped[str | None] = mapped_column(String(500))
     public_portal_url: Mapped[str | None] = mapped_column(String(500))
+    # The account holder: the protected top-level admin. Set once at first-run setup.
+    owner_user_id: Mapped[str | None] = mapped_column(String(36))
+    # Payroll owner (spec section 14). Defaults to the account holder at setup; never implied by role.
+    payroll_owner_user_id: Mapped[str | None] = mapped_column(String(36))
+    logo_file_id: Mapped[str | None] = mapped_column(String(36))
+    # Contact and report details: trading_name, abn, address_line1/2, suburb, state, postcode,
+    # country, contact_name/email/phone, emergency_contact_phone, after_hours_contact_name/phone, website_url
+    details: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict, server_default="{}")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
 
@@ -205,3 +213,24 @@ class OutboxMessage(Base):
     related_id: Mapped[str | None] = mapped_column(String(80))
     created_by: Mapped[str | None] = mapped_column(String(36))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class StoredFile(Base):
+    """Metadata for stored bytes. The bytes live on disk under FILES_DIR, addressed by SHA-256.
+
+    File identity (id) is separate from the original and display names.
+    """
+
+    __tablename__ = "stored_files"
+    __table_args__ = (Index("ix_stored_files_org_sha", "org_id", "sha256"),)
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    org_id: Mapped[str] = mapped_column(ForeignKey("organisations.id"), index=True)
+    sha256: Mapped[str] = mapped_column(String(64))
+    size_bytes: Mapped[int] = mapped_column(Integer)
+    mime_type: Mapped[str] = mapped_column(String(120))
+    original_name: Mapped[str] = mapped_column(String(300))
+    purpose: Mapped[str] = mapped_column(String(40))  # logo | document | attachment | ...
+    created_by: Mapped[str | None] = mapped_column(String(36))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    deleted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))

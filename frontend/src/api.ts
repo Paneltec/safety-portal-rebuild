@@ -43,7 +43,10 @@ function describe(detail: unknown, status: number): string {
   return `Request failed (${status})`;
 }
 
-export async function api<T>(path: string, options: { method?: string; body?: unknown; anonymous?: boolean } = {}): Promise<T> {
+export async function api<T>(
+  path: string,
+  options: { method?: string; body?: unknown; form?: FormData; anonymous?: boolean } = {},
+): Promise<T> {
   const headers: Record<string, string> = {};
   const token = getToken();
   if (token && !options.anonymous) headers.Authorization = `Bearer ${token}`;
@@ -51,9 +54,10 @@ export async function api<T>(path: string, options: { method?: string; body?: un
   let response: Response;
   try {
     response = await fetch(path, {
-      method: options.method ?? "GET",
+      method: options.method ?? (options.form ? "POST" : "GET"),
       headers,
-      body: options.body !== undefined ? JSON.stringify(options.body) : undefined,
+      // A FormData body (file upload) sets its own multipart content type.
+      body: options.form ?? (options.body !== undefined ? JSON.stringify(options.body) : undefined),
     });
   } catch {
     throw new ApiError(0, "Cannot reach the server. Check your connection and try again.");
@@ -96,6 +100,7 @@ export interface User {
   last_login_at: string | null;
   created_at: string;
   deleted_at: string | null;
+  is_account_holder: boolean;
 }
 
 export interface Me extends User {
@@ -145,4 +150,22 @@ export function formatDateTime(iso: string | null, timeZone: string): string {
     minute: "2-digit",
     hour12: true,
   }).format(new Date(iso));
+}
+
+export interface Org {
+  id: string;
+  name: string;
+  timezone: string;
+  staff_login_url: string | null;
+  public_portal_url: string | null;
+  logo_url: string | null;
+  owner_user_id: string | null;
+  account_holder: { id: string; name: string } | null;
+  [detail: string]: unknown;
+}
+
+export interface Company {
+  id?: string;
+  name: string;
+  code: string;
 }

@@ -29,6 +29,20 @@
     "title": "ApplyPresetIn",
     "type": "object"
    },
+   "Body_upload_logo_api_org_logo_upload_post": {
+    "properties": {
+     "file": {
+      "contentMediaType": "application/octet-stream",
+      "title": "File",
+      "type": "string"
+     }
+    },
+    "required": [
+     "file"
+    ],
+    "title": "Body_upload_logo_api_org_logo_upload_post",
+    "type": "object"
+   },
    "BulkAssignRoleIn": {
     "properties": {
      "role_id": {
@@ -127,6 +141,61 @@
     "title": "ChangePasswordIn",
     "type": "object"
    },
+   "CompaniesPatch": {
+    "properties": {
+     "companies": {
+      "items": {
+       "$ref": "#/components/schemas/CompanyIn"
+      },
+      "maxItems": 50,
+      "title": "Companies",
+      "type": "array"
+     }
+    },
+    "required": [
+     "companies"
+    ],
+    "title": "CompaniesPatch",
+    "type": "object"
+   },
+   "CompanyIn": {
+    "properties": {
+     "code": {
+      "anyOf": [
+       {
+        "maxLength": 40,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Code"
+     },
+     "id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Id"
+     },
+     "name": {
+      "maxLength": 200,
+      "minLength": 1,
+      "title": "Name",
+      "type": "string"
+     }
+    },
+    "required": [
+     "name"
+    ],
+    "title": "CompanyIn",
+    "type": "object"
+   },
    "CreateUserIn": {
     "properties": {
      "company_id": {
@@ -220,6 +289,259 @@
      "password"
     ],
     "title": "LoginIn",
+    "type": "object"
+   },
+   "OrgPatch": {
+    "properties": {
+     "abn": {
+      "anyOf": [
+       {
+        "maxLength": 20,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Abn"
+     },
+     "address_line1": {
+      "anyOf": [
+       {
+        "maxLength": 200,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Address Line1"
+     },
+     "address_line2": {
+      "anyOf": [
+       {
+        "maxLength": 200,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Address Line2"
+     },
+     "after_hours_contact_name": {
+      "anyOf": [
+       {
+        "maxLength": 200,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "After Hours Contact Name"
+     },
+     "after_hours_contact_phone": {
+      "anyOf": [
+       {
+        "maxLength": 40,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "After Hours Contact Phone"
+     },
+     "contact_email": {
+      "anyOf": [
+       {
+        "format": "email",
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Contact Email"
+     },
+     "contact_name": {
+      "anyOf": [
+       {
+        "maxLength": 200,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Contact Name"
+     },
+     "contact_phone": {
+      "anyOf": [
+       {
+        "maxLength": 40,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Contact Phone"
+     },
+     "country": {
+      "anyOf": [
+       {
+        "maxLength": 80,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Country"
+     },
+     "emergency_contact_phone": {
+      "anyOf": [
+       {
+        "maxLength": 40,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Emergency Contact Phone"
+     },
+     "name": {
+      "anyOf": [
+       {
+        "maxLength": 200,
+        "minLength": 1,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Name"
+     },
+     "portal_url": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Portal Url"
+     },
+     "postcode": {
+      "anyOf": [
+       {
+        "maxLength": 12,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Postcode"
+     },
+     "public_portal_url": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Public Portal Url"
+     },
+     "staff_login_url": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Staff Login Url"
+     },
+     "state": {
+      "anyOf": [
+       {
+        "maxLength": 50,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "State"
+     },
+     "suburb": {
+      "anyOf": [
+       {
+        "maxLength": 100,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Suburb"
+     },
+     "timezone": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Timezone"
+     },
+     "trading_name": {
+      "anyOf": [
+       {
+        "maxLength": 200,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Trading Name"
+     },
+     "website": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Website"
+     },
+     "website_url": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Website Url"
+     }
+    },
+    "title": "OrgPatch",
     "type": "object"
    },
    "PermissionsIn": {
@@ -429,6 +751,49 @@
     "title": "SetPasswordIn",
     "type": "object"
    },
+   "SetupIn": {
+    "properties": {
+     "confirm_password": {
+      "title": "Confirm Password",
+      "type": "string"
+     },
+     "email": {
+      "format": "email",
+      "title": "Email",
+      "type": "string"
+     },
+     "name": {
+      "maxLength": 200,
+      "minLength": 1,
+      "title": "Name",
+      "type": "string"
+     },
+     "org_name": {
+      "maxLength": 200,
+      "minLength": 1,
+      "title": "Org Name",
+      "type": "string"
+     },
+     "password": {
+      "title": "Password",
+      "type": "string"
+     },
+     "setup_key": {
+      "title": "Setup Key",
+      "type": "string"
+     }
+    },
+    "required": [
+     "setup_key",
+     "org_name",
+     "name",
+     "email",
+     "password",
+     "confirm_password"
+    ],
+    "title": "SetupIn",
+    "type": "object"
+   },
    "TokenIn": {
     "properties": {
      "token": {
@@ -441,6 +806,19 @@
      "token"
     ],
     "title": "TokenIn",
+    "type": "object"
+   },
+   "TransferIn": {
+    "properties": {
+     "user_id": {
+      "title": "User Id",
+      "type": "string"
+     }
+    },
+    "required": [
+     "user_id"
+    ],
+    "title": "TransferIn",
     "type": "object"
    },
    "UpdateProfileIn": {
@@ -620,7 +998,7 @@
  "info": {
   "description": "Independent reconstruction. Stage 1: identity, sessions, roles and permissions.",
   "title": "Safety Portal API",
-  "version": "0.1.0-stage1"
+  "version": "0.2.0"
  },
  "openapi": "3.1.0",
  "paths": {
@@ -1635,6 +2013,91 @@
     "tags": [
      "organisation"
     ]
+   },
+   "patch": {
+    "operationId": "patch_org_api_org_patch",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/OrgPatch"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Patch Org Api Org Patch",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Patch Org",
+    "tags": [
+     "organisation"
+    ]
+   }
+  },
+  "/api/org/account-holder": {
+   "post": {
+    "description": "Hand the account to another active admin. Only the current holder can do this.\nPayroll ownership is a separate decision and does not move.",
+    "operationId": "transfer_account_holder_api_org_account_holder_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/TransferIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Transfer Account Holder Api Org Account Holder Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Transfer Account Holder",
+    "tags": [
+     "organisation"
+    ]
    }
   },
   "/api/org/companies": {
@@ -1645,12 +2108,9 @@
       "content": {
        "application/json": {
         "schema": {
-         "items": {
-          "additionalProperties": true,
-          "type": "object"
-         },
+         "additionalProperties": true,
          "title": "Response List Companies Api Org Companies Get",
-         "type": "array"
+         "type": "object"
         }
        }
       },
@@ -1658,6 +2118,157 @@
      }
     },
     "summary": "List Companies",
+    "tags": [
+     "organisation"
+    ]
+   },
+   "put": {
+    "description": "Replace the list of divisions. Existing ids are kept so links to them survive a rename.\nA division that people are still assigned to cannot be removed.",
+    "operationId": "replace_companies_api_org_companies_put",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/CompaniesPatch"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Replace Companies Api Org Companies Put",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Replace Companies",
+    "tags": [
+     "organisation"
+    ]
+   }
+  },
+  "/api/org/logo": {
+   "delete": {
+    "operationId": "remove_logo_api_org_logo_delete",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": {
+          "type": "boolean"
+         },
+         "title": "Response Remove Logo Api Org Logo Delete",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Remove Logo",
+    "tags": [
+     "organisation"
+    ]
+   }
+  },
+  "/api/org/logo/upload": {
+   "post": {
+    "operationId": "upload_logo_api_org_logo_upload_post",
+    "requestBody": {
+     "content": {
+      "multipart/form-data": {
+       "schema": {
+        "$ref": "#/components/schemas/Body_upload_logo_api_org_logo_upload_post"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Upload Logo Api Org Logo Upload Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Upload Logo",
+    "tags": [
+     "organisation"
+    ]
+   }
+  },
+  "/api/org/logo/{file_id}": {
+   "get": {
+    "description": "Logos are branding, shown on the sign-in page and in emails, so this route needs no session.\nIt only ever serves files stored as a logo (decision D-016).",
+    "operationId": "get_logo_api_org_logo__file_id__get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "file_id",
+      "required": true,
+      "schema": {
+       "title": "File Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Get Logo",
     "tags": [
      "organisation"
     ]
@@ -1979,6 +2590,99 @@
      }
     },
     "summary": "Permissions Schema",
+    "tags": [
+     "organisation"
+    ]
+   }
+  },
+  "/api/public/branding": {
+   "get": {
+    "description": "Name and logo for the sign-in page. Only shown when the install has a single organisation,\nso one tenant's identity is never shown to another's staff.",
+    "operationId": "public_branding_api_public_branding_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Public Branding Api Public Branding Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Public Branding",
+    "tags": [
+     "organisation"
+    ]
+   }
+  },
+  "/api/setup": {
+   "post": {
+    "description": "Create the organisation and its account holder. Works once, on an empty install,\nand only for someone who knows the SETUP_KEY from the server's configuration.",
+    "operationId": "run_setup_api_setup_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/SetupIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Run Setup Api Setup Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Run Setup",
+    "tags": [
+     "organisation"
+    ]
+   }
+  },
+  "/api/setup/status": {
+   "get": {
+    "operationId": "setup_status_api_setup_status_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": {
+          "type": "boolean"
+         },
+         "title": "Response Setup Status Api Setup Status Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Setup Status",
     "tags": [
      "organisation"
     ]

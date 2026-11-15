@@ -10,6 +10,8 @@ interface AuthState {
   signOut: () => Promise<void>;
   reload: () => Promise<void>;
   can: (resource: string, action: string) => boolean;
+  logoUrl: string | null;
+  setLogoUrl: (url: string | null) => void;
 }
 
 const AuthContext = createContext<AuthState | null>(null);
@@ -18,6 +20,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [status, setStatus] = useState<AuthState["status"]>("loading");
   const [me, setMe] = useState<Me | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
+  const [logoUrl, setLogoUrl] = useState<string | null>(null);
 
   const reload = useCallback(async () => {
     if (!getToken()) {
@@ -28,6 +31,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       setMe(await api<Me>("/api/auth/me"));
       setStatus("signed-in");
+      api<{ logo_url: string | null }>("/api/org").then((org) => setLogoUrl(org.logo_url)).catch(() => undefined);
     } catch {
       setMe(null);
       setStatus("anonymous");
@@ -77,8 +81,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       },
       reload,
       can: (resource, action) => me?.effective_permissions?.[resource]?.[action] === true,
+      logoUrl,
+      setLogoUrl,
     }),
-    [status, me, notice, reload],
+    [status, me, notice, reload, logoUrl],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

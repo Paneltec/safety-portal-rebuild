@@ -26,10 +26,13 @@ services:
       APP_ENV: production
       DATABASE_URL: postgresql+psycopg://portal:${POSTGRES_PASSWORD}@db:5432/portal
       PUBLIC_BASE_URL: ${PUBLIC_BASE_URL:-}
-      PAYROLL_OWNER_EMAIL: ${PAYROLL_OWNER_EMAIL:-}
+      SETUP_KEY: ${SETUP_KEY:-}
+      FILES_DIR: /data/files
       SESSION_TTL_HOURS: ${SESSION_TTL_HOURS:-12}
       REMEMBER_ME_TTL_DAYS: ${REMEMBER_ME_TTL_DAYS:-30}
       IDLE_TIMEOUT_MINUTES: ${IDLE_TIMEOUT_MINUTES:-240}
+    volumes:
+      - files-data:/data/files
 
   web:
     build: ./frontend
@@ -41,3 +44,4 @@ services:
 
 volumes:
   db-data:
+  files-data:

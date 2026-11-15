@@ -159,6 +159,7 @@ export function UserDetail() {
           <div className="row">
             <StatusChip status={deleted ? "disabled" : u.status} />
             {deleted && <Chip tone="neutral" icon={false}>Deleted</Chip>}
+            {u.is_account_holder && <Chip tone="info" icon={false}>Account holder</Chip>}
             <span className="muted">{u.email} · {u.role_name}</span>
           </div>
         </div>

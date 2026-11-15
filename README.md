@@ -2,7 +2,7 @@
 
 A new implementation of the Paneltec Safety Portal, built from the written reconstruction pack only. It is separate from the existing portal: it has its own database, its own secrets and synthetic demo data. Nothing here connects to the live system.
 
-**Current state: stage 1 of 9 is built and tested** (sign-in, sessions, invitations and resets, users, roles, permission matrix, per-person overrides, presets, audit). See `docs/STAGED_PLAN.md` for what comes next and `docs/ledger/` for status per requirement and per API operation.
+**Current state:** see `docs/PROGRESS.md` for exactly what is built and tested so far, `docs/STAGED_PLAN.md` for the full plan and `docs/ledger/` for status per requirement and per API operation.
 
 ## What is in the repository
 
@@ -21,17 +21,17 @@ A new implementation of the Paneltec Safety Portal, built from the written recon
 ## Run with Docker (NAS, Portainer or Umbrel)
 
 ```bash
-cp .env.example .env          # then set POSTGRES_PASSWORD (and PUBLIC_BASE_URL if you have one)
+cp .env.example .env          # then set POSTGRES_PASSWORD and SETUP_KEY (two long random values)
 docker compose up -d --build
 ```
 
-Create the first admin. This prints a one-time path for setting the password:
+Open `http://<server>:3960`. An empty install shows the **first-time setup** screen: enter the `SETUP_KEY`, the organisation name, and your own name, email and password. That person becomes the **account holder**: the protected top-level admin and the payroll owner. Setup works once.
+
+If the account holder is ever locked out, an operator can create another admin from the server:
 
 ```bash
-docker compose exec api python -m app.seed create-admin --org "Paneltec" --name "Your Name" --email you@example.com
+docker compose exec api python -m app.seed create-admin --org "<organisation name>" --name "Name" --email person@example.com
 ```
-
-Open `http://<server>:3960` followed by the printed path (for example `/accept-invite?token=...`).
 
 Optional synthetic demo data (two organisations, nine invented people each):
 
@@ -39,7 +39,7 @@ Optional synthetic demo data (two organisations, nine invented people each):
 docker compose exec -e DEMO_PASSWORD='choose-a-demo-password' api python -m app.seed demo
 ```
 
-Database migrations run automatically each time the `api` container starts. Business data lives in the `db-data` volume; rebuilding or replacing the containers does not touch it.
+Database migrations run automatically each time the `api` container starts. Business data lives in two volumes, `db-data` (database) and `files-data` (uploaded files); rebuilding or replacing the containers does not touch them. Back up both together.
 
 > The Docker files were written but could not be run in the build environment (no Docker daemon there). The same code was run directly, as described below.
 
@@ -72,6 +72,7 @@ API documentation is served at `/api/docs`.
 cd backend
 TEST_DATABASE_URL=postgresql+psycopg://portal:<password>@localhost:5432/portal_test .venv/bin/python -m pytest
 cd ../frontend && npm run build     # type-check and production build
+cd .. && ./e2e/run.sh               # browser walkthrough of every built screen on a fresh database
 ```
 
 The backend suite runs against a real PostgreSQL database that it migrates with Alembic and empties before each test. It covers allowed and denied paths, two organisations with identically named people, single-use links, session revocation and that the migrations match the models.
@@ -79,5 +80,5 @@ The backend suite runs against a real PostgreSQL database that it migrates with 
 ## Safety boundaries
 
 - No email, SMS, payment or lodgement is sent by this build. Invitation and reset links are shown once to the admin and logged as "held".
-- Payroll access is denied to everyone except the address in `PAYROLL_OWNER_EMAIL`; an ordinary admin has none.
+- Payroll access is denied to everyone except the payroll owner (the account holder by default); an ordinary admin has none.
 - Secrets come from `.env`, which is never committed. There are no default passwords.

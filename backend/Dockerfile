@@ -6,7 +6,7 @@ RUN pip install --no-cache-dir -r requirements.lock
 COPY alembic.ini .
 COPY migrations ./migrations
 COPY app ./app
-RUN useradd --system --uid 10001 portal
+RUN useradd --system --uid 10001 portal && mkdir -p /data/files && chown portal /data/files
 USER portal
 EXPOSE 8000
 # Apply database migrations, then start the API.

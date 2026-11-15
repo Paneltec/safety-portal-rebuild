@@ -11,7 +11,7 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
     app_env: str = "development"  # development | test | production
-    app_version: str = "0.1.0-stage1"
+    app_version: str = "0.2.0"
     database_url: str = "postgresql+psycopg://portal:portal@localhost:5432/portal"
 
     # Session policy
@@ -30,8 +30,13 @@ class Settings(BaseSettings):
     # Used to build links in invitations. Empty means "derive from the request".
     public_base_url: str = ""
 
-    # Payroll owner is configured, never hardcoded (spec section 14).
-    payroll_owner_email: str = ""
+    # First-run setup: the person who knows this key can create the organisation
+    # and become its account holder. Empty disables the setup screen.
+    setup_key: str = ""
+
+    # Where uploaded files are stored (a Docker volume in production).
+    files_dir: str = "./data/files"
+    max_upload_mb: int = 50
 
 
 @lru_cache

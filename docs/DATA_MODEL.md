@@ -2,11 +2,12 @@
 
 IDs are opaque strings. Every tenant-owned table carries `org_id`, and every query filters on it. Instants are stored in UTC with time zone; date-only business fields will be `DATE`. The schema is created only by Alembic migrations (`backend/migrations`), and a test fails if the models and migrations drift apart.
 
-## Stage 1 tables (built)
+## Tables built so far
 
 | Table | Purpose | Key rules |
 |---|---|---|
-| `organisations` | Tenant boundary: name, time zone, staff login URL, public portal URL | Created with the eight built-in roles |
+| `organisations` | Tenant boundary: name, time zone, portal addresses, contact details, logo, account holder, payroll owner | Created with the eight built-in roles |
+| `stored_files` | Metadata for uploaded bytes: hash, size, MIME type, original name, purpose | Bytes on the files volume by organisation and SHA-256; identity separate from name |
 | `companies` | Divisions inside an organisation (for example Paneltec, Viatec) | Unique `(org_id, code)` |
 | `roles` | Role catalogue: built-in (read-only) and custom | Unique `(org_id, role_id)`; `permissions` is `{resource: {action: bool}}`; soft delete |
 | `users` | Login identity | Email unique and lower-case; `status` invited/active/disabled; `worker_id` link is separate from the account; soft delete before hard delete |

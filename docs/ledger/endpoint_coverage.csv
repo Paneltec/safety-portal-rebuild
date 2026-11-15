@@ -615,12 +615,12 @@ GET,/api/notifications,notifications,list_notifications,CLASSIFY,,,NOT_STARTED,
 POST,/api/notifications/mark-all-read,notifications,mark_all_read,CLASSIFY,,,NOT_STARTED,
 POST,/api/notifications/{notification_id}/read,notifications,mark_read,CLASSIFY,,,NOT_STARTED,
 GET,/api/openapi.json,server,_admin_openapi,CLASSIFY,,,NOT_STARTED,
-GET,/api/org,org_settings,get_org,authenticated-own,org.get_org,tests/test_roles_sessions_tenancy.py,IMPLEMENTED_TESTED,Basic fields; branding in stage 2
-PATCH,/api/org,org_settings,patch_org,CLASSIFY,,,NOT_STARTED,
+GET,/api/org,org_settings,get_org,authenticated-own,org.get_org,tests/test_org_setup_files.py,IMPLEMENTED_TESTED,Insurance blocks arrive with documents
+PATCH,/api/org,org_settings,patch_org,admin-owner,org.patch_org,tests/test_org_setup_files.py,IMPLEMENTED_TESTED,D-020; slug and default_workspace_id deferred; insurance deferred
 GET,/api/org/archive-rules,org_archive_rules,list_rules,CLASSIFY,,,NOT_STARTED,
 PUT,/api/org/archive-rules/{module},org_archive_rules,upsert_rule,CLASSIFY,,,NOT_STARTED,
-GET,/api/org/companies,org_settings,list_org_companies,authenticated-own,org.list_companies,tests/test_roles_sessions_tenancy.py,IMPLEMENTED_TESTED,Read only; editing in stage 2
-PUT,/api/org/companies,org_settings,replace_org_companies,CLASSIFY,,,NOT_STARTED,
+GET,/api/org/companies,org_settings,list_org_companies,authenticated-own,org.list_companies,tests/test_org_setup_files.py,IMPLEMENTED_TESTED,No self-seeded pilot companies
+PUT,/api/org/companies,org_settings,replace_org_companies,admin-owner,org.replace_companies,tests/test_org_setup_files.py,IMPLEMENTED_TESTED,D-020 stable ids
 POST,/api/org/insurance/email,org_settings,dispatch_insurance_email,CLASSIFY,,,NOT_STARTED,
 GET,/api/org/insurance/email/log,org_settings,list_insurance_email_log,CLASSIFY,,,NOT_STARTED,
 POST,/api/org/insurance/email/log/clear-all,org_settings,clear_all_email_log,CLASSIFY,,,NOT_STARTED,
@@ -635,8 +635,8 @@ GET,/api/org/insurance/{policy_type}/history/{file_id}/download,org_settings,dow
 POST,/api/org/insurance/{policy_type}/history/{file_id}/purge,org_settings,purge_insurance_history,CLASSIFY,,,NOT_STARTED,
 POST,/api/org/insurance/{policy_type}/history/{file_id}/undelete,org_settings,undelete_insurance_history,CLASSIFY,,,NOT_STARTED,
 POST,/api/org/insurance/{policy_type}/upload,org_settings,upload_insurance_cert,CLASSIFY,,,NOT_STARTED,
-POST,/api/org/logo/upload,org_settings,upload_logo,CLASSIFY,,,NOT_STARTED,
-GET,/api/org/logo/{gridfs_id},org_settings,get_logo,CLASSIFY,,,NOT_STARTED,
+POST,/api/org/logo/upload,org_settings,upload_logo,admin-owner,org.upload_logo,tests/test_org_setup_files.py,IMPLEMENTED_TESTED,"D-018 content sniffing, 2 MB"
+GET,/api/org/logo/{gridfs_id},org_settings,get_logo,public-scoped,org.get_logo,tests/test_org_setup_files.py,IMPLEMENTED_TESTED,D-019 logo-only public route
 GET,/api/org/role-presets/{role}/forms,org_settings,get_role_forms,CLASSIFY,,,NOT_STARTED,
 PUT,/api/org/role-presets/{role}/forms,org_settings,put_role_forms,CLASSIFY,,,NOT_STARTED,
 GET,/api/org/url-tiles,org_url_tiles,list_tiles,CLASSIFY,,,NOT_STARTED,
@@ -1010,5 +1010,10 @@ POST,/mobile/sites/{site_id}/visitor-sign-in,mobile_sites,visitor_sign_in,RETIRE
 POST,/mobile/sites/{site_id}/visitor-sign-out,mobile_sites,visitor_sign_out,RETIRED,,,HISTORICAL,Removed mobile_sites router; functionality uses current site routes
 GET,/mobile/sites/{site_id}/current-occupancy,mobile_sites,current_occupancy,RETIRED,,,HISTORICAL,Removed mobile_sites router; functionality uses current site routes
 POST,/mobile/gps/heartbeat,mobile_sites,gps_heartbeat,RETIRED,,,HISTORICAL,Removed mobile_sites router; functionality uses current site routes
+GET,/api/setup/status,(new),setup_status,public-scoped,org.setup_status,tests/test_org_setup_files.py,IMPLEMENTED_TESTED,D-016
+POST,/api/setup,(new),run_setup,public-scoped,org.run_setup,tests/test_org_setup_files.py,IMPLEMENTED_TESTED,"D-016 first-run, key protected, once"
+POST,/api/org/account-holder,(new),transfer_account_holder,admin-owner,org.transfer_account_holder,tests/test_org_setup_files.py,IMPLEMENTED_TESTED,D-017
+DELETE,/api/org/logo,(new),remove_logo,admin-owner,org.remove_logo,tests/test_org_setup_files.py,IMPLEMENTED_TESTED,
+GET,/api/public/branding,(new),public_branding,public-scoped,org.public_branding,tests/test_org_setup_files.py,IMPLEMENTED_TESTED,D-019
 GET,/api/health,(new),health,public-scoped,org.health,tests/test_auth.py,IMPLEMENTED_TESTED,New readiness endpoint
 GET,/api/permissions/schema,(new),permissions_schema,authenticated-own,org.permissions_schema,tests/test_roles_sessions_tenancy.py,IMPLEMENTED_TESTED,New: catalogue for the matrix UI

@@ -39,6 +39,10 @@ def create_admin(org_name: str, name: str, email: str) -> None:
         user = User(org_id=org.id, email=email, name=name.strip(), role_id="admin", status="invited")
         db.add(user)
         db.flush()
+        if org.owner_user_id is None:
+            # The first admin of an organisation becomes its account holder and payroll owner.
+            org.owner_user_id = user.id
+            org.payroll_owner_user_id = user.id
         password = os.environ.get("BOOTSTRAP_ADMIN_PASSWORD")
         if password:
             error = password_policy_error(password)
@@ -95,9 +99,14 @@ def demo() -> None:
                 email = f"{local}@{domain}"
                 if db.scalars(select(User.id).where(User.email == email)).first():
                     continue
-                db.add(User(org_id=org.id, email=email, name=name, role_id=role, status="active",
+                user = User(org_id=org.id, email=email, name=name, role_id=role, status="active",
                             password_hash=hashed, company_id=companies.get(code) if code else None,
-                            last_password_change_at=utcnow()))
+                            last_password_change_at=utcnow())
+                db.add(user)
+                db.flush()
+                if role == "admin" and org.owner_user_id is None:
+                    org.owner_user_id = user.id
+                    org.payroll_owner_user_id = user.id
                 created += 1
         db.commit()
     print(f"Demo data ready. {created} synthetic users created.")

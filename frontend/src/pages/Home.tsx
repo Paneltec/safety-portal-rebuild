@@ -3,9 +3,9 @@ import { useAuth } from "../auth";
 import { Chip } from "../components/ui";
 
 // Honest build status. A stage is only "Built" once it works end to end with tests.
-const STAGES: { name: string; detail: string; built: boolean }[] = [
+const STAGES: { name: string; detail: string; built: boolean | "partial" }[] = [
   { name: "1. Sign-in, users, roles and permissions", detail: "Logins, invitations, sessions, role catalogue, per-person access", built: true },
-  { name: "2. Organisation, documents and the form engine", detail: "Branding, file storage, form templates and submissions", built: false },
+  { name: "2. Organisation, documents and the form engine", detail: "Organisation settings, logo and file storage are built; documents and forms are next", built: "partial" },
   { name: "3. Safety capture", detail: "SWMS, pre-starts, site diary, incidents and hazards, inspections, risk", built: false },
   { name: "4. Workers, suppliers, sites and jobs", detail: "Certifications, inductions, renewals, visitors, daily jobs", built: false },
   { name: "5. Integrations and communications", detail: "Simpro, Navixy, SmartFill, Microsoft 365, TextMagic, outbox, safe mode", built: false },
@@ -60,7 +60,7 @@ export function Home() {
                   <div style={{ fontWeight: 600 }}>{stage.name}</div>
                   <div className="small muted">{stage.detail}</div>
                 </div>
-                {stage.built ? <Chip tone="ok">Built and tested</Chip> : <Chip tone="dashed" icon={false}>Not built yet</Chip>}
+                {stage.built === true ? <Chip tone="ok">Built and tested</Chip> : stage.built === "partial" ? <Chip tone="warn">Partly built</Chip> : <Chip tone="dashed" icon={false}>Not built yet</Chip>}
               </li>
             ))}
           </ul>

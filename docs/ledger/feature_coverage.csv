@@ -1,5 +1,5 @@
 requirement_id,area,required_capability,implementation_status,test_evidence,decision_or_limitation
-CORE-01,Identity and tenants,Organisation/user/worker/company/site separation and row/file scope,PARTIAL,tests/test_roles_sessions_tenancy.py (tenant isolation),"Organisation/user/company/role scope built. Worker, site and file scope arrive with those modules."
+CORE-01,Identity and tenants,Organisation/user/worker/company/site separation and row/file scope,PARTIAL,tests/test_roles_sessions_tenancy.py (tenant isolation),Organisation/user/company/role scope and file ownership built. Worker and site scope arrive with those modules.
 AUTH-01,Login and account recovery,"Login, invitation, reset, password change, sessions and expiry",PARTIAL,tests/test_auth.py,"Built: login, lockout, invitation, reset, password change, forced change, sessions, expiry, idle timeout, session admin. Outstanding: mobile PIN, admin-console PIN, Simpro sign-in, emailing links (held in outbox)."
 PERM-01,Access administration,"Custom roles, action matrix, per-user overrides, presets and audit",PARTIAL,tests/test_permissions_unit.py; tests/test_users.py; tests/test_roles_sessions_tenancy.py,"Built: custom roles, action matrix, per-user overrides, presets, audit, grant guards. Outstanding: role form allowlist, payroll named grants, phone module allocation."
 NAV-01,Office navigation,"Full module navigation, preferences, version and app directory",PARTIAL,"Browser walkthrough (login, users, roles, sessions, profile)","Shell with permission-filtered menu for built screens only. Preferences, app directory and version display outstanding."
@@ -53,7 +53,7 @@ COM-01,Communications,Explicit guarded sends/read notifications/held/error evide
 PHONE-01,Phone shell,Own home/My Work/forms/fleet/docs/profile/leave/pay features,NOT_STARTED,,
 PHONE-02,QR and preview,One request camera lifecycle/scoped preview/module parity,NOT_STARTED,,
 PHONE-03,Offline and builds,Persistent idempotent queue/deep links/signed artifact status,NOT_STARTED,,
-ORG-01,Organisation branding,Logo/report/staff/public URLs without old host identity,NOT_STARTED,,
+ORG-01,Organisation branding,Logo/report/staff/public URLs without old host identity,PARTIAL,tests/test_org_setup_files.py; e2e/walkthrough.py,"Built: name, time zone, contact details, validated portal and staff URLs with no host default, logo upload/replace/remove shown in shell and sign-in, companies, account holder. Outstanding: logo and branding in PDFs and email templates (arrive with those features), insurance certificates."
 OPS-01,System and releases,Readiness/version/update lock/health/rollback/cache,NOT_STARTED,,
 BACK-01,Backup and NAS,Snapshot/delivery/retention/verification/isolated restore,NOT_STARTED,,
 ADMIN-01,Diagnostics,Schema/missing files/job status/safe test reset/audit,NOT_STARTED,,

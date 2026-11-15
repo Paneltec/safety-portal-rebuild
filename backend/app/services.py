@@ -70,9 +70,14 @@ def require_assignable_role(db: Session, org_id: str, role_id: str) -> Role:
 
 # ---------- effective permissions ----------
 
-def is_payroll_owner(user: User) -> bool:
-    owner = get_settings().payroll_owner_email.strip().lower()
-    return bool(owner) and user.email == owner
+def is_payroll_owner(db: Session, user: User) -> bool:
+    org = db.get(Organisation, user.org_id)
+    return org is not None and org.payroll_owner_user_id == user.id
+
+
+def is_account_holder(db: Session, user: User) -> bool:
+    org = db.get(Organisation, user.org_id)
+    return org is not None and org.owner_user_id == user.id
 
 
 def get_overrides(db: Session, user_id: str) -> UserPermissionOverride | None:
@@ -87,7 +92,7 @@ def effective_for(db: Session, user: User) -> perms.Matrix:
     return perms.effective_permissions(
         role_matrix,
         override_row.overrides if override_row else None,
-        payroll_owner=is_payroll_owner(user),
+        payroll_owner=is_payroll_owner(db, user),
     )
 
 
@@ -113,6 +118,7 @@ def user_out(db: Session, user: User) -> dict[str, Any]:
         "created_at": iso(user.created_at),
         "deleted_at": iso(user.deleted_at),
         "is_test": user.is_test,
+        "is_account_holder": is_account_holder(db, user),
     }
 
 

@@ -185,5 +185,5 @@ def test_permission_schema_and_companies(world, client, db):
     assert schema["resources"]["payroll"]["managed_by"] == "payroll_grants"
     assert schema["resources"]["comms_safe_mode"]["managed_by"] == "admin_override"
     assert "email" not in schema["resources"]["vehicles"]["supported_actions"]
-    companies = client.get("/api/org/companies", headers=world.auth("worker1")).json()
+    companies = client.get("/api/org/companies", headers=world.auth("worker1")).json()["companies"]
     assert [c["code"] for c in companies] == ["PAN"]  # the other organisation's division is not listed

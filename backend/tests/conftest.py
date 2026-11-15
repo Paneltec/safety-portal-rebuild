@@ -5,7 +5,8 @@ os.environ["APP_ENV"] = "test"
 os.environ["DATABASE_URL"] = os.environ.get(
     "TEST_DATABASE_URL", "postgresql+psycopg://portal:portal@localhost:5432/portal_test"
 )
-os.environ["PAYROLL_OWNER_EMAIL"] = "owner@one.example"
+os.environ["SETUP_KEY"] = "test-setup-key"
+os.environ["FILES_DIR"] = __import__("tempfile").mkdtemp(prefix="portal-test-files-")
 os.environ["PUBLIC_BASE_URL"] = "https://portal.test"
 
 from pathlib import Path  # noqa: E402
@@ -82,6 +83,10 @@ class World:
             user = User(org_id=org.id, email=email, name=name, role_id=role, status="active", password_hash=_HASH)
             db.add(user)
             self.users[key] = user
+        db.flush()
+        # Olive Owner is the account holder and payroll owner of Org One.
+        self.org1.owner_user_id = self.users["owner1"].id
+        self.org1.payroll_owner_user_id = self.users["owner1"].id
         db.commit()
         self._tokens: dict[str, str] = {}
 
