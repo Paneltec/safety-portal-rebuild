@@ -29,6 +29,8 @@ Matrix = dict[str, dict[str, bool]]
 GRANT_ONLY_RESOURCES = {"payroll"}
 OVERRIDE_ONLY_RESOURCES = {"comms_safe_mode"}
 
+REVIEWED_RESOURCES = ["swms", "pre_starts", "site_diary", "hazards", "incidents", "inspections", "risk_assessments"]
+
 # System roles: (name, phone role key, source of defaults in the observed baseline).
 # `manager` has no observed default matrix; decision D-004 seeds it as supervisor.
 SYSTEM_ROLES: dict[str, dict[str, str]] = {
@@ -76,6 +78,11 @@ def system_role_matrix(role_key: str) -> Matrix:
             for a in actions:
                 if supported(r, a):
                     matrix[r][a] = True
+    if role_key == "hseq_lead":
+        # Decision D-029: the spec gives review of safety records to "HSEQ/admin", so the HSEQ lead
+        # holds `approve` on the capture registers although the observed matrix left it off.
+        for r in REVIEWED_RESOURCES:
+            matrix[r]["approve"] = True
     for r in GRANT_ONLY_RESOURCES | OVERRIDE_ONLY_RESOURCES:
         matrix[r] = {a: False for a in ACTIONS}
     return matrix

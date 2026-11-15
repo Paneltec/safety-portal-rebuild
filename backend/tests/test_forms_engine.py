@@ -25,6 +25,7 @@ ALL_FIELDS = [
     {"id": "si", "type": "site_picker", "label": "Site"},
     {"id": "q", "type": "asset_qr", "label": "Asset"},
     {"id": "ca", "type": "corrective_actions", "label": "Actions"},
+    {"id": "tb", "type": "table", "label": "Sign-on", "config": {"table_columns": ["Name", {"id": "role", "label": "Role"}]}},
 ]
 FILES = {"p": {"ph1", "ph2", "ph3"}, "sig": {"sg1"}, "a": {"at1"}}
 GOOD = {
@@ -36,6 +37,7 @@ GOOD = {
     "w": [{"id": "w1", "label": "Tom Okafor"}], "j": {"id": "j9", "label": "Northbank stage 2"},
     "si": {"id": "s3", "label": "Northbank"}, "q": {"asset_id": "a7", "label": "EX-07", "scan_token": "tok"},
     "ca": [{"description": "Replace tyre", "responsible": "Workshop", "due_date": "2026-11-16"}],
+    "tb": [{"name": "Tom Okafor", "role": "Operator"}, {"name": "", "role": ""}],
 }
 
 
@@ -52,6 +54,7 @@ def test_every_field_family_is_covered_and_round_trips():
     assert cleaned["sm"] == ["Hat", "Vest"]
     assert cleaned["ca"][0]["status"] == "open"
     assert cleaned["m"] == {"likelihood": "Low", "consequence": "High"}
+    assert cleaned["tb"] == [{"name": "Tom Okafor", "role": "Operator"}]  # blank rows are dropped
     # Cleaning is stable: validating the cleaned answers again changes nothing.
     again, errors = engine.validate_values(s, cleaned, final=True, files_by_field=FILES)
     assert errors == [] and again == cleaned
@@ -74,7 +77,7 @@ def test_required_only_enforced_on_final_submit():
     ("g", {"lat": 95, "lng": 147}), ("g", {"lat": -41}), ("g", {"unavailable_reason": ""}), ("g", "here"),
     ("v", {"label": ""}), ("v", {"label": "PT-031", "source": "navixy"}), ("w", {"id": "w1", "label": "Tom"}),
     ("w", [{"label": "Tom Okafor"}]), ("j", "Northbank"), ("si", {"id": "s3"}), ("q", {"label": "EX-07"}),
-    ("ca", [{"description": "Fix it"}]), ("ca", [{"description": "Fix", "responsible": "Me", "due_date": "soon"}]),
+    ("tb", [{"name": "Tom", "shoe_size": "10"}]), ("tb", "Tom"), ("ca", [{"description": "Fix it"}]), ("ca", [{"description": "Fix", "responsible": "Me", "due_date": "soon"}]),
 ])
 def test_bad_values_are_rejected(field_id, bad):
     _, errors = engine.validate_values(schema(), {field_id: bad}, final=False, files_by_field=FILES)
@@ -102,7 +105,14 @@ def test_schema_rules():
         "nope", [{"type": "text"}], [{"type": "hologram", "label": "X"}], [{"type": "select", "label": "X"}],
         [{"type": "select", "label": "X", "options": []}], [{"id": "a", "type": "text", "label": "A"}, {"id": "a", "type": "text", "label": "B"}],
         [{"id": "bad id!", "type": "text", "label": "A"}], [{"type": "reference_matrix", "label": "M"}],
-        [{"type": "number", "label": "N", "config": {"min": 5, "max": 1}}], [{"type": "text", "label": "T", "config": {"max_length": "long"}}],
+        [{"type": "number", "label": "N", "config": {"min": 5, "max": 1}}], [{"type": "table", "label": "T"}],
+        [{"type": "table", "label": "T", "config": {"table_columns": ["A", "a"]}}], [{"type": "text", "label": "T", "config": {"max_length": "long"}}],
     ):
         with pytest.raises(engine.SchemaError):
             engine.normalise_schema(bad)
+
+
+def test_a_required_table_with_only_blank_rows_counts_as_unanswered():
+    s = engine.normalise_schema([{"id": "tb", "type": "table", "label": "Crew", "required": True, "config": {"table_columns": ["Name"]}}])
+    _, errors = engine.validate_values(s, {"tb": [{"name": "  "}]}, final=True)
+    assert errors == [{"field_id": "tb", "message": "Crew is required"}]

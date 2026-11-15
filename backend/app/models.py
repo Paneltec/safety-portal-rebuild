@@ -388,3 +388,95 @@ class FormAssignment(Base):
     target_id: Mapped[str] = mapped_column(String(80))
     created_by: Mapped[str | None] = mapped_column(String(36))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class SafetyRecord(Base):
+    """One entry in a safety register (SWMS, pre-start, site diary, hazard, incident, inspection,
+    risk assessment, SSRA). The schema it was captured on is stored with it, so it always renders
+    as it was filled in, whether it came from the built-in form or a published form template."""
+
+    __tablename__ = "safety_records"
+    __table_args__ = (
+        UniqueConstraint("org_id", "source_submission_id", name="uq_safety_records_source_submission"),
+        Index("ix_safety_records_list", "org_id", "kind", "status", "record_date"),
+    )
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    org_id: Mapped[str] = mapped_column(ForeignKey("organisations.id"), index=True)
+    kind: Mapped[str] = mapped_column(String(30))
+    title: Mapped[str] = mapped_column(String(300))
+    status: Mapped[str] = mapped_column(String(30))
+    record_date: Mapped[date | None] = mapped_column(Date)
+    workspace_id: Mapped[str | None] = mapped_column(String(36))  # site link, validated once sites exist (stage 4)
+    schema: Mapped[list[Any]] = mapped_column(JSONB)
+    values: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict)
+    revision: Mapped[int] = mapped_column(Integer, default=1)
+    source: Mapped[str] = mapped_column(String(20), default="manual")  # manual | form | phone | import
+    source_submission_id: Mapped[str | None] = mapped_column(String(36))
+    version_no: Mapped[int] = mapped_column(Integer, default=1)
+    supersedes_id: Mapped[str | None] = mapped_column(String(36))
+    superseded_by_id: Mapped[str | None] = mapped_column(String(36))
+    created_by: Mapped[str] = mapped_column(String(36), index=True)
+    updated_by: Mapped[str | None] = mapped_column(String(36))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+    submitted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    archived_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    archive_batch_id: Mapped[str | None] = mapped_column(String(36))
+    deleted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
+class SafetyRecordFile(Base):
+    __tablename__ = "safety_record_files"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    org_id: Mapped[str] = mapped_column(ForeignKey("organisations.id"), index=True)
+    record_id: Mapped[str] = mapped_column(ForeignKey("safety_records.id", ondelete="CASCADE"), index=True)
+    field_id: Mapped[str] = mapped_column(String(64))
+    kind: Mapped[str] = mapped_column(String(20))
+    stored_file_id: Mapped[str] = mapped_column(ForeignKey("stored_files.id"))
+    created_by: Mapped[str | None] = mapped_column(String(36))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class SafetyRecordEvent(Base):
+    """History of a record: created, edited, submitted, reviewed, status changes, archive. Never rewritten."""
+
+    __tablename__ = "safety_record_events"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    org_id: Mapped[str] = mapped_column(ForeignKey("organisations.id"), index=True)
+    record_id: Mapped[str] = mapped_column(ForeignKey("safety_records.id", ondelete="CASCADE"), index=True)
+    action: Mapped[str] = mapped_column(String(40))
+    actor_user_id: Mapped[str | None] = mapped_column(String(36))
+    note: Mapped[str | None] = mapped_column(Text)
+    detail: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class SafetyAssignment(Base):
+    """Who a record (a SWMS) is assigned to. No rules means everyone who can view the register."""
+
+    __tablename__ = "safety_assignments"
+    __table_args__ = (UniqueConstraint("record_id", "target_kind", "target_id", name="uq_safety_assignments"),)
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    org_id: Mapped[str] = mapped_column(ForeignKey("organisations.id"), index=True)
+    record_id: Mapped[str] = mapped_column(ForeignKey("safety_records.id", ondelete="CASCADE"), index=True)
+    target_kind: Mapped[str] = mapped_column(String(20))  # role | user | company
+    target_id: Mapped[str] = mapped_column(String(80))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class SafetyAcknowledgement(Base):
+    """A person's sign-off on one specific version of a SWMS. It never moves to a newer version."""
+
+    __tablename__ = "safety_acknowledgements"
+    __table_args__ = (UniqueConstraint("record_id", "user_id", name="uq_safety_acknowledgements"),)
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    org_id: Mapped[str] = mapped_column(ForeignKey("organisations.id"), index=True)
+    record_id: Mapped[str] = mapped_column(ForeignKey("safety_records.id", ondelete="CASCADE"), index=True)
+    user_id: Mapped[str] = mapped_column(String(36))
+    signed_name: Mapped[str] = mapped_column(String(200))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)

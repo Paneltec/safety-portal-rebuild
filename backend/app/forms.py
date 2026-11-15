@@ -24,6 +24,7 @@ job_picker         {"id": string, "label": string}
 site_picker        {"id": string, "label": string}
 asset_qr           {"asset_id": string, "label": string, "scan_token": string?}
 corrective_actions list of {"description": string, "responsible": string, "due_date": "YYYY-MM-DD"?, "status": "open"|"done"}
+table              list of rows, each {column_id: string}; config.columns is [{"id", "label"}]
 section_header     no value (layout only)
 """
 import math
@@ -52,6 +53,7 @@ FIELD_TYPES: dict[str, dict[str, Any]] = {
     "site_picker": {"label": "Site", "config": []},
     "asset_qr": {"label": "Asset QR scan", "config": []},
     "corrective_actions": {"label": "Corrective actions", "config": []},
+    "table": {"label": "Table of rows", "config": ["table_columns"]},
     "section_header": {"label": "Section heading", "layout": True, "config": []},
 }
 
@@ -138,6 +140,19 @@ def normalise_schema(fields: Any) -> list[dict[str, Any]]:
                 clean_config[key] = value
             elif key == "unit":
                 clean_config[key] = _text(value, 20)
+            elif key == "table_columns":
+                if not isinstance(value, list) or not value:
+                    raise SchemaError(f"Field {index} ({label}): a table needs columns")
+                cols = []
+                for col in value:
+                    col_label = _text(col.get("label") if isinstance(col, dict) else col, 100)
+                    col_id = (col.get("id") if isinstance(col, dict) else None) or re.sub(r"[^a-z0-9]+", "_", col_label.lower()).strip("_")[:64]
+                    if not col_label or not col_id or not _ID.match(col_id):
+                        raise SchemaError(f"Field {index} ({label}): every table column needs a label")
+                    cols.append({"id": col_id, "label": col_label})
+                if len({c["id"] for c in cols}) != len(cols) or len(cols) > 12:
+                    raise SchemaError(f"Field {index} ({label}): table columns must be different (12 at most)")
+                clean_config[key] = cols
             elif key in ("rows", "columns"):
                 if not isinstance(value, list) or not value:
                     raise SchemaError(f"Field {index} ({label}): {key} must be a list")
@@ -157,6 +172,8 @@ def normalise_schema(fields: Any) -> list[dict[str, Any]]:
                     clean_config[key] = list(dict.fromkeys(_text(c, 100) for c in value if _text(c, 100)))
         if ftype == "reference_matrix" and not (clean_config.get("rows") and clean_config.get("columns")):
             raise SchemaError(f"Field {index} ({label}): a matrix needs rows and columns")
+        if ftype == "table" and not clean_config.get("table_columns"):
+            raise SchemaError(f"Field {index} ({label}): a table needs columns")
         if "min" in clean_config and "max" in clean_config and clean_config["min"] > clean_config["max"]:
             raise SchemaError(f"Field {index} ({label}): min is greater than max")
         if clean_config:
@@ -318,6 +335,18 @@ def _check(field: dict[str, Any], value: Any, file_ids: set[str]) -> Any:
                     raise ValueError("has an invalid due date") from None
             actions.append(action)
         return actions
+    if ftype == "table":
+        columns = [c["id"] for c in config.get("table_columns", [])]
+        if not isinstance(value, list) or len(value) > 200:
+            raise ValueError("must be a list of rows")
+        rows = []
+        for row in value:
+            if not isinstance(row, dict) or any(k not in columns for k in row):
+                raise ValueError("has a row with an unknown column")
+            clean = {c: _text(row.get(c), 2000) for c in columns}
+            if any(clean.values()):
+                rows.append(clean)
+        return rows
     raise ValueError("cannot hold a value")
 
 
@@ -346,9 +375,15 @@ def validate_values(
                 errors.append({"field_id": field["id"], "message": f"{field['label']} is required"})
             continue
         try:
-            cleaned[field["id"]] = _check(field, value, files_by_field.get(field["id"], set()))
+            checked = _check(field, value, files_by_field.get(field["id"], set()))
         except ValueError as exc:
             errors.append({"field_id": field["id"], "message": f"{field['label']} {exc}"})
+            continue
+        if _is_empty(checked):
+            if final and field["required"]:
+                errors.append({"field_id": field["id"], "message": f"{field['label']} is required"})
+            continue
+        cleaned[field["id"]] = checked
     return cleaned, errors
 
 

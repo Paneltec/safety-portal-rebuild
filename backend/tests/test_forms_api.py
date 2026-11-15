@@ -40,7 +40,7 @@ def test_template_management_needs_the_use_right_and_validates(world, client):
     assert empty["status"] == "draft" and empty["published_version"] == 0
     assert client.post(f"{BASE}/templates/{empty['id']}/publish", headers=admin).status_code == 400
     types = client.get(f"{BASE}/field-types", headers=worker).json()
-    assert len(types["field_types"]) == 20 and {"key": "pre_start", "label": "Daily pre-start"} in types["categories"]
+    assert len(types["field_types"]) == 21 and {"key": "pre_start", "label": "Daily pre-start"} in types["categories"]
 
 
 def test_drafts_are_hidden_from_people_filling_in_forms(world, client):

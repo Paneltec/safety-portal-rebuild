@@ -21,6 +21,7 @@ from ..files import file_exists, file_response, read_bytes, save_upload
 from ..models import Company, FormAssignment, FormSubmission, FormSubmissionFile, Role, FormTemplate, FormTemplateVersion, Organisation, StoredFile, User, utcnow
 from ..pdf import submission_pdf
 from ..services import audit, iso
+from .safety import project_submission
 
 router = APIRouter(prefix="/api/forms", tags=["forms"])
 
@@ -676,6 +677,7 @@ def create_submission(
     if final:
         sub.status = "submitted"
         sub.submitted_at = utcnow()
+        project_submission(db, sub, version)
     audit(db, request, org_id=caller.org_id, actor_id=caller.user.id,
           action="form_submission.submitted" if final else "form_submission.draft_created",
           target_type="form_submission", target_id=sub.id, detail={"template_id": template.id, "version": version.version})
@@ -759,6 +761,8 @@ def submit_draft(
     sub.status = "submitted"
     sub.submitted_at = utcnow()
     sub.revision += 1
+    # A form of a safety category lands in its register, once.
+    project_submission(db, sub, db.get(FormTemplateVersion, sub.template_version_id))
     audit(db, request, org_id=caller.org_id, actor_id=caller.user.id, action="form_submission.submitted",
           target_type="form_submission", target_id=sub.id, detail={"template_id": sub.template_id})
     db.commit()
