@@ -2,6 +2,8 @@ import { useState, type FormEvent } from "react";
 import { api, formatDate } from "../api";
 import { Chip, LoadError, Loading, Modal, Notice, errorMessage } from "../components/ui";
 import { useLoad } from "../hooks";
+import { useAuth } from "../auth";
+import { enqueue, isOffline, newReference } from "../offline";
 
 interface Shift { start: string; finish: string; next_day: boolean; break_minutes: number; break_start: string | null; site_id: string | null; site?: string | null; category: string; note: string | null; public_holiday?: boolean; replacement_day_shift?: boolean }
 interface Entry {
@@ -34,13 +36,14 @@ function WeekNav({ start, end, onMove }: { start: string; end: string; onMove: (
   );
 }
 
-function DayEditor({ date, entry, office, workerId, onClose, onSaved }: { date: string; entry: Entry | null; office: boolean; workerId?: string; onClose: () => void; onSaved: () => void }) {
+function DayEditor({ date, entry, office, workerId, onClose, onSaved }: { date: string; entry: Entry | null; office: boolean; workerId?: string; onClose: () => void; onSaved: (waiting?: boolean) => void }) {
   const sites = useLoad(() => api<{ items: { id: string; label: string }[] }>("/api/forms/pickers/sites").catch(() => ({ items: [] })), []);
   const [kind, setKind] = useState(entry?.kind ?? "work");
   const [shifts, setShifts] = useState<Shift[]>(entry ? entry.shifts : [emptyShift()]);
   const [notes, setNotes] = useState(entry?.notes ?? "");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const { me } = useAuth();
   const patch = (i: number, change: Partial<Shift>) => setShifts(shifts.map((s, j) => (j === i ? { ...s, ...change } : s)));
   async function submit(event: FormEvent) {
     event.preventDefault();
@@ -50,7 +53,17 @@ function DayEditor({ date, entry, office, workerId, onClose, onSaved }: { date: 
       shifts: kind === "work" ? shifts.map((s) => ({ start: s.start, finish: s.finish, next_day: s.next_day, break_minutes: Number(s.break_minutes) || 0, break_start: s.break_start || null, site_id: s.site_id || null,
         category: s.category, note: s.note || null, ...(office ? { public_holiday: Boolean(s.public_holiday), replacement_day_shift: Boolean(s.replacement_day_shift) } : {}) })) : [] };
     try {
-      if (!office) await api(`/api/me/payroll/timesheets/${date}`, { method: "PUT", body });
+      if (!office) {
+        const mine = { ...body, client_ref: newReference() };
+        try {
+          await api(`/api/me/payroll/timesheets/${date}`, { method: "PUT", body: mine });
+        } catch (e) {
+          if (!isOffline(e) || !me) throw e;
+          // No connection: keep the day on this phone. It is sent once when the connection returns.
+          enqueue({ id: `timesheet:${me.id}:${date}`, kind: "timesheet_day", label: `Timesheet for ${weekday(date)} ${formatDate(date)}`, path: `/api/me/payroll/timesheets/${date}`, method: "PUT", body: mine, owner: me.id });
+          return onSaved(true);
+        }
+      }
       else if (entry) await api(`/api/payroll/timesheets/${entry.id}`, { method: "PATCH", body });
       else await api("/api/payroll/timesheets", { method: "POST", body: { ...body, worker_id: workerId, work_date: date } });
       onSaved();
@@ -142,7 +155,7 @@ export function MyTimesheet() {
           </table></div>
         </section>
       )}
-      {editing && day && <DayEditor date={editing} entry={day.entry} office={false} onClose={() => setEditing(null)} onSaved={() => { setEditing(null); setMsg(null); mine.reload(); }} />}
+      {editing && day && <DayEditor date={editing} entry={day.entry} office={false} onClose={() => setEditing(null)} onSaved={(waiting) => { setEditing(null); setMsg(waiting ? { tone: "ok", text: "No connection. This day is saved on this phone and will be sent by itself when you are back online. Sending the week to the office needs a connection." } : null); if (!waiting) mine.reload(); }} />}
     </>
   );
 }

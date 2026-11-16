@@ -205,3 +205,25 @@ def test_prefill_from_site_sign_ons_never_overwrites(world, client, db):
     assert again["created"] == 0 and again["already_there"] == 2
     # The worker checks the draft and sends it like any other day.
     assert client.post(f"{ME}/submit", json={"week_start": week.isoformat()}, headers=world.auth("worker1")).json()["submitted"] == 2
+
+
+def test_a_phone_can_resend_the_same_save_without_changing_the_day_twice(world, client, db):
+    worker = world.auth("worker1")
+    world.add_worker("Tom", "Okafor", link="worker1")
+    day = week_of(today_for(world.org1)) - dt.timedelta(days=7)
+    first = save(client, worker, day, client_ref="phone-ref-0001")
+    assert first.status_code == 200 and first.json()["revision"] == 1
+    # The phone lost the answer and sends the same save again: nothing changes and no second audit line is written.
+    audits = len(db.scalars(select(AuditLog)).all())
+    again = save(client, worker, day, client_ref="phone-ref-0001", expected_revision=0)
+    assert again.status_code == 200 and again.json()["revision"] == 1 and again.json()["id"] == first.json()["id"]
+    db.expire_all()
+    assert len(db.scalars(select(AuditLog)).all()) == audits and len(db.scalars(select(TimesheetDay)).all()) == 1
+    # A different save is a real change; a stale one is refused, not forced through.
+    assert save(client, worker, day, shifts=[shift("08:00", "16:00")], client_ref="phone-ref-0002", expected_revision=1).json()["revision"] == 2
+    assert save(client, worker, day, client_ref="phone-ref-0003", expected_revision=1).status_code == 409
+    # Once the office has the day, a queued save is refused with a reason and the day is left as it is.
+    assert client.post(f"{ME}/submit", json={"week_start": week_of(day).isoformat()}, headers=worker).status_code == 200
+    late = save(client, worker, day, shifts=[shift("06:00", "14:00")], client_ref="phone-ref-0004")
+    assert late.status_code == 409 and db.scalars(select(TimesheetDay)).one().client_ref == "phone-ref-0002"
+    assert save(client, worker, day, client_ref="short").status_code == 422

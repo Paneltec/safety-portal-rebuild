@@ -1,6 +1,8 @@
 import { AssetDetail, AssetScan, Fleet } from "./pages/Fleet";
 import { ServiceDue, ServicePanel } from "./pages/Service";
 import { Fuel } from "./pages/Fuel";
+import { PhoneEntry, PhoneHome, PhoneModules, PhoneMore, PhoneShell, Scan, Waiting, usePhoneLayout } from "./pages/Phone";
+import { useAutoFlush } from "./offline";
 import { Leave, MyLeave } from "./pages/Leave";
 import { MyTimesheet, Timesheets } from "./pages/Timesheets";
 import { MyPayslips, PayProfiles, PayRules, PayRunPage, PayRuns } from "./pages/Pay";
@@ -42,7 +44,17 @@ function Protected() {
   if (status === "anonymous" || !me) return <Navigate to="/login" replace state={{ from: location.pathname }} />;
   // A required password change blocks every other screen (the server enforces this too).
   if (me.must_change_password && location.pathname !== "/app/profile") return <Navigate to="/app/profile" replace />;
-  return <Shell />;
+  return <Layout userId={me.id} />;
+}
+
+function Layout({ userId }: { userId: string }) {
+  const phone = usePhoneLayout();
+  useAutoFlush(userId);
+  return phone ? <PhoneShell /> : <Shell />;
+}
+
+function HomeSwitch() {
+  return usePhoneLayout() ? <PhoneHome /> : <Home />;
 }
 
 export function App() {
@@ -54,11 +66,16 @@ export function App() {
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/accept-invite" element={<RedeemLink kind="invite" />} />
       <Route path="/reset-password" element={<RedeemLink kind="reset" />} />
+      <Route path="/m" element={<PhoneEntry />} />
       <Route path="/sign-on/:token" element={<PublicSignOn />} />
       <Route path="/renew/:token" element={<Renew />} />
       <Route path="/app" element={<Protected />}>
         <Route index element={<Navigate to="/app/home" replace />} />
-        <Route path="home" element={<Home />} />
+        <Route path="home" element={<HomeSwitch />} />
+        <Route path="more" element={<PhoneMore />} />
+        <Route path="scan" element={<Scan />} />
+        <Route path="waiting" element={<Waiting />} />
+        <Route path="settings/phone-modules" element={<PhoneModules />} />
         <Route path="profile" element={<Profile />} />
         <Route path="r/:register" element={<RegisterList />} />
         <Route path="r/:register/new" element={<RegisterNew />} />

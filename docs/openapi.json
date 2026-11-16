@@ -1198,6 +1198,33 @@
     "title": "Body_upload_submission_file_api_forms_submissions__submission_id__files_post",
     "type": "object"
    },
+   "BucketsIn": {
+    "properties": {
+     "buckets": {
+      "additionalProperties": {
+       "additionalProperties": {
+        "type": "boolean"
+       },
+       "type": "object"
+      },
+      "propertyNames": {
+       "enum": [
+        "worker",
+        "supervisor",
+        "contractor",
+        "admin"
+       ]
+      },
+      "title": "Buckets",
+      "type": "object"
+     }
+    },
+    "required": [
+     "buckets"
+    ],
+    "title": "BucketsIn",
+    "type": "object"
+   },
    "BulkArchiveIn": {
     "properties": {
      "before_date": {
@@ -1991,6 +2018,19 @@
    },
    "DayIn": {
     "properties": {
+     "client_ref": {
+      "anyOf": [
+       {
+        "maxLength": 64,
+        "minLength": 8,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Client Ref"
+     },
      "expected_revision": {
       "anyOf": [
        {
@@ -4085,6 +4125,53 @@
      }
     },
     "title": "OrgPatch",
+    "type": "object"
+   },
+   "OverrideIn": {
+    "properties": {
+     "module_key": {
+      "title": "Module Key",
+      "type": "string"
+     },
+     "role_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Role Id"
+     },
+     "user_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "User Id"
+     },
+     "value": {
+      "anyOf": [
+       {
+        "type": "boolean"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Value"
+     }
+    },
+    "required": [
+     "module_key",
+     "value"
+    ],
+    "title": "OverrideIn",
     "type": "object"
    },
    "PermissionsIn": {
@@ -21291,6 +21378,30 @@
     ]
    }
   },
+  "/api/me/mobile-modules": {
+   "get": {
+    "description": "What this person's phone shows. Worked out on the server for the signed-in person only.",
+    "operationId": "my_modules_api_me_mobile_modules_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response My Modules Api Me Mobile Modules Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "My Modules",
+    "tags": [
+     "phone"
+    ]
+   }
+  },
   "/api/me/payroll/payslips": {
    "get": {
     "operationId": "my_payslips_api_me_payroll_payslips_get",
@@ -21527,6 +21638,118 @@
     "summary": "Save My Day",
     "tags": [
      "timesheets"
+    ]
+   }
+  },
+  "/api/mobile/downloads/android/latest.apk": {
+   "get": {
+    "operationId": "android_download_api_mobile_downloads_android_latest_apk_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Android Download",
+    "tags": [
+     "phone"
+    ]
+   }
+  },
+  "/api/mobile/downloads/android/version": {
+   "get": {
+    "description": "No native app has been built or signed. Said plainly, so nothing can mistake a missing file for a fault.",
+    "operationId": "android_version_api_mobile_downloads_android_version_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Android Version Api Mobile Downloads Android Version Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Android Version",
+    "tags": [
+     "phone"
+    ]
+   }
+  },
+  "/api/mobile/home": {
+   "get": {
+    "description": "The phone's first screen: who you are, what is on today, and what needs doing, limited to the\nmodules switched on for you. Nothing here is cached on the device.",
+    "operationId": "home_api_mobile_home_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Home Api Mobile Home Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Home",
+    "tags": [
+     "phone"
+    ]
+   }
+  },
+  "/api/mobile/preview-user": {
+   "get": {
+    "description": "What a particular person's phone shows, and why each thing is or is not there. Reads only.",
+    "operationId": "preview_user_api_mobile_preview_user_get",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "user_id",
+      "required": true,
+      "schema": {
+       "title": "User Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Preview User Api Mobile Preview User Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Preview User",
+    "tags": [
+     "phone"
     ]
    }
   },
@@ -26900,6 +27123,164 @@
     "summary": "Worker Sign On",
     "tags": [
      "site sign-on"
+    ]
+   }
+  },
+  "/api/settings/mobile-modules": {
+   "get": {
+    "operationId": "get_settings_api_settings_mobile_modules_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Get Settings Api Settings Mobile Modules Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Get Settings",
+    "tags": [
+     "phone"
+    ]
+   },
+   "put": {
+    "description": "Set the defaults for each kind of role. Exceptions made for a role or a person are left exactly as they are.",
+    "operationId": "put_buckets_api_settings_mobile_modules_put",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/BucketsIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Put Buckets Api Settings Mobile Modules Put",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Put Buckets",
+    "tags": [
+     "phone"
+    ]
+   }
+  },
+  "/api/settings/mobile-modules/overrides": {
+   "patch": {
+    "description": "Make, change or remove an exception for one role or one person.",
+    "operationId": "set_override_api_settings_mobile_modules_overrides_patch",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/OverrideIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Set Override Api Settings Mobile Modules Overrides Patch",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Set Override",
+    "tags": [
+     "phone"
+    ]
+   }
+  },
+  "/api/settings/mobile-modules/overrides/{scope}/{subject}": {
+   "delete": {
+    "description": "Remove every exception for one role or one person, so they follow the defaults again.",
+    "operationId": "clear_overrides_api_settings_mobile_modules_overrides__scope___subject__delete",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "scope",
+      "required": true,
+      "schema": {
+       "enum": [
+        "role",
+        "user"
+       ],
+       "title": "Scope",
+       "type": "string"
+      }
+     },
+     {
+      "in": "path",
+      "name": "subject",
+      "required": true,
+      "schema": {
+       "title": "Subject",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "204": {
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Clear Overrides",
+    "tags": [
+     "phone"
     ]
    }
   },

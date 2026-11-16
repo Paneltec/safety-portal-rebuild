@@ -91,7 +91,7 @@ def stage1_and_2a(browser) -> None:
     phone.get_by_label("Repeat new password").fill("Nina-Pass-2026")
     phone.get_by_role("button", name="Save password and sign in").click()
     phone.wait_for_url("**/app/home")
-    expect(phone.get_by_role("heading", name="Welcome, Nina")).to_be_visible()
+    expect(phone.get_by_role("heading", name="Hello Nina")).to_be_visible()  # a narrow screen gets the phone layout
     assert phone.get_by_role("link", name="Users", exact=True).count() == 0
     phone.goto(BASE + "/app/settings/users")
     expect(phone.get_by_role("alert")).to_contain_text("do not have permission")
@@ -109,6 +109,11 @@ def stage1_and_2a(browser) -> None:
     shot(pg, "05-login")
     assert not errors, errors
     print("stage 1 + 2a walkthrough: ok")
+
+
+def tab(phone, name: str) -> None:
+    """Tap one of the tabs along the bottom of the phone layout."""
+    phone.get_by_role("navigation", name="Phone menu").get_by_role("link", name=name, exact=True).click()
 
 
 def sign_in(browser, width: int = 1280, height: int = 900, email: str = HOLDER["email"], password: str = HOLDER["password"]):
@@ -313,7 +318,7 @@ def safety_registers(browser) -> None:
     # A worker on a phone sees the approved SWMS and acknowledges it.
     phone = sign_in(browser, 390, 844, "nina@e2e.example", "Nina-Pass-2026")
     phone.on("pageerror", lambda e: errors.append(str(e)))
-    phone.get_by_role("button", name="Menu").click()
+    tab(phone, "More")
     phone.get_by_role("link", name="SWMS", exact=True).click()
     phone.get_by_role("link", name="Trenching and excavation").click()
     assert phone.get_by_role("button", name="Submit for review").count() == 0
@@ -427,14 +432,12 @@ def workers(browser) -> None:
     # The worker on a phone: own record only, and the gated form explains what is missing.
     phone = sign_in(browser, 390, 844, "nina@e2e.example", "Nina-Pass-2026")
     phone.on("pageerror", lambda e: errors.append(str(e)))
-    phone.get_by_role("button", name="Menu").click()
-    phone.get_by_role("link", name="My worker record").click()
+    phone.goto(BASE + "/app/workers")
     expect(phone.get_by_role("link", name="Nina Example")).to_be_visible()
-    phone.get_by_role("button", name="Menu").click()
-    phone.get_by_role("link", name="Forms", exact=True).click()
+    tab(phone, "Forms")
     phone.get_by_role("button", name="Fill in").click()
     expect(phone.get_by_text("Traffic Control: no certificate on record")).to_be_visible()
-    phone.get_by_role("button", name="Menu").click()
+    tab(phone, "More")
     phone.get_by_role("link", name="My profile").click()
     mine = phone.locator("section", has=phone.get_by_role("heading", name="My worker record"))
     mine.get_by_label("Mobile").fill("0400 000 123")
@@ -453,8 +456,7 @@ def workers(browser) -> None:
     dialog.get_by_label("Expiry date").fill(future)
     dialog.get_by_role("button", name="Save").click()
     expect(pg.get_by_text("Certificate added.")).to_be_visible()
-    phone.get_by_role("button", name="Menu").click()
-    phone.get_by_role("link", name="Forms", exact=True).click()
+    tab(phone, "Forms")
     phone.get_by_role("button", name="Fill in").click()
     phone.wait_for_url("**/forms/submissions/*")
     assert not errors, errors
@@ -521,8 +523,7 @@ def sites_and_visitors(browser) -> None:
     phone.get_by_role("button", name="Sign on").click()
     expect(phone.get_by_text("You are signed on.")).to_be_visible()
     shot(phone, "17-phone-sign-on", full=True)
-    phone.get_by_role("button", name="Menu").click()
-    phone.get_by_role("link", name="Home").click()
+    tab(phone, "Home")
     expect(phone.get_by_text("You are signed on", exact=True)).to_be_visible()
 
     # The office sees both, signs the visitor out, and the worker signs off from Home.
@@ -721,8 +722,9 @@ def inductions_and_jobs(browser) -> None:
     # The worker's phone: Home points at the job; accept, open the linked form, mark done.
     phone = sign_in(browser, 390, 844, "nina@e2e.example", "Nina-Pass-2026")
     phone.on("pageerror", lambda e: errors.append(str(e)))
-    expect(phone.get_by_text("Today's job: Bridge Rd upgrade")).to_be_visible()
-    phone.get_by_role("link", name="Open my work").click()
+    expect(phone.get_by_role("link", name="Accept or decline today's job")).to_be_visible()
+    expect(phone.get_by_role("link", name=re.compile("Today's job.*Bridge Rd upgrade"))).to_be_visible()
+    tab(phone, "My work")
     expect(phone.get_by_text("Meet at the depot first.")).to_be_visible()
     shot(phone, "24-phone-my-work", full=True)
     phone.get_by_role("button", name="Accept job").click()
@@ -734,8 +736,8 @@ def inductions_and_jobs(browser) -> None:
     expect(phone.get_by_text("Job marked as done.")).to_be_visible()
     expect(phone.get_by_text("You have no job waiting.")).to_be_visible()
     # Their own inductions only, read-only.
-    phone.get_by_role("button", name="Menu").click()
-    phone.get_by_role("link", name="Inductions & training").click()
+    tab(phone, "More")
+    phone.get_by_role("link", name="Inductions and training").click()
     expect(phone.get_by_role("button", name="Nina Example, TasWater Induction: Valid")).to_be_disabled()
     pg.reload()
     expect(pg.get_by_text("Done", exact=True).first).to_be_visible()
@@ -1304,7 +1306,106 @@ def pay(browser) -> None:
     print("pay walkthrough: ok")
 
 
-STEPS = [stage1_and_2a, documents, forms, safety_registers, workers, sites_and_visitors, suppliers_and_renewals, inductions_and_jobs, connections_and_outbox, fleet_and_equipment, fuel, leave, timesheets, pay]
+def phone_app(browser) -> None:
+    import datetime as dt
+    errors: list[str] = []
+    # The office decides what phones show. It is a tidy-up of the menu, never what protects a record.
+    pg = sign_in(browser)
+    pg.on("pageerror", lambda e: errors.append(str(e)))
+    pg.get_by_role("navigation").get_by_role("link", name="Phone modules").click()
+    expect(pg.get_by_role("heading", name="Phone modules")).to_be_visible()
+    expect(pg.get_by_role("row").filter(has_text="Ask (AI assistant)").get_by_text("Not built yet")).to_be_visible()
+    assert pg.get_by_label("Users for Workers").is_checked() is False and pg.get_by_label("My timesheet for Workers").is_checked()
+    person = pg.get_by_role("region", name="Check one person")
+    person.get_by_label("Person").select_option(label="Nina Example")
+    expect(person.get_by_text("Nina Example follows the defaults for workers")).to_be_visible()
+    expect(person.get_by_role("row").filter(has_text="My payslips").get_by_text("Shown", exact=True)).to_be_visible()
+    person.get_by_label("My payslips for Nina Example").select_option("off")
+    expect(pg.get_by_text("Saved for this person.")).to_be_visible()
+    expect(person.get_by_role("row").filter(has_text="My payslips").get_by_text("Not shown")).to_be_visible()
+    expect(pg.get_by_text("Nina Example: My payslips off")).to_be_visible()
+    shot(pg, "39-phone-modules", full=True)
+
+    # The phone: /m is the address to install. Bottom tabs, big targets, nothing wider than the screen.
+    ctx = browser.new_context(viewport={"width": 390, "height": 844})
+    phone = ctx.new_page()
+    phone.on("pageerror", lambda e: errors.append(str(e)))
+    phone.goto(BASE + "/m")
+    phone.get_by_label("Email").fill("nina@e2e.example")
+    phone.get_by_label("Password").fill("Nina-Pass-2026")
+    phone.get_by_role("button", name="Sign in").click()
+    phone.wait_for_url("**/app/home")
+    expect(phone.get_by_role("heading", name="Hello Nina")).to_be_visible()
+    tabs = phone.get_by_role("navigation", name="Phone menu").get_by_role("link")
+    assert tabs.all_inner_texts() == ["Home", "My work", "Forms", "Scan", "More"], tabs.all_inner_texts()
+    assert all(box["height"] >= 44 for box in (t.bounding_box() for t in tabs.all())), "a tab is smaller than a thumb"
+    assert phone.evaluate("document.documentElement.scrollWidth") <= 390
+    manifest = phone.evaluate("fetch('/manifest.webmanifest').then(r => r.json())")
+    assert manifest["start_url"] == "/m" and manifest["display"] == "standalone" and len(manifest["icons"]) >= 2
+    phone.wait_for_function("navigator.serviceWorker.ready.then(() => true)")
+    shot(phone, "40-phone-home", full=True)
+
+    # Scan: with no camera reader the code can be typed. A wrong code is explained, a real asset label opens the asset.
+    tab(phone, "Scan")
+    phone.get_by_label("Or type the code printed under the QR code").fill("nope")
+    phone.get_by_role("button", name="Open", exact=True).click()
+    expect(phone.get_by_text("That does not look like a portal code.")).to_be_visible()
+    phone.get_by_label("Or type the code printed under the QR code").fill("zzzzzzzzzzzzzzzz")
+    phone.get_by_role("button", name="Open", exact=True).click()
+    expect(phone.get_by_text("This code is not recognised.")).to_be_visible()
+
+    # More: what the office allowed, and no more. The payslips exception set above applies here.
+    tab(phone, "More")
+    expect(phone.get_by_role("link", name="My timesheet")).to_be_visible()
+    assert phone.get_by_role("link", name="My payslips").count() == 0 and phone.get_by_role("link", name="Users").count() == 0
+    expect(phone.get_by_text("There is no Android or iPhone app to download from a store.")).to_be_visible()
+    shot(phone, "41-phone-more", full=True)
+    # Hiding a module does not grant or remove access: the address still answers by permission alone.
+    phone.goto(BASE + "/app/settings/phone-modules")
+    expect(phone.get_by_role("alert")).to_contain_text("Admin only")
+
+    # Signal lost after the timesheet is open: the day is kept on the phone and sent once when the signal is back.
+    phone.goto(BASE + "/app/my-timesheet")
+    today = dt.date.today()
+    first = phone.get_by_role("button", name=re.compile("^Fill in ")).first
+    label = first.get_attribute("aria-label")
+    first.click()
+    ctx.set_offline(True)
+    phone.get_by_role("dialog").get_by_role("button", name="Save day").click()
+    expect(phone.get_by_text("No connection. This day is saved on this phone")).to_be_visible()
+    phone.get_by_role("link", name="1 waiting to send").click()
+    expect(phone.get_by_role("heading", name="Waiting to send")).to_be_visible()
+    expect(phone.get_by_text("Timesheet for ")).to_be_visible()
+    phone.get_by_role("button", name="Try to send now").click()
+    expect(phone.get_by_text("Still no connection. Nothing was lost.")).to_be_visible()
+    shot(phone, "42-phone-waiting", full=True)
+    ctx.set_offline(False)
+    expect(phone.get_by_text("Nothing is waiting. Everything has been sent.")).to_be_visible()
+    tab(phone, "More")
+    phone.get_by_role("link", name="My timesheet").click()
+    expect(phone.get_by_role("button", name=label.replace("Fill in", "Change"))).to_be_visible()
+    expect(phone.get_by_role("button", name=re.compile("^Send 1 day to the office"))).to_be_visible()
+    # Nothing personal is kept by the service worker: only the app's own files.
+    kept = phone.evaluate("caches.keys().then(async ks => (await Promise.all(ks.map(async k => (await (await caches.open(k)).keys()).map(r => r.url)))).flat())")
+    assert not [u for u in kept if "/api/" in u], kept
+    # The smallest common phone: still nothing wider than the screen, on the pages a worker uses most.
+    phone.set_viewport_size({"width": 360, "height": 740})
+    for path in ("/app/home", "/app/my-work", "/app/forms", "/app/my-timesheet", "/app/my-leave", "/app/more"):
+        phone.goto(BASE + path)
+        phone.wait_for_load_state("networkidle")
+        wide = phone.evaluate("[...document.querySelectorAll('body *')].filter(e => e.getBoundingClientRect().right > 361).slice(0, 4).map(e => e.tagName + '.' + e.className + ' ' + Math.round(e.getBoundingClientRect().right))")
+        assert phone.evaluate("document.documentElement.scrollWidth") <= 360, (path, phone.evaluate("document.documentElement.scrollWidth"), wide)
+    # Back to the office layout on request.
+    phone.get_by_role("button", name="Use the office layout").click()
+    expect(phone.get_by_role("button", name="Menu")).to_be_visible()
+    assert not errors, errors
+    assert today  # the day used is whichever the timesheet offers first
+    pg.context.close()
+    ctx.close()
+    print("phone app walkthrough: ok")
+
+
+STEPS = [stage1_and_2a, documents, forms, safety_registers, workers, sites_and_visitors, suppliers_and_renewals, inductions_and_jobs, connections_and_outbox, fleet_and_equipment, fuel, leave, timesheets, pay, phone_app]
 
 if __name__ == "__main__":
     with sync_playwright() as p:

@@ -734,6 +734,30 @@ FEATURES.update({
 })
 
 
+# ---- Stage 8: the phone app (installable web app) ----
+T_PHONE = "tests/test_phone.py"
+DONE.update({
+    ("GET", "/api/me/mobile-modules"): ("authenticated-own", "phone.my_modules", T_PHONE, "IMPLEMENTED_TESTED", "Worked out on the server: allocated, built and permitted"),
+    ("GET", "/api/settings/mobile-modules"): ("admin", "phone.get_settings", T_PHONE, "IMPLEMENTED_TESTED", "Defaults per kind of role plus exceptions"),
+    ("PUT", "/api/settings/mobile-modules"): ("admin", "phone.put_settings", T_PHONE, "IMPLEMENTED_TESTED", "Exceptions are left as they are; audited"),
+    ("PATCH", "/api/settings/mobile-modules/overrides"): ("admin", "phone.patch_override", T_PHONE, "IMPLEMENTED_TESTED", "Role or person; null removes one module's exception"),
+    ("DELETE", "/api/settings/mobile-modules/overrides/{role_id}"): ("admin", "phone.delete_override", T_PHONE, "IMPLEMENTED_TESTED", "DELETE /api/settings/mobile-modules/overrides/{scope}/{subject} (role or user)"),
+    ("GET", "/api/mobile/preview-user"): ("users.edit", "phone.preview_user", T_PHONE, "IMPLEMENTED_TESTED", "Own organisation only; says why a module is not shown"),
+    ("GET", "/api/mobile/preview-user/workers"): ("users.view", "users.list_users", "e2e phone app step", "IMPLEMENTED_TESTED", "People are picked from GET /api/users; no separate route"),
+    ("GET", "/api/mobile/home"): ("authenticated-own", "phone.home", T_PHONE, "IMPLEMENTED_TESTED", "Own to-do items only; no weather or AI briefing"),
+    ("GET", "/api/mobile/downloads/android/version"): ("authenticated", "phone.android_version", T_PHONE, "EXPLICITLY_UNAVAILABLE", "No native app is built: answers available:false with the reason"),
+    ("GET", "/api/mobile/downloads/android/latest.apk"): ("authenticated", "phone.android_download", T_PHONE, "EXPLICITLY_UNAVAILABLE", "No native app is built: 404 with the reason"),
+})
+NEW_ROWS += [
+    ["DELETE", "/api/settings/mobile-modules/overrides/{scope}/{subject}", "phone", "", "admin", "phone.delete_override", T_PHONE, "IMPLEMENTED_TESTED", "New: remove every exception for one role or person"],
+]
+FEATURES.update({
+    "PHONE-01": ("PARTIAL", "tests/test_phone.py; e2e phone app step", "Built: phone layout at /m (home, my work, forms, scan, more) over the same routes and permission checks, with own leave, timesheet, payslips, profile and documents by allocation. Tested only in a desktop browser at 390 and 360 wide, not on real phones. Outstanding: PIN sign-in and onboarding cards, push notifications, weather and briefing."),
+    "PHONE-02": ("PARTIAL", "tests/test_phone.py; e2e phone app step", "Built: module allocation with role and person exceptions, a per-person check that explains each hidden module, and scan with a typed-code fallback. The camera reader depends on the phone's browser and is untested on devices. Outstanding: preview that renders the phone screens as that person."),
+    "PHONE-03": ("PARTIAL", "tests/test_timesheets.py; tests/test_forms_api.py; e2e phone app step", "Built: device queue for own timesheet days and form submissions, sent once on reconnect, safe to resend (client reference on the day; repeated form submit returns the stored record), refusals shown with the reason. Not built: native builds, signing or store artefacts (the download routes say so), offline photos, opening a form with no signal, deep links into a native app."),
+})
+
+
 def main() -> None:
     path = HERE / "endpoint_coverage.csv"
     with path.open(encoding="utf-8-sig", newline="") as fh:

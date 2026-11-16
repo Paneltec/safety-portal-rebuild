@@ -20,3 +20,9 @@ createRoot(document.getElementById("root")!).render(
     </BrowserRouter>
   </StrictMode>,
 );
+
+// The phone app works from the home screen and opens with no signal. Only in a real build:
+// during development a stored copy of the app would get in the way.
+if (import.meta.env.PROD && "serviceWorker" in navigator) {
+  window.addEventListener("load", () => { void navigator.serviceWorker.register("/sw.js").catch(() => undefined); });
+}

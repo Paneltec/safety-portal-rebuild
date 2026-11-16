@@ -557,7 +557,7 @@ GET,/api/me/leave,leave_requests,my_leave,self,leave.my_leave,tests/test_leave.p
 POST,/api/me/leave,leave_requests,create_my_leave,self,leave.request_leave,tests/test_leave.py,IMPLEMENTED_TESTED,Working days x hours a day unless hours are given; overlap refused
 POST,/api/me/leave/{leave_id}/cancel,leave_requests,cancel_my_leave,self,leave.cancel_mine,tests/test_leave.py,IMPLEMENTED_TESTED,"Leave already used by a pay run is flagged for payroll, not undone"
 POST,/api/me/leave/{leave_id}/certificate,leave_requests,upload_certificate,self,leave.upload_certificate,tests/test_leave.py,IMPLEMENTED_TESTED,
-GET,/api/me/mobile-modules,mobile_modules,get_my_mobile_modules,CLASSIFY,,,NOT_STARTED,
+GET,/api/me/mobile-modules,mobile_modules,get_my_mobile_modules,authenticated-own,phone.my_modules,tests/test_phone.py,IMPLEMENTED_TESTED,"Worked out on the server: allocated, built and permitted"
 GET,/api/me/payroll/payslips,payroll_worker_payslips,list_payslips,self,payroll.my_payslips,tests/test_payroll.py,IMPLEMENTED_TESTED,"Own, released only"
 GET,/api/me/payroll/payslips/{week}/{revision},payroll_worker_payslips,detail,CLASSIFY,,,NOT_STARTED,
 GET,/api/me/payroll/payslips/{week}/{revision}/pdf,payroll_worker_payslips,pdf,self,payroll.my_payslip_pdf,tests/test_payroll.py,IMPLEMENTED_TESTED,GET /api/me/payroll/payslips/{run_id}/pdf; anyone else's is 404
@@ -590,18 +590,18 @@ POST,/api/mobile/daily-jobs/{assignment_id}/accept,mobile_daily_jobs,accept,auth
 POST,/api/mobile/daily-jobs/{assignment_id}/decline,mobile_daily_jobs,decline,authenticated-own,jobs.decline_job,tests/test_inductions_jobs.py,IMPLEMENTED_TESTED,Reason required
 POST,/api/mobile/daily-jobs/{assignment_id}/signon,mobile_daily_jobs,signon_stub,CLASSIFY,,,NOT_STARTED,
 POST,/api/mobile/downloads/android/ingest-from-eas,mobile_downloads,android_ingest_from_eas,CLASSIFY,,,NOT_STARTED,
-GET,/api/mobile/downloads/android/latest.apk,mobile_downloads,android_latest_apk,CLASSIFY,,,NOT_STARTED,
-GET,/api/mobile/downloads/android/version,mobile_downloads,android_version,CLASSIFY,,,NOT_STARTED,
+GET,/api/mobile/downloads/android/latest.apk,mobile_downloads,android_latest_apk,authenticated,phone.android_download,tests/test_phone.py,EXPLICITLY_UNAVAILABLE,No native app is built: 404 with the reason
+GET,/api/mobile/downloads/android/version,mobile_downloads,android_version,authenticated,phone.android_version,tests/test_phone.py,EXPLICITLY_UNAVAILABLE,No native app is built: answers available:false with the reason
 GET,/api/mobile/geocode,mobile_daily_jobs_admin,geocode,CLASSIFY,,,NOT_STARTED,
-GET,/api/mobile/home,mobile_home,mobile_home,CLASSIFY,,,NOT_STARTED,
+GET,/api/mobile/home,mobile_home,mobile_home,authenticated-own,phone.home,tests/test_phone.py,IMPLEMENTED_TESTED,Own to-do items only; no weather or AI briefing
 GET,/api/mobile/notifications/count,mobile_home,notification_count,CLASSIFY,,,NOT_STARTED,
 GET,/api/mobile/onboarding/cards.pdf,mobile_onboarding_cards,onboarding_cards_pdf,CLASSIFY,,,NOT_STARTED,
 POST,/api/mobile/onboarding/issue-token,mobile_auth,issue_onboarding_token,CLASSIFY,,,NOT_STARTED,
 POST,/api/mobile/onboarding/redeem,mobile_auth,redeem_onboarding_token,CLASSIFY,,,NOT_STARTED,
 GET,/api/mobile/onboarding/validate/{token},mobile_auth,validate_onboarding_token,CLASSIFY,,,NOT_STARTED,
 POST,/api/mobile/prestart/submit,mobile_data,prestart_submit,CLASSIFY,,,NOT_STARTED,
-GET,/api/mobile/preview-user,mobile_preview,mint_preview_user,CLASSIFY,,,NOT_STARTED,
-GET,/api/mobile/preview-user/workers,mobile_preview,list_preview_workers,CLASSIFY,,,NOT_STARTED,
+GET,/api/mobile/preview-user,mobile_preview,mint_preview_user,users.edit,phone.preview_user,tests/test_phone.py,IMPLEMENTED_TESTED,Own organisation only; says why a module is not shown
+GET,/api/mobile/preview-user/workers,mobile_preview,list_preview_workers,users.view,users.list_users,e2e phone app step,IMPLEMENTED_TESTED,People are picked from GET /api/users; no separate route
 POST,/api/mobile/push/register,mobile_auth,push_register,CLASSIFY,,,NOT_STARTED,
 GET,/api/mobile/records/mine,mobile_data,records_mine,CLASSIFY,,,NOT_STARTED,
 POST,/api/mobile/sites/{site_id}/sign-off,mobile_data,mobile_site_sign_off,CLASSIFY,,,NOT_STARTED,
@@ -820,10 +820,10 @@ GET,/api/schema/collections,admin_schema,list_collections,CLASSIFY,,,NOT_STARTED
 GET,/api/schema/export,admin_schema,export_schema,CLASSIFY,,,NOT_STARTED,
 GET,/api/settings/force-refresh-signal,session_timeout,force_refresh_signal,CLASSIFY,,,NOT_STARTED,
 GET,/api/settings/login-options,session_timeout,login_options,CLASSIFY,,,NOT_STARTED,
-GET,/api/settings/mobile-modules,mobile_modules,get_mobile_modules,CLASSIFY,,,NOT_STARTED,
-PUT,/api/settings/mobile-modules,mobile_modules,put_mobile_modules,CLASSIFY,,,NOT_STARTED,
-PATCH,/api/settings/mobile-modules/overrides,mobile_modules,patch_mobile_modules_override,CLASSIFY,,,NOT_STARTED,
-DELETE,/api/settings/mobile-modules/overrides/{role_id},mobile_modules,reset_role_overrides,CLASSIFY,,,NOT_STARTED,
+GET,/api/settings/mobile-modules,mobile_modules,get_mobile_modules,admin,phone.get_settings,tests/test_phone.py,IMPLEMENTED_TESTED,Defaults per kind of role plus exceptions
+PUT,/api/settings/mobile-modules,mobile_modules,put_mobile_modules,admin,phone.put_settings,tests/test_phone.py,IMPLEMENTED_TESTED,Exceptions are left as they are; audited
+PATCH,/api/settings/mobile-modules/overrides,mobile_modules,patch_mobile_modules_override,admin,phone.patch_override,tests/test_phone.py,IMPLEMENTED_TESTED,Role or person; null removes one module's exception
+DELETE,/api/settings/mobile-modules/overrides/{role_id},mobile_modules,reset_role_overrides,admin,phone.delete_override,tests/test_phone.py,IMPLEMENTED_TESTED,DELETE /api/settings/mobile-modules/overrides/{scope}/{subject} (role or user)
 GET,/api/settings/nav-layout,settings_nav,get_nav_layout,CLASSIFY,,,NOT_STARTED,
 PUT,/api/settings/nav-layout,settings_nav,put_nav_layout,CLASSIFY,,,NOT_STARTED,
 GET,/api/settings/session-timeout/me,session_timeout,session_timeout_me,CLASSIFY,,,NOT_STARTED,
@@ -1119,3 +1119,4 @@ GET,/api/payroll/workbench/status,payroll,,payroll,payroll.status,tests/test_pay
 POST,/api/payroll/runs/{run_id}/submit/{kind},payroll,,payroll,payroll.submit_to_provider,tests/test_payroll.py,IMPLEMENTED_TESTED,"New: always refused (STP, super)"
 POST,/api/payroll/reset,payroll,,payroll,payroll.reset,tests/test_payroll.py,IMPLEMENTED_TESTED,New: always refused
 DELETE,/api/payroll/profiles/{worker_id}/bank,payroll,,payroll,payroll.clear_bank,tests/test_payroll.py,IMPLEMENTED_TESTED,New: remove stored bank details
+DELETE,/api/settings/mobile-modules/overrides/{scope}/{subject},phone,,admin,phone.delete_override,tests/test_phone.py,IMPLEMENTED_TESTED,New: remove every exception for one role or person

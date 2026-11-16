@@ -105,6 +105,7 @@ class DayIn(BaseModel):
     shifts: list[ShiftIn] = Field(default_factory=list, max_length=10)
     notes: str | None = Field(default=None, max_length=1000)
     expected_revision: int | None = None
+    client_ref: str | None = Field(default=None, min_length=8, max_length=64)  # lets a phone resend a save safely
 
 
 class OfficeDayIn(BaseModel):
@@ -240,6 +241,8 @@ def save_my_day(day: dt.date, body: DayIn, request: Request, caller: Caller = De
     if day < today - dt.timedelta(days=WORKER_BACKDATE_DAYS):
         raise HTTPException(422, "That day is too long ago to change here. Ask the office.")
     row = db.scalars(select(TimesheetDay).where(TimesheetDay.worker_id == worker.id, TimesheetDay.work_date == day)).first()
+    if row is not None and body.client_ref and row.client_ref == body.client_ref:
+        return day_out(row, *_lookups(db, [row]))  # this exact save already arrived: sending it again changes nothing
     if row is not None and row.status not in ("draft", "rejected"):
         raise HTTPException(409, "This day has been sent. Ask the office to send it back if it needs changing.")
     if row is None:
@@ -248,6 +251,7 @@ def save_my_day(day: dt.date, body: DayIn, request: Request, caller: Caller = De
     else:
         _check_revision(row, body.expected_revision)
     apply_day(db, caller.org_id, row, body.kind, body.shifts, body.notes)
+    row.client_ref = body.client_ref
     db.commit()
     return day_out(row, *_lookups(db, [row]))
 

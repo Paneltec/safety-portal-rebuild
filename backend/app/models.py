@@ -1408,6 +1408,8 @@ class TimesheetDay(Base):
     reviewed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     reject_reason: Mapped[str | None] = mapped_column(String(600))
     pay_run_id: Mapped[str | None] = mapped_column(String(36))
+    # The reference of the last save a device sent. Sending the same save again changes nothing.
+    client_ref: Mapped[str | None] = mapped_column(String(64))
     created_by: Mapped[str | None] = mapped_column(String(36))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
@@ -1482,4 +1484,21 @@ class PayRun(Base):
     payslips_released: Mapped[bool] = mapped_column(Boolean, default=False)
     created_by: Mapped[str | None] = mapped_column(String(36))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+class PhoneModuleSetting(Base):
+    """Which phone modules are switched on: for a kind of role (scope "bucket"), for one role
+    (scope "role") or for one person (scope "user"). A person's own setting wins over their role's,
+    which wins over the bucket's, so changing the defaults never removes a deliberate exception."""
+
+    __tablename__ = "phone_module_settings"
+    __table_args__ = (UniqueConstraint("org_id", "scope", "subject", name="uq_phone_module_settings"),)
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    org_id: Mapped[str] = mapped_column(ForeignKey("organisations.id"), index=True)
+    scope: Mapped[str] = mapped_column(String(8))  # bucket | role | user
+    subject: Mapped[str] = mapped_column(String(80))
+    modules: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict)
+    updated_by: Mapped[str | None] = mapped_column(String(36))
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)

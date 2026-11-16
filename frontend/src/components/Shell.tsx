@@ -65,6 +65,7 @@ export function Shell() {
         { to: "/app/settings/roles", label: "Roles & permissions", show: can("users", "view") },
         { to: "/app/settings/connections", label: "Connections", show: can("integrations", "view") },
         { to: "/app/settings/outbox", label: "Outbox", show: can("notifications", "view") || can("users", "edit") || can("renewals", "edit") },
+        { to: "/app/settings/phone-modules", label: "Phone modules", show: isAdmin },
         { to: "/app/settings/sessions", label: "Active sessions", show: isAdmin },
         { to: "/app/profile", label: "My profile", show: true },
       ],
@@ -98,7 +99,7 @@ export function Shell() {
             </div>
           );
         })}
-        <div className="nav-note">The phone app arrives in a later build stage. See Home for progress.</div>
+        <div className="nav-note"><a href="/m" style={{ color: "inherit" }}>Open the phone layout</a>. On a phone, add it to the home screen to use it like an app.</div>
       </nav>
       <div className="content">
         <header className="topbar">

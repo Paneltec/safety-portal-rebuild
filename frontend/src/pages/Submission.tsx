@@ -5,6 +5,7 @@ import { useAuth } from "../auth";
 import { FormRenderer } from "../components/FormRenderer";
 import { Chip, LoadError, Loading, Modal, Notice, errorMessage } from "../components/ui";
 import { useLoad } from "../hooks";
+import { enqueue, isOffline } from "../offline";
 
 type Msg = { tone: "ok" | "bad" | "warn"; text: string } | null;
 
@@ -82,7 +83,13 @@ export function SubmissionPage() {
         setMessage({ tone: "ok", text: "Draft saved." });
       }
     } catch (e) {
-      fail(e);
+      if (submit && isOffline(e) && me) {
+        // No connection: keep the answers on this device and send them once when it returns. Sending twice is harmless.
+        enqueue({ id: `form:${sub.id}`, kind: "form_submission", label: `${sub.template_name} form`, path: `${base}/submit`, method: "POST", body: { fields: answers() }, owner: me.id });
+        setMessage({ tone: "ok", text: "No connection. Your answers are saved on this device and will be sent when you are back online. You can see them under Waiting to send." });
+      } else {
+        fail(e);
+      }
     } finally {
       setBusy(false);
     }
