@@ -671,6 +671,10 @@ FEATURES.update({
     "TIME-01": ("PARTIAL", "tests/test_timesheets.py; tests/test_payroll_engine.py; e2e timesheets step", "Built: one record per worker and date; shifts with site and kind of work; hours by category worked out on the server by the pack's allocation rules (all six worked examples reproduced); draft, sent, approved, sent back, locked; optimistic revision; office entry, correction, approval, sending back with a reason, drafts from site sign-ons; nobody approves their own days. Outstanding: client and job catalogue from Simpro, recent clients, unmatched-client review, the phone layout (stage 8)."),
 })
 
+FEATURES.update({
+    "PAY-03": ("PARTIAL", "tests/test_payroll_engine.py", "Built so far: the calculation rules as pure Decimal functions. Shift allocation reproduces the pack's six worked examples; the pay calculation reproduces all nine worked rows exactly (rates, casual loading and overrides, leave loading, gross, weekly withholding from the built-in table, manual PAYG, net, qualifying earnings, super, leave accrual and balances, and the review issues that make a row not ready). NOT VERIFIED: the withholding table is the baseline's and has not been checked against the Tax Office schedule. Not built yet: the weekly worksheet, saving with an expected revision, preview, finalise and freeze (stage 7c, next)."),
+})
+
 
 def main() -> None:
     path = HERE / "endpoint_coverage.csv"
