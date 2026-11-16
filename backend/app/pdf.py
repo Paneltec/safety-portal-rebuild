@@ -328,3 +328,41 @@ def asset_label_pdf(*, org_name: str, labels: list[dict[str, str]]) -> bytes:
         c.showPage()
     c.save()
     return buffer.getvalue()
+
+
+def payslip_pdf(*, employer: dict[str, Any], row: dict[str, Any], week_start: str, payday: str | None, run_hash: str) -> bytes:
+    """A payslip from a finalised run's frozen figures. Marked as a test document on every page."""
+    result, rates, entry = row["result"], row["result"]["applied_rates"], row["entry"]
+    buffer = BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=A4, leftMargin=18 * mm, rightMargin=18 * mm, topMargin=16 * mm, bottomMargin=18 * mm, title=f"Payslip {row['name']}", author=employer.get("name") or "")
+    money = lambda v: "Not worked out" if v is None else f"${v:,.2f}"  # noqa: E731
+    story: list[Any] = [_p("TEST PAYSLIP: not a record of payment", ParagraphStyle("test", parent=LABEL, textColor=colors.HexColor("#B42318"))),
+                        _p(employer.get("name") or "", TITLE), _p(f"ABN {employer.get('abn') or ''}", SMALL), Spacer(1, 6 * mm),
+                        _p(row["name"], SECTION), _p(f"Week starting {_date(week_start)}" + (f" · paid {_date(payday)}" if payday else ""), BODY), Spacer(1, 4 * mm)]
+    lines = [["Earnings", "Hours", "Rate", "Amount"]]
+    for label, hours_key, rate_key, pay_key in (("Ordinary", "ordinary", "ordinary", "ordinary_pay"), ("Overtime (first rate)", "ot1", "ot1", "ot1_pay"), ("Overtime (second rate)", "ot2", "ot2", "ot2_pay"),
+                                                ("Saturday", "saturday", "saturday", "saturday_pay"), ("Sunday", "sunday", "sunday", "sunday_pay"), ("Night", "night", "night", "night_pay"),
+                                                ("Public holiday worked", "holiday_work", "holiday_work", "holiday_work_pay"), ("Annual leave", "annual", "ordinary", "annual_pay"),
+                                                ("Personal leave", "personal", "ordinary", "personal_pay"), ("Public holiday", "public_holiday", "ordinary", "public_holiday_pay")):
+        if result[pay_key]:
+            lines.append([label, f"{float(entry.get(hours_key) or 0):g}", f"${rates[rate_key]:,.4f}".rstrip("0").rstrip("."), money(result[pay_key])])
+    for label, key in (("Leave loading", "leave_loading"), ("LAFHA", "lafha_pay"), ("Taxable allowances", "taxable_allowances"), ("Meal allowance", "meal_allowance_pay")):
+        if result[key]:
+            lines.append([label, "", "", money(result[key])])
+    for extra in result["allowance_lines"] + result["earning_lines"]:
+        lines.append([extra["name"], f"{extra['units']:g}", f"${extra['rate']:,.2f}", money(extra["amount"])])
+    lines += [["Gross pay", "", "", money(result["gross"])], ["Tax withheld", "", "", money(result["payg"])]]
+    if result["deductions"]:
+        lines.append(["Deductions after tax", "", "", money(result["deductions"])])
+    if result["reimbursements"]:
+        lines.append(["Reimbursements", "", "", money(result["reimbursements"])])
+    lines.append(["Net pay", "", "", money(result["net"])])
+    table = Table(lines, colWidths=[78 * mm, 24 * mm, 30 * mm, 40 * mm])
+    table.setStyle(TableStyle([("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"), ("FONTNAME", (0, -1), (-1, -1), "Helvetica-Bold"), ("FONTSIZE", (0, 0), (-1, -1), 10),
+                               ("ALIGN", (1, 0), (-1, -1), "RIGHT"), ("LINEBELOW", (0, 0), (-1, 0), 0.8, INK), ("LINEABOVE", (0, -1), (-1, -1), 0.8, INK), ("BOTTOMPADDING", (0, 0), (-1, -1), 4)]))
+    story += [table, Spacer(1, 5 * mm), _p(f"Super on qualifying earnings of {money(result['qualifying_earnings'])}: {money(result['super'])}", BODY),
+              _p(f"Leave balances after this pay: annual {result['annual_closing']:.2f} hours, personal {result['personal_closing']:.2f} hours", BODY), Spacer(1, 8 * mm),
+              _p("Produced by the test pay workbench. Figures use the workbench's configured rules and have not been checked against an award, the tax tables or super law. "
+                 "The portal has not paid, lodged or sent anything.", SMALL), _p(f"Run reference {run_hash[:16]}", SMALL)]
+    doc.build(story)
+    return buffer.getvalue()

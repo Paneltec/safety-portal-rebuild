@@ -1411,3 +1411,75 @@ class TimesheetDay(Base):
     created_by: Mapped[str | None] = mapped_column(String(36))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+class PaySettings(Base):
+    """The organisation's pay rules and employer details. Every save bumps `revision` and keeps the
+    previous version in pay_settings_history."""
+
+    __tablename__ = "pay_settings"
+
+    org_id: Mapped[str] = mapped_column(ForeignKey("organisations.id"), primary_key=True)
+    revision: Mapped[int] = mapped_column(Integer, default=1)
+    rules: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict)
+    employer_name: Mapped[str | None] = mapped_column(String(200))
+    employer_abn: Mapped[str | None] = mapped_column(String(11))
+    updated_by: Mapped[str | None] = mapped_column(String(36))
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class PaySettingsHistory(Base):
+    __tablename__ = "pay_settings_history"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    org_id: Mapped[str] = mapped_column(ForeignKey("organisations.id"), index=True)
+    revision: Mapped[int] = mapped_column(Integer)
+    data: Mapped[dict[str, Any]] = mapped_column(JSONB)
+    changed_by: Mapped[str | None] = mapped_column(String(36))
+    changed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class PayProfile(Base):
+    """How one worker is paid. Bank details are encrypted and only ever returned through an audited reveal."""
+
+    __tablename__ = "pay_profiles"
+
+    worker_id: Mapped[str] = mapped_column(ForeignKey("workers.id"), primary_key=True)
+    org_id: Mapped[str] = mapped_column(ForeignKey("organisations.id"), index=True)
+    data: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict)
+    bank: Mapped[str | None] = mapped_column(Text)  # encrypted JSON: account_name, bsb, account_number
+    bank_hint: Mapped[str | None] = mapped_column(String(20))  # last three digits of the account, for recognition only
+    revision: Mapped[int] = mapped_column(Integer, default=1)
+    updated_by: Mapped[str | None] = mapped_column(String(36))
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class PayRun(Base):
+    """One week's pay for the organisation (sequence 0), or an extra run for the same week.
+
+    While a draft, `rows` holds the worksheet. Finalising copies everything the calculation used
+    and produced into `frozen`, with a hash, and from then on reports and payslips read only that.
+    Nothing here pays anyone: `evidence` records, by hand, what was done outside the portal.
+    """
+
+    __tablename__ = "pay_runs"
+    __table_args__ = (UniqueConstraint("org_id", "week_start", "sequence", name="uq_pay_runs"),)
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    org_id: Mapped[str] = mapped_column(ForeignKey("organisations.id"), index=True)
+    week_start: Mapped[date] = mapped_column(Date)
+    sequence: Mapped[int] = mapped_column(Integer, default=0)
+    payday: Mapped[date | None] = mapped_column(Date)
+    status: Mapped[str] = mapped_column(String(10), default="draft")  # draft | finalised
+    revision: Mapped[int] = mapped_column(Integer, default=1)
+    rows: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict)
+    frozen: Mapped[dict[str, Any] | None] = mapped_column(JSONB)
+    frozen_hash: Mapped[str | None] = mapped_column(String(64))
+    finalised_by: Mapped[str | None] = mapped_column(String(36))
+    finalised_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    history: Mapped[list[Any]] = mapped_column(JSONB, default=list)  # finalise and reopen events
+    evidence: Mapped[list[Any]] = mapped_column(JSONB, default=list)
+    payslips_released: Mapped[bool] = mapped_column(Boolean, default=False)
+    created_by: Mapped[str | None] = mapped_column(String(36))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)

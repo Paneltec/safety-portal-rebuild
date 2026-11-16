@@ -18,7 +18,7 @@ from pydantic import BaseModel, Field
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from .. import payroll_engine as engine
+from .. import payroll, payroll_engine as engine
 from ..db import get_db
 from ..deps import Caller, get_caller, require_permission
 from ..models import Organisation, PayrollGrant, Site, SiteAttendance, TimesheetDay, User, Worker, utcnow
@@ -160,7 +160,7 @@ def apply_day(db: Session, org_id: str, row: TimesheetDay, kind: str, shifts: li
     if kind != "work" and stored:
         raise HTTPException(422, "A day off cannot have shifts. Remove the shifts or mark the day as worked.")
     try:
-        hours = engine.allocate_shifts([{**s, "date": row.work_date} for s in stored]) if stored else {}
+        hours = engine.allocate_shifts([{**s, "date": row.work_date} for s in stored], payroll.rules_for(db, org_id)) if stored else {}
     except engine.EngineError as exc:
         raise HTTPException(422, str(exc)) from None
     row.kind, row.shifts, row.hours, row.notes = kind, stored, hours, (notes or "").strip() or None
@@ -435,7 +435,7 @@ def prefill(body: WeekIn, request: Request, caller: Caller = Depends(require_per
             counts["already_there"] += 1
             continue
         try:
-            hours = engine.allocate_shifts([{**s, "date": day} for s in shifts])
+            hours = engine.allocate_shifts([{**s, "date": day} for s in shifts], payroll.rules_for(db, caller.org_id))
         except engine.EngineError:
             counts["could_not_use"] += 1  # overlapping or impossible sign-on times: left for a person to enter
             continue

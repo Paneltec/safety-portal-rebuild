@@ -3,6 +3,7 @@ import { ServiceDue, ServicePanel } from "./pages/Service";
 import { Fuel } from "./pages/Fuel";
 import { Leave, MyLeave } from "./pages/Leave";
 import { MyTimesheet, Timesheets } from "./pages/Timesheets";
+import { MyPayslips, PayProfiles, PayRules, PayRunPage, PayRuns } from "./pages/Pay";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { useAuth } from "./auth";
 import { Shell } from "./components/Shell";
@@ -88,6 +89,11 @@ export function App() {
         <Route path="my-leave" element={<MyLeave />} />
         <Route path="my-timesheet" element={<MyTimesheet />} />
         <Route path="pay/timesheets" element={<Timesheets />} />
+        <Route path="pay/runs" element={<PayRuns />} />
+        <Route path="pay/runs/:runId" element={<PayRunPage />} />
+        <Route path="pay/rules" element={<PayRules />} />
+        <Route path="pay/employees" element={<PayProfiles />} />
+        <Route path="my-payslips" element={<MyPayslips />} />
         <Route path="documents" element={<Documents />} />
         <Route path="documents/:folderId" element={<Documents />} />
         <Route path="settings/organisation" element={<OrganisationSettings />} />

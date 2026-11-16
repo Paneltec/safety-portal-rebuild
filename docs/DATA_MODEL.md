@@ -65,6 +65,9 @@ IDs are opaque strings. Every tenant-owned table carries `org_id`, and every que
 | `leave_requests` | A request for time off | Status requested, approved, rejected or cancelled; `days` holds the hours per day; `pay_run_id` once payroll has used it; `needs_payroll_correction` when cancelled after that |
 | `payroll_grants` | Named payroll access for one administrator | Primary key `user_id`; level view or edit; given by the payroll owner |
 | `timesheet_days` | One worker's hours for one date | Unique `(org_id, worker_id, work_date)`; `shifts` as entered; `hours` by category from the rules; `revision` for safe concurrent edits; status draft, submitted, approved, rejected or locked |
+| `pay_settings` / `pay_settings_history` | The organisation's pay rules and employer details, and each earlier version | One current row per organisation with a `revision`; every save copies the previous version to history |
+| `pay_profiles` | How one worker is paid | Primary key `worker_id`; `data` holds the settings; `bank` is encrypted; `bank_hint` is the last three digits only |
+| `pay_runs` | One week's pay run, or an extra run for that week | Unique `(org_id, week_start, sequence)`; `rows` is the draft worksheet; `frozen` and `frozen_hash` are written at finalise; `history` and `evidence` are append-only lists; no delete |
 
 ## Relationships to preserve as later stages add tables
 

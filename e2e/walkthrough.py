@@ -1203,7 +1203,108 @@ def timesheets(browser) -> None:
     print("timesheets walkthrough: ok")
 
 
-STEPS = [stage1_and_2a, documents, forms, safety_registers, workers, sites_and_visitors, suppliers_and_renewals, inductions_and_jobs, connections_and_outbox, fleet_and_equipment, fuel, leave, timesheets]
+def pay(browser) -> None:
+    import datetime as dt
+    pg = sign_in(browser)
+    errors: list[str] = []
+    pg.on("pageerror", lambda e: errors.append(str(e)))
+    today = dt.date.today()
+    monday = today - dt.timedelta(days=today.weekday() + 7)  # last week's Monday, where the timesheets walkthrough left an approved day
+    nav = pg.get_by_role("navigation")
+
+    # Pay rules: every pay screen says it is a test workbench. An invalid ABN is refused.
+    nav.get_by_role("link", name="Pay rules").click()
+    expect(pg.get_by_text("The portal does not pay anyone, lodge anything")).to_be_visible()
+    expect(pg.get_by_text("Nothing has been saved yet, so the starting figures are in use.")).to_be_visible()
+    pg.get_by_label("Legal employer name").fill("E2E Civil Pty Ltd")
+    pg.get_by_label("ABN").fill("12 345 678 901")
+    pg.get_by_role("button", name="Save pay rules").click()
+    expect(pg.get_by_text("That ABN is not valid. Check the digits.")).to_be_visible()
+    pg.get_by_label("ABN").fill("51 824 753 556")
+    pg.get_by_role("button", name="Save pay rules").click()
+    expect(pg.get_by_text("Saved. The earlier version is kept in the history.")).to_be_visible()
+
+    # The worker's day from the timesheets walkthrough was a public holiday; make it an ordinary day and approve it again.
+    nav.get_by_role("link", name="Timesheets", exact=True).click()
+    pg.get_by_role("button", name="Week before").click()
+    row = pg.get_by_role("row").filter(has_text="07:00")
+    name = row.get_by_role("cell").first.inner_text().split("\n")[0].strip()
+    row.get_by_role("button", name=re.compile("^Correct")).click()
+    dialog = pg.get_by_role("dialog")
+    dialog.get_by_label("Worked on a public holiday").uncheck()
+    dialog.get_by_role("button", name="Save day").click()
+    row.get_by_role("button", name=re.compile("^Approve")).click()
+    expect(pg.get_by_text("1 day approved.")).to_be_visible()
+
+    # Employee pay settings, with bank details stored encrypted and shown only on request.
+    nav.get_by_role("link", name="Employee pay settings").click()
+    pg.get_by_role("button", name=f"Pay settings for {name}").click()
+    dialog = pg.get_by_role("dialog")
+    dialog.get_by_label("Employment").select_option("full_time")
+    dialog.get_by_label("Hourly rate ($)").fill("30")
+    dialog.get_by_label("Tax scale").select_option("resident_threshold")
+    dialog.get_by_label("These pay conditions have been reviewed for this person").check()
+    dialog.get_by_label("The tax declaration has been reviewed").check()
+    dialog.get_by_role("button", name="Save pay settings").click()
+    expect(dialog.get_by_text("Saved.", exact=True)).to_be_visible()
+    dialog.get_by_label("Account name").fill("N Example")
+    dialog.get_by_label("BSB").fill("067-000")
+    dialog.get_by_label("Account number").fill("12345678")
+    dialog.get_by_role("button", name="Store bank details").click()
+    expect(dialog.get_by_text("Account ending 678.")).to_be_visible()
+    assert dialog.get_by_text("12345678").count() == 0  # not shown until asked for
+    dialog.get_by_role("button", name="Show bank details (this is recorded)").click()
+    expect(dialog.get_by_text("BSB 067000 · account 12345678")).to_be_visible()
+    dialog.get_by_role("button", name="Close").last.click()
+    listed = pg.get_by_role("row").filter(has_text=name)
+    expect(listed.get_by_text("$30.00 an hour")).to_be_visible()
+    expect(listed.get_by_text("Account ending 678")).to_be_visible()
+
+    # A pay run for last week: the approved day arrives by itself. 7.6 h at $30 and 0.4 h at $45 is $246.00; super is 12% of $228.
+    nav.get_by_role("link", name="Pay runs").click()
+    pg.get_by_label("First day of the pay week").fill(monday.isoformat())
+    pg.get_by_role("button", name="Start pay run").click()
+    sheet = pg.get_by_role("row").filter(has_text=name)
+    expect(sheet.get_by_text("7.6 ordinary, 0.4 overtime 1")).to_be_visible()
+    expect(sheet.get_by_role("cell", name="$246.00").first).to_be_visible()
+    expect(sheet.get_by_role("cell", name="$27.36")).to_be_visible()
+    expect(pg.get_by_role("button", name="Finalise")).to_be_disabled()  # the reviews are not ticked yet
+    sheet.get_by_label(f"Hours checked for {name}").check()
+    sheet.get_by_label(f"Super checked for {name}").check()
+    pg.get_by_role("button", name="Save", exact=True).click()
+    expect(sheet.get_by_text("Ready", exact=True)).to_be_visible()
+    shot(pg, "36-pay-worksheet", full=True)
+    pg.get_by_role("button", name="Finalise").click()
+    expect(pg.get_by_text("Finalised. The figures are now fixed.")).to_be_visible()
+
+    # After finalising: payslips stay in the portal; a payment made outside the portal is recorded by hand; then no reopening.
+    after = pg.get_by_role("region", name="After finalising")
+    expect(after.get_by_text("not visible to workers yet")).to_be_visible()
+    after.get_by_role("button", name="Let workers see their payslips").click()
+    expect(pg.get_by_text("No email or text was sent.")).to_be_visible()
+    after.get_by_role("button", name="Record something done outside the portal").click()
+    dialog = pg.get_by_role("dialog")
+    dialog.get_by_label("Receipt or reference").fill("BANK-123")
+    dialog.get_by_label("Date it was done").fill(today.isoformat())
+    dialog.get_by_label("I confirm this was done outside the portal").check()
+    dialog.get_by_role("button", name="Record", exact=True).click()
+    expect(after.get_by_role("cell", name="Wages paid from the bank")).to_be_visible()
+    expect(after.get_by_text("The portal did not pay, lodge or submit anything.")).to_be_visible()
+    expect(after.get_by_text("this run can no longer be reopened")).to_be_visible()
+    expect(after.get_by_role("button", name="Reopen")).to_have_count(0)
+    shot(pg, "37-pay-finalised", full=True)
+
+    nav.get_by_role("link", name="Pay runs").click()
+    done = pg.get_by_role("row").filter(has_text="Finalised")
+    expect(done.get_by_text("Wages paid from the bank")).to_be_visible()
+    nav.get_by_role("link", name="My payslips").click()
+    expect(pg.get_by_text("Your login is not linked to a worker record")).to_be_visible()
+    assert not errors, errors
+    pg.context.close()
+    print("pay walkthrough: ok")
+
+
+STEPS = [stage1_and_2a, documents, forms, safety_registers, workers, sites_and_visitors, suppliers_and_renewals, inductions_and_jobs, connections_and_outbox, fleet_and_equipment, fuel, leave, timesheets, pay]
 
 if __name__ == "__main__":
     with sync_playwright() as p:

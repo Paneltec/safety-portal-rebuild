@@ -637,6 +637,33 @@
     "title": "AssignmentsIn",
     "type": "object"
    },
+   "BankIn": {
+    "properties": {
+     "account_name": {
+      "maxLength": 60,
+      "minLength": 2,
+      "title": "Account Name",
+      "type": "string"
+     },
+     "account_number": {
+      "pattern": "^\\d{4,9}$",
+      "title": "Account Number",
+      "type": "string"
+     },
+     "bsb": {
+      "pattern": "^\\d{3}-?\\d{3}$",
+      "title": "Bsb",
+      "type": "string"
+     }
+    },
+    "required": [
+     "account_name",
+     "bsb",
+     "account_number"
+    ],
+    "title": "BankIn",
+    "type": "object"
+   },
    "Body_add_document_api_assets__asset_id__documents_post": {
     "properties": {
      "expiry_date": {
@@ -1449,6 +1476,80 @@
     "title": "CardIn",
     "type": "object"
    },
+   "CasualRates": {
+    "properties": {
+     "base_rate": {
+      "exclusiveMinimum": 0.0,
+      "maximum": 1000.0,
+      "title": "Base Rate",
+      "type": "number"
+     },
+     "holiday_work": {
+      "anyOf": [
+       {
+        "exclusiveMinimum": 0.0,
+        "maximum": 2000.0,
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Holiday Work"
+     },
+     "loading_percent": {
+      "maximum": 100.0,
+      "minimum": 0.0,
+      "title": "Loading Percent",
+      "type": "number"
+     },
+     "night": {
+      "anyOf": [
+       {
+        "exclusiveMinimum": 0.0,
+        "maximum": 2000.0,
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Night"
+     },
+     "ot1": {
+      "anyOf": [
+       {
+        "exclusiveMinimum": 0.0,
+        "maximum": 2000.0,
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Ot1"
+     },
+     "ot2": {
+      "anyOf": [
+       {
+        "exclusiveMinimum": 0.0,
+        "maximum": 2000.0,
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Ot2"
+     }
+    },
+    "required": [
+     "base_rate",
+     "loading_percent"
+    ],
+    "title": "CasualRates",
+    "type": "object"
+   },
    "CategoryIn": {
     "properties": {
      "name": {
@@ -2173,6 +2274,86 @@
     "title": "DocTypePatch",
     "type": "object"
    },
+   "EarningRule": {
+    "properties": {
+     "basis": {
+      "default": "fixed",
+      "enum": [
+       "fixed",
+       "base_rate"
+      ],
+      "title": "Basis",
+      "type": "string"
+     },
+     "code": {
+      "maxLength": 20,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9_-]+$",
+      "title": "Code",
+      "type": "string"
+     },
+     "multiplier": {
+      "anyOf": [
+       {
+        "maximum": 10.0,
+        "minimum": 0.0,
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Multiplier"
+     },
+     "name": {
+      "maxLength": 80,
+      "minLength": 1,
+      "title": "Name",
+      "type": "string"
+     },
+     "rate": {
+      "anyOf": [
+       {
+        "maximum": 10000.0,
+        "minimum": 0.0,
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Rate"
+     },
+     "superable": {
+      "anyOf": [
+       {
+        "type": "boolean"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Superable"
+     },
+     "taxable": {
+      "anyOf": [
+       {
+        "type": "boolean"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Taxable"
+     }
+    },
+    "required": [
+     "code",
+     "name"
+    ],
+    "title": "EarningRule",
+    "type": "object"
+   },
    "EmailReportIn": {
     "properties": {
      "date_from": {
@@ -2237,6 +2418,56 @@
      "to"
     ],
     "title": "EmailReportIn",
+    "type": "object"
+   },
+   "EvidenceIn": {
+    "properties": {
+     "completed_on": {
+      "format": "date",
+      "title": "Completed On",
+      "type": "string"
+     },
+     "confirm": {
+      "default": false,
+      "title": "Confirm",
+      "type": "boolean"
+     },
+     "correction_reason": {
+      "anyOf": [
+       {
+        "maxLength": 600,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Correction Reason"
+     },
+     "note": {
+      "anyOf": [
+       {
+        "maxLength": 600,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Note"
+     },
+     "reference": {
+      "maxLength": 200,
+      "minLength": 3,
+      "title": "Reference",
+      "type": "string"
+     }
+    },
+    "required": [
+     "reference",
+     "completed_on"
+    ],
+    "title": "EvidenceIn",
     "type": "object"
    },
    "FieldValue": {
@@ -3932,6 +4163,155 @@
     "title": "PriceSettingsIn",
     "type": "object"
    },
+   "ProfileIn": {
+    "properties": {
+     "annual_salary": {
+      "anyOf": [
+       {
+        "maximum": 2000000.0,
+        "minimum": 0.0,
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Annual Salary"
+     },
+     "annual_weeks": {
+      "default": 4,
+      "maximum": 10.0,
+      "minimum": 0.0,
+      "title": "Annual Weeks",
+      "type": "number"
+     },
+     "casual_rates": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/CasualRates"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "conditions_reviewed": {
+      "default": false,
+      "title": "Conditions Reviewed",
+      "type": "boolean"
+     },
+     "employment_type": {
+      "anyOf": [
+       {
+        "enum": [
+         "full_time",
+         "part_time",
+         "casual",
+         "contractor"
+        ],
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Employment Type"
+     },
+     "expected_revision": {
+      "title": "Expected Revision",
+      "type": "integer"
+     },
+     "hourly_rate": {
+      "anyOf": [
+       {
+        "maximum": 1000.0,
+        "minimum": 0.0,
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Hourly Rate"
+     },
+     "leave_loading_percent": {
+      "default": 0,
+      "maximum": 100.0,
+      "minimum": 0.0,
+      "title": "Leave Loading Percent",
+      "type": "number"
+     },
+     "opening_annual": {
+      "default": 0,
+      "maximum": 5000.0,
+      "minimum": -500.0,
+      "title": "Opening Annual",
+      "type": "number"
+     },
+     "opening_personal": {
+      "default": 0,
+      "maximum": 5000.0,
+      "minimum": -500.0,
+      "title": "Opening Personal",
+      "type": "number"
+     },
+     "ordinary_weekly_hours": {
+      "anyOf": [
+       {
+        "maximum": 80.0,
+        "minimum": 0.0,
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Ordinary Weekly Hours"
+     },
+     "pay_basis": {
+      "default": "hourly",
+      "enum": [
+       "hourly",
+       "salary"
+      ],
+      "title": "Pay Basis",
+      "type": "string"
+     },
+     "personal_weeks": {
+      "default": 2,
+      "maximum": 10.0,
+      "minimum": 0.0,
+      "title": "Personal Weeks",
+      "type": "number"
+     },
+     "tax_declaration_reviewed": {
+      "default": false,
+      "title": "Tax Declaration Reviewed",
+      "type": "boolean"
+     },
+     "tax_mode": {
+      "anyOf": [
+       {
+        "enum": [
+         "resident_threshold",
+         "resident_no_threshold",
+         "manual"
+        ],
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Tax Mode"
+     }
+    },
+    "required": [
+     "expected_revision"
+    ],
+    "title": "ProfileIn",
+    "type": "object"
+   },
    "ProvisionIn": {
     "properties": {
      "email": {
@@ -4012,6 +4392,31 @@
     "title": "QuestionIn",
     "type": "object"
    },
+   "ReasonIn": {
+    "properties": {
+     "expected_revision": {
+      "title": "Expected Revision",
+      "type": "integer"
+     },
+     "reason": {
+      "anyOf": [
+       {
+        "maxLength": 600,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Reason"
+     }
+    },
+    "required": [
+     "expected_revision"
+    ],
+    "title": "ReasonIn",
+    "type": "object"
+   },
    "RecordPatch": {
     "properties": {
      "expected_revision": {
@@ -4074,6 +4479,19 @@
      }
     },
     "title": "ReissueIn",
+    "type": "object"
+   },
+   "ReleaseIn": {
+    "properties": {
+     "release": {
+      "title": "Release",
+      "type": "boolean"
+     }
+    },
+    "required": [
+     "release"
+    ],
+    "title": "ReleaseIn",
     "type": "object"
    },
    "ReminderScanIn": {
@@ -4473,6 +4891,34 @@
     "title": "RolePatch",
     "type": "object"
    },
+   "RowIn": {
+    "properties": {
+     "adjust": {
+      "additionalProperties": true,
+      "title": "Adjust",
+      "type": "object"
+     },
+     "hours_reviewed": {
+      "default": false,
+      "title": "Hours Reviewed",
+      "type": "boolean"
+     },
+     "manual": {
+      "additionalProperties": {
+       "type": "number"
+      },
+      "title": "Manual",
+      "type": "object"
+     },
+     "super_reviewed": {
+      "default": false,
+      "title": "Super Reviewed",
+      "type": "boolean"
+     }
+    },
+    "title": "RowIn",
+    "type": "object"
+   },
    "RuleIn": {
     "properties": {
      "kind": {
@@ -4491,6 +4937,187 @@
      "target_id"
     ],
     "title": "RuleIn",
+    "type": "object"
+   },
+   "RulesIn": {
+    "properties": {
+     "daily_ordinary_hours": {
+      "exclusiveMinimum": 0.0,
+      "maximum": 24.0,
+      "title": "Daily Ordinary Hours",
+      "type": "number"
+     },
+     "earning_rules": {
+      "items": {
+       "$ref": "#/components/schemas/EarningRule"
+      },
+      "maxItems": 50,
+      "title": "Earning Rules",
+      "type": "array"
+     },
+     "holiday_work_multiplier": {
+      "maximum": 5.0,
+      "minimum": 1.0,
+      "title": "Holiday Work Multiplier",
+      "type": "number"
+     },
+     "meal_allowance": {
+      "maximum": 500.0,
+      "minimum": 0.0,
+      "title": "Meal Allowance",
+      "type": "number"
+     },
+     "meal_tax_treatment": {
+      "anyOf": [
+       {
+        "enum": [
+         "taxable",
+         "exempt"
+        ],
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Meal Tax Treatment"
+     },
+     "night_end": {
+      "title": "Night End",
+      "type": "string"
+     },
+     "night_multiplier": {
+      "maximum": 5.0,
+      "minimum": 1.0,
+      "title": "Night Multiplier",
+      "type": "number"
+     },
+     "night_start": {
+      "title": "Night Start",
+      "type": "string"
+     },
+     "ot1_hours": {
+      "maximum": 12.0,
+      "minimum": 0.0,
+      "title": "Ot1 Hours",
+      "type": "number"
+     },
+     "ot1_multiplier": {
+      "maximum": 5.0,
+      "minimum": 1.0,
+      "title": "Ot1 Multiplier",
+      "type": "number"
+     },
+     "ot2_multiplier": {
+      "maximum": 5.0,
+      "minimum": 1.0,
+      "title": "Ot2 Multiplier",
+      "type": "number"
+     },
+     "saturday_multiplier": {
+      "anyOf": [
+       {
+        "maximum": 5.0,
+        "minimum": 1.0,
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Saturday Multiplier"
+     },
+     "sunday_multiplier": {
+      "anyOf": [
+       {
+        "maximum": 5.0,
+        "minimum": 1.0,
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Sunday Multiplier"
+     },
+     "super_percent": {
+      "maximum": 30.0,
+      "minimum": 0.0,
+      "title": "Super Percent",
+      "type": "number"
+     }
+    },
+    "required": [
+     "ot1_multiplier",
+     "ot2_multiplier",
+     "night_multiplier",
+     "holiday_work_multiplier",
+     "super_percent",
+     "meal_allowance",
+     "daily_ordinary_hours",
+     "ot1_hours",
+     "night_start",
+     "night_end"
+    ],
+    "title": "RulesIn",
+    "type": "object"
+   },
+   "RunCreate": {
+    "properties": {
+     "extra": {
+      "default": false,
+      "title": "Extra",
+      "type": "boolean"
+     },
+     "week_start": {
+      "format": "date",
+      "title": "Week Start",
+      "type": "string"
+     }
+    },
+    "required": [
+     "week_start"
+    ],
+    "title": "RunCreate",
+    "type": "object"
+   },
+   "RunSave": {
+    "properties": {
+     "expected_revision": {
+      "title": "Expected Revision",
+      "type": "integer"
+     },
+     "payday": {
+      "anyOf": [
+       {
+        "format": "date",
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Payday"
+     },
+     "rows": {
+      "additionalProperties": {
+       "anyOf": [
+        {
+         "$ref": "#/components/schemas/RowIn"
+        },
+        {
+         "type": "null"
+        }
+       ]
+      },
+      "title": "Rows",
+      "type": "object"
+     }
+    },
+    "required": [
+     "expected_revision"
+    ],
+    "title": "RunSave",
     "type": "object"
    },
    "SafeModeIn": {
@@ -4820,38 +5447,6 @@
      "password"
     ],
     "title": "SetPasswordIn",
-    "type": "object"
-   },
-   "SettingsIn": {
-    "properties": {
-     "backdate_days": {
-      "maximum": 366.0,
-      "minimum": 0.0,
-      "title": "Backdate Days",
-      "type": "integer"
-     },
-     "hours_per_day": {
-      "exclusiveMinimum": 0.0,
-      "maximum": 24.0,
-      "title": "Hours Per Day",
-      "type": "number"
-     },
-     "work_days": {
-      "items": {
-       "type": "integer"
-      },
-      "maxItems": 7,
-      "minItems": 1,
-      "title": "Work Days",
-      "type": "array"
-     }
-    },
-    "required": [
-     "hours_per_day",
-     "backdate_days",
-     "work_days"
-    ],
-    "title": "SettingsIn",
     "type": "object"
    },
    "SetupIn": {
@@ -7388,6 +7983,86 @@
      "worker_ids"
     ],
     "title": "BulkIn",
+    "type": "object"
+   },
+   "app__routers__leave__SettingsIn": {
+    "properties": {
+     "backdate_days": {
+      "maximum": 366.0,
+      "minimum": 0.0,
+      "title": "Backdate Days",
+      "type": "integer"
+     },
+     "hours_per_day": {
+      "exclusiveMinimum": 0.0,
+      "maximum": 24.0,
+      "title": "Hours Per Day",
+      "type": "number"
+     },
+     "work_days": {
+      "items": {
+       "type": "integer"
+      },
+      "maxItems": 7,
+      "minItems": 1,
+      "title": "Work Days",
+      "type": "array"
+     }
+    },
+    "required": [
+     "hours_per_day",
+     "backdate_days",
+     "work_days"
+    ],
+    "title": "SettingsIn",
+    "type": "object"
+   },
+   "app__routers__payroll__SettingsIn": {
+    "properties": {
+     "employer_abn": {
+      "anyOf": [
+       {
+        "maxLength": 20,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Employer Abn"
+     },
+     "employer_name": {
+      "anyOf": [
+       {
+        "maxLength": 200,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Employer Name"
+     },
+     "expected_revision": {
+      "title": "Expected Revision",
+      "type": "integer"
+     },
+     "rules": {
+      "$ref": "#/components/schemas/RulesIn"
+     },
+     "week_start_day": {
+      "default": 0,
+      "maximum": 6.0,
+      "minimum": 0.0,
+      "title": "Week Start Day",
+      "type": "integer"
+     }
+    },
+    "required": [
+     "expected_revision",
+     "rules"
+    ],
+    "title": "SettingsIn",
     "type": "object"
    },
    "app__routers__renewals__ReviewIn": {
@@ -20191,7 +20866,7 @@
      "content": {
       "application/json": {
        "schema": {
-        "$ref": "#/components/schemas/SettingsIn"
+        "$ref": "#/components/schemas/app__routers__leave__SettingsIn"
        }
       }
      },
@@ -20613,6 +21288,70 @@
     "summary": "Upload Certificate",
     "tags": [
      "leave"
+    ]
+   }
+  },
+  "/api/me/payroll/payslips": {
+   "get": {
+    "operationId": "my_payslips_api_me_payroll_payslips_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response My Payslips Api Me Payroll Payslips Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "My Payslips",
+    "tags": [
+     "payroll"
+    ]
+   }
+  },
+  "/api/me/payroll/payslips/{run_id}/pdf": {
+   "get": {
+    "description": "Your own payslip, once released. Anyone else's, or one not released, is simply not found.",
+    "operationId": "my_payslip_pdf_api_me_payroll_payslips__run_id__pdf_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "run_id",
+      "required": true,
+      "schema": {
+       "title": "Run Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "My Payslip Pdf",
+    "tags": [
+     "payroll"
     ]
    }
   },
@@ -21165,6 +21904,1014 @@
     ]
    }
   },
+  "/api/payroll/banking/batch/{run_id}/download": {
+   "post": {
+    "operationId": "bank_file_api_payroll_banking_batch__run_id__download_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "run_id",
+      "required": true,
+      "schema": {
+       "title": "Run Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Bank File",
+    "tags": [
+     "payroll"
+    ]
+   }
+  },
+  "/api/payroll/profiles": {
+   "get": {
+    "operationId": "profiles_api_payroll_profiles_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Profiles Api Payroll Profiles Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Profiles",
+    "tags": [
+     "payroll"
+    ]
+   }
+  },
+  "/api/payroll/profiles/{worker_id}": {
+   "get": {
+    "operationId": "profile_api_payroll_profiles__worker_id__get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "worker_id",
+      "required": true,
+      "schema": {
+       "title": "Worker Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Profile Api Payroll Profiles  Worker Id  Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Profile",
+    "tags": [
+     "payroll"
+    ]
+   },
+   "put": {
+    "operationId": "put_profile_api_payroll_profiles__worker_id__put",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "worker_id",
+      "required": true,
+      "schema": {
+       "title": "Worker Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ProfileIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Put Profile Api Payroll Profiles  Worker Id  Put",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Put Profile",
+    "tags": [
+     "payroll"
+    ]
+   }
+  },
+  "/api/payroll/profiles/{worker_id}/bank": {
+   "delete": {
+    "operationId": "clear_bank_api_payroll_profiles__worker_id__bank_delete",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "worker_id",
+      "required": true,
+      "schema": {
+       "title": "Worker Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "204": {
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Clear Bank",
+    "tags": [
+     "payroll"
+    ]
+   },
+   "put": {
+    "description": "Store bank details encrypted. They are never returned by a list or a profile, only by the audited reveal.",
+    "operationId": "put_bank_api_payroll_profiles__worker_id__bank_put",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "worker_id",
+      "required": true,
+      "schema": {
+       "title": "Worker Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/BankIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Put Bank Api Payroll Profiles  Worker Id  Bank Put",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Put Bank",
+    "tags": [
+     "payroll"
+    ]
+   }
+  },
+  "/api/payroll/profiles/{worker_id}/bank/reveal": {
+   "post": {
+    "operationId": "reveal_bank_api_payroll_profiles__worker_id__bank_reveal_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "worker_id",
+      "required": true,
+      "schema": {
+       "title": "Worker Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Reveal Bank Api Payroll Profiles  Worker Id  Bank Reveal Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Reveal Bank",
+    "tags": [
+     "payroll"
+    ]
+   }
+  },
+  "/api/payroll/reset": {
+   "post": {
+    "operationId": "reset_api_payroll_reset_post",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Reset",
+    "tags": [
+     "payroll"
+    ]
+   }
+  },
+  "/api/payroll/runs": {
+   "get": {
+    "operationId": "runs_api_payroll_runs_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Runs Api Payroll Runs Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Runs",
+    "tags": [
+     "payroll"
+    ]
+   },
+   "post": {
+    "description": "Start the weekly run for a seven-day week, or an extra run for a week that already has one.",
+    "operationId": "create_run_api_payroll_runs_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/RunCreate"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Create Run Api Payroll Runs Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Create Run",
+    "tags": [
+     "payroll"
+    ]
+   }
+  },
+  "/api/payroll/runs/{run_id}": {
+   "get": {
+    "operationId": "get_run_api_payroll_runs__run_id__get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "run_id",
+      "required": true,
+      "schema": {
+       "title": "Run Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Get Run Api Payroll Runs  Run Id  Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Get Run",
+    "tags": [
+     "payroll"
+    ]
+   },
+   "put": {
+    "description": "Save the worksheet: payday, hand-entered hours, adjustments and the reviewed ticks. Hours that came\nfrom timesheets and leave are not changed here. A row with no timesheet or leave behind it can be removed (null).",
+    "operationId": "save_run_api_payroll_runs__run_id__put",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "run_id",
+      "required": true,
+      "schema": {
+       "title": "Run Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/RunSave"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Save Run Api Payroll Runs  Run Id  Put",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Save Run",
+    "tags": [
+     "payroll"
+    ]
+   }
+  },
+  "/api/payroll/runs/{run_id}/completion/{kind}": {
+   "post": {
+    "description": "Record, by hand, that something was done outside the portal (the bank payment, the STP lodgement, the super\npayment), with its receipt or reference. This never pays or lodges anything.",
+    "operationId": "record_evidence_api_payroll_runs__run_id__completion__kind__post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "run_id",
+      "required": true,
+      "schema": {
+       "title": "Run Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "path",
+      "name": "kind",
+      "required": true,
+      "schema": {
+       "enum": [
+        "payment",
+        "stp",
+        "super"
+       ],
+       "title": "Kind",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/EvidenceIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Record Evidence Api Payroll Runs  Run Id  Completion  Kind  Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Record Evidence",
+    "tags": [
+     "payroll"
+    ]
+   }
+  },
+  "/api/payroll/runs/{run_id}/finalise": {
+   "post": {
+    "description": "Freeze the run. Refused unless every row is free of review issues, the hours are current, and the\nemployer details are set. This records figures; it does not pay anyone.",
+    "operationId": "finalise_api_payroll_runs__run_id__finalise_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "run_id",
+      "required": true,
+      "schema": {
+       "title": "Run Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ReasonIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Finalise Api Payroll Runs  Run Id  Finalise Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Finalise",
+    "tags": [
+     "payroll"
+    ]
+   }
+  },
+  "/api/payroll/runs/{run_id}/import": {
+   "post": {
+    "operationId": "import_sources_api_payroll_runs__run_id__import_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "run_id",
+      "required": true,
+      "schema": {
+       "title": "Run Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ReasonIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Import Sources Api Payroll Runs  Run Id  Import Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Import Sources",
+    "tags": [
+     "payroll"
+    ]
+   }
+  },
+  "/api/payroll/runs/{run_id}/payslips/deliver": {
+   "post": {
+    "operationId": "deliver_payslips_api_payroll_runs__run_id__payslips_deliver_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "run_id",
+      "required": true,
+      "schema": {
+       "title": "Run Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Deliver Payslips",
+    "tags": [
+     "payroll"
+    ]
+   }
+  },
+  "/api/payroll/runs/{run_id}/payslips/release": {
+   "post": {
+    "description": "Let each worker on the run see their own payslip in the portal, or hide them again. No message is sent.",
+    "operationId": "release_api_payroll_runs__run_id__payslips_release_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "run_id",
+      "required": true,
+      "schema": {
+       "title": "Run Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ReleaseIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Release Api Payroll Runs  Run Id  Payslips Release Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Release",
+    "tags": [
+     "payroll"
+    ]
+   }
+  },
+  "/api/payroll/runs/{run_id}/payslips/{worker_id}/pdf": {
+   "get": {
+    "operationId": "payslip_api_payroll_runs__run_id__payslips__worker_id__pdf_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "run_id",
+      "required": true,
+      "schema": {
+       "title": "Run Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "path",
+      "name": "worker_id",
+      "required": true,
+      "schema": {
+       "title": "Worker Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Payslip",
+    "tags": [
+     "payroll"
+    ]
+   }
+  },
+  "/api/payroll/runs/{run_id}/reopen": {
+   "post": {
+    "description": "Undo a finalise, with a reason. The earlier frozen figures stay in the run's history by their hash.\nNot allowed once a payment has been recorded: correct that with an extra run.",
+    "operationId": "reopen_api_payroll_runs__run_id__reopen_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "run_id",
+      "required": true,
+      "schema": {
+       "title": "Run Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ReasonIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Reopen Api Payroll Runs  Run Id  Reopen Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Reopen",
+    "tags": [
+     "payroll"
+    ]
+   }
+  },
+  "/api/payroll/runs/{run_id}/report.csv": {
+   "get": {
+    "description": "The pay register for a finalised run. It contains no bank details.",
+    "operationId": "register_csv_api_payroll_runs__run_id__report_csv_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "run_id",
+      "required": true,
+      "schema": {
+       "title": "Run Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Register Csv",
+    "tags": [
+     "payroll"
+    ]
+   }
+  },
+  "/api/payroll/runs/{run_id}/submit/{kind}": {
+   "post": {
+    "operationId": "submit_to_provider_api_payroll_runs__run_id__submit__kind__post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "run_id",
+      "required": true,
+      "schema": {
+       "title": "Run Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "path",
+      "name": "kind",
+      "required": true,
+      "schema": {
+       "enum": [
+        "stp",
+        "super"
+       ],
+       "title": "Kind",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Submit To Provider",
+    "tags": [
+     "payroll"
+    ]
+   }
+  },
+  "/api/payroll/settings": {
+   "get": {
+    "operationId": "get_settings_api_payroll_settings_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Get Settings Api Payroll Settings Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Get Settings",
+    "tags": [
+     "payroll"
+    ]
+   },
+   "put": {
+    "description": "Save the pay rules and employer details. The previous version is kept; a save made from an out-of-date screen is refused.",
+    "operationId": "put_settings_api_payroll_settings_put",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/app__routers__payroll__SettingsIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Put Settings Api Payroll Settings Put",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Put Settings",
+    "tags": [
+     "payroll"
+    ]
+   }
+  },
   "/api/payroll/summary": {
    "get": {
     "operationId": "summary_api_payroll_summary_get",
@@ -21609,6 +23356,30 @@
      }
     },
     "summary": "Payroll Access List",
+    "tags": [
+     "payroll"
+    ]
+   }
+  },
+  "/api/payroll/workbench/status": {
+   "get": {
+    "description": "States plainly what this workbench is and is not.",
+    "operationId": "status_api_payroll_workbench_status_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Status Api Payroll Workbench Status Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Status",
     "tags": [
      "payroll"
     ]

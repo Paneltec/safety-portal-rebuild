@@ -558,9 +558,9 @@ POST,/api/me/leave,leave_requests,create_my_leave,self,leave.request_leave,tests
 POST,/api/me/leave/{leave_id}/cancel,leave_requests,cancel_my_leave,self,leave.cancel_mine,tests/test_leave.py,IMPLEMENTED_TESTED,"Leave already used by a pay run is flagged for payroll, not undone"
 POST,/api/me/leave/{leave_id}/certificate,leave_requests,upload_certificate,self,leave.upload_certificate,tests/test_leave.py,IMPLEMENTED_TESTED,
 GET,/api/me/mobile-modules,mobile_modules,get_my_mobile_modules,CLASSIFY,,,NOT_STARTED,
-GET,/api/me/payroll/payslips,payroll_worker_payslips,list_payslips,CLASSIFY,,,NOT_STARTED,
+GET,/api/me/payroll/payslips,payroll_worker_payslips,list_payslips,self,payroll.my_payslips,tests/test_payroll.py,IMPLEMENTED_TESTED,"Own, released only"
 GET,/api/me/payroll/payslips/{week}/{revision},payroll_worker_payslips,detail,CLASSIFY,,,NOT_STARTED,
-GET,/api/me/payroll/payslips/{week}/{revision}/pdf,payroll_worker_payslips,pdf,CLASSIFY,,,NOT_STARTED,
+GET,/api/me/payroll/payslips/{week}/{revision}/pdf,payroll_worker_payslips,pdf,self,payroll.my_payslip_pdf,tests/test_payroll.py,IMPLEMENTED_TESTED,GET /api/me/payroll/payslips/{run_id}/pdf; anyone else's is 404
 POST,/api/me/payroll/submit,payroll,my_submit,self,timesheets.submit_my_week,tests/test_timesheets.py,IMPLEMENTED_TESTED,Empty days are left out
 GET,/api/me/payroll/time-catalog,payroll_segments,my_catalog,self,timesheets.my_catalog,tests/test_timesheets.py,IMPLEMENTED_TESTED,Fixed categories; no client or job catalogue yet
 GET,/api/me/payroll/timesheets,payroll,my_timesheets,self,timesheets.my_timesheets,tests/test_timesheets.py,IMPLEMENTED_TESTED,One explicit seven-day week
@@ -656,18 +656,18 @@ DELETE,/api/org/url-tiles/{tile_id},org_url_tiles,delete_tile,CLASSIFY,,,NOT_STA
 PATCH,/api/org/url-tiles/{tile_id},org_url_tiles,update_tile,CLASSIFY,,,NOT_STARTED,
 POST,/api/org/url-tiles/{tile_id}/verify-pin,org_url_tiles,verify_tile_pin,CLASSIFY,,,NOT_STARTED,
 GET,/api/payroll/banking/batch/{week},payroll_banking,preview_batch,CLASSIFY,,,NOT_STARTED,
-POST,/api/payroll/banking/batch/{week}/download,payroll_banking,download_batch,CLASSIFY,,,NOT_STARTED,
+POST,/api/payroll/banking/batch/{week}/download,payroll_banking,download_batch,payroll,payroll.bank_file,tests/test_payroll.py,IMPLEMENTED_TESTED,Always refused: no bank file in the test workbench (D-081)
 GET,/api/payroll/banking/employer,payroll_banking,get_employer,CLASSIFY,,,NOT_STARTED,
 PUT,/api/payroll/banking/employer,payroll_banking,set_employer,CLASSIFY,,,NOT_STARTED,
-GET,/api/payroll/banking/workers/{worker_id},payroll_banking,get_bank,CLASSIFY,,,NOT_STARTED,
-PUT,/api/payroll/banking/workers/{worker_id},payroll_banking,set_bank,CLASSIFY,,,NOT_STARTED,
+GET,/api/payroll/banking/workers/{worker_id},payroll_banking,get_bank,payroll,payroll.reveal_bank,tests/test_payroll.py,IMPLEMENTED_TESTED,"POST /api/payroll/profiles/{worker_id}/bank/reveal (audited, edit access)"
+PUT,/api/payroll/banking/workers/{worker_id},payroll_banking,set_bank,payroll,payroll.put_bank,tests/test_payroll.py,IMPLEMENTED_TESTED,PUT /api/payroll/profiles/{worker_id}/bank (encrypted)
 GET,/api/payroll/employee-records/configuration/awards,payroll_award_settings,read,CLASSIFY,,,NOT_STARTED,
 PUT,/api/payroll/employee-records/configuration/awards,payroll_award_settings,save,CLASSIFY,,,NOT_STARTED,
 GET,/api/payroll/employee-records/configuration/awards/employee-summary,payroll_award_settings,employee_summary,CLASSIFY,,,NOT_STARTED,
 GET,/api/payroll/employee-records/configuration/catalog/{kind},payroll_catalog_settings,read,CLASSIFY,,,NOT_STARTED,
 PUT,/api/payroll/employee-records/configuration/catalog/{kind},payroll_catalog_settings,save,CLASSIFY,,,NOT_STARTED,
 POST,/api/payroll/employee-records/configuration/catalog/{kind}/preview,payroll_catalog_settings,preview,CLASSIFY,,,NOT_STARTED,
-GET,/api/payroll/employee-records/configuration/stp-readiness,payroll_stp_readiness,read,CLASSIFY,,,NOT_STARTED,
+GET,/api/payroll/employee-records/configuration/stp-readiness,payroll_stp_readiness,read,payroll,payroll.status,tests/test_payroll.py,IMPLEMENTED_TESTED,GET /api/payroll/workbench/status: says plainly that STP and super are not connected
 GET,/api/payroll/employee-records/configuration/super-funds,payroll_fund_settings,read,CLASSIFY,,,NOT_STARTED,
 PUT,/api/payroll/employee-records/configuration/super-funds,payroll_fund_settings,save,CLASSIFY,,,NOT_STARTED,
 POST,/api/payroll/employee-records/configuration/super-funds/check,payroll_fund_settings,check,CLASSIFY,,,NOT_STARTED,
@@ -677,18 +677,18 @@ POST,/api/payroll/employee-records/fund/check,payroll_employee_records,check_fun
 POST,/api/payroll/employee-records/import/preview,payroll_rate_import,preview,CLASSIFY,,,NOT_STARTED,
 POST,/api/payroll/employee-records/opening-import/preview,payroll_balance_import,preview,CLASSIFY,,,NOT_STARTED,
 GET,/api/payroll/employee-records/opening-import/template,payroll_balance_import,template,CLASSIFY,,,NOT_STARTED,
-GET,/api/payroll/employee-records/{worker_id},payroll_employee_records,load,CLASSIFY,,,NOT_STARTED,
-PUT,/api/payroll/employee-records/{worker_id},payroll_employee_records,save,CLASSIFY,,,NOT_STARTED,
+GET,/api/payroll/employee-records/{worker_id},payroll_employee_records,load,payroll,payroll.profile,tests/test_payroll.py,IMPLEMENTED_TESTED,GET /api/payroll/profiles/{worker_id}
+PUT,/api/payroll/employee-records/{worker_id},payroll_employee_records,save,payroll,payroll.put_profile,tests/test_payroll.py,IMPLEMENTED_TESTED,PUT /api/payroll/profiles/{worker_id}
 GET,/api/payroll/employee-records/{worker_id}/opening-balances/{week},payroll_employee_records,opening_at,CLASSIFY,,,NOT_STARTED,
 GET,/api/payroll/employee-records/{worker_id}/pay-context/{week},payroll_employee_records,pay_context,CLASSIFY,,,NOT_STARTED,
 GET,/api/payroll/export,payroll,export_csv,CLASSIFY,,,NOT_STARTED,
-GET,/api/payroll/periods,payroll,list_periods,CLASSIFY,,,NOT_STARTED,
-POST,/api/payroll/periods/{period_id}/close,payroll,close_period,CLASSIFY,,,NOT_STARTED,
-POST,/api/payroll/periods/{period_id}/reopen,payroll,reopen_period,CLASSIFY,,,NOT_STARTED,
-GET,/api/payroll/profiles,payroll,list_profiles,CLASSIFY,,,NOT_STARTED,
-PUT,/api/payroll/profiles/{worker_id},payroll,put_profile,CLASSIFY,,,NOT_STARTED,
-GET,/api/payroll/settings,payroll,read_settings,CLASSIFY,,,NOT_STARTED,
-PUT,/api/payroll/settings,payroll,write_settings,CLASSIFY,,,NOT_STARTED,
+GET,/api/payroll/periods,payroll,list_periods,payroll,payroll.runs,tests/test_payroll.py,IMPLEMENTED_TESTED,"GET /api/payroll/runs (one lifecycle, D-080)"
+POST,/api/payroll/periods/{period_id}/close,payroll,close_period,payroll,payroll.finalise,tests/test_payroll.py,IMPLEMENTED_TESTED,Finalising locks the approved days
+POST,/api/payroll/periods/{period_id}/reopen,payroll,reopen_period,payroll,payroll.reopen,tests/test_payroll.py,IMPLEMENTED_TESTED,Reopening releases them
+GET,/api/payroll/profiles,payroll,list_profiles,payroll,payroll.profiles,tests/test_payroll.py,IMPLEMENTED_TESTED,
+PUT,/api/payroll/profiles/{worker_id},payroll,put_profile,payroll,payroll.put_profile,tests/test_payroll.py,IMPLEMENTED_TESTED,"Audit names fields, never figures"
+GET,/api/payroll/settings,payroll,read_settings,payroll,payroll.get_settings,tests/test_payroll.py,IMPLEMENTED_TESTED,"Rules, employer, week start; revision and history"
+PUT,/api/payroll/settings,payroll,write_settings,payroll,payroll.put_settings,tests/test_payroll.py,IMPLEMENTED_TESTED,Expected revision; previous version kept
 GET,/api/payroll/summary,payroll,summary,payroll,timesheets.summary,tests/test_timesheets.py,IMPLEMENTED_TESTED,
 GET,/api/payroll/time-catalog,payroll_segments,office_catalog,payroll,timesheets.catalog,tests/test_timesheets.py,IMPLEMENTED_TESTED,
 GET,/api/payroll/timesheets,payroll,list_timesheets,payroll,timesheets.list_timesheets,tests/test_timesheets.py,IMPLEMENTED_TESTED,Payroll access only
@@ -704,41 +704,41 @@ GET,/api/payroll/workbench/access/list,payroll_run_register,access_list,payroll 
 POST,/api/payroll/workbench/access/{user_id}/invite,payroll_run_register,invite_access,CLASSIFY,,,NOT_STARTED,
 GET,/api/payroll/workbench/branding,payroll_branding,load,CLASSIFY,,,NOT_STARTED,
 PUT,/api/payroll/workbench/branding,payroll_branding,save,CLASSIFY,,,NOT_STARTED,
-GET,/api/payroll/workbench/calculation/settings,payroll_workbench,calculation_settings,CLASSIFY,,,NOT_STARTED,
-PUT,/api/payroll/workbench/calculation/settings,payroll_workbench,save_calculation_settings,CLASSIFY,,,NOT_STARTED,
+GET,/api/payroll/workbench/calculation/settings,payroll_workbench,calculation_settings,payroll,payroll.get_settings,tests/test_payroll.py,IMPLEMENTED_TESTED,GET /api/payroll/settings
+PUT,/api/payroll/workbench/calculation/settings,payroll_workbench,save_calculation_settings,payroll,payroll.put_settings,tests/test_payroll.py,IMPLEMENTED_TESTED,PUT /api/payroll/settings
 GET,/api/payroll/workbench/connections/settings,payroll_workbench,connections,CLASSIFY,,,NOT_STARTED,
 PUT,/api/payroll/workbench/connections/settings,payroll_workbench,save_connections,CLASSIFY,,,NOT_STARTED,
 GET,/api/payroll/workbench/delivery/settings,payroll_delivery,settings,CLASSIFY,,,NOT_STARTED,
 PUT,/api/payroll/workbench/delivery/settings,payroll_delivery,configure,CLASSIFY,,,NOT_STARTED,
-GET,/api/payroll/workbench/employees/list,payroll_workbench,employee_list,CLASSIFY,,,NOT_STARTED,
-POST,/api/payroll/workbench/out-of-cycle/create,payroll_workbench,create_extra_run,CLASSIFY,,,NOT_STARTED,
+GET,/api/payroll/workbench/employees/list,payroll_workbench,employee_list,payroll,payroll.profiles,tests/test_payroll.py,IMPLEMENTED_TESTED,GET /api/payroll/profiles
+POST,/api/payroll/workbench/out-of-cycle/create,payroll_workbench,create_extra_run,payroll,payroll.create_run,tests/test_payroll.py,IMPLEMENTED_TESTED,POST /api/payroll/runs with extra=true
 GET,/api/payroll/workbench/portals/requirements,payroll_run_register,requirements,CLASSIFY,,,NOT_STARTED,
 PUT,/api/payroll/workbench/portals/requirements/{kind},payroll_run_register,save_requirements,CLASSIFY,,,NOT_STARTED,
-GET,/api/payroll/workbench/register/list,payroll_run_register,register,CLASSIFY,,,NOT_STARTED,
-GET,/api/payroll/workbench/runs/list,payroll_workbench,runs,CLASSIFY,,,NOT_STARTED,
-GET,/api/payroll/workbench/{week},payroll_workbench,load,CLASSIFY,,,NOT_STARTED,
-PUT,/api/payroll/workbench/{week},payroll_workbench,save,CLASSIFY,,,NOT_STARTED,
-GET,/api/payroll/workbench/{week}/approved-leave,payroll_workbench,leave_feed,CLASSIFY,,,NOT_STARTED,
+GET,/api/payroll/workbench/register/list,payroll_run_register,register,payroll,payroll.runs,tests/test_payroll.py,IMPLEMENTED_TESTED,GET /api/payroll/runs
+GET,/api/payroll/workbench/runs/list,payroll_workbench,runs,payroll,payroll.runs,tests/test_payroll.py,IMPLEMENTED_TESTED,GET /api/payroll/runs
+GET,/api/payroll/workbench/{week},payroll_workbench,load,payroll,payroll.get_run,tests/test_payroll.py,IMPLEMENTED_TESTED,GET /api/payroll/runs/{run_id}; runs are addressed by id so extra runs are distinct
+PUT,/api/payroll/workbench/{week},payroll_workbench,save,payroll,payroll.save_run,tests/test_payroll.py,IMPLEMENTED_TESTED,PUT /api/payroll/runs/{run_id} with expected revision
+GET,/api/payroll/workbench/{week}/approved-leave,payroll_workbench,leave_feed,payroll,payroll.get_run,tests/test_payroll.py,IMPLEMENTED_TESTED,Approved leave is brought in with the hours
 GET,/api/payroll/workbench/{week}/archive,payroll_workbench,archived_runs,CLASSIFY,,,NOT_STARTED,
 POST,/api/payroll/workbench/{week}/archive,payroll_workbench,archive_run,CLASSIFY,,,NOT_STARTED,
 POST,/api/payroll/workbench/{week}/close-run,payroll_completion,close,CLASSIFY,,,NOT_STARTED,
 POST,/api/payroll/workbench/{week}/complete,payroll_delivery,complete,CLASSIFY,,,NOT_STARTED,
-GET,/api/payroll/workbench/{week}/completion,payroll_completion,status,CLASSIFY,,,NOT_STARTED,
-POST,/api/payroll/workbench/{week}/completion/{kind},payroll_completion,record,CLASSIFY,,,NOT_STARTED,
+GET,/api/payroll/workbench/{week}/completion,payroll_completion,status,payroll,payroll.get_run,tests/test_payroll.py,IMPLEMENTED_TESTED,evidence on the run
+POST,/api/payroll/workbench/{week}/completion/{kind},payroll_completion,record,payroll,payroll.record_evidence,tests/test_payroll.py,IMPLEMENTED_TESTED,By hand only; corrections keep the earlier entry
 GET,/api/payroll/workbench/{week}/delivery/{revision},payroll_delivery,batch_status,CLASSIFY,,,NOT_STARTED,
-POST,/api/payroll/workbench/{week}/delivery/{revision}/{worker_id},payroll_delivery,dispatch,CLASSIFY,,,NOT_STARTED,
-POST,/api/payroll/workbench/{week}/finalize,payroll_lifecycle,finalize,CLASSIFY,,,NOT_STARTED,
-GET,/api/payroll/workbench/{week}/history,payroll_workbench,history,CLASSIFY,,,NOT_STARTED,
-GET,/api/payroll/workbench/{week}/lifecycle,payroll_lifecycle,state,CLASSIFY,,,NOT_STARTED,
-POST,/api/payroll/workbench/{week}/payslips/issue,payroll_payslips,issue,CLASSIFY,,,NOT_STARTED,
-GET,/api/payroll/workbench/{week}/payslips/status,payroll_payslips,status,CLASSIFY,,,NOT_STARTED,
+POST,/api/payroll/workbench/{week}/delivery/{revision}/{worker_id},payroll_delivery,dispatch,payroll,payroll.deliver_payslips,tests/test_payroll.py,IMPLEMENTED_TESTED,Always refused: payslips are never emailed or texted
+POST,/api/payroll/workbench/{week}/finalize,payroll_lifecycle,finalize,payroll,payroll.finalise,tests/test_payroll.py,IMPLEMENTED_TESTED,POST /api/payroll/runs/{run_id}/finalise
+GET,/api/payroll/workbench/{week}/history,payroll_workbench,history,payroll,payroll.get_run,tests/test_payroll.py,IMPLEMENTED_TESTED,history on the run
+GET,/api/payroll/workbench/{week}/lifecycle,payroll_lifecycle,state,payroll,payroll.get_run,tests/test_payroll.py,IMPLEMENTED_TESTED,"status, history and evidence on the run"
+POST,/api/payroll/workbench/{week}/payslips/issue,payroll_payslips,issue,payroll,payroll.release,tests/test_payroll.py,IMPLEMENTED_TESTED,"POST /api/payroll/runs/{run_id}/payslips/release: portal only, nothing sent"
+GET,/api/payroll/workbench/{week}/payslips/status,payroll_payslips,status,payroll,payroll.get_run,tests/test_payroll.py,IMPLEMENTED_TESTED,payslips_released on the run
 GET,/api/payroll/workbench/{week}/payslips/{revision}/{worker_id},payroll_payslips,download,CLASSIFY,,,NOT_STARTED,
-GET,/api/payroll/workbench/{week}/payslips/{revision}/{worker_id}/pdf,payroll_payslips,download_pdf,CLASSIFY,,,NOT_STARTED,
+GET,/api/payroll/workbench/{week}/payslips/{revision}/{worker_id}/pdf,payroll_payslips,download_pdf,payroll,payroll.payslip,tests/test_payroll.py,IMPLEMENTED_TESTED,GET /api/payroll/runs/{run_id}/payslips/{worker_id}/pdf
 POST,/api/payroll/workbench/{week}/portal-receipts/{kind},payroll_run_register,receipt,CLASSIFY,,,NOT_STARTED,
-POST,/api/payroll/workbench/{week}/preview,payroll_workbench,preview,CLASSIFY,,,NOT_STARTED,
-POST,/api/payroll/workbench/{week}/reopen,payroll_lifecycle,reopen,CLASSIFY,,,NOT_STARTED,
-GET,/api/payroll/workbench/{week}/report/{kind},payroll_workbench,export,CLASSIFY,,,NOT_STARTED,
-GET,/api/payroll/workbench/{week}/submissions,payroll_workbench,submitted_hours,CLASSIFY,,,NOT_STARTED,
+POST,/api/payroll/workbench/{week}/preview,payroll_workbench,preview,payroll,payroll.get_run,tests/test_payroll.py,IMPLEMENTED_TESTED,The draft run is always returned worked out
+POST,/api/payroll/workbench/{week}/reopen,payroll_lifecycle,reopen,payroll,payroll.reopen,tests/test_payroll.py,IMPLEMENTED_TESTED,Reason required; refused once a payment is recorded
+GET,/api/payroll/workbench/{week}/report/{kind},payroll_workbench,export,payroll,payroll.register_csv,tests/test_payroll.py,IMPLEMENTED_TESTED,GET /api/payroll/runs/{run_id}/report.csv (register only)
+GET,/api/payroll/workbench/{week}/submissions,payroll_workbench,submitted_hours,payroll,payroll.import_sources,tests/test_payroll.py,IMPLEMENTED_TESTED,POST /api/payroll/runs/{run_id}/import; approved days only (D-080)
 POST,/api/pdf-token,pdf_routes,mint_pdf_token,CLASSIFY,,,NOT_STARTED,
 GET,/api/permission-presets,permission_presets,list_presets,team/resource,presets.list_presets,tests/test_roles_sessions_tenancy.py,IMPLEMENTED_TESTED,
 POST,/api/permission-presets,permission_presets,create_preset,team/resource,presets.create_preset,tests/test_roles_sessions_tenancy.py,IMPLEMENTED_TESTED,
@@ -1115,3 +1115,7 @@ POST,/api/fleet/navixy/sync,fleet,,team/resource,fleet.navixy_sync,tests/test_fl
 PUT,/api/fleet/navixy/tags,fleet,,team/resource,fleet.navixy_tags,tests/test_fleet.py,IMPLEMENTED_TESTED,New: choose which Navixy tags feed the register
 POST,/api/leave,leave,,team/resource,leave.enter_leave,tests/test_leave.py,IMPLEMENTED_TESTED,New: the office enters a request for a worker
 POST,/api/leave/{leave_id}/cancel,leave,,team/resource,leave.cancel,tests/test_leave.py,IMPLEMENTED_TESTED,New: the office cancels a request
+GET,/api/payroll/workbench/status,payroll,,payroll,payroll.status,tests/test_payroll.py,IMPLEMENTED_TESTED,New: what the test workbench is and will not do
+POST,/api/payroll/runs/{run_id}/submit/{kind},payroll,,payroll,payroll.submit_to_provider,tests/test_payroll.py,IMPLEMENTED_TESTED,"New: always refused (STP, super)"
+POST,/api/payroll/reset,payroll,,payroll,payroll.reset,tests/test_payroll.py,IMPLEMENTED_TESTED,New: always refused
+DELETE,/api/payroll/profiles/{worker_id}/bank,payroll,,payroll,payroll.clear_bank,tests/test_payroll.py,IMPLEMENTED_TESTED,New: remove stored bank details

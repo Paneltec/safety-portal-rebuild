@@ -675,6 +675,64 @@ FEATURES.update({
     "PAY-03": ("PARTIAL", "tests/test_payroll_engine.py", "Built so far: the calculation rules as pure Decimal functions. Shift allocation reproduces the pack's six worked examples; the pay calculation reproduces all nine worked rows exactly (rates, casual loading and overrides, leave loading, gross, weekly withholding from the built-in table, manual PAYG, net, qualifying earnings, super, leave accrual and balances, and the review issues that make a row not ready). NOT VERIFIED: the withholding table is the baseline's and has not been checked against the Tax Office schedule. Not built yet: the weekly worksheet, saving with an expected revision, preview, finalise and freeze (stage 7c, next)."),
 })
 
+T_PAY = "tests/test_payroll.py"
+_PW = "/api/payroll/workbench"
+DONE.update({
+    ("GET", "/api/payroll/settings"): ("payroll", "payroll.get_settings", T_PAY, "IMPLEMENTED_TESTED", "Rules, employer, week start; revision and history"),
+    ("PUT", "/api/payroll/settings"): ("payroll", "payroll.put_settings", T_PAY, "IMPLEMENTED_TESTED", "Expected revision; previous version kept"),
+    ("GET", _PW + "/calculation/settings"): ("payroll", "payroll.get_settings", T_PAY, "IMPLEMENTED_TESTED", "GET /api/payroll/settings"),
+    ("PUT", _PW + "/calculation/settings"): ("payroll", "payroll.put_settings", T_PAY, "IMPLEMENTED_TESTED", "PUT /api/payroll/settings"),
+    ("GET", "/api/payroll/profiles"): ("payroll", "payroll.profiles", T_PAY, "IMPLEMENTED_TESTED", ""),
+    ("PUT", "/api/payroll/profiles/{worker_id}"): ("payroll", "payroll.put_profile", T_PAY, "IMPLEMENTED_TESTED", "Audit names fields, never figures"),
+    ("GET", "/api/payroll/employee-records/{worker_id}"): ("payroll", "payroll.profile", T_PAY, "IMPLEMENTED_TESTED", "GET /api/payroll/profiles/{worker_id}"),
+    ("PUT", "/api/payroll/employee-records/{worker_id}"): ("payroll", "payroll.put_profile", T_PAY, "IMPLEMENTED_TESTED", "PUT /api/payroll/profiles/{worker_id}"),
+    ("GET", _PW + "/employees/list"): ("payroll", "payroll.profiles", T_PAY, "IMPLEMENTED_TESTED", "GET /api/payroll/profiles"),
+    ("GET", "/api/payroll/banking/workers/{worker_id}"): ("payroll", "payroll.reveal_bank", T_PAY, "IMPLEMENTED_TESTED", "POST /api/payroll/profiles/{worker_id}/bank/reveal (audited, edit access)"),
+    ("PUT", "/api/payroll/banking/workers/{worker_id}"): ("payroll", "payroll.put_bank", T_PAY, "IMPLEMENTED_TESTED", "PUT /api/payroll/profiles/{worker_id}/bank (encrypted)"),
+    ("POST", "/api/payroll/banking/batch/{week}/download"): ("payroll", "payroll.bank_file", T_PAY, "IMPLEMENTED_TESTED", "Always refused: no bank file in the test workbench (D-081)"),
+    ("GET", _PW + "/runs/list"): ("payroll", "payroll.runs", T_PAY, "IMPLEMENTED_TESTED", "GET /api/payroll/runs"),
+    ("GET", _PW + "/register/list"): ("payroll", "payroll.runs", T_PAY, "IMPLEMENTED_TESTED", "GET /api/payroll/runs"),
+    ("GET", "/api/payroll/periods"): ("payroll", "payroll.runs", T_PAY, "IMPLEMENTED_TESTED", "GET /api/payroll/runs (one lifecycle, D-080)"),
+    ("GET", _PW + "/{week}"): ("payroll", "payroll.get_run", T_PAY, "IMPLEMENTED_TESTED", "GET /api/payroll/runs/{run_id}; runs are addressed by id so extra runs are distinct"),
+    ("PUT", _PW + "/{week}"): ("payroll", "payroll.save_run", T_PAY, "IMPLEMENTED_TESTED", "PUT /api/payroll/runs/{run_id} with expected revision"),
+    ("POST", _PW + "/{week}/preview"): ("payroll", "payroll.get_run", T_PAY, "IMPLEMENTED_TESTED", "The draft run is always returned worked out"),
+    ("GET", _PW + "/{week}/approved-leave"): ("payroll", "payroll.get_run", T_PAY, "IMPLEMENTED_TESTED", "Approved leave is brought in with the hours"),
+    ("GET", _PW + "/{week}/submissions"): ("payroll", "payroll.import_sources", T_PAY, "IMPLEMENTED_TESTED", "POST /api/payroll/runs/{run_id}/import; approved days only (D-080)"),
+    ("POST", _PW + "/{week}/finalize"): ("payroll", "payroll.finalise", T_PAY, "IMPLEMENTED_TESTED", "POST /api/payroll/runs/{run_id}/finalise"),
+    ("POST", _PW + "/{week}/reopen"): ("payroll", "payroll.reopen", T_PAY, "IMPLEMENTED_TESTED", "Reason required; refused once a payment is recorded"),
+    ("POST", "/api/payroll/periods/{period_id}/close"): ("payroll", "payroll.finalise", T_PAY, "IMPLEMENTED_TESTED", "Finalising locks the approved days"),
+    ("POST", "/api/payroll/periods/{period_id}/reopen"): ("payroll", "payroll.reopen", T_PAY, "IMPLEMENTED_TESTED", "Reopening releases them"),
+    ("POST", _PW + "/out-of-cycle/create"): ("payroll", "payroll.create_run", T_PAY, "IMPLEMENTED_TESTED", "POST /api/payroll/runs with extra=true"),
+    ("GET", _PW + "/{week}/history"): ("payroll", "payroll.get_run", T_PAY, "IMPLEMENTED_TESTED", "history on the run"),
+    ("GET", _PW + "/{week}/lifecycle"): ("payroll", "payroll.get_run", T_PAY, "IMPLEMENTED_TESTED", "status, history and evidence on the run"),
+    ("GET", _PW + "/{week}/report/{kind}"): ("payroll", "payroll.register_csv", T_PAY, "IMPLEMENTED_TESTED", "GET /api/payroll/runs/{run_id}/report.csv (register only)"),
+    ("GET", _PW + "/{week}/payslips/{revision}/{worker_id}/pdf"): ("payroll", "payroll.payslip", T_PAY, "IMPLEMENTED_TESTED", "GET /api/payroll/runs/{run_id}/payslips/{worker_id}/pdf"),
+    ("POST", _PW + "/{week}/payslips/issue"): ("payroll", "payroll.release", T_PAY, "IMPLEMENTED_TESTED", "POST /api/payroll/runs/{run_id}/payslips/release: portal only, nothing sent"),
+    ("GET", _PW + "/{week}/payslips/status"): ("payroll", "payroll.get_run", T_PAY, "IMPLEMENTED_TESTED", "payslips_released on the run"),
+    ("POST", _PW + "/{week}/delivery/{revision}/{worker_id}"): ("payroll", "payroll.deliver_payslips", T_PAY, "IMPLEMENTED_TESTED", "Always refused: payslips are never emailed or texted"),
+    ("GET", _PW + "/{week}/completion"): ("payroll", "payroll.get_run", T_PAY, "IMPLEMENTED_TESTED", "evidence on the run"),
+    ("POST", _PW + "/{week}/completion/{kind}"): ("payroll", "payroll.record_evidence", T_PAY, "IMPLEMENTED_TESTED", "By hand only; corrections keep the earlier entry"),
+    ("GET", "/api/payroll/employee-records/configuration/stp-readiness"): ("payroll", "payroll.status", T_PAY, "IMPLEMENTED_TESTED", "GET /api/payroll/workbench/status: says plainly that STP and super are not connected"),
+    ("GET", "/api/me/payroll/payslips"): ("self", "payroll.my_payslips", T_PAY, "IMPLEMENTED_TESTED", "Own, released only"),
+    ("GET", "/api/me/payroll/payslips/{week}/{revision}/pdf"): ("self", "payroll.my_payslip_pdf", T_PAY, "IMPLEMENTED_TESTED", "GET /api/me/payroll/payslips/{run_id}/pdf; anyone else's is 404"),
+})
+NEW_ROWS += [
+    ["GET", "/api/payroll/workbench/status", "payroll", "", "payroll", "payroll.status", T_PAY, "IMPLEMENTED_TESTED", "New: what the test workbench is and will not do"],
+    ["POST", "/api/payroll/runs/{run_id}/submit/{kind}", "payroll", "", "payroll", "payroll.submit_to_provider", T_PAY, "IMPLEMENTED_TESTED", "New: always refused (STP, super)"],
+    ["POST", "/api/payroll/reset", "payroll", "", "payroll", "payroll.reset", T_PAY, "IMPLEMENTED_TESTED", "New: always refused"],
+    ["DELETE", "/api/payroll/profiles/{worker_id}/bank", "payroll", "", "payroll", "payroll.clear_bank", T_PAY, "IMPLEMENTED_TESTED", "New: remove stored bank details"],
+]
+FEATURES.update({
+    "PAY-02": ("PARTIAL", "tests/test_payroll.py; e2e pay step", "Built: per-worker pay settings (rate or salary, employment type, hours, tax scale, reviewed flags, leave weeks and loading, casual rates, opening leave) with revision guard; bank details encrypted, masked, revealed only on request with an audit entry. Outstanding: super fund details, award records, imports of rates and opening balances."),
+    "PAY-03": ("PARTIAL", "tests/test_payroll.py; tests/test_payroll_engine.py; e2e pay step", "Built: weekly worksheet from approved timesheets and approved leave, hand-entered hours and adjustments, review ticks, expected-revision saves, stale detection, preview on every read, finalise that freezes inputs, rules, outputs and a hash. Three of the pack's worked rows are reproduced end to end through the API, all nine by the rules. NOT VERIFIED: the withholding table against the Tax Office schedule. Outstanding: allowance and earning lines on screen (the API accepts them), per-division runs."),
+    "PAY-04": ("PARTIAL", "tests/test_payroll.py; e2e pay step", "Built: finalise, reopen with a reason (refused once a payment is recorded), numbered extra runs that start from the previous closing balances, history with hashes, locking and release of timesheet days and leave. Runs cannot be deleted. Outstanding: archive view, source fingerprints shown on screen."),
+    "PAY-05": ("PARTIAL", "tests/test_payroll.py", "Built: the pay register as CSV for a finalised run. Outstanding: division and super reports, PDF register, reconciliation views."),
+    "PAY-06": ("PARTIAL", "tests/test_payroll.py; e2e pay step", "Built: payslip PDF from the frozen figures, marked as a test document; a worker sees only their own, only after release; no delivery by email or text exists. Outstanding: employer branding on the payslip."),
+    "PAY-07": ("PARTIAL", "tests/test_payroll.py; e2e pay step", "Built: completion evidence recorded by hand with reference, date, actor and run hash; corrections keep the earlier entry. Bank (ABA) file export is deliberately refused in this test workbench. Outstanding: employer bank settings, ABA validation and export."),
+    "PAY-08": ("PARTIAL", "tests/test_payroll.py", "Built: a status route and banner stating that STP, super and bank payment are not connected; the routes that would do them answer with a refusal and an audit entry. Outstanding: nothing is integrated, by design."),
+    "PAY-09": ("PARTIAL", "tests/test_payroll.py; e2e pay step", "Built: pay rules with validation, revision history and stale-save refusal; earning rule definitions through the API. Outstanding: screens for earning rules and work types, award and fund catalogues, payslip branding."),
+})
+
 
 def main() -> None:
     path = HERE / "endpoint_coverage.csv"
