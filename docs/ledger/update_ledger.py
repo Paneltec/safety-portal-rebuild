@@ -808,6 +808,13 @@ FEATURES.update({
 })
 
 
+# ---- Stage 9d/9e: performance check, parity report, guides ----
+FEATURES.update({
+    "HELP-01": ("PARTIAL", "docs/ADMIN_GUIDE.md; docs/WORKER_GUIDE.md; docs/BACKUP_RESTORE.md", "Built: written guides for administrators and workers and a backup runbook, matching the current screens. Not built: an in-app manual, reference images, program schematic, overlays, versioned help."),
+    "DEL-01": ("PARTIAL", "docs/PARITY_REPORT.md; docs/PERFORMANCE.md; docs/openapi.json; e2e/run.sh", "Built: source, migrations, generated API description, provider stand-ins, automated tests, browser walkthrough on a throwaway database, environment template without secrets, Docker files, guides, parity report, performance check, decisions list. Not verified: the Docker deployment has never been run. Not built: a one-command synthetic demo seed outside the test and walkthrough data."),
+})
+
+
 def main() -> None:
     path = HERE / "endpoint_coverage.csv"
     with path.open(encoding="utf-8-sig", newline="") as fh:
