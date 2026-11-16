@@ -40,6 +40,7 @@ export function Shell() {
         { to: "/app/daily-jobs", label: "Daily jobs", show: isAdmin },
         { to: "/app/suppliers", label: can("suppliers", "view") ? "Suppliers" : "My company", show: can("suppliers", "view") || can("contractors", "view") },
         { to: "/app/renewals", label: "Renewals", show: can("renewals", "view") },
+        { to: "/app/fleet", label: "Fleet and equipment", show: can("assets", "view") },
         { to: "/app/sites", label: "Sites", show: can("sites", "view") },
         { to: "/app/visitors", label: "Visitors", show: can("sites_visitors", "view") },
         { to: "/app/documents", label: "Document library", show: can("documents", "view") },
@@ -86,7 +87,7 @@ export function Shell() {
             </div>
           );
         })}
-        <div className="nav-note">Fleet, fuel and pay arrive in later build stages. See Home for progress.</div>
+        <div className="nav-note">Fuel and pay arrive in later build stages. See Home for progress.</div>
       </nav>
       <div className="content">
         <header className="topbar">

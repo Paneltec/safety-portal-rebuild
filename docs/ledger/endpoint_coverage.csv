@@ -71,32 +71,32 @@ GET,/api/ask/suggestions,ask,list_suggestions,CLASSIFY,,,NOT_STARTED,
 POST,/api/ask/suggestions,ask,create_suggestion,CLASSIFY,,,NOT_STARTED,
 DELETE,/api/ask/suggestions/{suggestion_id},ask,delete_suggestion,CLASSIFY,,,NOT_STARTED,
 PATCH,/api/ask/suggestions/{suggestion_id},ask,update_suggestion,CLASSIFY,,,NOT_STARTED,
-GET,/api/assets,assets,list_assets,CLASSIFY,,,NOT_STARTED,
-POST,/api/assets,assets,create_asset,CLASSIFY,,,NOT_STARTED,
-POST,/api/assets/labels/bulk,assets,bulk_labels_pdf,CLASSIFY,,,NOT_STARTED,
+GET,/api/assets,assets,list_assets,team/resource,fleet.list_assets,tests/test_fleet.py,IMPLEMENTED_TESTED,Server-side filters and paging
+POST,/api/assets,assets,create_asset,team/resource,fleet.create_asset,tests/test_fleet.py,IMPLEMENTED_TESTED,
+POST,/api/assets/labels/bulk,assets,bulk_labels_pdf,team/resource,fleet.labels_bulk,tests/test_fleet.py,IMPLEMENTED_TESTED,
 GET,/api/assets/navixy/dashboards/fleet-status,asset_navixy_dashboards,fleet_status,CLASSIFY,,,NOT_STARTED,
 GET,/api/assets/navixy/dashboards/technical,asset_navixy_dashboards,technical,CLASSIFY,,,NOT_STARTED,
 GET,/api/assets/navixy/dashboards/trips,asset_navixy_dashboards,trips,CLASSIFY,,,NOT_STARTED,
 POST,/api/assets/navixy/repair-lifetimes,asset_navixy_sync,http_repair_lifetimes,CLASSIFY,,,NOT_STARTED,
-POST,/api/assets/navixy/sync-counters,asset_navixy_sync,http_sync_now,CLASSIFY,,,NOT_STARTED,
-GET,/api/assets/scan/{scan_token},assets,resolve_scan,CLASSIFY,,,NOT_STARTED,
+POST,/api/assets/navixy/sync-counters,asset_navixy_sync,http_sync_now,team/resource,fleet.navixy_sync,tests/test_fleet.py,IMPLEMENTED_TESTED,Meters arrive with POST /api/fleet/navixy/sync; counter route unverified against real Navixy
+GET,/api/assets/scan/{scan_token},assets,resolve_scan,team/resource,fleet.scan,tests/test_fleet.py,IMPLEMENTED_TESTED,Signed-in people of the same organisation only (D-069)
 GET,/api/assets/service/inbox,asset_service,service_inbox,CLASSIFY,,,NOT_STARTED,
 POST,/api/assets/service/scan-reminders,asset_service,scan_reminders,CLASSIFY,,,NOT_STARTED,
 GET,/api/assets/service/summary,asset_service,service_summary,CLASSIFY,,,NOT_STARTED,
-DELETE,/api/assets/{asset_id},assets,archive_asset,CLASSIFY,,,NOT_STARTED,
-GET,/api/assets/{asset_id},assets,get_asset,CLASSIFY,,,NOT_STARTED,
-PUT,/api/assets/{asset_id},assets,update_asset,CLASSIFY,,,NOT_STARTED,
-GET,/api/assets/{asset_id}/label.pdf,assets,asset_label_pdf,CLASSIFY,,,NOT_STARTED,
-POST,/api/assets/{asset_id}/meter,asset_service,update_meter,CLASSIFY,,,NOT_STARTED,
-POST,/api/assets/{asset_id}/meter-history,asset_meter_history,add_manual_snapshot,CLASSIFY,,,NOT_STARTED,
-GET,/api/assets/{asset_id}/meter-trends,asset_meter_history,meter_trends,CLASSIFY,,,NOT_STARTED,
-POST,/api/assets/{asset_id}/meter/reset,asset_service,meter_reset,CLASSIFY,,,NOT_STARTED,
+DELETE,/api/assets/{asset_id},assets,archive_asset,team/resource,fleet.delete_asset,tests/test_fleet.py,IMPLEMENTED_TESTED,Soft delete; a sync does not bring it back
+GET,/api/assets/{asset_id},assets,get_asset,team/resource,fleet.get_one,tests/test_fleet.py,IMPLEMENTED_TESTED,
+PUT,/api/assets/{asset_id},assets,update_asset,team/resource,fleet.update_asset,tests/test_fleet.py,IMPLEMENTED_TESTED,Meters are changed through the meter routes so history is kept
+GET,/api/assets/{asset_id}/label.pdf,assets,asset_label_pdf,team/resource,fleet.label_pdf,tests/test_fleet.py,IMPLEMENTED_TESTED,
+POST,/api/assets/{asset_id}/meter,asset_service,update_meter,team/resource,fleet.update_meter,tests/test_fleet.py,IMPLEMENTED_TESTED,A lower reading is refused with an explanation
+POST,/api/assets/{asset_id}/meter-history,asset_meter_history,add_manual_snapshot,team/resource,fleet.update_meter,tests/test_fleet.py,IMPLEMENTED_TESTED,POST /api/assets/{asset_id}/meter with a reading_date
+GET,/api/assets/{asset_id}/meter-trends,asset_meter_history,meter_trends,team/resource,fleet.meter_history,tests/test_fleet.py,IMPLEMENTED_TESTED,"GET /api/assets/{asset_id}/meter-history (a list, no chart yet)"
+POST,/api/assets/{asset_id}/meter/reset,asset_service,meter_reset,team/resource,fleet.reset_meter,tests/test_fleet.py,IMPLEMENTED_TESTED,"Admin only, reason kept"
 DELETE,/api/assets/{asset_id}/nfc-pair,assets,nfc_unpair,CLASSIFY,,,NOT_STARTED,
 POST,/api/assets/{asset_id}/nfc-pair,assets,nfc_pair,CLASSIFY,,,NOT_STARTED,
-GET,/api/assets/{asset_id}/photo/{gridfs_id},assets,stream_asset_photo,CLASSIFY,,,NOT_STARTED,
-POST,/api/assets/{asset_id}/photos,assets,upload_asset_photo,CLASSIFY,,,NOT_STARTED,
-DELETE,/api/assets/{asset_id}/photos/{photo_id},assets,delete_asset_photo,CLASSIFY,,,NOT_STARTED,
-GET,/api/assets/{asset_id}/qr.png,assets,asset_qr_png,CLASSIFY,,,NOT_STARTED,
+GET,/api/assets/{asset_id}/photo/{gridfs_id},assets,stream_asset_photo,team/resource,fleet.download_document,tests/test_fleet.py,IMPLEMENTED_TESTED,GET /api/assets/{asset_id}/documents/{doc_id}/download
+POST,/api/assets/{asset_id}/photos,assets,upload_asset_photo,team/resource,fleet.add_document,tests/test_fleet.py,IMPLEMENTED_TESTED,POST /api/assets/{asset_id}/documents with kind=photo
+DELETE,/api/assets/{asset_id}/photos/{photo_id},assets,delete_asset_photo,team/resource,fleet.delete_document,tests/test_fleet.py,IMPLEMENTED_TESTED,DELETE /api/assets/{asset_id}/documents/{doc_id}
+GET,/api/assets/{asset_id}/qr.png,assets,asset_qr_png,team/resource,fleet.qr_png,tests/test_fleet.py,IMPLEMENTED_TESTED,
 GET,/api/assets/{asset_id}/records,asset_service,list_records,CLASSIFY,,,NOT_STARTED,
 POST,/api/assets/{asset_id}/records,asset_service,create_record,CLASSIFY,,,NOT_STARTED,
 DELETE,/api/assets/{asset_id}/records/{rid},asset_service,delete_record,CLASSIFY,,,NOT_STARTED,
@@ -292,22 +292,22 @@ GET,/api/email/outbox/{email_id},email_outbox,get_outbox,team/resource,comms.get
 POST,/api/email/outbox/{email_id}/cancel,email_outbox,cancel_outbox,team/resource,comms.cancel_message,tests/test_comms.py,IMPLEMENTED_TESTED,
 POST,/api/email/outbox/{email_id}/retry,email_outbox,retry_outbox,team/resource,comms.retry_message,tests/test_comms.py,IMPLEMENTED_TESTED,Never re-sends a sent message; no retry without stored text
 POST,/api/email/send,email_outbox,send_email,CLASSIFY,,,NOT_STARTED,
-GET,/api/equipment,equipment_register,list_equipment,CLASSIFY,,,NOT_STARTED,
-POST,/api/equipment,equipment_register,create_equipment,CLASSIFY,,,NOT_STARTED,
-GET,/api/equipment/categories,equipment_register,list_categories,CLASSIFY,,,NOT_STARTED,
-POST,/api/equipment/categories,equipment_register,create_category,CLASSIFY,,,NOT_STARTED,
-DELETE,/api/equipment/categories/{cid},equipment_register,delete_category,CLASSIFY,,,NOT_STARTED,
-PATCH,/api/equipment/categories/{cid},equipment_register,rename_category,CLASSIFY,,,NOT_STARTED,
-GET,/api/equipment/summary,equipment_register,summary,CLASSIFY,,,NOT_STARTED,
-DELETE,/api/equipment/{eid},equipment_register,delete_equipment,CLASSIFY,,,NOT_STARTED,
-GET,/api/equipment/{eid},equipment_register,get_equipment,CLASSIFY,,,NOT_STARTED,
-PATCH,/api/equipment/{eid},equipment_register,update_equipment,CLASSIFY,,,NOT_STARTED,
-POST,/api/equipment/{eid}/certs,equipment_register,upload_cert,CLASSIFY,,,NOT_STARTED,
-DELETE,/api/equipment/{eid}/certs/{cert_id},equipment_register,delete_cert,CLASSIFY,,,NOT_STARTED,
-GET,/api/equipment/{eid}/certs/{cert_id},equipment_register,download_cert,CLASSIFY,,,NOT_STARTED,
-POST,/api/equipment/{eid}/documents,equipment_register,upload_document,CLASSIFY,,,NOT_STARTED,
-DELETE,/api/equipment/{eid}/documents/{doc_id},equipment_register,delete_document,CLASSIFY,,,NOT_STARTED,
-GET,/api/equipment/{eid}/documents/{doc_id},equipment_register,download_document,CLASSIFY,,,NOT_STARTED,
+GET,/api/equipment,equipment_register,list_equipment,team/resource,fleet.list_assets,tests/test_fleet.py,IMPLEMENTED_TESTED,GET /api/assets?kind=equipment (D-068)
+POST,/api/equipment,equipment_register,create_equipment,team/resource,fleet.create_asset,tests/test_fleet.py,IMPLEMENTED_TESTED,POST /api/assets kind=equipment
+GET,/api/equipment/categories,equipment_register,list_categories,team/resource,fleet.list_categories,tests/test_fleet.py,IMPLEMENTED_TESTED,
+POST,/api/equipment/categories,equipment_register,create_category,team/resource,fleet.create_category,tests/test_fleet.py,IMPLEMENTED_TESTED,
+DELETE,/api/equipment/categories/{cid},equipment_register,delete_category,team/resource,fleet.delete_category,tests/test_fleet.py,IMPLEMENTED_TESTED,Refused while it still holds equipment
+PATCH,/api/equipment/categories/{cid},equipment_register,rename_category,team/resource,fleet.rename_category,tests/test_fleet.py,IMPLEMENTED_TESTED,
+GET,/api/equipment/summary,equipment_register,summary,team/resource,fleet.equipment_summary,tests/test_fleet.py,IMPLEMENTED_TESTED,
+DELETE,/api/equipment/{eid},equipment_register,delete_equipment,team/resource,fleet.delete_asset,tests/test_fleet.py,IMPLEMENTED_TESTED,DELETE /api/assets/{asset_id}
+GET,/api/equipment/{eid},equipment_register,get_equipment,team/resource,fleet.get_one,tests/test_fleet.py,IMPLEMENTED_TESTED,GET /api/assets/{asset_id}
+PATCH,/api/equipment/{eid},equipment_register,update_equipment,team/resource,fleet.update_asset,tests/test_fleet.py,IMPLEMENTED_TESTED,PUT /api/assets/{asset_id}
+POST,/api/equipment/{eid}/certs,equipment_register,upload_cert,team/resource,fleet.add_document,tests/test_fleet.py,IMPLEMENTED_TESTED,POST /api/assets/{asset_id}/documents kind=certificate
+DELETE,/api/equipment/{eid}/certs/{cert_id},equipment_register,delete_cert,team/resource,fleet.delete_document,tests/test_fleet.py,IMPLEMENTED_TESTED,Asset document delete
+GET,/api/equipment/{eid}/certs/{cert_id},equipment_register,download_cert,team/resource,fleet.download_document,tests/test_fleet.py,IMPLEMENTED_TESTED,Asset document download
+POST,/api/equipment/{eid}/documents,equipment_register,upload_document,team/resource,fleet.add_document,tests/test_fleet.py,IMPLEMENTED_TESTED,POST /api/assets/{asset_id}/documents
+DELETE,/api/equipment/{eid}/documents/{doc_id},equipment_register,delete_document,team/resource,fleet.delete_document,tests/test_fleet.py,IMPLEMENTED_TESTED,Asset document delete
+GET,/api/equipment/{eid}/documents/{doc_id},equipment_register,download_document,team/resource,fleet.download_document,tests/test_fleet.py,IMPLEMENTED_TESTED,Asset document download
 GET,/api/files/contractor_docs/{name},dashboard,serve_contractor_doc,CLASSIFY,,,NOT_STARTED,
 GET,/api/files/document_library/{folder_id}/{name},dashboard,serve_document_library,CLASSIFY,,,NOT_STARTED,
 GET,/api/files/exports/{name},dashboard,serve_export,CLASSIFY,,,NOT_STARTED,
@@ -328,7 +328,7 @@ GET,/api/fleet/assets/{asset_id}/fuel-summary,fleet_fuel,asset_fuel_summary,CLAS
 GET,/api/fleet/assets/{asset_id}/next-service,fleet,get_next_service,CLASSIFY,,,NOT_STARTED,
 GET,/api/fleet/assets/{asset_id}/service-sheet/{maintenance_id}/pdf,fleet,get_service_sheet_pdf,CLASSIFY,,,NOT_STARTED,
 POST,/api/fleet/assets/{asset_id}/services,fleet,log_service,CLASSIFY,,,NOT_STARTED,
-GET,/api/fleet/categories,fleet,get_categories,CLASSIFY,,,NOT_STARTED,
+GET,/api/fleet/categories,fleet,get_categories,team/resource,fleet.categories,tests/test_fleet.py,IMPLEMENTED_TESTED,GET /api/assets/categories
 GET,/api/fleet/fuel/anomalies,fleet_fuel,list_anomalies,CLASSIFY,,,NOT_STARTED,
 POST,/api/fleet/fuel/anomalies/bulk-attribute,fleet_fuel,bulk_attribute_anomalies,CLASSIFY,,,NOT_STARTED,
 POST,/api/fleet/fuel/anomalies/bulk-dismiss,fleet_fuel,bulk_dismiss_anomalies,CLASSIFY,,,NOT_STARTED,
@@ -366,9 +366,9 @@ POST,/api/fleet/fuel/transactions/{txn_id}/match,fleet_fuel,match_txn,CLASSIFY,,
 GET,/api/fleet/fuel/weekly-diesel,fuel_weekly_prices,get_weekly,CLASSIFY,,,NOT_STARTED,
 PUT,/api/fleet/fuel/weekly-diesel,fuel_weekly_prices,set_weekly,CLASSIFY,,,NOT_STARTED,
 POST,/api/fleet/fuel/weekly-diesel/refresh,fuel_weekly_prices,refresh_weekly,CLASSIFY,,,NOT_STARTED,
-GET,/api/fleet/navixy/tags,fleet_navixy_tags,get_navixy_tags,CLASSIFY,,,NOT_STARTED,
-GET,/api/fleet/register,fleet,get_register,CLASSIFY,,,NOT_STARTED,
-GET,/api/fleet/search,fleet,fleet_search,CLASSIFY,,,NOT_STARTED,
+GET,/api/fleet/navixy/tags,fleet_navixy_tags,get_navixy_tags,team/resource,fleet.navixy_status,tests/test_fleet.py,IMPLEMENTED_TESTED,GET /api/fleet/navixy/status; PUT /api/fleet/navixy/tags chooses them
+GET,/api/fleet/register,fleet,get_register,team/resource,fleet.list_assets,tests/test_fleet.py,IMPLEMENTED_TESTED,GET /api/assets
+GET,/api/fleet/search,fleet,fleet_search,team/resource,fleet.list_assets,tests/test_fleet.py,IMPLEMENTED_TESTED,GET /api/assets?q= (assets only; cross-register search is stage 9)
 GET,/api/fleet/service-schedule-presets,fleet,list_service_schedule_presets,CLASSIFY,,,NOT_STARTED,
 GET,/api/fleet/service-sheet-templates,fleet,list_sheet_templates,CLASSIFY,,,NOT_STARTED,
 GET,/api/fleet/service-status-rollup,fleet,get_service_status_rollup,CLASSIFY,,,NOT_STARTED,
@@ -378,11 +378,11 @@ POST,/api/form-templates/assignments/bulk,asset_service,bulk_save_assignments,te
 PUT,/api/form-templates/{template_id}/applies-to,asset_service,update_applies_to,CLASSIFY,,,NOT_STARTED,
 POST,/api/form-templates/{template_id}/notify-added-workers,asset_service,notify_added_workers,CLASSIFY,,,NOT_STARTED,
 POST,/api/form-templates/{template_id}/preview-recipients,asset_service,preview_recipients,CLASSIFY,,,NOT_STARTED,
-GET,/api/forms/assets/lookup,forms,asset_lookup,CLASSIFY,,,NOT_STARTED,
-GET,/api/forms/assets/picker,forms,asset_picker,CLASSIFY,,,NOT_STARTED,
+GET,/api/forms/assets/lookup,forms,asset_lookup,team/resource,fleet.scan,tests/test_fleet.py,IMPLEMENTED_TESTED,GET /api/assets/scan/{scan_token}
+GET,/api/forms/assets/picker,forms,asset_picker,team/resource,fleet.vehicle_picker,tests/test_fleet.py,IMPLEMENTED_TESTED,GET /api/forms/fleet/vehicles
 GET,/api/forms/cert-kinds,forms,list_cert_kinds,CLASSIFY,,,NOT_STARTED,
-POST,/api/forms/fleet/vehicle-overrides,forms,set_vehicle_override,CLASSIFY,,,NOT_STARTED,
-GET,/api/forms/fleet/vehicles,forms,list_fleet_for_forms,authenticated-own,forms.pick_vehicles,tests/test_forms_api.py; tests/test_forms_engine.py,EXPLICITLY_UNAVAILABLE,Returns available:false until Navixy (stages 5-6); manual entry allowed and labelled
+POST,/api/forms/fleet/vehicle-overrides,forms,set_vehicle_override,team/resource,forms.submit,tests/test_fleet.py,IMPLEMENTED_TESTED,A typed vehicle is stored in the answer with source=manual; no separate route
+GET,/api/forms/fleet/vehicles,forms,list_fleet_for_forms,team/resource,fleet.vehicle_picker,tests/test_fleet.py,IMPLEMENTED_TESTED,"Reads the register, so a Navixy outage does not break forms; typing a vehicle in is always allowed"
 GET,/api/forms/pickers/customers,forms_pickers,customers,CLASSIFY,,,NOT_STARTED,
 GET,/api/forms/pickers/jobs,forms_pickers,jobs,authenticated-own,forms.pick_jobs,tests/test_forms_api.py; tests/test_forms_engine.py,EXPLICITLY_UNAVAILABLE,Returns available:false until daily jobs (stage 4)
 GET,/api/forms/pickers/sites,forms_pickers,sites,authenticated-own,forms.pick_sites,tests/test_forms_api.py; tests/test_forms_engine.py,EXPLICITLY_UNAVAILABLE,Returns available:false until the sites register (stage 4)
@@ -486,10 +486,10 @@ GET,/api/integrations,integrations,list_integrations,team/resource,comms.list_in
 POST,/api/integrations/admin/migrate-integration-secrets,integrations,migrate_integration_secrets,admin-owner,(not carried over),tests/test_comms.py,HISTORICAL_COMPATIBILITY,"A rebuild never stored a secret in plain text, so there is nothing to migrate"
 DELETE,/api/integrations/microsoft365,integrations_m365,m365_disconnect,team/resource,comms.disconnect,tests/test_comms.py,IMPLEMENTED_TESTED,DELETE /api/integrations/{kind} for every provider
 POST,/api/integrations/microsoft365/test-connection,integrations_m365,m365_test,team/resource,comms.test_connection,tests/test_comms.py,IMPLEMENTED_TESTED,Token only; no self-test email is sent (D-057). Mock transport only
-POST,/api/integrations/navixy/get-hash,integrations,navixy_get_hash,team/resource,comms.test_connection,tests/test_comms.py,IMPLEMENTED_TESTED,The test obtains and stores the sign-in key encrypted
-GET,/api/integrations/navixy/tags,integrations,navixy_tags,CLASSIFY,,,NOT_STARTED,
-POST,/api/integrations/navixy/test-connection,integrations,navixy_test,team/resource,comms.test_connection,tests/test_comms.py,IMPLEMENTED_TESTED,POST /v2/user/auth on the configured region. Mock transport only
-GET,/api/integrations/navixy/vehicles,integrations,navixy_vehicles,CLASSIFY,,,NOT_STARTED,
+POST,/api/integrations/navixy/get-hash,integrations,navixy_get_hash,team/resource,navixy._Session,tests/test_fleet.py,IMPLEMENTED_TESTED,The sign-in key is fetched and refreshed by the adapter; never returned to a browser
+GET,/api/integrations/navixy/tags,integrations,navixy_tags,team/resource,fleet.navixy_status,tests/test_fleet.py,IMPLEMENTED_TESTED,GET /api/fleet/navixy/status
+POST,/api/integrations/navixy/test-connection,integrations,navixy_test,team/resource,comms.test_connection,tests/test_comms.py,IMPLEMENTED_TESTED,Mock transport only
+GET,/api/integrations/navixy/vehicles,integrations,navixy_vehicles,team/resource,fleet.navixy_sync,tests/test_fleet.py,IMPLEMENTED_TESTED,POST /api/fleet/navixy/sync (preview) lists the trackers; mock transport only
 GET,/api/integrations/simpro/companies,integrations_simpro,simpro_companies,team/resource,imports.companies,tests/test_imports.py,IMPLEMENTED_TESTED,From the last connection test
 POST,/api/integrations/simpro/connect,integrations_simpro,simpro_connect,team/resource,comms.save_integration,tests/test_imports.py,IMPLEMENTED_TESTED,PUT /api/integrations/simpro
 GET,/api/integrations/simpro/customers,integrations_simpro,simpro_customers,CLASSIFY,,,NOT_STARTED,
@@ -1103,3 +1103,13 @@ GET,/api/integrations/simpro/runs,integrations,,team/resource,imports.runs,tests
 GET,/api/integrations/simpro/review,integrations,,team/resource,imports.review_queue,tests/test_imports.py,IMPLEMENTED_TESTED,New: possible duplicates awaiting a person
 POST,/api/integrations/simpro/review/{item_id}/resolve,integrations,,team/resource,imports.resolve,tests/test_imports.py,IMPLEMENTED_TESTED,"New: link, create or ignore"
 POST,/api/suppliers/documents/scan-reminders,suppliers,,team/resource,suppliers.scan_document_reminders,tests/test_comms.py,IMPLEMENTED_TESTED,New: insurance and licence reminders
+GET,/api/assets/categories,fleet,,team/resource,fleet.categories,tests/test_fleet.py,IMPLEMENTED_TESTED,New path for the filter counts
+POST,/api/assets/{asset_id}/rotate-qr,fleet,,team/resource,fleet.rotate_qr,tests/test_fleet.py,IMPLEMENTED_TESTED,New: retire printed labels
+POST,/api/assets/{asset_id}/meter/dismiss-review,fleet,,team/resource,fleet.dismiss_meter_review,tests/test_fleet.py,IMPLEMENTED_TESTED,New: a lower provider reading was looked at
+GET,/api/assets/{asset_id}/meter-history,fleet,,team/resource,fleet.meter_history,tests/test_fleet.py,IMPLEMENTED_TESTED,New path
+POST,/api/assets/{asset_id}/documents,fleet,,team/resource,fleet.add_document,tests/test_fleet.py,IMPLEMENTED_TESTED,"New: one route for photos, documents and certificates"
+GET,/api/assets/{asset_id}/documents/{doc_id}/download,fleet,,team/resource,fleet.download_document,tests/test_fleet.py,IMPLEMENTED_TESTED,New
+DELETE,/api/assets/{asset_id}/documents/{doc_id},fleet,,team/resource,fleet.delete_document,tests/test_fleet.py,IMPLEMENTED_TESTED,New
+GET,/api/fleet/navixy/status,fleet,,team/resource,fleet.navixy_status,tests/test_fleet.py,IMPLEMENTED_TESTED,"New: connection state, tags, last committed sync"
+POST,/api/fleet/navixy/sync,fleet,,team/resource,fleet.navixy_sync,tests/test_fleet.py,IMPLEMENTED_TESTED,New: preview or bring in the tracker list
+PUT,/api/fleet/navixy/tags,fleet,,team/resource,fleet.navixy_tags,tests/test_fleet.py,IMPLEMENTED_TESTED,New: choose which Navixy tags feed the register

@@ -1,3 +1,4 @@
+import { AssetDetail, AssetScan, Fleet } from "./pages/Fleet";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { useAuth } from "./auth";
 import { Shell } from "./components/Shell";
@@ -74,6 +75,9 @@ export function App() {
         <Route path="daily-jobs" element={<DailyJobs />} />
         <Route path="my-work" element={<MyWork />} />
         <Route path="site-sign-on/:token" element={<StaffSignOn />} />
+        <Route path="fleet" element={<Fleet />} />
+        <Route path="fleet/:assetId" element={<AssetDetail />} />
+        <Route path="scan/asset/:token" element={<AssetScan />} />
         <Route path="documents" element={<Documents />} />
         <Route path="documents/:folderId" element={<Documents />} />
         <Route path="settings/organisation" element={<OrganisationSettings />} />

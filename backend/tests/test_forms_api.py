@@ -212,9 +212,10 @@ def test_pickers_are_scoped_and_honest_about_what_is_not_built(world, client):
     people = client.get(f"{BASE}/pickers/workers?q=alex", headers=worker).json()
     assert people["available"] is True and people["source"] == "workers"
     assert [(p["id"], p["label"]) for p in people["items"]] == [(ours.id, "Alex Rowe")]
-    for path in ("fleet/vehicles",):
-        result = client.get(f"{BASE}/{path}", headers=worker).json()
-        assert result["available"] is False and result["items"] == [] and "built" in result["message"]
+    # The vehicle list is built (stage 6a). With nothing on the register it says so and still allows typing one in.
+    vehicles = client.get(f"{BASE}/fleet/vehicles", headers=worker).json()
+    assert vehicles["available"] is False and vehicles["items"] == [] and vehicles["connection"] == "not_connected"
+    assert "Type the vehicle in" in vehicles["message"] and vehicles["manual_entry_allowed"] is True
     assert client.get(f"{BASE}/pickers/workers").status_code == 401
 
 

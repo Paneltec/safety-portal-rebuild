@@ -318,8 +318,10 @@ def pick_jobs(caller: Caller = Depends(require_permission("forms", "view")), db:
 
 
 @router.get("/fleet/vehicles")
-def pick_vehicles(caller: Caller = Depends(require_permission("forms", "view"))) -> dict[str, Any]:
-    return {**_not_yet("Navixy vehicles", "the Navixy connection (stages 5 and 6)"), "manual_entry_allowed": True}
+def pick_vehicles(caller: Caller = Depends(require_permission("forms", "view")), db: Session = Depends(get_db)) -> dict[str, Any]:
+    """Vehicles and plant for a form's vehicle question. Typing one in by hand is always allowed."""
+    from .fleet import vehicle_picker
+    return vehicle_picker(db, caller.org_id)
 
 
 # ---------- templates ----------

@@ -288,3 +288,43 @@ def site_sign_pdf(*, org_name: str, logo: bytes | None, site_name: str, address:
     c.showPage()
     c.save()
     return buffer.getvalue()
+
+
+def asset_label_pdf(*, org_name: str, labels: list[dict[str, str]]) -> bytes:
+    """Stick-on labels, one per page (100 x 62 mm): a QR code beside the asset's name and registration."""
+    from reportlab.graphics import renderPDF
+    from reportlab.graphics.barcode.qr import QrCodeWidget
+    from reportlab.graphics.shapes import Drawing
+    from reportlab.lib.utils import simpleSplit
+
+    buffer = BytesIO()
+    page = (100 * mm, 62 * mm)
+    c = canvas.Canvas(buffer, pagesize=page)
+    c.setTitle("Asset labels")
+    c.setAuthor(org_name)
+    for label in labels:
+        size = 46 * mm
+        widget = QrCodeWidget(label["url"], barLevel="M")
+        bounds = widget.getBounds()
+        w, h = bounds[2] - bounds[0], bounds[3] - bounds[1]
+        drawing = Drawing(size, size, transform=[size / w, 0, 0, size / h, 0, 0])
+        drawing.add(widget)
+        renderPDF.draw(drawing, c, 4 * mm, 8 * mm)
+        x, y = 54 * mm, 48 * mm
+        c.setFillColor(colors.HexColor("#16222E"))
+        c.setFont("Helvetica-Bold", 13)
+        for line in simpleSplit(label["name"], "Helvetica-Bold", 13, 42 * mm)[:3]:
+            c.drawString(x, y, line)
+            y -= 5.5 * mm
+        if label.get("registration"):
+            c.setFont("Helvetica-Bold", 16)
+            c.drawString(x, y - 2 * mm, label["registration"][:14])
+            y -= 9 * mm
+        c.setFont("Helvetica", 8)
+        c.setFillColor(colors.HexColor("#4A5967"))
+        c.drawString(x, y - 1 * mm, label.get("kind", "")[:28])
+        c.drawString(x, 9 * mm, org_name[:34])
+        c.drawString(4 * mm, 4 * mm, "Scan with the portal to open this asset")
+        c.showPage()
+    c.save()
+    return buffer.getvalue()

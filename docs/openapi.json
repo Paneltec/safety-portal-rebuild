@@ -60,6 +60,516 @@
     "title": "ApplyPresetIn",
     "type": "object"
    },
+   "AssetIn": {
+    "properties": {
+     "assigned_worker_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Assigned Worker Id"
+     },
+     "category_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Category Id"
+     },
+     "company_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Company Id"
+     },
+     "engine_hours": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Engine Hours"
+     },
+     "fuel_type": {
+      "anyOf": [
+       {
+        "maxLength": 20,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Fuel Type"
+     },
+     "kind": {
+      "default": "vehicle",
+      "enum": [
+       "vehicle",
+       "plant",
+       "trailer",
+       "equipment",
+       "other"
+      ],
+      "title": "Kind",
+      "type": "string"
+     },
+     "last_inspection_date": {
+      "anyOf": [
+       {
+        "format": "date",
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Last Inspection Date"
+     },
+     "location_note": {
+      "anyOf": [
+       {
+        "maxLength": 200,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Location Note"
+     },
+     "make": {
+      "anyOf": [
+       {
+        "maxLength": 80,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Make"
+     },
+     "model": {
+      "anyOf": [
+       {
+        "maxLength": 80,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Model"
+     },
+     "name": {
+      "maxLength": 200,
+      "minLength": 1,
+      "title": "Name",
+      "type": "string"
+     },
+     "next_inspection_date": {
+      "anyOf": [
+       {
+        "format": "date",
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Next Inspection Date"
+     },
+     "notes": {
+      "anyOf": [
+       {
+        "maxLength": 4000,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Notes"
+     },
+     "odometer_km": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Odometer Km"
+     },
+     "registration": {
+      "anyOf": [
+       {
+        "maxLength": 40,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Registration"
+     },
+     "serial_number": {
+      "anyOf": [
+       {
+        "maxLength": 80,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Serial Number"
+     },
+     "site_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Site Id"
+     },
+     "status": {
+      "default": "active",
+      "enum": [
+       "active",
+       "out_of_service",
+       "archived"
+      ],
+      "title": "Status",
+      "type": "string"
+     },
+     "sub_type": {
+      "anyOf": [
+       {
+        "maxLength": 80,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Sub Type"
+     },
+     "tank_capacity_l": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Tank Capacity L"
+     },
+     "year": {
+      "anyOf": [
+       {
+        "maximum": 2100.0,
+        "minimum": 1950.0,
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Year"
+     }
+    },
+    "required": [
+     "name"
+    ],
+    "title": "AssetIn",
+    "type": "object"
+   },
+   "AssetPatch": {
+    "properties": {
+     "assigned_worker_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Assigned Worker Id"
+     },
+     "category_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Category Id"
+     },
+     "company_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Company Id"
+     },
+     "engine_hours": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Engine Hours"
+     },
+     "fuel_type": {
+      "anyOf": [
+       {
+        "maxLength": 20,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Fuel Type"
+     },
+     "kind": {
+      "anyOf": [
+       {
+        "enum": [
+         "vehicle",
+         "plant",
+         "trailer",
+         "equipment",
+         "other"
+        ],
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Kind"
+     },
+     "last_inspection_date": {
+      "anyOf": [
+       {
+        "format": "date",
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Last Inspection Date"
+     },
+     "location_note": {
+      "anyOf": [
+       {
+        "maxLength": 200,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Location Note"
+     },
+     "make": {
+      "anyOf": [
+       {
+        "maxLength": 80,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Make"
+     },
+     "model": {
+      "anyOf": [
+       {
+        "maxLength": 80,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Model"
+     },
+     "name": {
+      "anyOf": [
+       {
+        "maxLength": 200,
+        "minLength": 1,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Name"
+     },
+     "next_inspection_date": {
+      "anyOf": [
+       {
+        "format": "date",
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Next Inspection Date"
+     },
+     "notes": {
+      "anyOf": [
+       {
+        "maxLength": 4000,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Notes"
+     },
+     "odometer_km": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Odometer Km"
+     },
+     "registration": {
+      "anyOf": [
+       {
+        "maxLength": 40,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Registration"
+     },
+     "serial_number": {
+      "anyOf": [
+       {
+        "maxLength": 80,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Serial Number"
+     },
+     "site_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Site Id"
+     },
+     "status": {
+      "anyOf": [
+       {
+        "enum": [
+         "active",
+         "out_of_service",
+         "archived"
+        ],
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Status"
+     },
+     "sub_type": {
+      "anyOf": [
+       {
+        "maxLength": 80,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Sub Type"
+     },
+     "tank_capacity_l": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Tank Capacity L"
+     },
+     "year": {
+      "anyOf": [
+       {
+        "maximum": 2100.0,
+        "minimum": 1950.0,
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Year"
+     }
+    },
+    "title": "AssetPatch",
+    "type": "object"
+   },
    "AssignmentsIn": {
     "properties": {
      "rules": {
@@ -75,6 +585,45 @@
      "rules"
     ],
     "title": "AssignmentsIn",
+    "type": "object"
+   },
+   "Body_add_document_api_assets__asset_id__documents_post": {
+    "properties": {
+     "expiry_date": {
+      "default": "",
+      "title": "Expiry Date",
+      "type": "string"
+     },
+     "file": {
+      "contentMediaType": "application/octet-stream",
+      "title": "File",
+      "type": "string"
+     },
+     "issued_date": {
+      "default": "",
+      "title": "Issued Date",
+      "type": "string"
+     },
+     "kind": {
+      "default": "document",
+      "title": "Kind",
+      "type": "string"
+     },
+     "notes": {
+      "default": "",
+      "title": "Notes",
+      "type": "string"
+     },
+     "title": {
+      "default": "",
+      "title": "Title",
+      "type": "string"
+     }
+    },
+    "required": [
+     "file"
+    ],
+    "title": "Body_add_document_api_assets__asset_id__documents_post",
     "type": "object"
    },
    "Body_hazard_upload_file_api_hazards__record_id__files_post": {
@@ -856,6 +1405,21 @@
      }
     },
     "title": "BulkRevokeIn",
+    "type": "object"
+   },
+   "CategoryIn": {
+    "properties": {
+     "name": {
+      "maxLength": 120,
+      "minLength": 1,
+      "title": "Name",
+      "type": "string"
+     }
+    },
+    "required": [
+     "name"
+    ],
+    "title": "CategoryIn",
     "type": "object"
    },
    "CellIn": {
@@ -2070,6 +2634,24 @@
     "title": "KindPatch",
     "type": "object"
    },
+   "LabelsIn": {
+    "properties": {
+     "asset_ids": {
+      "items": {
+       "type": "string"
+      },
+      "maxItems": 200,
+      "minItems": 1,
+      "title": "Asset Ids",
+      "type": "array"
+     }
+    },
+    "required": [
+     "asset_ids"
+    ],
+    "title": "LabelsIn",
+    "type": "object"
+   },
    "LinkUserIn": {
     "properties": {
      "user_id": {
@@ -2234,6 +2816,119 @@
      }
     },
     "title": "MemberPatch",
+    "type": "object"
+   },
+   "MeterIn": {
+    "properties": {
+     "engine_hours": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Engine Hours"
+     },
+     "note": {
+      "anyOf": [
+       {
+        "maxLength": 400,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Note"
+     },
+     "odometer_km": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Odometer Km"
+     },
+     "reading_date": {
+      "anyOf": [
+       {
+        "format": "date",
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Reading Date"
+     }
+    },
+    "title": "MeterIn",
+    "type": "object"
+   },
+   "MeterResetIn": {
+    "properties": {
+     "engine_hours": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Engine Hours"
+     },
+     "note": {
+      "anyOf": [
+       {
+        "maxLength": 400,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Note"
+     },
+     "odometer_km": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Odometer Km"
+     },
+     "reading_date": {
+      "anyOf": [
+       {
+        "format": "date",
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Reading Date"
+     },
+     "reason": {
+      "maxLength": 400,
+      "minLength": 5,
+      "title": "Reason",
+      "type": "string"
+     }
+    },
+    "required": [
+     "reason"
+    ],
+    "title": "MeterResetIn",
     "type": "object"
    },
    "NoteIn": {
@@ -4108,27 +4803,18 @@
     "title": "SupplierPatch",
     "type": "object"
    },
-   "SyncIn": {
+   "TagsIn": {
     "properties": {
-     "dry_run": {
-      "default": true,
-      "title": "Dry Run",
-      "type": "boolean"
-     },
-     "resource": {
-      "enum": [
-       "workers",
-       "sites",
-       "suppliers"
-      ],
-      "title": "Resource",
-      "type": "string"
+     "tag_ids": {
+      "items": {
+       "type": "string"
+      },
+      "maxItems": 200,
+      "title": "Tag Ids",
+      "type": "array"
      }
     },
-    "required": [
-     "resource"
-    ],
-    "title": "SyncIn",
+    "title": "TagsIn",
     "type": "object"
    },
    "TaskIn": {
@@ -5560,6 +6246,40 @@
     "title": "WorkerSignOn",
     "type": "object"
    },
+   "app__routers__fleet__SyncIn": {
+    "properties": {
+     "dry_run": {
+      "default": true,
+      "title": "Dry Run",
+      "type": "boolean"
+     }
+    },
+    "title": "SyncIn",
+    "type": "object"
+   },
+   "app__routers__imports__SyncIn": {
+    "properties": {
+     "dry_run": {
+      "default": true,
+      "title": "Dry Run",
+      "type": "boolean"
+     },
+     "resource": {
+      "enum": [
+       "workers",
+       "sites",
+       "suppliers"
+      ],
+      "title": "Resource",
+      "type": "string"
+     }
+    },
+    "required": [
+     "resource"
+    ],
+    "title": "SyncIn",
+    "type": "object"
+   },
    "app__routers__renewals__ReviewIn": {
     "properties": {
      "decisions": {
@@ -6814,6 +7534,937 @@
     "summary": "Unarchive Visitor",
     "tags": [
      "visitors"
+    ]
+   }
+  },
+  "/api/assets": {
+   "get": {
+    "description": "The register, filtered and paged on the server. Archived assets are left out unless asked for.",
+    "operationId": "list_assets_api_assets_get",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "kind",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Kind"
+      }
+     },
+     {
+      "in": "query",
+      "name": "status",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Status"
+      }
+     },
+     {
+      "in": "query",
+      "name": "q",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Q"
+      }
+     },
+     {
+      "in": "query",
+      "name": "source",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Source"
+      }
+     },
+     {
+      "in": "query",
+      "name": "site_id",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Site Id"
+      }
+     },
+     {
+      "in": "query",
+      "name": "category_id",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Category Id"
+      }
+     },
+     {
+      "in": "query",
+      "name": "tag",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Tag"
+      }
+     },
+     {
+      "in": "query",
+      "name": "page",
+      "required": false,
+      "schema": {
+       "default": 1,
+       "minimum": 1,
+       "title": "Page",
+       "type": "integer"
+      }
+     },
+     {
+      "in": "query",
+      "name": "page_size",
+      "required": false,
+      "schema": {
+       "default": 50,
+       "maximum": 200,
+       "minimum": 1,
+       "title": "Page Size",
+       "type": "integer"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response List Assets Api Assets Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "List Assets",
+    "tags": [
+     "fleet"
+    ]
+   },
+   "post": {
+    "operationId": "create_asset_api_assets_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/AssetIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Create Asset Api Assets Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Create Asset",
+    "tags": [
+     "fleet"
+    ]
+   }
+  },
+  "/api/assets/categories": {
+   "get": {
+    "description": "Counts for the filter: by kind, then by type within the kind.",
+    "operationId": "categories_api_assets_categories_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Categories Api Assets Categories Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Categories",
+    "tags": [
+     "fleet"
+    ]
+   }
+  },
+  "/api/assets/labels/bulk": {
+   "post": {
+    "description": "One PDF with a label per chosen asset. Every asset is checked; an unknown one fails the request.",
+    "operationId": "labels_bulk_api_assets_labels_bulk_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/LabelsIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Labels Bulk",
+    "tags": [
+     "fleet"
+    ]
+   }
+  },
+  "/api/assets/scan/{scan_token}": {
+   "get": {
+    "description": "What a scanned label points at. Signed-in people of the same organisation only; a retired label is gone.",
+    "operationId": "scan_api_assets_scan__scan_token__get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "scan_token",
+      "required": true,
+      "schema": {
+       "title": "Scan Token",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Scan Api Assets Scan  Scan Token  Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Scan",
+    "tags": [
+     "fleet"
+    ]
+   }
+  },
+  "/api/assets/{asset_id}": {
+   "delete": {
+    "description": "Removes the asset from the register. Its history is kept, and a provider sync will not bring it back.",
+    "operationId": "delete_asset_api_assets__asset_id__delete",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "asset_id",
+      "required": true,
+      "schema": {
+       "title": "Asset Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "204": {
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Delete Asset",
+    "tags": [
+     "fleet"
+    ]
+   },
+   "get": {
+    "operationId": "get_one_api_assets__asset_id__get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "asset_id",
+      "required": true,
+      "schema": {
+       "title": "Asset Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Get One Api Assets  Asset Id  Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Get One",
+    "tags": [
+     "fleet"
+    ]
+   },
+   "put": {
+    "operationId": "update_asset_api_assets__asset_id__put",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "asset_id",
+      "required": true,
+      "schema": {
+       "title": "Asset Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/AssetPatch"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Update Asset Api Assets  Asset Id  Put",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Update Asset",
+    "tags": [
+     "fleet"
+    ]
+   }
+  },
+  "/api/assets/{asset_id}/documents": {
+   "post": {
+    "operationId": "add_document_api_assets__asset_id__documents_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "asset_id",
+      "required": true,
+      "schema": {
+       "title": "Asset Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "multipart/form-data": {
+       "schema": {
+        "$ref": "#/components/schemas/Body_add_document_api_assets__asset_id__documents_post"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Add Document Api Assets  Asset Id  Documents Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Add Document",
+    "tags": [
+     "fleet"
+    ]
+   }
+  },
+  "/api/assets/{asset_id}/documents/{doc_id}": {
+   "delete": {
+    "operationId": "delete_document_api_assets__asset_id__documents__doc_id__delete",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "asset_id",
+      "required": true,
+      "schema": {
+       "title": "Asset Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "path",
+      "name": "doc_id",
+      "required": true,
+      "schema": {
+       "title": "Doc Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "204": {
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Delete Document",
+    "tags": [
+     "fleet"
+    ]
+   }
+  },
+  "/api/assets/{asset_id}/documents/{doc_id}/download": {
+   "get": {
+    "operationId": "download_document_api_assets__asset_id__documents__doc_id__download_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "asset_id",
+      "required": true,
+      "schema": {
+       "title": "Asset Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "path",
+      "name": "doc_id",
+      "required": true,
+      "schema": {
+       "title": "Doc Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "inline",
+      "required": false,
+      "schema": {
+       "default": false,
+       "title": "Inline",
+       "type": "boolean"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Download Document",
+    "tags": [
+     "fleet"
+    ]
+   }
+  },
+  "/api/assets/{asset_id}/label.pdf": {
+   "get": {
+    "operationId": "label_pdf_api_assets__asset_id__label_pdf_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "asset_id",
+      "required": true,
+      "schema": {
+       "title": "Asset Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Label Pdf",
+    "tags": [
+     "fleet"
+    ]
+   }
+  },
+  "/api/assets/{asset_id}/meter": {
+   "post": {
+    "operationId": "update_meter_api_assets__asset_id__meter_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "asset_id",
+      "required": true,
+      "schema": {
+       "title": "Asset Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/MeterIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Update Meter Api Assets  Asset Id  Meter Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Update Meter",
+    "tags": [
+     "fleet"
+    ]
+   }
+  },
+  "/api/assets/{asset_id}/meter-history": {
+   "get": {
+    "operationId": "meter_history_api_assets__asset_id__meter_history_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "asset_id",
+      "required": true,
+      "schema": {
+       "title": "Asset Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Meter History Api Assets  Asset Id  Meter History Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Meter History",
+    "tags": [
+     "fleet"
+    ]
+   }
+  },
+  "/api/assets/{asset_id}/meter/dismiss-review": {
+   "post": {
+    "description": "Someone has looked at the lower provider reading and the figure on file stands.",
+    "operationId": "dismiss_meter_review_api_assets__asset_id__meter_dismiss_review_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "asset_id",
+      "required": true,
+      "schema": {
+       "title": "Asset Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Dismiss Meter Review Api Assets  Asset Id  Meter Dismiss Review Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Dismiss Meter Review",
+    "tags": [
+     "fleet"
+    ]
+   }
+  },
+  "/api/assets/{asset_id}/meter/reset": {
+   "post": {
+    "description": "Admin only: set a meter to a lower figure (a replaced meter, a wrong earlier reading). The reason is kept.",
+    "operationId": "reset_meter_api_assets__asset_id__meter_reset_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "asset_id",
+      "required": true,
+      "schema": {
+       "title": "Asset Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/MeterResetIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Reset Meter Api Assets  Asset Id  Meter Reset Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Reset Meter",
+    "tags": [
+     "fleet"
+    ]
+   }
+  },
+  "/api/assets/{asset_id}/qr.png": {
+   "get": {
+    "operationId": "qr_png_api_assets__asset_id__qr_png_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "asset_id",
+      "required": true,
+      "schema": {
+       "title": "Asset Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Qr Png",
+    "tags": [
+     "fleet"
+    ]
+   }
+  },
+  "/api/assets/{asset_id}/rotate-qr": {
+   "post": {
+    "description": "Retire every label printed so far for this asset.",
+    "operationId": "rotate_qr_api_assets__asset_id__rotate_qr_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "asset_id",
+      "required": true,
+      "schema": {
+       "title": "Asset Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Rotate Qr Api Assets  Asset Id  Rotate Qr Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Rotate Qr",
+    "tags": [
+     "fleet"
     ]
    }
   },
@@ -9735,6 +11386,292 @@
     ]
    }
   },
+  "/api/equipment/categories": {
+   "get": {
+    "operationId": "list_categories_api_equipment_categories_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response List Categories Api Equipment Categories Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "List Categories",
+    "tags": [
+     "fleet"
+    ]
+   },
+   "post": {
+    "operationId": "create_category_api_equipment_categories_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/CategoryIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Create Category Api Equipment Categories Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Create Category",
+    "tags": [
+     "fleet"
+    ]
+   }
+  },
+  "/api/equipment/categories/{cid}": {
+   "delete": {
+    "description": "A category still holding equipment cannot be removed: move the equipment first.",
+    "operationId": "delete_category_api_equipment_categories__cid__delete",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "cid",
+      "required": true,
+      "schema": {
+       "title": "Cid",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "204": {
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Delete Category",
+    "tags": [
+     "fleet"
+    ]
+   },
+   "patch": {
+    "operationId": "rename_category_api_equipment_categories__cid__patch",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "cid",
+      "required": true,
+      "schema": {
+       "title": "Cid",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/CategoryIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Rename Category Api Equipment Categories  Cid  Patch",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Rename Category",
+    "tags": [
+     "fleet"
+    ]
+   }
+  },
+  "/api/equipment/summary": {
+   "get": {
+    "operationId": "equipment_summary_api_equipment_summary_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Equipment Summary Api Equipment Summary Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Equipment Summary",
+    "tags": [
+     "fleet"
+    ]
+   }
+  },
+  "/api/fleet/navixy/status": {
+   "get": {
+    "operationId": "navixy_status_api_fleet_navixy_status_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Navixy Status Api Fleet Navixy Status Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Navixy Status",
+    "tags": [
+     "fleet"
+    ]
+   }
+  },
+  "/api/fleet/navixy/sync": {
+   "post": {
+    "description": "Preview (the default) or bring the Navixy tracker list into the register.",
+    "operationId": "navixy_sync_api_fleet_navixy_sync_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/app__routers__fleet__SyncIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Navixy Sync Api Fleet Navixy Sync Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Navixy Sync",
+    "tags": [
+     "fleet"
+    ]
+   }
+  },
+  "/api/fleet/navixy/tags": {
+   "put": {
+    "description": "Choose which Navixy tags feed the register. Empty means every tracker.",
+    "operationId": "navixy_tags_api_fleet_navixy_tags_put",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/TagsIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Navixy Tags Api Fleet Navixy Tags Put",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Navixy Tags",
+    "tags": [
+     "fleet"
+    ]
+   }
+  },
   "/api/forms/assignments/effective": {
    "get": {
     "description": "Which published forms a person sees, and why. Used to preview a change before relying on it.",
@@ -9806,6 +11743,7 @@
   },
   "/api/forms/fleet/vehicles": {
    "get": {
+    "description": "Vehicles and plant for a form's vehicle question. Typing one in by hand is always allowed.",
     "operationId": "pick_vehicles_api_forms_fleet_vehicles_get",
     "responses": {
      "200": {
@@ -14399,7 +16337,7 @@
      "content": {
       "application/json": {
        "schema": {
-        "$ref": "#/components/schemas/SyncIn"
+        "$ref": "#/components/schemas/app__routers__imports__SyncIn"
        }
       }
      },

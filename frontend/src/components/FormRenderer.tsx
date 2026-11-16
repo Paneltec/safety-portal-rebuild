@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { api, formatSize, type FieldDef, type SubmissionFile } from "../api";
 import { Chip, Icon, Notice, errorMessage } from "./ui";
+import { useLoad } from "../hooks";
+
+const pickerStyle = { minHeight: 44, padding: "0 10px", border: "1px solid var(--control)", borderRadius: 6, font: "inherit", width: "100%" } as const;
 
 /**
  * Renders a form from a schema snapshot. Used by the office app and the phone app,
@@ -98,7 +101,7 @@ function Display({ field, value, files = [], onOpenFile }: Props & { field: Fiel
     }
     case "navixy_vehicle": {
       const v = value as { label: string; source: string };
-      return <span>{v.label} <span className="muted small">({v.source === "navixy" ? "from Navixy" : "entered by hand"})</span></span>;
+      return <span>{v.label} <span className="muted small">({v.source === "navixy" ? "from Navixy" : v.source === "register" ? "from the fleet register" : v.source === "simulator" ? "simulator, not real" : "entered by hand"})</span></span>;
     }
     case "worker_picker":
       return <span>{(Array.isArray(value) ? (value as Ref[]) : [value as Ref]).map((r) => r.label).join(", ")}</span>;
@@ -246,13 +249,7 @@ function Input(props: Props & { field: FieldDef; value: unknown }) {
     case "gps":
       return <GpsInput value={value as Record<string, unknown> | undefined} set={set} />;
     case "navixy_vehicle":
-      return (
-        <div className="stack" style={{ gap: 6 }}>
-          <input {...labelled} style={inputStyle} placeholder="Vehicle or plant, for example PT-031 Tipper" value={(value as { label?: string })?.label ?? ""}
-            onChange={(e) => set(e.target.value ? { label: e.target.value, source: "manual" } : undefined)} />
-          <span className="small muted">Entered by hand. The Navixy vehicle list is not connected yet.</span>
-        </div>
-      );
+      return <VehiclePicker value={value} set={set} labelled={labelled} />;
     case "worker_picker":
       return <WorkerPicker field={field} value={value} set={set} />;
     case "site_picker":
@@ -260,7 +257,7 @@ function Input(props: Props & { field: FieldDef; value: unknown }) {
     case "job_picker":
       return <JobPicker field={field} value={value} set={set} />;
     case "asset_qr":
-      return <Notice tone="info">Assets cannot be chosen yet. This part of the portal is built in a later stage.</Notice>;
+      return <VehiclePicker value={value} set={set} labelled={labelled} asset />;
     case "corrective_actions":
       return <ActionsInput value={(value as Action[]) ?? []} set={set} />;
     case "table":
@@ -548,6 +545,52 @@ function JobPicker({ field, value, set }: { field: FieldDef; value: unknown; set
       <option value="">Choose…</option>
       {jobs.map((j) => <option key={j.id} value={j.id}>{j.label}</option>)}
     </select>
+  );
+}
+
+interface VehicleOption { id: string; label: string; source: string; simulated: boolean; tracker_id: string | null }
+
+/** Vehicles and plant from the fleet register. Typing one in is always possible, and is recorded as typed. */
+function VehiclePicker({ value, set, labelled, asset }: { value: unknown; set: (v: unknown) => void; labelled: Record<string, unknown>; asset?: boolean }) {
+  const list = useLoad(() => api<{ items: VehicleOption[]; message: string | null; connection: string }>("/api/forms/fleet/vehicles"), []);
+  const v = (value ?? {}) as { label?: string; asset_id?: string; source?: string };
+  const [typing, setTyping] = useState(Boolean(v.label) && !v.asset_id);
+  const items = list.data?.items ?? [];
+  const pick = (id: string) => {
+    const hit = items.find((x) => x.id === id);
+    if (!hit) return set(undefined);
+    set(asset ? { asset_id: hit.id, label: hit.label } : { label: hit.label, asset_id: hit.id, ...(hit.tracker_id ? { tracker_id: hit.tracker_id } : {}), source: hit.source === "manual" ? "register" : hit.source });
+  };
+  if (asset) {
+    return (
+      <div className="stack" style={{ gap: 6 }}>
+        <select {...labelled} style={pickerStyle} value={v.asset_id ?? ""} onChange={(e) => pick(e.target.value)}>
+          <option value="">Choose from the fleet register</option>
+          {items.map((x) => <option key={x.id} value={x.id}>{x.label}{x.simulated ? " (simulator)" : ""}</option>)}
+        </select>
+        {list.data && items.length === 0 && <span className="small muted">Nothing is on the fleet register yet.</span>}
+      </div>
+    );
+  }
+  const manual = typing || (list.data !== null && list.data !== undefined && items.length === 0) || Boolean(list.error);
+  return (
+    <div className="stack" style={{ gap: 6 }}>
+      {manual ? (
+        <input {...labelled} style={pickerStyle} placeholder="Vehicle or plant, for example PT-031 Tipper" value={v.asset_id ? "" : v.label ?? ""}
+          onChange={(e) => set(e.target.value ? { label: e.target.value, source: "manual" } : undefined)} />
+      ) : (
+        <select {...labelled} style={pickerStyle} value={v.asset_id ?? ""} onChange={(e) => pick(e.target.value)}>
+          <option value="">Choose a vehicle</option>
+          {items.map((x) => <option key={x.id} value={x.id}>{x.label}{x.simulated ? " (simulator)" : ""}</option>)}
+        </select>
+      )}
+      {items.length > 0 ? (
+        <button type="button" className="btn small" style={{ alignSelf: "flex-start" }} onClick={() => { setTyping(!manual); set(undefined); }}>{manual ? "Choose from the list instead" : "Not in the list? Type it in"}</button>
+      ) : (
+        <span className="small muted">{list.error ? "The vehicle list could not be loaded. Type the vehicle in instead." : list.data?.message ?? "Loading the vehicle list…"}</span>
+      )}
+      {manual && items.length > 0 && <span className="small muted">Entered by hand. It will be recorded as typed, not as a vehicle from the register.</span>}
+    </div>
   );
 }
 

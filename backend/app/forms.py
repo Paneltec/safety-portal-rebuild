@@ -18,7 +18,7 @@ attachment, photo  list of file ids already uploaded to this submission for this
 signature          {"file_id": id, "signed_name": string}
 gps                {"lat": number, "lng": number, "accuracy_m": number?, "captured_at": iso?}
                    or {"unavailable_reason": string}
-navixy_vehicle     {"label": string, "tracker_id": string?, "asset_id": string?, "source": "navixy"|"manual"}
+navixy_vehicle     {"label": string, "tracker_id": string?, "asset_id": string?, "source": "navixy"|"register"|"simulator"|"manual"}
 worker_picker      {"id": string, "label": string}, or a list when config.multiple is true
 job_picker         {"id": string, "label": string}
 site_picker        {"id": string, "label": string}
@@ -291,13 +291,13 @@ def _check(field: dict[str, Any], value: Any, file_ids: set[str]) -> Any:
     if ftype == "navixy_vehicle":
         if not isinstance(value, dict) or not _text(value.get("label"), 300):
             raise ValueError("needs a vehicle")
-        source = value.get("source") if value.get("source") in ("navixy", "manual") else "manual"
+        source = value.get("source") if value.get("source") in ("navixy", "register", "simulator", "manual") else "manual"
         out = {"label": _text(value["label"], 300), "source": source}
         for key in ("tracker_id", "asset_id"):
             if value.get(key) not in (None, ""):
                 out[key] = str(value[key])[:100]
-        if source == "navixy" and "tracker_id" not in out and "asset_id" not in out:
-            raise ValueError("a Navixy vehicle needs its tracker or asset reference")
+        if source != "manual" and "tracker_id" not in out and "asset_id" not in out:
+            raise ValueError("a vehicle chosen from the list needs its reference")
         return out
     if ftype in ("worker_picker", "job_picker", "site_picker"):
         if ftype == "worker_picker" and config.get("multiple"):

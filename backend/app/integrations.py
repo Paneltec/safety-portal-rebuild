@@ -67,7 +67,8 @@ CATALOGUE: dict[str, Kind] = {k.key: k for k in [
         Field("account_id", "Account number (optional)"),
         Field("poll_seconds", "Seconds between location updates", "number", default=30, minimum=10, maximum=600),
         Field("auto_poll", "Update locations automatically", "bool", default=False),
-    ], notes=["A sign-in key issued by Navixy is stored encrypted and refreshed when it expires."]),
+    ], notes=["A sign-in key issued by Navixy is stored encrypted and refreshed when it expires.",
+              "The portal only reads from Navixy. It cannot control a vehicle."]),
     Kind("smartfill", "SmartFill (FMT Data)", "Fuel transactions and tank levels.", [
         Field("api_url", "API address", "url", default="https://fmtdata.com/API/api.php"),
         Field("api_key", "Client reference", required=True, help="Issued by FMT Data. This is not your SmartFill website login."),

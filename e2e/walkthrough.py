@@ -842,7 +842,102 @@ def connections_and_outbox(browser) -> None:
     print("connections and outbox walkthrough: ok")
 
 
-STEPS = [stage1_and_2a, documents, forms, safety_registers, workers, sites_and_visitors, suppliers_and_renewals, inductions_and_jobs, connections_and_outbox]
+def fleet_and_equipment(browser) -> None:
+    pg = sign_in(browser)
+    errors: list[str] = []
+    pg.on("pageerror", lambda e: errors.append(str(e)))
+
+    # Before Navixy is set up the page says so, and vehicles can still be added by hand.
+    pg.get_by_role("link", name="Fleet and equipment").click()
+    panel = pg.get_by_role("region", name="Navixy vehicle list")
+    expect(panel.get_by_text("Not connected")).to_be_visible()
+    expect(panel.get_by_text("Vehicles can still be added by hand")).to_be_visible()
+
+    # Switch the Navixy simulator on; it is never shown as a live connection.
+    pg.get_by_role("link", name="Connections").click()
+    navixy = pg.locator("section", has=pg.get_by_role("heading", name="Navixy", exact=True))
+    navixy.get_by_role("button", name="Set up").click()
+    navixy.get_by_label("This connection is").select_option("simulator")
+    navixy.get_by_role("button", name="Save").click()
+    expect(navixy.get_by_text("Saved.", exact=True)).to_be_visible()
+    assert navixy.get_by_text("Connected", exact=True).count() == 0
+
+    # Preview first (nothing saved), then bring the trackers in. They are labelled as simulator.
+    pg.get_by_role("link", name="Fleet and equipment").click()
+    expect(panel.get_by_text("Simulator, not real")).to_be_visible()
+    expect(pg.get_by_text("No vehicles or plant yet.")).to_be_visible()
+    panel.get_by_role("button", name="Preview").click()
+    expect(panel.get_by_text("Preview only, nothing has been saved.")).to_be_visible()
+    expect(panel.get_by_text("5 trackers listed: 5 new, 0 changed, 0 unchanged")).to_be_visible()
+    expect(pg.get_by_text("No vehicles or plant yet.")).to_be_visible()
+    panel.get_by_role("button", name="Bring in now").click()
+    expect(panel.get_by_text("Done. 5 trackers listed: 5 new")).to_be_visible()
+    row = pg.get_by_role("row").filter(has_text="Sim Excavator 03")
+    expect(row.get_by_text("Simulator, not real")).to_be_visible()
+    expect(row.get_by_text("Not recorded")).to_be_visible()  # no odometer: unknown, not zero
+    expect(row.get_by_text("2,840.5 h")).to_be_visible()
+    shot(pg, "28-fleet", full=True)
+
+    # A trailer added by hand; its meter keeps a history and will not go backwards quietly.
+    pg.get_by_role("button", name="Add vehicle or plant").click()
+    dialog = pg.get_by_role("dialog")
+    dialog.get_by_label("Name").fill("Float trailer")
+    dialog.get_by_label("Type").select_option("trailer")
+    dialog.get_by_label("Registration").fill("tr1234")
+    dialog.get_by_label("Odometer now (km)").fill("1500")
+    dialog.get_by_role("button", name="Add", exact=True).click()
+    expect(pg.get_by_role("heading", name="Float trailer")).to_be_visible()
+    expect(pg.get_by_text("TR1234").first).to_be_visible()
+    expect(pg.get_by_text("1,500 km")).to_be_visible()
+    expect(pg.get_by_text("Not recorded")).to_have_count(2)  # hour meter and tank size: unknown, not zero
+    pg.get_by_role("button", name="Update meter").click()
+    dialog = pg.get_by_role("dialog")
+    dialog.get_by_label("Odometer (km)").fill("900")
+    dialog.get_by_role("button", name="Save reading").click()
+    expect(dialog.get_by_text("This reading is lower than the last one")).to_be_visible()
+    dialog.get_by_label("Odometer (km)").fill("1620")
+    dialog.get_by_role("button", name="Save reading").click()
+    expect(pg.get_by_text("1,620 km")).to_be_visible()
+    pg.get_by_role("button", name="Show reading history").click()
+    expect(pg.get_by_role("cell", name="Entered by hand, Stephen").first).to_be_visible()
+
+    # A certificate that has lapsed is flagged; the QR label opens.
+    pg.get_by_role("button", name="Add document").click()
+    dialog = pg.get_by_role("dialog")
+    dialog.get_by_label("File").set_input_files({"name": "rego.pdf", "mimeType": "application/pdf", "buffer": b"%PDF-1.4 registration"})
+    dialog.get_by_label("Title (optional)").fill("Registration papers")
+    dialog.get_by_label("Kind").select_option("certificate")
+    dialog.get_by_label("Expires (optional)").fill("2020-01-01")
+    dialog.get_by_role("button", name="Add", exact=True).click()
+    doc = pg.get_by_role("row").filter(has_text="Registration papers")
+    expect(doc.get_by_text("Expired")).to_be_visible()
+    pg.get_by_role("button", name="QR label").click()
+    expect(pg.get_by_role("img", name="QR code for Float trailer")).to_be_visible()
+    shot(pg, "29-asset-label")
+    pg.keyboard.press("Escape")
+
+    # Equipment has its own tab and categories.
+    pg.get_by_role("link", name="Fleet and equipment").first.click()
+    pg.get_by_role("tab", name="Equipment").click()
+    expect(pg.get_by_text("No equipment yet.")).to_be_visible()
+    pg.get_by_role("button", name="Add equipment").click()
+    dialog = pg.get_by_role("dialog")
+    dialog.get_by_label("Name").fill("Gas monitor 3")
+    dialog.get_by_label("Category").select_option(label="Electrical test equipment")
+    dialog.get_by_label("Next inspection due").fill("2020-06-01")
+    dialog.get_by_role("button", name="Add", exact=True).click()
+    expect(pg.get_by_role("heading", name="Gas monitor 3")).to_be_visible()
+    expect(pg.get_by_text("Overdue")).to_be_visible()
+    pg.get_by_role("link", name="Fleet and equipment").first.click()
+    pg.get_by_role("tab", name="Equipment").click()
+    expect(pg.get_by_role("row").filter(has_text="Gas monitor 3").get_by_text("Electrical test equipment")).to_be_visible()
+    shot(pg, "30-equipment", full=True)
+    assert not errors, errors
+    pg.context.close()
+    print("fleet and equipment walkthrough: ok")
+
+
+STEPS = [stage1_and_2a, documents, forms, safety_registers, workers, sites_and_visitors, suppliers_and_renewals, inductions_and_jobs, connections_and_outbox, fleet_and_equipment]
 
 if __name__ == "__main__":
     with sync_playwright() as p:

@@ -1017,3 +1017,110 @@ class ImportReviewItem(Base):
     resolved_by: Mapped[str | None] = mapped_column(String(36))
     resolved_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+# ---------- stage 6: fleet, equipment, service and fuel ----------
+
+class EquipmentCategory(Base):
+    """A named group of non-vehicle equipment (ladders, lifting gear, test instruments)."""
+
+    __tablename__ = "equipment_categories"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    org_id: Mapped[str] = mapped_column(ForeignKey("organisations.id"), index=True)
+    name: Mapped[str] = mapped_column(String(120))
+    seeded: Mapped[bool] = mapped_column(Boolean, default=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    deleted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
+class Asset(Base):
+    """A vehicle, an item of plant, a trailer or a piece of equipment.
+
+    A tracker from Navixy is matched on (source_system, source_id) and never on its label. Distance
+    (odometer_km) and running time (engine_hours) are separate measurements and are never mixed.
+    """
+
+    __tablename__ = "assets"
+    __table_args__ = (
+        UniqueConstraint("org_id", "source_system", "source_id", name="uq_assets_source"),
+        UniqueConstraint("scan_token", name="uq_assets_scan_token"),
+    )
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    org_id: Mapped[str] = mapped_column(ForeignKey("organisations.id"), index=True)
+    kind: Mapped[str] = mapped_column(String(20), default="vehicle")  # vehicle | plant | trailer | equipment | other
+    sub_type: Mapped[str | None] = mapped_column(String(80))
+    category_id: Mapped[str | None] = mapped_column(ForeignKey("equipment_categories.id"))
+    name: Mapped[str] = mapped_column(String(200))
+    registration: Mapped[str | None] = mapped_column(String(40))
+    serial_number: Mapped[str | None] = mapped_column(String(80))
+    make: Mapped[str | None] = mapped_column(String(80))
+    model: Mapped[str | None] = mapped_column(String(80))
+    year: Mapped[int | None] = mapped_column(Integer)
+    company_id: Mapped[str | None] = mapped_column(ForeignKey("companies.id"))
+    site_id: Mapped[str | None] = mapped_column(ForeignKey("sites.id"))
+    assigned_worker_id: Mapped[str | None] = mapped_column(ForeignKey("workers.id"))
+    location_note: Mapped[str | None] = mapped_column(String(200))
+    status: Mapped[str] = mapped_column(String(20), default="active")  # active | out_of_service | archived
+    fuel_type: Mapped[str | None] = mapped_column(String(20))
+    tank_capacity_l: Mapped[float | None] = mapped_column(Float)
+    odometer_km: Mapped[float | None] = mapped_column(Float)
+    engine_hours: Mapped[float | None] = mapped_column(Float)
+    meter_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    # A provider reading lower than the one on file. It is shown for a person to look at, never applied silently.
+    meter_review: Mapped[dict[str, Any] | None] = mapped_column(JSONB)
+    last_inspection_date: Mapped[date | None] = mapped_column(Date)
+    next_inspection_date: Mapped[date | None] = mapped_column(Date)
+    source_system: Mapped[str | None] = mapped_column(String(20))  # navixy | simulator | None (added by hand)
+    source_id: Mapped[str | None] = mapped_column(String(80))
+    source_data: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict, server_default="{}")
+    source_groups: Mapped[list[str]] = mapped_column(JSONB, default=list, server_default="[]")
+    source_missing: Mapped[bool] = mapped_column(Boolean, default=False, server_default="false")
+    locally_edited: Mapped[list[str]] = mapped_column(JSONB, default=list, server_default="[]")
+    tracker_state: Mapped[dict[str, Any] | None] = mapped_column(JSONB)
+    scan_token: Mapped[str] = mapped_column(String(64))
+    notes: Mapped[str | None] = mapped_column(Text)
+    photo_file_id: Mapped[str | None] = mapped_column(String(36))
+    created_by: Mapped[str | None] = mapped_column(String(36))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+    deleted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
+class AssetDocument(Base):
+    """A file kept with an asset: a photo, a manual, a test or calibration certificate."""
+
+    __tablename__ = "asset_documents"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    org_id: Mapped[str] = mapped_column(ForeignKey("organisations.id"), index=True)
+    asset_id: Mapped[str] = mapped_column(ForeignKey("assets.id"), index=True)
+    kind: Mapped[str] = mapped_column(String(20), default="document")  # document | certificate | photo
+    title: Mapped[str] = mapped_column(String(200))
+    file_id: Mapped[str] = mapped_column(ForeignKey("stored_files.id"))
+    issued_date: Mapped[date | None] = mapped_column(Date)
+    expiry_date: Mapped[date | None] = mapped_column(Date)
+    notes: Mapped[str | None] = mapped_column(Text)
+    uploaded_by: Mapped[str | None] = mapped_column(String(36))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    deleted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
+class AssetMeterReading(Base):
+    """One recorded odometer and/or hour-meter reading. The trail behind the figures on the asset."""
+
+    __tablename__ = "asset_meter_readings"
+    __table_args__ = (Index("ix_asset_meter_readings_asset_date", "asset_id", "reading_date"),)
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    org_id: Mapped[str] = mapped_column(ForeignKey("organisations.id"), index=True)
+    asset_id: Mapped[str] = mapped_column(ForeignKey("assets.id"))
+    reading_date: Mapped[date] = mapped_column(Date)
+    odometer_km: Mapped[float | None] = mapped_column(Float)
+    engine_hours: Mapped[float | None] = mapped_column(Float)
+    source: Mapped[str] = mapped_column(String(20))  # manual | navixy | simulator | service | fuel | reset
+    applied: Mapped[bool] = mapped_column(Boolean, default=True)  # False: kept as evidence but not used as the current reading
+    note: Mapped[str | None] = mapped_column(String(400))
+    recorded_by: Mapped[str | None] = mapped_column(String(36))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)

@@ -482,6 +482,73 @@ FEATURES.update({
     "WORK-01": ("PARTIAL", "tests/test_workers.py; tests/test_imports.py; e2e workers step", "Built: roster (active/inactive/archived), details, photo, login link and provisioning, self-service edits, change history, duplicate warning, Simpro import by source key with review queue (unverified against a real Simpro). Outstanding: ID card/QR, mobile PIN, worker documents from Simpro."),
 })
 
+T_FLEET = "tests/test_fleet.py"
+_A = "team/resource"
+DONE.update({
+    ("GET", "/api/assets"): (_A, "fleet.list_assets", T_FLEET, "IMPLEMENTED_TESTED", "Server-side filters and paging"),
+    ("POST", "/api/assets"): (_A, "fleet.create_asset", T_FLEET, "IMPLEMENTED_TESTED", ""),
+    ("GET", "/api/assets/{asset_id}"): (_A, "fleet.get_one", T_FLEET, "IMPLEMENTED_TESTED", ""),
+    ("PUT", "/api/assets/{asset_id}"): (_A, "fleet.update_asset", T_FLEET, "IMPLEMENTED_TESTED", "Meters are changed through the meter routes so history is kept"),
+    ("DELETE", "/api/assets/{asset_id}"): (_A, "fleet.delete_asset", T_FLEET, "IMPLEMENTED_TESTED", "Soft delete; a sync does not bring it back"),
+    ("GET", "/api/assets/{asset_id}/qr.png"): (_A, "fleet.qr_png", T_FLEET, "IMPLEMENTED_TESTED", ""),
+    ("GET", "/api/assets/{asset_id}/label.pdf"): (_A, "fleet.label_pdf", T_FLEET, "IMPLEMENTED_TESTED", ""),
+    ("POST", "/api/assets/labels/bulk"): (_A, "fleet.labels_bulk", T_FLEET, "IMPLEMENTED_TESTED", ""),
+    ("GET", "/api/assets/scan/{scan_token}"): (_A, "fleet.scan", T_FLEET, "IMPLEMENTED_TESTED", "Signed-in people of the same organisation only (D-069)"),
+    ("GET", "/api/forms/assets/lookup"): (_A, "fleet.scan", T_FLEET, "IMPLEMENTED_TESTED", "GET /api/assets/scan/{scan_token}"),
+    ("GET", "/api/forms/assets/picker"): (_A, "fleet.vehicle_picker", T_FLEET, "IMPLEMENTED_TESTED", "GET /api/forms/fleet/vehicles"),
+    ("POST", "/api/assets/{asset_id}/meter"): (_A, "fleet.update_meter", T_FLEET, "IMPLEMENTED_TESTED", "A lower reading is refused with an explanation"),
+    ("POST", "/api/assets/{asset_id}/meter/reset"): (_A, "fleet.reset_meter", T_FLEET, "IMPLEMENTED_TESTED", "Admin only, reason kept"),
+    ("POST", "/api/assets/{asset_id}/meter-history"): (_A, "fleet.update_meter", T_FLEET, "IMPLEMENTED_TESTED", "POST /api/assets/{asset_id}/meter with a reading_date"),
+    ("GET", "/api/assets/{asset_id}/meter-trends"): (_A, "fleet.meter_history", T_FLEET, "IMPLEMENTED_TESTED", "GET /api/assets/{asset_id}/meter-history (a list, no chart yet)"),
+    ("POST", "/api/assets/{asset_id}/photos"): (_A, "fleet.add_document", T_FLEET, "IMPLEMENTED_TESTED", "POST /api/assets/{asset_id}/documents with kind=photo"),
+    ("DELETE", "/api/assets/{asset_id}/photos/{photo_id}"): (_A, "fleet.delete_document", T_FLEET, "IMPLEMENTED_TESTED", "DELETE /api/assets/{asset_id}/documents/{doc_id}"),
+    ("GET", "/api/assets/{asset_id}/photo/{gridfs_id}"): (_A, "fleet.download_document", T_FLEET, "IMPLEMENTED_TESTED", "GET /api/assets/{asset_id}/documents/{doc_id}/download"),
+    ("GET", "/api/fleet/register"): (_A, "fleet.list_assets", T_FLEET, "IMPLEMENTED_TESTED", "GET /api/assets"),
+    ("GET", "/api/fleet/categories"): (_A, "fleet.categories", T_FLEET, "IMPLEMENTED_TESTED", "GET /api/assets/categories"),
+    ("GET", "/api/fleet/search"): (_A, "fleet.list_assets", T_FLEET, "IMPLEMENTED_TESTED", "GET /api/assets?q= (assets only; cross-register search is stage 9)"),
+    ("GET", "/api/forms/fleet/vehicles"): (_A, "fleet.vehicle_picker", T_FLEET, "IMPLEMENTED_TESTED", "Reads the register, so a Navixy outage does not break forms; typing a vehicle in is always allowed"),
+    ("POST", "/api/forms/fleet/vehicle-overrides"): (_A, "forms.submit", T_FLEET, "IMPLEMENTED_TESTED", "A typed vehicle is stored in the answer with source=manual; no separate route"),
+    ("GET", "/api/integrations/navixy/vehicles"): (_A, "fleet.navixy_sync", T_FLEET, "IMPLEMENTED_TESTED", "POST /api/fleet/navixy/sync (preview) lists the trackers; mock transport only"),
+    ("GET", "/api/integrations/navixy/tags"): (_A, "fleet.navixy_status", T_FLEET, "IMPLEMENTED_TESTED", "GET /api/fleet/navixy/status"),
+    ("GET", "/api/fleet/navixy/tags"): (_A, "fleet.navixy_status", T_FLEET, "IMPLEMENTED_TESTED", "GET /api/fleet/navixy/status; PUT /api/fleet/navixy/tags chooses them"),
+    ("POST", "/api/integrations/navixy/get-hash"): (_A, "navixy._Session", T_FLEET, "IMPLEMENTED_TESTED", "The sign-in key is fetched and refreshed by the adapter; never returned to a browser"),
+    ("POST", "/api/integrations/navixy/test-connection"): (_A, "comms.test_connection", "tests/test_comms.py", "IMPLEMENTED_TESTED", "Mock transport only"),
+    ("POST", "/api/assets/navixy/sync-counters"): (_A, "fleet.navixy_sync", T_FLEET, "IMPLEMENTED_TESTED", "Meters arrive with POST /api/fleet/navixy/sync; counter route unverified against real Navixy"),
+    ("GET", "/api/equipment"): (_A, "fleet.list_assets", T_FLEET, "IMPLEMENTED_TESTED", "GET /api/assets?kind=equipment (D-068)"),
+    ("POST", "/api/equipment"): (_A, "fleet.create_asset", T_FLEET, "IMPLEMENTED_TESTED", "POST /api/assets kind=equipment"),
+    ("GET", "/api/equipment/{eid}"): (_A, "fleet.get_one", T_FLEET, "IMPLEMENTED_TESTED", "GET /api/assets/{asset_id}"),
+    ("PATCH", "/api/equipment/{eid}"): (_A, "fleet.update_asset", T_FLEET, "IMPLEMENTED_TESTED", "PUT /api/assets/{asset_id}"),
+    ("DELETE", "/api/equipment/{eid}"): (_A, "fleet.delete_asset", T_FLEET, "IMPLEMENTED_TESTED", "DELETE /api/assets/{asset_id}"),
+    ("GET", "/api/equipment/categories"): (_A, "fleet.list_categories", T_FLEET, "IMPLEMENTED_TESTED", ""),
+    ("POST", "/api/equipment/categories"): (_A, "fleet.create_category", T_FLEET, "IMPLEMENTED_TESTED", ""),
+    ("PATCH", "/api/equipment/categories/{cid}"): (_A, "fleet.rename_category", T_FLEET, "IMPLEMENTED_TESTED", ""),
+    ("DELETE", "/api/equipment/categories/{cid}"): (_A, "fleet.delete_category", T_FLEET, "IMPLEMENTED_TESTED", "Refused while it still holds equipment"),
+    ("GET", "/api/equipment/summary"): (_A, "fleet.equipment_summary", T_FLEET, "IMPLEMENTED_TESTED", ""),
+    ("POST", "/api/equipment/{eid}/certs"): (_A, "fleet.add_document", T_FLEET, "IMPLEMENTED_TESTED", "POST /api/assets/{asset_id}/documents kind=certificate"),
+    ("GET", "/api/equipment/{eid}/certs/{cert_id}"): (_A, "fleet.download_document", T_FLEET, "IMPLEMENTED_TESTED", "Asset document download"),
+    ("DELETE", "/api/equipment/{eid}/certs/{cert_id}"): (_A, "fleet.delete_document", T_FLEET, "IMPLEMENTED_TESTED", "Asset document delete"),
+    ("POST", "/api/equipment/{eid}/documents"): (_A, "fleet.add_document", T_FLEET, "IMPLEMENTED_TESTED", "POST /api/assets/{asset_id}/documents"),
+    ("GET", "/api/equipment/{eid}/documents/{doc_id}"): (_A, "fleet.download_document", T_FLEET, "IMPLEMENTED_TESTED", "Asset document download"),
+    ("DELETE", "/api/equipment/{eid}/documents/{doc_id}"): (_A, "fleet.delete_document", T_FLEET, "IMPLEMENTED_TESTED", "Asset document delete"),
+})
+NEW_ROWS += [
+    ["GET", "/api/assets/categories", "fleet", "", _A, "fleet.categories", T_FLEET, "IMPLEMENTED_TESTED", "New path for the filter counts"],
+    ["POST", "/api/assets/{asset_id}/rotate-qr", "fleet", "", _A, "fleet.rotate_qr", T_FLEET, "IMPLEMENTED_TESTED", "New: retire printed labels"],
+    ["POST", "/api/assets/{asset_id}/meter/dismiss-review", "fleet", "", _A, "fleet.dismiss_meter_review", T_FLEET, "IMPLEMENTED_TESTED", "New: a lower provider reading was looked at"],
+    ["GET", "/api/assets/{asset_id}/meter-history", "fleet", "", _A, "fleet.meter_history", T_FLEET, "IMPLEMENTED_TESTED", "New path"],
+    ["POST", "/api/assets/{asset_id}/documents", "fleet", "", _A, "fleet.add_document", T_FLEET, "IMPLEMENTED_TESTED", "New: one route for photos, documents and certificates"],
+    ["GET", "/api/assets/{asset_id}/documents/{doc_id}/download", "fleet", "", _A, "fleet.download_document", T_FLEET, "IMPLEMENTED_TESTED", "New"],
+    ["DELETE", "/api/assets/{asset_id}/documents/{doc_id}", "fleet", "", _A, "fleet.delete_document", T_FLEET, "IMPLEMENTED_TESTED", "New"],
+    ["GET", "/api/fleet/navixy/status", "fleet", "", _A, "fleet.navixy_status", T_FLEET, "IMPLEMENTED_TESTED", "New: connection state, tags, last committed sync"],
+    ["POST", "/api/fleet/navixy/sync", "fleet", "", _A, "fleet.navixy_sync", T_FLEET, "IMPLEMENTED_TESTED", "New: preview or bring in the tracker list"],
+    ["PUT", "/api/fleet/navixy/tags", "fleet", "", _A, "fleet.navixy_tags", T_FLEET, "IMPLEMENTED_TESTED", "New: choose which Navixy tags feed the register"],
+]
+FEATURES.update({
+    "FLEET-01": ("PARTIAL", "tests/test_fleet.py; e2e fleet step", "Built: register for vehicles, plant and trailers with filters and paging; local identity separate from the Navixy tracker id; Navixy tag selection; last position and last-heard time; odometer and hour meter kept apart with history; QR labels (PNG, PDF, bulk, rotate). NOT VERIFIED against a real Navixy account. Outstanding: trips and map, the three Navixy dashboards, NFC/UHF pairing, public (signed-out) scan page."),
+    "INT-02": ("PARTIAL", "tests/test_fleet.py", "Built: region address, sign-in key stored encrypted and refreshed once when Navixy says it expired, tracker list, tags, states, odometer and hour counters, outage changes nothing, vanished trackers flagged not deleted, simulator labelled. NOT VERIFIED against a real account (mock transport only; the counter route in particular must be confirmed). Outstanding: automatic polling, Navixy groups (tags are used), vehicle records (registration, VIN)."),
+    "EQUIP-01": ("PARTIAL", "tests/test_fleet.py; e2e fleet step", "Built: category catalogue, equipment register (as assets of kind equipment), status, where kept, inspection dates with overdue and due-soon states, certificates and documents with expiry. Outstanding: the legacy plant-maintenance catalogue and its re-import."),
+})
+
 
 def main() -> None:
     path = HERE / "endpoint_coverage.csv"

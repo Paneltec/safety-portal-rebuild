@@ -50,6 +50,10 @@ IDs are opaque strings. Every tenant-owned table carries `org_id`, and every que
 | `notification_reads` | A person has read one notification | Unique `(user_id, notification_id)`; the notifications themselves are computed |
 | `import_runs` | One run of an import: mode, dry run or committed, counts, per-company results | Previews are recorded but never count as a sync |
 | `import_review_items` | An incoming record that looks like one already on file | Unique `(org_id, resource, source_system, source_company, source_id)`; status open, linked, created or ignored |
+| `assets` | A vehicle, item of plant, trailer or piece of equipment | Unique `(org_id, source_system, source_id)` for provider trackers; unique `scan_token`; `odometer_km` and `engine_hours` separate and nullable; `meter_review` holds a lower provider reading awaiting a person; `source_missing` flags a tracker no longer listed |
+| `equipment_categories` | Named groups of equipment | Seeded with six defaults on first use; cannot be removed while in use |
+| `asset_documents` | Photos, manuals and certificates kept with an asset | Optional issue and expiry dates |
+| `asset_meter_readings` | Every odometer and hour-meter reading | `source` manual, navixy, simulator, service, fuel or reset; `applied=false` rows are evidence that was not used |
 
 ## Relationships to preserve as later stages add tables
 
