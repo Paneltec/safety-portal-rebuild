@@ -1,4 +1,5 @@
 """Browser walkthrough of every built screen, on a fresh database. Run through e2e/run.sh."""
+import re
 import struct
 import sys
 import zlib
@@ -981,7 +982,110 @@ def fleet_and_equipment(browser) -> None:
     print("fleet and equipment walkthrough: ok")
 
 
-STEPS = [stage1_and_2a, documents, forms, safety_registers, workers, sites_and_visitors, suppliers_and_renewals, inductions_and_jobs, connections_and_outbox, fleet_and_equipment]
+def fuel(browser) -> None:
+    import datetime as dt
+    pg = sign_in(browser)
+    errors: list[str] = []
+    pg.on("pageerror", lambda e: errors.append(str(e)))
+    day = dt.date.today() - dt.timedelta(days=9)
+    week = day - dt.timedelta(days=day.weekday())
+    d = day.strftime("%d/%m/%Y")
+    csv_text = "\n".join([
+        "Transaction Id,Date,Time,Card Number,Description,Registration,From,Litres,Fuel Type,Odometer",
+        f"E2E-1,{d},07:10,C1,Float,TR1234,Depot tank,60,Diesel,1800",
+        f"E2E-2,{d},22:30,C2,Spare card,,Depot tank,45,Diesel,",
+        f"E2E-3,{d},08:00,C1,Float,TR1234,Depot tank,-5,Diesel,",
+    ]) + "\n"
+
+    pg.get_by_role("navigation").get_by_role("link", name="Fuel", exact=True).click()
+    expect(pg.get_by_text("No fuel in this period.")).to_be_visible()  # reports by vehicle is the first view
+
+    # Import: the file is checked first, the bad row is named, and nothing is saved until Import.
+    pg.get_by_role("tab", name="Import").click()
+    region = pg.get_by_role("region", name="Import a spreadsheet file")
+    region.get_by_label("File", exact=True).set_input_files({"name": "fuel.csv", "mimeType": "text/csv", "buffer": csv_text.encode()})
+    region.get_by_role("button", name="Check the file").click()
+    expect(region.get_by_text("Preview only, nothing has been saved. 3 rows read: 2 new, 0 with details added, 0 already here, 1 could not be used.")).to_be_visible()
+    expect(region.get_by_role("row").filter(has_text="Litres must be more than 0").get_by_role("cell", name="4", exact=True)).to_be_visible()
+    region.get_by_role("button", name="Import", exact=True).click()
+    expect(region.get_by_text("Imported. 3 rows read: 2 new")).to_be_visible()
+    expect(region.get_by_text("0 given a cost, 2 waiting for a weekly rate. 2 new flags to check.")).to_be_visible()
+    expect(pg.get_by_role("cell", name="Spreadsheet file: fuel.csv")).to_be_visible()
+
+    # No weekly rate yet: litres are counted, the cost is shown as not known rather than guessed.
+    pg.get_by_role("tab", name="Reports").click()
+    expect(pg.get_by_text("2 fills (105.0 litres) are waiting for a weekly rate, so the cost shown is not complete.")).to_be_visible()
+    row = pg.get_by_role("row").filter(has_text="Float trailer (TR1234)")
+    expect(row.get_by_text("No rate yet")).to_be_visible()
+    expect(pg.get_by_role("row").filter(has_text="Not matched to a vehicle").get_by_role("cell", name="45", exact=True)).to_be_visible()
+    expect(pg.get_by_role("row").filter(has_text="Total").get_by_text("Not complete")).to_be_visible()
+
+    # The weekly diesel rate: FuelCheck is off, so an admin types in the seven daily prices. Fixture: 200..206 gives $2.0300.
+    pg.get_by_role("tab", name="Weekly diesel rate").click()
+    pg.get_by_role("button", name="Get prices and fix the rate").click()
+    expect(pg.get_by_text("FuelCheck is switched off.")).to_be_visible()
+    pg.get_by_role("button", name=f"Enter prices for the week of {week.strftime('%d/%m/%Y')}").click()
+    dialog = pg.get_by_role("dialog")
+    for i, box in enumerate(dialog.get_by_role("spinbutton").all()):
+        box.fill(str(200 + i))
+    dialog.get_by_label("Where the prices came from").fill("FuelCheck diesel trend page (walkthrough)")
+    expect(dialog.get_by_text("$2.0300 a litre")).to_be_visible()
+    expect(dialog.get_by_role("button", name="Fix this week's rate")).to_be_disabled()  # must tick "checked" first
+    dialog.get_by_label("I have checked the seven prices").check()
+    dialog.get_by_role("button", name="Fix this week's rate").click()
+    ledger = pg.get_by_role("row").filter(has_text="Entered by hand")
+    expect(ledger.get_by_text("$2.0300")).to_be_visible()
+    expect(ledger.get_by_text("200, 201, 202, 203, 204, 205, 206")).to_be_visible()
+    expect(pg.get_by_text("Weeks with fills waiting for a rate")).to_have_count(0)
+    shot(pg, "31-fuel-rate", full=True)
+
+    pg.get_by_role("tab", name="Reports").click()
+    expect(pg.get_by_role("row").filter(has_text="Float trailer (TR1234)").get_by_text("$121.80")).to_be_visible()  # 60 L x 2.0300
+    expect(pg.get_by_role("row").filter(has_text="Not matched to a vehicle").get_by_text("$91.35")).to_be_visible()   # 45 L x 2.0300
+    total = pg.get_by_role("row").filter(has_text="Total")
+    expect(total.get_by_text("$213.15")).to_be_visible()
+    expect(total.get_by_text("Not complete")).to_have_count(0)
+    shot(pg, "32-fuel-report", full=True)
+
+    # To check: one row for the fill with both reasons; matching it clears one, dismissing clears the other.
+    pg.get_by_role("tab", name=re.compile("^To check")).click()
+    flagged = pg.get_by_role("row").filter(has_text="card C2")
+    expect(flagged.get_by_text("Not matched to a vehicle")).to_be_visible()
+    expect(flagged.get_by_text("Filled at an unusual time")).to_be_visible()
+    shot(pg, "33-fuel-to-check", full=True)
+    flagged.get_by_role("button", name="Match to a vehicle").click()
+    dialog = pg.get_by_role("dialog")
+    dialog.get_by_label("Vehicle").select_option(label="Float trailer (TR1234)")
+    dialog.get_by_label("How do you know?").fill("Driver confirmed")
+    dialog.get_by_role("button", name="Match to a vehicle").click()
+    expect(pg.get_by_text("1 matched.")).to_be_visible()
+    expect(flagged.get_by_text("Resolved by the portal: Corrected: this no longer applies to the fill.")).to_be_visible()
+    flagged.get_by_role("button", name="Dismiss").click()
+    dialog = pg.get_by_role("dialog")
+    dialog.get_by_role("button", name="Dismiss").click()  # a reason is required
+    assert dialog.get_by_label("Why?").evaluate("e => e.validity.valueMissing")
+    dialog.get_by_label("Why?").fill("Night works on the highway job")
+    dialog.get_by_role("button", name="Dismiss").click()
+    expect(pg.get_by_text("1 dismissed.")).to_be_visible()
+    expect(pg.get_by_text("Nothing to check.")).to_be_visible()
+
+    # Emailing the report is explicit and, with safe mode on, held rather than sent.
+    pg.get_by_role("tab", name="Reports").click()
+    pg.get_by_role("button", name="Email this report").click()
+    dialog = pg.get_by_role("dialog")
+    dialog.get_by_label("Send to").fill("boss@e2e.example")
+    dialog.get_by_role("button", name="Send").click()
+    expect(dialog.get_by_text("boss@e2e.example:")).to_be_visible()
+    dialog.get_by_role("link", name="Outbox").click()
+    held = pg.get_by_role("row").filter(has_text="boss@e2e.example")
+    expect(held.get_by_text("Fuel report")).to_be_visible()
+    expect(held.get_by_text("Not sent")).to_be_visible()
+    assert not errors, errors
+    pg.context.close()
+    print("fuel walkthrough: ok")
+
+
+STEPS = [stage1_and_2a, documents, forms, safety_registers, workers, sites_and_visitors, suppliers_and_renewals, inductions_and_jobs, connections_and_outbox, fleet_and_equipment, fuel]
 
 if __name__ == "__main__":
     with sync_playwright() as p:

@@ -5,7 +5,7 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 
 from .config import get_settings
-from .routers import auth, comms, documents, fleet, forms, imports, inductions, jobs, org, presets, renewals, roles, safety, service, sessions, sites, suppliers, users, workers
+from .routers import auth, comms, documents, fleet, forms, fuel, imports, inductions, jobs, org, presets, renewals, roles, safety, service, sessions, sites, suppliers, users, workers
 
 
 def create_app() -> FastAPI:
@@ -42,6 +42,7 @@ def create_app() -> FastAPI:
     app.include_router(sessions.router)
     app.include_router(documents.router)
     app.include_router(forms.router)
+    app.include_router(fuel.router)
     app.include_router(service.router)  # before fleet.router: /service/... must not be read as an asset id
     app.include_router(service.presets_router)
     app.include_router(fleet.router)

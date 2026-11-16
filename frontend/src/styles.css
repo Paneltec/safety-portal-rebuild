@@ -230,3 +230,12 @@ tr.clickable:hover td { background: #f7f9fb; }
 .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; align-items: end; }
 fieldset { border: 1px solid var(--line-soft); border-radius: 8px; padding: 10px 12px 12px; margin: 0; min-width: 0; }
 fieldset > legend { padding: 0 6px; font-size: 13px; font-weight: 600; color: var(--muted); }
+
+/* Stage 6c: fuel */
+.tile.static { cursor: default; }
+.tile.static:hover { border-color: var(--line); }
+.tile.static strong { font-family: "Barlow Semi Condensed", sans-serif; font-size: 24px; font-weight: 600; line-height: 1.15; font-variant-numeric: tabular-nums; }
+.tile-label { font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+.plain-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.total-row th, .total-row td { border-top: 2px solid var(--line); font-weight: 700; background: var(--surface); }
+.rate-box { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; justify-content: space-between; padding: 14px 16px; border: 1px solid var(--line); border-left: 4px solid var(--ink); border-radius: 6px; }

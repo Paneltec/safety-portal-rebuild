@@ -20,11 +20,13 @@ Updated at the end of each finished part. The ledgers in `docs/ledger/` hold the
 | Stage 5b | Simpro import of workers, sites and suppliers (dry run, pages, rate-limit retry, per-company results, hand edits kept, review queue, labelled simulator data); expiry reminders for certificates and supplier documents with preview and dedupe. Simpro calls are tested against a mock only | `backend/tests/test_imports.py`, `backend/tests/test_comms.py`, `e2e/walkthrough.py` (connections and outbox step) |
 | Stage 6a | Fleet and equipment register; QR labels; meters with history and regression review; documents and certificates; equipment categories; Navixy tracker list (preview, sync, tags, sign-in refresh) feeding the register and the form vehicle picker, with typing a vehicle in always allowed. Navixy calls are tested against a mock only | `backend/tests/test_fleet.py`, `e2e/walkthrough.py` (fleet and equipment step) |
 | Stage 6b | Service schedules by days, kilometres and hours; due soon, overdue and cannot-tell states; service records that restart their schedule; fleet-wide "Service due" list; service reminders with preview and dedupe | `backend/tests/test_service.py`, `e2e/walkthrough.py` (fleet and equipment step) |
+| Stage 6c | Fuel: CSV and SmartFill import with preview and upsert, fuel cards and labelled attribution, the weekly diesel rate (write-once, seven days required, pending when missing, pack fixture reproduced), reports by vehicle, day, driver and card with CSV download and email through the outbox, anomaly inbox with bulk actions. SmartFill and FuelCheck are tested against mocks only | `backend/tests/test_fuel.py`, `e2e/walkthrough.py` (fuel step) |
 
 ## Next, in order
 
 1. Left over from stage 5: Simpro jobs, customers, attachments and scheduled sync; compose-and-send for reports; Dropbox.
-1a. **Stage 6c**: SmartFill and CSV fuel import, fuel cards, weekly diesel lock, fuel reports, anomaly inbox.
+1a. **Stage 7**: leave, timesheets and the payroll workbench (test-only: no payments, STP, super or messages to workers).
+1c. Left over from stage 6 (PARTIAL in the ledger): Navixy trips, map and dashboards; NFC/UHF pairing; service check sheet PDFs and attachments; fuel card date windows; scheduled SmartFill import; PDF on emailed fuel reports; per-asset fuel panel.
 1b. Left over from stage 4 (all recorded as PARTIAL in the ledger): worker ID card and QR, mobile PIN, supplier QR induction, inductions spreadsheet import and printable matrix, PDF/SMS job import, GPS distance checks at sign-on, supplier document folders.
 1a. Carried forward: bulk pre-start import (IMP-01), reference catalogues (REF-01), AI drafting, positions and asset-type assignment rules, authorised corrections after submit.
 2. Stage 5 onwards as listed in `STAGED_PLAN.md`.
@@ -32,6 +34,8 @@ Updated at the end of each finished part. The ledgers in `docs/ledger/` hold the
 ## Not verified
 
 - The Docker Compose deployment has not been run (no Docker daemon in the build environment). The API, database migrations and web app were run directly.
+- No real provider has been contacted. Simpro, Navixy, SmartFill (FMT Data), FuelCheck Tasmania, Microsoft 365 and TextMagic are each tested against a stand-in built from the pack's description. Field names, paging and error shapes in real answers must be confirmed with real credentials before relying on them. In particular: the Navixy counter (odometer and hour) call, the column names in a SmartFill answer, and whether the FuelCheck price list can be read at all.
+- Performance has not been measured on a large dataset (the pack suggests 300 assets and 100,000 fills). Lists and reports are paged and aggregated in the database, but no timings were taken.
 
 ## Working notes for whoever continues the build
 

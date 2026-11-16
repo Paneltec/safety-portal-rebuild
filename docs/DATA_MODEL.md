@@ -56,6 +56,12 @@ IDs are opaque strings. Every tenant-owned table carries `org_id`, and every que
 | `asset_meter_readings` | Every odometer and hour-meter reading | `source` manual, navixy, simulator, service, fuel or reset; `applied=false` rows are evidence that was not used |
 | `asset_schedules` | A recurring service for one asset | Any of `interval_days`, `interval_km`, `interval_hours`; baseline values; no stored due date |
 | `asset_service_records` | Work done: service, repair, inspection | `schedule_name` frozen at the time; `cost` numeric(12,2); checklist JSON |
+| `fuel_transactions` | One fill | Unique `(org_id, source_system, source_id)`; `litres` numeric(12,3); `source_unit_price`/`source_total` are the supplier's figures; `report_rate` numeric(8,4) and `report_cost` numeric(12,2) are written once; `attribution` direct, card, manual or unlinked; `raw` keeps the original row |
+| `fuel_weekly_prices` | The diesel rate for one Monday-to-Sunday week | Unique `(org_id, week_start, simulated)`; seven `daily_cents`; never updated or deleted |
+| `fuel_cards` | A fuel card and what it is assigned to | Unique `(org_id, card_number)`; created when first seen |
+| `fuel_batches` | One import run | `via` csv, api or simulator; file hash; timezone used; counts, errors and warnings |
+| `fuel_anomalies` | One reason a fill needs a look | Unique `(transaction_id, rule)`; status open, resolved or dismissed with note, actor and time |
+| `provider_calls` | Calls made to a rate-limited provider | Counted per minute, hour and day before each SmartFill call |
 
 ## Relationships to preserve as later stages add tables
 

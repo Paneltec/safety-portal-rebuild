@@ -74,6 +74,9 @@ CATALOGUE: dict[str, Kind] = {k.key: k for k in [
         Field("api_key", "Client reference", required=True, help="Issued by FMT Data. This is not your SmartFill website login."),
         Field("api_secret", "Client secret", secret=True, required=True),
     ], notes=["SmartFill limits how often it can be called (about 6 a minute). Testing counts as one call."]),
+    Kind("fuelcheck", "FuelCheck Tasmania", "Daily diesel prices, used once a week to set the diesel rate for fuel reports.", [],
+         notes=["A public price source: there is nothing to sign in to.",
+                "Testing reads the price list once. A week's rate is only fixed when you ask for it on the Fuel page."]),
     Kind("microsoft365", "Microsoft 365", "Sends the portal's emails from one of your mailboxes.", [
         Field("tenant_id", "Directory (tenant) ID", required=True),
         Field("client_id", "Application (client) ID", required=True),
@@ -333,6 +336,16 @@ def _test_smartfill(s: dict[str, Any], x: dict[str, str]) -> CheckResult:
     return CheckResult(True, "SmartFill accepted the client reference and secret. Importing transactions has not been checked by this test.", {"tank_level": True})
 
 
+def _test_fuelcheck(s: dict[str, Any], x: dict[str, str]) -> CheckResult:
+    from . import fuel
+    data = _json(call("POST", fuel.FUELCHECK_URL, provider="FuelCheck", secrets=[], json=fuel.FUELCHECK_BODY), "FuelCheck")
+    entries = data.get("AveragePrices") if isinstance(data, dict) else None
+    days = {str(e.get("Captured"))[:10] for e in entries if isinstance(e, dict) and e.get("Code") == "DL" and e.get("Period") == "Month"} if isinstance(entries, list) else set()
+    if not days:
+        raise ProviderError("FuelCheck answered, but with no daily diesel prices in the expected format.")
+    return CheckResult(True, f"FuelCheck answered with daily diesel prices for {len(days)} days.", {"days": len(days)})
+
+
 def m365_token(s: dict[str, Any], x: dict[str, str]) -> str:
     data = _json(call("POST", f"https://login.microsoftonline.com/{s['tenant_id']}/oauth2/v2.0/token", provider="Microsoft 365",
                       secrets=[x["client_secret"]],
@@ -362,7 +375,7 @@ def _test_textmagic(s: dict[str, Any], x: dict[str, str]) -> CheckResult:
     return CheckResult(True, "Signed in to TextMagic. No text was sent.", caps)
 
 
-_TESTS = {"simpro": _test_simpro, "navixy": _test_navixy, "smartfill": _test_smartfill, "microsoft365": _test_m365, "textmagic": _test_textmagic}
+_TESTS = {"simpro": _test_simpro, "navixy": _test_navixy, "smartfill": _test_smartfill, "fuelcheck": _test_fuelcheck, "microsoft365": _test_m365, "textmagic": _test_textmagic}
 
 
 def run_test(db: Session, config: IntegrationConfig, kind: Kind) -> CheckResult:

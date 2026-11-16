@@ -166,7 +166,7 @@ def set_safe_mode(body: SafeModeIn, request: Request, caller: Caller = Depends(r
 
 # ---------- outbox ----------
 
-PURPOSES = {"invitation": "Invitation", "password_reset": "Password reset", "renewal_request": "Document request", "daily_job": "Daily job", "reminder": "Expiry reminder",
+PURPOSES = {"invitation": "Invitation", "password_reset": "Password reset", "renewal_request": "Document request", "daily_job": "Daily job", "reminder": "Reminder", "fuel_report": "Fuel report",
             "test": "Test message"}
 STATUS_LABELS = {"held": "Not sent", "queued": "Waiting to send", "sent": "Sent", "simulated": "Simulated", "failed": "Failed", "cancelled": "Cancelled"}
 

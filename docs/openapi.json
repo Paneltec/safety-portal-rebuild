@@ -16,6 +16,38 @@
     "title": "AcknowledgeIn",
     "type": "object"
    },
+   "ActIn": {
+    "properties": {
+     "note": {
+      "anyOf": [
+       {
+        "maxLength": 600,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Note"
+     },
+     "rules": {
+      "anyOf": [
+       {
+        "items": {
+         "type": "string"
+        },
+        "type": "array"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Rules"
+     }
+    },
+    "title": "ActIn",
+    "type": "object"
+   },
    "AnswerIn": {
     "properties": {
      "question_id": {
@@ -645,6 +677,30 @@
     "title": "Body_hazard_upload_file_api_hazards__record_id__files_post",
     "type": "object"
    },
+   "Body_import_csv_api_fleet_fuel_import_csv_post": {
+    "properties": {
+     "dry_run": {
+      "default": true,
+      "title": "Dry Run",
+      "type": "boolean"
+     },
+     "file": {
+      "contentMediaType": "application/octet-stream",
+      "title": "File",
+      "type": "string"
+     },
+     "timezone": {
+      "default": "",
+      "title": "Timezone",
+      "type": "string"
+     }
+    },
+    "required": [
+     "file"
+    ],
+    "title": "Body_import_csv_api_fleet_fuel_import_csv_post",
+    "type": "object"
+   },
    "Body_incident_upload_file_api_incidents__record_id__files_post": {
     "properties": {
      "field_id": {
@@ -1154,6 +1210,36 @@
     "title": "BulkAssignRoleIn",
     "type": "object"
    },
+   "BulkAttributeIn": {
+    "properties": {
+     "asset_id": {
+      "title": "Asset Id",
+      "type": "string"
+     },
+     "reason": {
+      "maxLength": 400,
+      "minLength": 3,
+      "title": "Reason",
+      "type": "string"
+     },
+     "txn_ids": {
+      "items": {
+       "type": "string"
+      },
+      "maxItems": 500,
+      "minItems": 1,
+      "title": "Txn Ids",
+      "type": "array"
+     }
+    },
+    "required": [
+     "txn_ids",
+     "asset_id",
+     "reason"
+    ],
+    "title": "BulkAttributeIn",
+    "type": "object"
+   },
    "BulkDeleteIn": {
     "properties": {
      "ids": {
@@ -1208,145 +1294,6 @@
      "ids"
     ],
     "title": "BulkIds",
-    "type": "object"
-   },
-   "BulkIn": {
-    "properties": {
-     "address": {
-      "anyOf": [
-       {
-        "maxLength": 300,
-        "type": "string"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Address"
-     },
-     "customer": {
-      "anyOf": [
-       {
-        "maxLength": 200,
-        "type": "string"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Customer"
-     },
-     "date": {
-      "anyOf": [
-       {
-        "format": "date",
-        "type": "string"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Date"
-     },
-     "form_template_ids": {
-      "items": {
-       "type": "string"
-      },
-      "maxItems": 10,
-      "title": "Form Template Ids",
-      "type": "array"
-     },
-     "notes": {
-      "anyOf": [
-       {
-        "maxLength": 4000,
-        "type": "string"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Notes"
-     },
-     "override": {
-      "default": false,
-      "title": "Override",
-      "type": "boolean"
-     },
-     "site_id": {
-      "anyOf": [
-       {
-        "type": "string"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Site Id"
-     },
-     "site_name": {
-      "anyOf": [
-       {
-        "maxLength": 200,
-        "type": "string"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Site Name"
-     },
-     "staff": {
-      "items": {
-       "type": "string"
-      },
-      "maxItems": 30,
-      "title": "Staff",
-      "type": "array"
-     },
-     "start_time": {
-      "anyOf": [
-       {
-        "maxLength": 5,
-        "type": "string"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Start Time"
-     },
-     "trial_run": {
-      "default": false,
-      "title": "Trial Run",
-      "type": "boolean"
-     },
-     "truck": {
-      "anyOf": [
-       {
-        "maxLength": 120,
-        "type": "string"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Truck"
-     },
-     "worker_ids": {
-      "items": {
-       "type": "string"
-      },
-      "maxItems": 100,
-      "minItems": 1,
-      "title": "Worker Ids",
-      "type": "array"
-     }
-    },
-    "required": [
-     "worker_ids"
-    ],
-    "title": "BulkIn",
     "type": "object"
    },
    "BulkRestrictIn": {
@@ -1405,6 +1352,51 @@
      }
     },
     "title": "BulkRevokeIn",
+    "type": "object"
+   },
+   "CardIn": {
+    "properties": {
+     "apply_to_unmatched": {
+      "default": false,
+      "title": "Apply To Unmatched",
+      "type": "boolean"
+     },
+     "asset_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Asset Id"
+     },
+     "notes": {
+      "anyOf": [
+       {
+        "maxLength": 1000,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Notes"
+     },
+     "worker_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Worker Id"
+     }
+    },
+    "title": "CardIn",
     "type": "object"
    },
    "CategoryIn": {
@@ -1846,6 +1838,27 @@
     "title": "CreateUserIn",
     "type": "object"
    },
+   "DayPrice": {
+    "properties": {
+     "cents": {
+      "exclusiveMaximum": 500.0,
+      "exclusiveMinimum": 50.0,
+      "title": "Cents",
+      "type": "number"
+     },
+     "date": {
+      "format": "date",
+      "title": "Date",
+      "type": "string"
+     }
+    },
+    "required": [
+     "date",
+     "cents"
+    ],
+    "title": "DayPrice",
+    "type": "object"
+   },
    "Decision": {
     "properties": {
      "decision": {
@@ -2032,6 +2045,72 @@
      }
     },
     "title": "DocTypePatch",
+    "type": "object"
+   },
+   "EmailReportIn": {
+    "properties": {
+     "date_from": {
+      "anyOf": [
+       {
+        "format": "date",
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Date From"
+     },
+     "date_to": {
+      "anyOf": [
+       {
+        "format": "date",
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Date To"
+     },
+     "group": {
+      "default": "vehicle",
+      "enum": [
+       "vehicle",
+       "day",
+       "driver",
+       "card"
+      ],
+      "title": "Group",
+      "type": "string"
+     },
+     "note": {
+      "anyOf": [
+       {
+        "maxLength": 1000,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Note"
+     },
+     "to": {
+      "items": {
+       "format": "email",
+       "type": "string"
+      },
+      "maxItems": 10,
+      "minItems": 1,
+      "title": "To",
+      "type": "array"
+     }
+    },
+    "required": [
+     "to"
+    ],
+    "title": "EmailReportIn",
     "type": "object"
    },
    "FieldValue": {
@@ -2733,6 +2812,74 @@
     "title": "LoginIn",
     "type": "object"
    },
+   "ManualWeekIn": {
+    "properties": {
+     "days": {
+      "items": {
+       "$ref": "#/components/schemas/DayPrice"
+      },
+      "maxItems": 7,
+      "minItems": 7,
+      "title": "Days",
+      "type": "array"
+     },
+     "note": {
+      "maxLength": 400,
+      "minLength": 5,
+      "title": "Note",
+      "type": "string"
+     },
+     "week_start": {
+      "format": "date",
+      "title": "Week Start",
+      "type": "string"
+     }
+    },
+    "required": [
+     "week_start",
+     "days",
+     "note"
+    ],
+    "title": "ManualWeekIn",
+    "type": "object"
+   },
+   "MatchIn": {
+    "properties": {
+     "asset_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Asset Id"
+     },
+     "reason": {
+      "maxLength": 400,
+      "minLength": 3,
+      "title": "Reason",
+      "type": "string"
+     },
+     "worker_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Worker Id"
+     }
+    },
+    "required": [
+     "reason"
+    ],
+    "title": "MatchIn",
+    "type": "object"
+   },
    "MemberIn": {
     "properties": {
      "email": {
@@ -3292,6 +3439,24 @@
      "label"
     ],
     "title": "PresetIn",
+    "type": "object"
+   },
+   "PriceSettingsIn": {
+    "properties": {
+     "weekly_start": {
+      "anyOf": [
+       {
+        "format": "date",
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Weekly Start"
+     }
+    },
+    "title": "PriceSettingsIn",
     "type": "object"
    },
    "ProvisionIn": {
@@ -4542,6 +4707,24 @@
      }
     },
     "title": "SitePatch",
+    "type": "object"
+   },
+   "SmartfillIn": {
+    "properties": {
+     "days": {
+      "default": 7,
+      "maximum": 62.0,
+      "minimum": 1.0,
+      "title": "Days",
+      "type": "integer"
+     },
+     "dry_run": {
+      "default": true,
+      "title": "Dry Run",
+      "type": "boolean"
+     }
+    },
+    "title": "SmartfillIn",
     "type": "object"
    },
    "StatusIn": {
@@ -6399,6 +6582,50 @@
     "title": "SyncIn",
     "type": "object"
    },
+   "app__routers__fuel__BulkIn": {
+    "properties": {
+     "note": {
+      "anyOf": [
+       {
+        "maxLength": 600,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Note"
+     },
+     "rules": {
+      "anyOf": [
+       {
+        "items": {
+         "type": "string"
+        },
+        "type": "array"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Rules"
+     },
+     "txn_ids": {
+      "items": {
+       "type": "string"
+      },
+      "maxItems": 500,
+      "minItems": 1,
+      "title": "Txn Ids",
+      "type": "array"
+     }
+    },
+    "required": [
+     "txn_ids"
+    ],
+    "title": "BulkIn",
+    "type": "object"
+   },
    "app__routers__imports__SyncIn": {
     "properties": {
      "dry_run": {
@@ -6420,6 +6647,145 @@
      "resource"
     ],
     "title": "SyncIn",
+    "type": "object"
+   },
+   "app__routers__jobs__BulkIn": {
+    "properties": {
+     "address": {
+      "anyOf": [
+       {
+        "maxLength": 300,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Address"
+     },
+     "customer": {
+      "anyOf": [
+       {
+        "maxLength": 200,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Customer"
+     },
+     "date": {
+      "anyOf": [
+       {
+        "format": "date",
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Date"
+     },
+     "form_template_ids": {
+      "items": {
+       "type": "string"
+      },
+      "maxItems": 10,
+      "title": "Form Template Ids",
+      "type": "array"
+     },
+     "notes": {
+      "anyOf": [
+       {
+        "maxLength": 4000,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Notes"
+     },
+     "override": {
+      "default": false,
+      "title": "Override",
+      "type": "boolean"
+     },
+     "site_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Site Id"
+     },
+     "site_name": {
+      "anyOf": [
+       {
+        "maxLength": 200,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Site Name"
+     },
+     "staff": {
+      "items": {
+       "type": "string"
+      },
+      "maxItems": 30,
+      "title": "Staff",
+      "type": "array"
+     },
+     "start_time": {
+      "anyOf": [
+       {
+        "maxLength": 5,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Start Time"
+     },
+     "trial_run": {
+      "default": false,
+      "title": "Trial Run",
+      "type": "boolean"
+     },
+     "truck": {
+      "anyOf": [
+       {
+        "maxLength": 120,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Truck"
+     },
+     "worker_ids": {
+      "items": {
+       "type": "string"
+      },
+      "maxItems": 100,
+      "minItems": 1,
+      "title": "Worker Ids",
+      "type": "array"
+     }
+    },
+    "required": [
+     "worker_ids"
+    ],
+    "title": "BulkIn",
     "type": "object"
    },
    "app__routers__renewals__ReviewIn": {
@@ -10653,7 +11019,7 @@
      "content": {
       "application/json": {
        "schema": {
-        "$ref": "#/components/schemas/BulkIn"
+        "$ref": "#/components/schemas/app__routers__jobs__BulkIn"
        }
       }
      },
@@ -12467,6 +12833,1514 @@
     "summary": "Equipment Summary",
     "tags": [
      "fleet"
+    ]
+   }
+  },
+  "/api/fleet/fuel/anomalies": {
+   "get": {
+    "description": "One row per fill, carrying every reason it was flagged. Opening this list sends nothing to anyone.",
+    "operationId": "anomalies_api_fleet_fuel_anomalies_get",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "status",
+      "required": false,
+      "schema": {
+       "default": "open",
+       "enum": [
+        "open",
+        "resolved",
+        "dismissed",
+        "all"
+       ],
+       "title": "Status",
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "rule",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Rule"
+      }
+     },
+     {
+      "in": "query",
+      "name": "asset_id",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Asset Id"
+      }
+     },
+     {
+      "in": "query",
+      "name": "date_from",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "format": "date",
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Date From"
+      }
+     },
+     {
+      "in": "query",
+      "name": "date_to",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "format": "date",
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Date To"
+      }
+     },
+     {
+      "in": "query",
+      "name": "page",
+      "required": false,
+      "schema": {
+       "default": 1,
+       "minimum": 1,
+       "title": "Page",
+       "type": "integer"
+      }
+     },
+     {
+      "in": "query",
+      "name": "page_size",
+      "required": false,
+      "schema": {
+       "default": 25,
+       "maximum": 100,
+       "minimum": 1,
+       "title": "Page Size",
+       "type": "integer"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Anomalies Api Fleet Fuel Anomalies Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Anomalies",
+    "tags": [
+     "fuel"
+    ]
+   }
+  },
+  "/api/fleet/fuel/anomalies/bulk-attribute": {
+   "post": {
+    "description": "Match every chosen fill to one vehicle. A fill already matched to it by a person is left as it is.",
+    "operationId": "bulk_attribute_api_fleet_fuel_anomalies_bulk_attribute_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/BulkAttributeIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Bulk Attribute Api Fleet Fuel Anomalies Bulk Attribute Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Bulk Attribute",
+    "tags": [
+     "fuel"
+    ]
+   }
+  },
+  "/api/fleet/fuel/anomalies/bulk-dismiss": {
+   "post": {
+    "operationId": "bulk_dismiss_api_fleet_fuel_anomalies_bulk_dismiss_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/app__routers__fuel__BulkIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Bulk Dismiss Api Fleet Fuel Anomalies Bulk Dismiss Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Bulk Dismiss",
+    "tags": [
+     "fuel"
+    ]
+   }
+  },
+  "/api/fleet/fuel/anomalies/bulk-reopen": {
+   "post": {
+    "operationId": "bulk_reopen_api_fleet_fuel_anomalies_bulk_reopen_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/app__routers__fuel__BulkIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Bulk Reopen Api Fleet Fuel Anomalies Bulk Reopen Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Bulk Reopen",
+    "tags": [
+     "fuel"
+    ]
+   }
+  },
+  "/api/fleet/fuel/anomalies/bulk-resolve": {
+   "post": {
+    "operationId": "bulk_resolve_api_fleet_fuel_anomalies_bulk_resolve_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/app__routers__fuel__BulkIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Bulk Resolve Api Fleet Fuel Anomalies Bulk Resolve Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Bulk Resolve",
+    "tags": [
+     "fuel"
+    ]
+   }
+  },
+  "/api/fleet/fuel/anomalies/matching-ids": {
+   "get": {
+    "description": "Every fill matching the filters (up to 500), for 'select all that match'.",
+    "operationId": "matching_ids_api_fleet_fuel_anomalies_matching_ids_get",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "status",
+      "required": false,
+      "schema": {
+       "default": "open",
+       "enum": [
+        "open",
+        "resolved",
+        "dismissed",
+        "all"
+       ],
+       "title": "Status",
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "rule",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Rule"
+      }
+     },
+     {
+      "in": "query",
+      "name": "asset_id",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Asset Id"
+      }
+     },
+     {
+      "in": "query",
+      "name": "date_from",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "format": "date",
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Date From"
+      }
+     },
+     {
+      "in": "query",
+      "name": "date_to",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "format": "date",
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Date To"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Matching Ids Api Fleet Fuel Anomalies Matching Ids Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Matching Ids",
+    "tags": [
+     "fuel"
+    ]
+   }
+  },
+  "/api/fleet/fuel/anomalies/{txn_id}/dismiss": {
+   "post": {
+    "operationId": "dismiss_api_fleet_fuel_anomalies__txn_id__dismiss_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "txn_id",
+      "required": true,
+      "schema": {
+       "title": "Txn Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ActIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Dismiss Api Fleet Fuel Anomalies  Txn Id  Dismiss Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Dismiss",
+    "tags": [
+     "fuel"
+    ]
+   }
+  },
+  "/api/fleet/fuel/anomalies/{txn_id}/reopen": {
+   "post": {
+    "operationId": "reopen_api_fleet_fuel_anomalies__txn_id__reopen_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "txn_id",
+      "required": true,
+      "schema": {
+       "title": "Txn Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ActIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Reopen Api Fleet Fuel Anomalies  Txn Id  Reopen Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Reopen",
+    "tags": [
+     "fuel"
+    ]
+   }
+  },
+  "/api/fleet/fuel/anomalies/{txn_id}/resolve": {
+   "post": {
+    "operationId": "resolve_api_fleet_fuel_anomalies__txn_id__resolve_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "txn_id",
+      "required": true,
+      "schema": {
+       "title": "Txn Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ActIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Resolve Api Fleet Fuel Anomalies  Txn Id  Resolve Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Resolve",
+    "tags": [
+     "fuel"
+    ]
+   }
+  },
+  "/api/fleet/fuel/batches": {
+   "get": {
+    "operationId": "batches_api_fleet_fuel_batches_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Batches Api Fleet Fuel Batches Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Batches",
+    "tags": [
+     "fuel"
+    ]
+   }
+  },
+  "/api/fleet/fuel/batches/{batch_id}": {
+   "get": {
+    "operationId": "batch_detail_api_fleet_fuel_batches__batch_id__get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "batch_id",
+      "required": true,
+      "schema": {
+       "title": "Batch Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Batch Detail Api Fleet Fuel Batches  Batch Id  Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Batch Detail",
+    "tags": [
+     "fuel"
+    ]
+   }
+  },
+  "/api/fleet/fuel/cards": {
+   "get": {
+    "operationId": "cards_api_fleet_fuel_cards_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Cards Api Fleet Fuel Cards Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Cards",
+    "tags": [
+     "fuel"
+    ]
+   }
+  },
+  "/api/fleet/fuel/cards/{card_number}": {
+   "patch": {
+    "description": "Say which vehicle and/or person a card belongs to. Fills already imported are only re-matched\nwhen `apply_to_unmatched` is set, and then only the ones with no match yet; a match made by a\nperson or by registration is left alone.",
+    "operationId": "assign_card_api_fleet_fuel_cards__card_number__patch",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "card_number",
+      "required": true,
+      "schema": {
+       "title": "Card Number",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/CardIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Assign Card Api Fleet Fuel Cards  Card Number  Patch",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Assign Card",
+    "tags": [
+     "fuel"
+    ]
+   }
+  },
+  "/api/fleet/fuel/import-csv": {
+   "post": {
+    "description": "Read a fuel export. Preview by default: nothing is saved until it is run with dry_run=false.\n\n`timezone` says how times in the file are to be read (they carry no offset). It is required to\nbe a real zone name and is recorded with the import; it defaults to the organisation's own.",
+    "operationId": "import_csv_api_fleet_fuel_import_csv_post",
+    "requestBody": {
+     "content": {
+      "multipart/form-data": {
+       "schema": {
+        "$ref": "#/components/schemas/Body_import_csv_api_fleet_fuel_import_csv_post"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Import Csv Api Fleet Fuel Import Csv Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Import Csv",
+    "tags": [
+     "fuel"
+    ]
+   }
+  },
+  "/api/fleet/fuel/price-settings": {
+   "get": {
+    "operationId": "price_settings_api_fleet_fuel_price_settings_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Price Settings Api Fleet Fuel Price Settings Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Price Settings",
+    "tags": [
+     "fuel"
+    ]
+   },
+   "put": {
+    "description": "Set the date weekly pricing starts from. Costs already written on fills are never removed or recalculated.",
+    "operationId": "set_price_settings_api_fleet_fuel_price_settings_put",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/PriceSettingsIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Set Price Settings Api Fleet Fuel Price Settings Put",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Set Price Settings",
+    "tags": [
+     "fuel"
+    ]
+   }
+  },
+  "/api/fleet/fuel/reports": {
+   "get": {
+    "operationId": "reports_api_fleet_fuel_reports_get",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "group",
+      "required": false,
+      "schema": {
+       "default": "vehicle",
+       "enum": [
+        "vehicle",
+        "day",
+        "driver",
+        "card"
+       ],
+       "title": "Group",
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "date_from",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "format": "date",
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Date From"
+      }
+     },
+     {
+      "in": "query",
+      "name": "date_to",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "format": "date",
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Date To"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Reports Api Fleet Fuel Reports Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Reports",
+    "tags": [
+     "fuel"
+    ]
+   }
+  },
+  "/api/fleet/fuel/reports/email": {
+   "post": {
+    "description": "Send this report as an email to the people named, now, because someone asked. It goes through the\nsame gate as every other message, so with safe mode on it is held in the outbox and not sent.",
+    "operationId": "email_report_api_fleet_fuel_reports_email_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/EmailReportIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Email Report Api Fleet Fuel Reports Email Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Email Report",
+    "tags": [
+     "fuel"
+    ]
+   }
+  },
+  "/api/fleet/fuel/reports/export": {
+   "get": {
+    "operationId": "reports_export_api_fleet_fuel_reports_export_get",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "group",
+      "required": false,
+      "schema": {
+       "default": "vehicle",
+       "enum": [
+        "vehicle",
+        "day",
+        "driver",
+        "card"
+       ],
+       "title": "Group",
+       "type": "string"
+      }
+     },
+     {
+      "in": "query",
+      "name": "date_from",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "format": "date",
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Date From"
+      }
+     },
+     {
+      "in": "query",
+      "name": "date_to",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "format": "date",
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Date To"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Reports Export",
+    "tags": [
+     "fuel"
+    ]
+   }
+  },
+  "/api/fleet/fuel/smartfill-status": {
+   "get": {
+    "operationId": "smartfill_status_api_fleet_fuel_smartfill_status_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Smartfill Status Api Fleet Fuel Smartfill Status Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Smartfill Status",
+    "tags": [
+     "fuel"
+    ]
+   }
+  },
+  "/api/fleet/fuel/stats": {
+   "get": {
+    "operationId": "stats_api_fleet_fuel_stats_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Stats Api Fleet Fuel Stats Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Stats",
+    "tags": [
+     "fuel"
+    ]
+   }
+  },
+  "/api/fleet/fuel/sync-smartfill": {
+   "post": {
+    "description": "Preview (the default) or import the last `days` days of fills from SmartFill.",
+    "operationId": "sync_smartfill_api_fleet_fuel_sync_smartfill_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/SmartfillIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Sync Smartfill Api Fleet Fuel Sync Smartfill Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Sync Smartfill",
+    "tags": [
+     "fuel"
+    ]
+   }
+  },
+  "/api/fleet/fuel/transactions": {
+   "get": {
+    "operationId": "transactions_api_fleet_fuel_transactions_get",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "date_from",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "format": "date",
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Date From"
+      }
+     },
+     {
+      "in": "query",
+      "name": "date_to",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "format": "date",
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Date To"
+      }
+     },
+     {
+      "in": "query",
+      "name": "asset_id",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Asset Id"
+      }
+     },
+     {
+      "in": "query",
+      "name": "card_number",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Card Number"
+      }
+     },
+     {
+      "in": "query",
+      "name": "worker_id",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Worker Id"
+      }
+     },
+     {
+      "in": "query",
+      "name": "attribution",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Attribution"
+      }
+     },
+     {
+      "in": "query",
+      "name": "pricing",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Pricing"
+      }
+     },
+     {
+      "in": "query",
+      "name": "page",
+      "required": false,
+      "schema": {
+       "default": 1,
+       "minimum": 1,
+       "title": "Page",
+       "type": "integer"
+      }
+     },
+     {
+      "in": "query",
+      "name": "page_size",
+      "required": false,
+      "schema": {
+       "default": 50,
+       "maximum": 200,
+       "minimum": 1,
+       "title": "Page Size",
+       "type": "integer"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Transactions Api Fleet Fuel Transactions Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Transactions",
+    "tags": [
+     "fuel"
+    ]
+   }
+  },
+  "/api/fleet/fuel/transactions/{txn_id}": {
+   "get": {
+    "operationId": "transaction_api_fleet_fuel_transactions__txn_id__get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "txn_id",
+      "required": true,
+      "schema": {
+       "title": "Txn Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Transaction Api Fleet Fuel Transactions  Txn Id  Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Transaction",
+    "tags": [
+     "fuel"
+    ]
+   }
+  },
+  "/api/fleet/fuel/transactions/{txn_id}/match": {
+   "post": {
+    "operationId": "match_api_fleet_fuel_transactions__txn_id__match_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "txn_id",
+      "required": true,
+      "schema": {
+       "title": "Txn Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/MatchIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Match Api Fleet Fuel Transactions  Txn Id  Match Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Match",
+    "tags": [
+     "fuel"
+    ]
+   }
+  },
+  "/api/fleet/fuel/weekly-diesel": {
+   "get": {
+    "description": "This week's rate (or that it is waiting), the weeks with fills still waiting, and every rate fixed so far.",
+    "operationId": "weekly_diesel_api_fleet_fuel_weekly_diesel_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Weekly Diesel Api Fleet Fuel Weekly Diesel Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Weekly Diesel",
+    "tags": [
+     "fuel"
+    ]
+   },
+   "put": {
+    "description": "Admin only: fix a week's rate from seven daily prices typed in from the FuelCheck page, for when\nthe price list cannot be read automatically. The same rule applies: all seven days, written once.\nA week that already has a rate cannot be entered again.",
+    "operationId": "enter_week_api_fleet_fuel_weekly_diesel_put",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ManualWeekIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Enter Week Api Fleet Fuel Weekly Diesel Put",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Enter Week",
+    "tags": [
+     "fuel"
+    ]
+   }
+  },
+  "/api/fleet/fuel/weekly-diesel/refresh": {
+   "post": {
+    "description": "Read the daily diesel prices and fix the rate for this week and for any earlier week with fills\nwaiting, where all seven source days are available. A week that already has a rate is not touched.",
+    "operationId": "refresh_weekly_api_fleet_fuel_weekly_diesel_refresh_post",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Refresh Weekly Api Fleet Fuel Weekly Diesel Refresh Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Refresh Weekly",
+    "tags": [
+     "fuel"
     ]
    }
   },

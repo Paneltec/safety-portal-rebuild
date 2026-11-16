@@ -578,6 +578,50 @@ FEATURES.update({
     "SERV-01": ("PARTIAL", "tests/test_service.py; tests/test_fleet.py; e2e fleet step", "Built: meter history; schedules by days, kilometres and hours (whichever first) with warning margins; status ok, due soon, overdue or cannot-tell; service, repair and inspection records with meters, cost and a checklist; recording a service restarts its schedule; schedule edits never rewrite history; fleet-wide due list; reminders with preview and dedupe. Outstanding: attachments on a schedule or record, the printable service check sheet (PDF and templates), technician picker, assigning a schedule to a person from the screen."),
 })
 
+T_FUEL = "tests/test_fuel.py"
+_FU = "/api/fleet/fuel"
+DONE.update({
+    ("POST", _FU + "/import-csv"): (_A, "fuel.import_csv", T_FUEL, "IMPLEMENTED_TESTED", "Preview by default; explicit timezone recorded; admin only"),
+    ("POST", _FU + "/sync-smartfill"): (_A, "fuel.sync_smartfill", T_FUEL, "IMPLEMENTED_TESTED", "Preview by default; shared call limiter; mock transport only"),
+    ("GET", _FU + "/smartfill-status"): (_A, "fuel.smartfill_status", T_FUEL, "IMPLEMENTED_TESTED", "Says manual only: nothing imports by itself"),
+    ("GET", _FU + "/batches"): (_A, "fuel.batches", T_FUEL, "IMPLEMENTED_TESTED", ""),
+    ("GET", _FU + "/batches/{batch_id}"): (_A, "fuel.batch_detail", T_FUEL, "IMPLEMENTED_TESTED", ""),
+    ("GET", _FU + "/transactions"): (_A, "fuel.transactions", T_FUEL, "IMPLEMENTED_TESTED", ""),
+    ("GET", _FU + "/transactions/{txn_id}"): (_A, "fuel.transaction", T_FUEL, "IMPLEMENTED_TESTED", ""),
+    ("POST", _FU + "/transactions/{txn_id}/match"): (_A, "fuel.match", T_FUEL, "IMPLEMENTED_TESTED", "Previous value, reviewer and reason audited"),
+    ("GET", "/api/fleet/assets/{asset_id}/fuel"): (_A, "fuel.transactions", T_FUEL, "IMPLEMENTED_TESTED", "GET /api/fleet/fuel/transactions?asset_id="),
+    ("GET", _FU + "/cards"): (_A, "fuel.cards", T_FUEL, "IMPLEMENTED_TESTED", ""),
+    ("PATCH", _FU + "/cards/{card_number}"): (_A, "fuel.assign_card", T_FUEL, "IMPLEMENTED_TESTED", "Earlier fills re-matched only when asked"),
+    ("POST", _FU + "/cards/{card_number}/assign"): (_A, "fuel.assign_card", T_FUEL, "IMPLEMENTED_TESTED", "PATCH /api/fleet/fuel/cards/{card_number}"),
+    ("GET", _FU + "/cards/{card_number}/transactions"): (_A, "fuel.transactions", T_FUEL, "IMPLEMENTED_TESTED", "GET /api/fleet/fuel/transactions?card_number="),
+    ("GET", _FU + "/weekly-diesel"): (_A, "fuel.weekly_diesel", T_FUEL, "IMPLEMENTED_TESTED", "This week, waiting weeks and the ledger of fixed rates"),
+    ("POST", _FU + "/weekly-diesel/refresh"): (_A, "fuel.refresh_weekly", T_FUEL, "IMPLEMENTED_TESTED", "Business rule B04; fixture 2.0300 reproduced; FuelCheck mocked"),
+    ("PUT", _FU + "/weekly-diesel"): (_A, "fuel.enter_week", T_FUEL, "IMPLEMENTED_TESTED", "Different meaning from the baseline: an admin types in the seven source prices for a week with no rate (D-072)"),
+    ("GET", _FU + "/price-settings"): (_A, "fuel.price_settings", T_FUEL, "IMPLEMENTED_TESTED", "Weekly mode only; optional start date"),
+    ("PUT", _FU + "/price-settings"): (_A, "fuel.set_price_settings", T_FUEL, "IMPLEMENTED_TESTED", "No fixed or provisional price mode (D-071)"),
+    ("GET", _FU + "/reports"): (_A, "fuel.reports", T_FUEL, "IMPLEMENTED_TESTED", "Per vehicle by default; day, driver, card"),
+    ("GET", _FU + "/reports/export"): (_A, "fuel.reports_export", T_FUEL, "IMPLEMENTED_TESTED", "CSV, formula-safe"),
+    ("POST", _FU + "/reports/email"): (_A, "fuel.email_report", T_FUEL, "IMPLEMENTED_TESTED", "Plain text through the comms boundary; no attachments"),
+    ("GET", _FU + "/stats"): (_A, "fuel.stats", T_FUEL, "IMPLEMENTED_TESTED", ""),
+    ("GET", _FU + "/anomalies"): (_A, "fuel.anomalies", T_FUEL, "IMPLEMENTED_TESTED", "One row per fill with every reason"),
+    ("GET", _FU + "/anomalies/matching-ids"): (_A, "fuel.matching_ids", T_FUEL, "IMPLEMENTED_TESTED", ""),
+    ("POST", _FU + "/anomalies/{txn_id}/resolve"): (_A, "fuel.resolve", T_FUEL, "IMPLEMENTED_TESTED", ""),
+    ("POST", _FU + "/anomalies/{txn_id}/dismiss"): (_A, "fuel.dismiss", T_FUEL, "IMPLEMENTED_TESTED", "A reason is required"),
+    ("POST", _FU + "/anomalies/{txn_id}/reopen"): (_A, "fuel.reopen", T_FUEL, "IMPLEMENTED_TESTED", ""),
+    ("POST", _FU + "/anomalies/bulk-resolve"): (_A, "fuel.bulk_resolve", T_FUEL, "IMPLEMENTED_TESTED", "Changed, unchanged and not-found counts"),
+    ("POST", _FU + "/anomalies/bulk-dismiss"): (_A, "fuel.bulk_dismiss", T_FUEL, "IMPLEMENTED_TESTED", ""),
+    ("POST", _FU + "/anomalies/bulk-reopen"): (_A, "fuel.bulk_reopen", T_FUEL, "IMPLEMENTED_TESTED", ""),
+    ("POST", _FU + "/anomalies/bulk-attribute"): (_A, "fuel.bulk_attribute", T_FUEL, "IMPLEMENTED_TESTED", ""),
+    ("POST", "/api/integrations/smartfill/test-connection"): (_A, "comms.test_connection", T_FUEL, "IMPLEMENTED_TESTED", "Mock transport only"),
+})
+FEATURES.update({
+    "FUEL-01": ("PARTIAL", "tests/test_fuel.py; e2e fuel step", "Built: CSV import with preview, stated timezone, row-level errors and batch history; SmartFill import through the adapter; upsert on the provider's transaction id (gaps filled, conflicts counted, never duplicated); attribution labelled direct (registration), card, manual or unmatched; card assignment with optional re-match; unmatched fuel stays in totals. SmartFill is NOT VERIFIED against the real service. Outstanding: card date windows and worker cards, deleting an import batch, scheduled import."),
+    "FUEL-02": ("PARTIAL", "tests/test_fuel.py; e2e fuel step", "Built and tested against the pack's fixture (200..206 cents gives 2.0300; 10 L = 20.30, 25 L = 50.75, total 71.05): Monday to Sunday weeks in the organisation's timezone, seven source days required, half-up rounding, atomic write-once rate, per-fill cost written once, pending state with unpriced litres disclosed, no fallback price, diesel only, admin entry of the seven prices by hand. NOT VERIFIED: the live FuelCheck request (mocked; its availability and terms must be checked before switching it on)."),
+    "FUEL-03": ("PARTIAL", "tests/test_fuel.py; e2e fuel step", "Built: per-vehicle default, by day (fill date), driver and card; totals with an explicit not-complete marker; supplier amounts shown separately; CSV download; email as plain text through the outbox. Outstanding: PDF and attachments on the email, drill-down from a report row, per-asset fuel panel on the asset page."),
+    "FUEL-04": ("PARTIAL", "tests/test_fuel.py; e2e fuel step", "Built: seven plain-language reasons with evidence judged at the time of the fill; one row per fill; no duplicate flags on re-import; resolve, dismiss (reason required), reopen, match to a vehicle; bulk actions with counts; select all matching; a corrected reason closes itself with a note; nothing is sent. Outstanding: filters by driver and site, hiding and restoring dismissed items."),
+    "INT-04": ("PARTIAL", "tests/test_fuel.py", "Built: the 'parameters' envelope, list or table answers, paging guard (no progress stops; page cap), durable shared call limiter (6 a minute, 60 an hour, 600 a day), simulator labelled and kept out of real totals. NOT VERIFIED against FMT Data (mock transport only; column names in a real answer must be confirmed). Outstanding: scheduled sync, tank levels, Retry-After handling, counting the connection test against the limiter."),
+})
+
 
 def main() -> None:
     path = HERE / "endpoint_coverage.csv"

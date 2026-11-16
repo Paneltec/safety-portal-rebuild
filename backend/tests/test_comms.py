@@ -55,7 +55,7 @@ TM = {"settings": {"username": "paneltec"}, "secrets": {"api_key": SECRET}, "mod
 def test_catalogue_and_permissions(world, client):
     admin = world.auth("admin1")
     listing = client.get(I, headers=admin).json()
-    assert [i["kind"] for i in listing["items"]] == ["simpro", "navixy", "smartfill", "microsoft365", "textmagic"]
+    assert [i["kind"] for i in listing["items"]] == ["simpro", "navixy", "smartfill", "fuelcheck", "microsoft365", "textmagic"]
     assert all(i["status"]["state"] == "not_configured" and i["mode"] == "off" for i in listing["items"])
     assert listing["encryption"]["configured"] is True and listing["safe_mode"] == "on"
     assert client.get(I, headers=world.auth("auditor1")).status_code == 200

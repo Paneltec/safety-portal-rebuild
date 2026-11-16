@@ -323,49 +323,49 @@ GET,/api/files/{file_id}/pdf,file_pdf,file_pdf,CLASSIFY,,,NOT_STARTED,
 GET,/api/files/{file_id}/pdf.pdf,file_pdf,file_pdf_aliased,CLASSIFY,,,NOT_STARTED,
 POST,/api/files/{file_id}/preview-token,file_pdf,mint_file_preview_token,CLASSIFY,,,NOT_STARTED,
 GET,/api/fleet/assets/{asset_id},fleet,get_asset_detail,team/resource,fleet.get_one,tests/test_service.py,IMPLEMENTED_TESTED,GET /api/assets/{asset_id} plus its /schedules and /records
-GET,/api/fleet/assets/{asset_id}/fuel,fleet_fuel,asset_fuel_feed,CLASSIFY,,,NOT_STARTED,
+GET,/api/fleet/assets/{asset_id}/fuel,fleet_fuel,asset_fuel_feed,team/resource,fuel.transactions,tests/test_fuel.py,IMPLEMENTED_TESTED,GET /api/fleet/fuel/transactions?asset_id=
 GET,/api/fleet/assets/{asset_id}/fuel-summary,fleet_fuel,asset_fuel_summary,CLASSIFY,,,NOT_STARTED,
 GET,/api/fleet/assets/{asset_id}/next-service,fleet,get_next_service,team/resource,service.list_schedules,tests/test_service.py,IMPLEMENTED_TESTED,Each schedule carries its status and due point; nothing is cached
 GET,/api/fleet/assets/{asset_id}/service-sheet/{maintenance_id}/pdf,fleet,get_service_sheet_pdf,CLASSIFY,,,NOT_STARTED,
 POST,/api/fleet/assets/{asset_id}/services,fleet,log_service,team/resource,service.create_record,tests/test_service.py,IMPLEMENTED_TESTED,POST /api/assets/{asset_id}/records
 GET,/api/fleet/categories,fleet,get_categories,team/resource,fleet.categories,tests/test_fleet.py,IMPLEMENTED_TESTED,GET /api/assets/categories
-GET,/api/fleet/fuel/anomalies,fleet_fuel,list_anomalies,CLASSIFY,,,NOT_STARTED,
-POST,/api/fleet/fuel/anomalies/bulk-attribute,fleet_fuel,bulk_attribute_anomalies,CLASSIFY,,,NOT_STARTED,
-POST,/api/fleet/fuel/anomalies/bulk-dismiss,fleet_fuel,bulk_dismiss_anomalies,CLASSIFY,,,NOT_STARTED,
-POST,/api/fleet/fuel/anomalies/bulk-reopen,fleet_fuel,bulk_reopen_anomalies,CLASSIFY,,,NOT_STARTED,
-POST,/api/fleet/fuel/anomalies/bulk-resolve,fleet_fuel,bulk_resolve_anomalies,CLASSIFY,,,NOT_STARTED,
-GET,/api/fleet/fuel/anomalies/matching-ids,fleet_fuel,anomalies_matching_ids,CLASSIFY,,,NOT_STARTED,
+GET,/api/fleet/fuel/anomalies,fleet_fuel,list_anomalies,team/resource,fuel.anomalies,tests/test_fuel.py,IMPLEMENTED_TESTED,One row per fill with every reason
+POST,/api/fleet/fuel/anomalies/bulk-attribute,fleet_fuel,bulk_attribute_anomalies,team/resource,fuel.bulk_attribute,tests/test_fuel.py,IMPLEMENTED_TESTED,
+POST,/api/fleet/fuel/anomalies/bulk-dismiss,fleet_fuel,bulk_dismiss_anomalies,team/resource,fuel.bulk_dismiss,tests/test_fuel.py,IMPLEMENTED_TESTED,
+POST,/api/fleet/fuel/anomalies/bulk-reopen,fleet_fuel,bulk_reopen_anomalies,team/resource,fuel.bulk_reopen,tests/test_fuel.py,IMPLEMENTED_TESTED,
+POST,/api/fleet/fuel/anomalies/bulk-resolve,fleet_fuel,bulk_resolve_anomalies,team/resource,fuel.bulk_resolve,tests/test_fuel.py,IMPLEMENTED_TESTED,"Changed, unchanged and not-found counts"
+GET,/api/fleet/fuel/anomalies/matching-ids,fleet_fuel,anomalies_matching_ids,team/resource,fuel.matching_ids,tests/test_fuel.py,IMPLEMENTED_TESTED,
 POST,/api/fleet/fuel/anomalies/{txn_id}/delete-dismissal,fleet_fuel,delete_anomaly_dismissal,CLASSIFY,,,NOT_STARTED,
-POST,/api/fleet/fuel/anomalies/{txn_id}/dismiss,fleet_fuel,dismiss_anomaly,CLASSIFY,,,NOT_STARTED,
-POST,/api/fleet/fuel/anomalies/{txn_id}/reopen,fleet_fuel,reopen_anomaly,CLASSIFY,,,NOT_STARTED,
-POST,/api/fleet/fuel/anomalies/{txn_id}/resolve,fleet_fuel,resolve_anomaly,CLASSIFY,,,NOT_STARTED,
+POST,/api/fleet/fuel/anomalies/{txn_id}/dismiss,fleet_fuel,dismiss_anomaly,team/resource,fuel.dismiss,tests/test_fuel.py,IMPLEMENTED_TESTED,A reason is required
+POST,/api/fleet/fuel/anomalies/{txn_id}/reopen,fleet_fuel,reopen_anomaly,team/resource,fuel.reopen,tests/test_fuel.py,IMPLEMENTED_TESTED,
+POST,/api/fleet/fuel/anomalies/{txn_id}/resolve,fleet_fuel,resolve_anomaly,team/resource,fuel.resolve,tests/test_fuel.py,IMPLEMENTED_TESTED,
 POST,/api/fleet/fuel/anomalies/{txn_id}/undelete-dismissal,fleet_fuel,undelete_anomaly_dismissal,CLASSIFY,,,NOT_STARTED,
-GET,/api/fleet/fuel/batches,fleet_fuel,list_batches,CLASSIFY,,,NOT_STARTED,
+GET,/api/fleet/fuel/batches,fleet_fuel,list_batches,team/resource,fuel.batches,tests/test_fuel.py,IMPLEMENTED_TESTED,
 DELETE,/api/fleet/fuel/batches/{batch_id},fleet_fuel,delete_batch,CLASSIFY,,,NOT_STARTED,
-GET,/api/fleet/fuel/batches/{batch_id},fleet_fuel,get_batch,CLASSIFY,,,NOT_STARTED,
-GET,/api/fleet/fuel/cards,fleet_fuel,list_fuel_cards,CLASSIFY,,,NOT_STARTED,
-PATCH,/api/fleet/fuel/cards/{card_number},fleet_fuel,update_fuel_card,CLASSIFY,,,NOT_STARTED,
-POST,/api/fleet/fuel/cards/{card_number}/assign,fleet_fuel,card_assign,CLASSIFY,,,NOT_STARTED,
+GET,/api/fleet/fuel/batches/{batch_id},fleet_fuel,get_batch,team/resource,fuel.batch_detail,tests/test_fuel.py,IMPLEMENTED_TESTED,
+GET,/api/fleet/fuel/cards,fleet_fuel,list_fuel_cards,team/resource,fuel.cards,tests/test_fuel.py,IMPLEMENTED_TESTED,
+PATCH,/api/fleet/fuel/cards/{card_number},fleet_fuel,update_fuel_card,team/resource,fuel.assign_card,tests/test_fuel.py,IMPLEMENTED_TESTED,Earlier fills re-matched only when asked
+POST,/api/fleet/fuel/cards/{card_number}/assign,fleet_fuel,card_assign,team/resource,fuel.assign_card,tests/test_fuel.py,IMPLEMENTED_TESTED,PATCH /api/fleet/fuel/cards/{card_number}
 GET,/api/fleet/fuel/cards/{card_number}/summary,fleet_fuel,card_summary,CLASSIFY,,,NOT_STARTED,
-GET,/api/fleet/fuel/cards/{card_number}/transactions,fleet_fuel,card_transactions,CLASSIFY,,,NOT_STARTED,
+GET,/api/fleet/fuel/cards/{card_number}/transactions,fleet_fuel,card_transactions,team/resource,fuel.transactions,tests/test_fuel.py,IMPLEMENTED_TESTED,GET /api/fleet/fuel/transactions?card_number=
 GET,/api/fleet/fuel/export,fleet_fuel,export_csv_ep,CLASSIFY,,,NOT_STARTED,
-POST,/api/fleet/fuel/import-csv,fleet_fuel,import_csv_ep,CLASSIFY,,,NOT_STARTED,
+POST,/api/fleet/fuel/import-csv,fleet_fuel,import_csv_ep,team/resource,fuel.import_csv,tests/test_fuel.py,IMPLEMENTED_TESTED,Preview by default; explicit timezone recorded; admin only
 GET,/api/fleet/fuel/price-history,fuel_price_settings,get_price_history,CLASSIFY,,,NOT_STARTED,
-GET,/api/fleet/fuel/price-settings,fuel_price_settings,get_price_settings,CLASSIFY,,,NOT_STARTED,
-PUT,/api/fleet/fuel/price-settings,fuel_price_settings,put_price_settings,CLASSIFY,,,NOT_STARTED,
-GET,/api/fleet/fuel/reports,fleet_fuel_reports,fuel_reports,CLASSIFY,,,NOT_STARTED,
-POST,/api/fleet/fuel/reports/email,fleet_fuel_reports,fuel_report_email,CLASSIFY,,,NOT_STARTED,
-GET,/api/fleet/fuel/reports/export,fleet_fuel_reports,fuel_report_export,CLASSIFY,,,NOT_STARTED,
+GET,/api/fleet/fuel/price-settings,fuel_price_settings,get_price_settings,team/resource,fuel.price_settings,tests/test_fuel.py,IMPLEMENTED_TESTED,Weekly mode only; optional start date
+PUT,/api/fleet/fuel/price-settings,fuel_price_settings,put_price_settings,team/resource,fuel.set_price_settings,tests/test_fuel.py,IMPLEMENTED_TESTED,No fixed or provisional price mode (D-071)
+GET,/api/fleet/fuel/reports,fleet_fuel_reports,fuel_reports,team/resource,fuel.reports,tests/test_fuel.py,IMPLEMENTED_TESTED,"Per vehicle by default; day, driver, card"
+POST,/api/fleet/fuel/reports/email,fleet_fuel_reports,fuel_report_email,team/resource,fuel.email_report,tests/test_fuel.py,IMPLEMENTED_TESTED,Plain text through the comms boundary; no attachments
+GET,/api/fleet/fuel/reports/export,fleet_fuel_reports,fuel_report_export,team/resource,fuel.reports_export,tests/test_fuel.py,IMPLEMENTED_TESTED,"CSV, formula-safe"
 POST,/api/fleet/fuel/smartfill-auto-sync,fleet_fuel,smartfill_auto_sync_toggle_ep,CLASSIFY,,,NOT_STARTED,
-GET,/api/fleet/fuel/smartfill-status,fleet_fuel,smartfill_status_ep,CLASSIFY,,,NOT_STARTED,
-GET,/api/fleet/fuel/stats,fleet_fuel,fuel_stats,CLASSIFY,,,NOT_STARTED,
-POST,/api/fleet/fuel/sync-smartfill,fleet_fuel,sync_smartfill_ep,CLASSIFY,,,NOT_STARTED,
-GET,/api/fleet/fuel/transactions,fleet_fuel,list_transactions,CLASSIFY,,,NOT_STARTED,
-GET,/api/fleet/fuel/transactions/{txn_id},fleet_fuel,get_transaction,CLASSIFY,,,NOT_STARTED,
-POST,/api/fleet/fuel/transactions/{txn_id}/match,fleet_fuel,match_txn,CLASSIFY,,,NOT_STARTED,
-GET,/api/fleet/fuel/weekly-diesel,fuel_weekly_prices,get_weekly,CLASSIFY,,,NOT_STARTED,
-PUT,/api/fleet/fuel/weekly-diesel,fuel_weekly_prices,set_weekly,CLASSIFY,,,NOT_STARTED,
-POST,/api/fleet/fuel/weekly-diesel/refresh,fuel_weekly_prices,refresh_weekly,CLASSIFY,,,NOT_STARTED,
+GET,/api/fleet/fuel/smartfill-status,fleet_fuel,smartfill_status_ep,team/resource,fuel.smartfill_status,tests/test_fuel.py,IMPLEMENTED_TESTED,Says manual only: nothing imports by itself
+GET,/api/fleet/fuel/stats,fleet_fuel,fuel_stats,team/resource,fuel.stats,tests/test_fuel.py,IMPLEMENTED_TESTED,
+POST,/api/fleet/fuel/sync-smartfill,fleet_fuel,sync_smartfill_ep,team/resource,fuel.sync_smartfill,tests/test_fuel.py,IMPLEMENTED_TESTED,Preview by default; shared call limiter; mock transport only
+GET,/api/fleet/fuel/transactions,fleet_fuel,list_transactions,team/resource,fuel.transactions,tests/test_fuel.py,IMPLEMENTED_TESTED,
+GET,/api/fleet/fuel/transactions/{txn_id},fleet_fuel,get_transaction,team/resource,fuel.transaction,tests/test_fuel.py,IMPLEMENTED_TESTED,
+POST,/api/fleet/fuel/transactions/{txn_id}/match,fleet_fuel,match_txn,team/resource,fuel.match,tests/test_fuel.py,IMPLEMENTED_TESTED,"Previous value, reviewer and reason audited"
+GET,/api/fleet/fuel/weekly-diesel,fuel_weekly_prices,get_weekly,team/resource,fuel.weekly_diesel,tests/test_fuel.py,IMPLEMENTED_TESTED,"This week, waiting weeks and the ledger of fixed rates"
+PUT,/api/fleet/fuel/weekly-diesel,fuel_weekly_prices,set_weekly,team/resource,fuel.enter_week,tests/test_fuel.py,IMPLEMENTED_TESTED,Different meaning from the baseline: an admin types in the seven source prices for a week with no rate (D-072)
+POST,/api/fleet/fuel/weekly-diesel/refresh,fuel_weekly_prices,refresh_weekly,team/resource,fuel.refresh_weekly,tests/test_fuel.py,IMPLEMENTED_TESTED,Business rule B04; fixture 2.0300 reproduced; FuelCheck mocked
 GET,/api/fleet/navixy/tags,fleet_navixy_tags,get_navixy_tags,team/resource,fleet.navixy_status,tests/test_fleet.py,IMPLEMENTED_TESTED,GET /api/fleet/navixy/status; PUT /api/fleet/navixy/tags chooses them
 GET,/api/fleet/register,fleet,get_register,team/resource,fleet.list_assets,tests/test_fleet.py,IMPLEMENTED_TESTED,GET /api/assets
 GET,/api/fleet/search,fleet,fleet_search,team/resource,fleet.list_assets,tests/test_fleet.py,IMPLEMENTED_TESTED,GET /api/assets?q= (assets only; cross-register search is stage 9)
@@ -517,7 +517,7 @@ GET,/api/integrations/simpro/workers/snapshots,integrations_simpro_workers,list_
 GET,/api/integrations/simpro/workers/snapshots/{snapshot_id},integrations_simpro_workers,snapshot_detail,CLASSIFY,,,NOT_STARTED,
 GET,/api/integrations/simpro/workers/unmatched-summary,simpro_zip_import,unmatched_summary,CLASSIFY,,,NOT_STARTED,
 GET,/api/integrations/simpro/workers/zip-status,simpro_zip_import,workers_zip_status,CLASSIFY,,,NOT_STARTED,
-POST,/api/integrations/smartfill/test-connection,integrations,smartfill_test_connection,team/resource,comms.test_connection,tests/test_comms.py,IMPLEMENTED_TESTED,Tank:Level with the parameters envelope. Mock transport only
+POST,/api/integrations/smartfill/test-connection,integrations,smartfill_test_connection,team/resource,comms.test_connection,tests/test_fuel.py,IMPLEMENTED_TESTED,Mock transport only
 POST,/api/integrations/textmagic/send-sms,integrations_textmagic,tm_send,CLASSIFY,,,NOT_STARTED,
 POST,/api/integrations/textmagic/test-connection,integrations_textmagic,tm_test,team/resource,comms.test_connection,tests/test_comms.py,IMPLEMENTED_TESTED,GET /user; no text is sent. Mock transport only
 GET,/api/integrations/{kind},integrations,get_integration,team/resource,comms.get_integration,tests/test_comms.py,IMPLEMENTED_TESTED,Secrets reported as set/not set only

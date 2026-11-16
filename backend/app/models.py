@@ -1180,3 +1180,152 @@ class AssetServiceRecord(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
     deleted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
+class FuelCard(Base):
+    """A fuel card, key or fob as the fuel system knows it, and what it is assigned to here."""
+
+    __tablename__ = "fuel_cards"
+    __table_args__ = (UniqueConstraint("org_id", "card_number", name="uq_fuel_cards"),)
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    org_id: Mapped[str] = mapped_column(ForeignKey("organisations.id"), index=True)
+    card_number: Mapped[str] = mapped_column(String(80))
+    label: Mapped[str | None] = mapped_column(String(200))  # how the fuel system describes it
+    asset_id: Mapped[str | None] = mapped_column(ForeignKey("assets.id"))
+    worker_id: Mapped[str | None] = mapped_column(ForeignKey("workers.id"))
+    notes: Mapped[str | None] = mapped_column(Text)
+    simulated: Mapped[bool] = mapped_column(Boolean, default=False)
+    assigned_by: Mapped[str | None] = mapped_column(String(36))
+    assigned_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+class FuelBatch(Base):
+    """One import of fuel transactions: where it came from and what it changed."""
+
+    __tablename__ = "fuel_batches"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    org_id: Mapped[str] = mapped_column(ForeignKey("organisations.id"), index=True)
+    via: Mapped[str] = mapped_column(String(12))  # csv | api | simulator
+    filename: Mapped[str | None] = mapped_column(String(300))
+    sha256: Mapped[str | None] = mapped_column(String(64))
+    timezone: Mapped[str | None] = mapped_column(String(64))  # how times without an offset were read
+    dry_run: Mapped[bool] = mapped_column(Boolean, default=False)
+    status: Mapped[str] = mapped_column(String(12))  # previewed | committed | failed
+    counts: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict)
+    errors: Mapped[list[Any]] = mapped_column(JSONB, default=list)
+    warnings: Mapped[list[Any]] = mapped_column(JSONB, default=list)
+    created_by: Mapped[str | None] = mapped_column(String(36))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class FuelWeeklyPrice(Base):
+    """The diesel rate for one Monday-to-Sunday week, fixed from the seven daily observations of the
+    week before (business rule B04). Written once and never changed or deleted. A rate made from
+    simulator data is kept apart (simulated=True) and only ever prices simulator fills."""
+
+    __tablename__ = "fuel_weekly_prices"
+    __table_args__ = (UniqueConstraint("org_id", "week_start", "simulated", name="uq_fuel_weekly_prices"),)
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    org_id: Mapped[str] = mapped_column(ForeignKey("organisations.id"), index=True)
+    week_start: Mapped[date] = mapped_column(Date)
+    week_end: Mapped[date] = mapped_column(Date)
+    source_week_start: Mapped[date] = mapped_column(Date)
+    source_week_end: Mapped[date] = mapped_column(Date)
+    daily_cents: Mapped[list[Any]] = mapped_column(JSONB)  # [{"date": "YYYY-MM-DD", "price": "203.4"}] x 7
+    rate: Mapped[Decimal] = mapped_column(Numeric(8, 4))  # AUD per litre
+    fuel_code: Mapped[str] = mapped_column(String(8), default="DL")
+    currency: Mapped[str] = mapped_column(String(3), default="AUD")
+    timezone: Mapped[str] = mapped_column(String(64))
+    source: Mapped[str] = mapped_column(String(12))  # fuelcheck | manual | simulator
+    source_url: Mapped[str | None] = mapped_column(String(300))
+    source_note: Mapped[str | None] = mapped_column(String(400))
+    simulated: Mapped[bool] = mapped_column(Boolean, default=False)
+    fetched_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    locked_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    locked_by: Mapped[str | None] = mapped_column(String(36))
+
+
+class FuelTransaction(Base):
+    """One fill. Identity is the provider's own transaction id within the organisation, so importing
+    the same fill again (from the API or a spreadsheet export) updates it rather than adding a copy.
+
+    The supplier's own price and total (source_*) are kept as evidence and are separate from the
+    weekly reporting rate and cost (report_*), which are written once and never changed.
+    """
+
+    __tablename__ = "fuel_transactions"
+    __table_args__ = (
+        UniqueConstraint("org_id", "source_system", "source_id", name="uq_fuel_transactions_source"),
+        Index("ix_fuel_transactions_org_date", "org_id", "local_date"),
+        Index("ix_fuel_transactions_asset", "asset_id", "occurred_at"),
+    )
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    org_id: Mapped[str] = mapped_column(ForeignKey("organisations.id"), index=True)
+    source_system: Mapped[str] = mapped_column(String(20))  # smartfill | simulator
+    source_id: Mapped[str] = mapped_column(String(120))
+    batch_id: Mapped[str | None] = mapped_column(ForeignKey("fuel_batches.id"))
+    occurred_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    local_date: Mapped[date] = mapped_column(Date)
+    local_time: Mapped[str] = mapped_column(String(5))  # HH:MM in the organisation's timezone
+    litres: Mapped[Decimal] = mapped_column(Numeric(12, 3))
+    fuel_type: Mapped[str | None] = mapped_column(String(60))
+    is_diesel: Mapped[bool] = mapped_column(Boolean, default=True)
+    source_unit_price: Mapped[Decimal | None] = mapped_column(Numeric(10, 4))
+    source_total: Mapped[Decimal | None] = mapped_column(Numeric(12, 2))
+    odometer_km: Mapped[float | None] = mapped_column(Float)
+    engine_hours: Mapped[float | None] = mapped_column(Float)
+    card_number: Mapped[str | None] = mapped_column(String(80))
+    driver_name: Mapped[str | None] = mapped_column(String(160))
+    location: Mapped[str | None] = mapped_column(String(200))
+    description: Mapped[str | None] = mapped_column(String(200))
+    registration: Mapped[str | None] = mapped_column(String(40))
+    asset_id: Mapped[str | None] = mapped_column(ForeignKey("assets.id"))
+    worker_id: Mapped[str | None] = mapped_column(ForeignKey("workers.id"))
+    attribution: Mapped[str] = mapped_column(String(12), default="unlinked")  # direct | card | manual | unlinked
+    attribution_note: Mapped[str | None] = mapped_column(String(400))
+    attributed_by: Mapped[str | None] = mapped_column(String(36))
+    attributed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    weekly_price_id: Mapped[str | None] = mapped_column(ForeignKey("fuel_weekly_prices.id"))
+    report_rate: Mapped[Decimal | None] = mapped_column(Numeric(8, 4))
+    report_cost: Mapped[Decimal | None] = mapped_column(Numeric(12, 2))
+    raw: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+class FuelAnomaly(Base):
+    """One reason a fill needs a look. A fill can have several reasons; each reason exists once."""
+
+    __tablename__ = "fuel_anomalies"
+    __table_args__ = (UniqueConstraint("transaction_id", "rule", name="uq_fuel_anomalies"),)
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    org_id: Mapped[str] = mapped_column(ForeignKey("organisations.id"), index=True)
+    transaction_id: Mapped[str] = mapped_column(ForeignKey("fuel_transactions.id"), index=True)
+    rule: Mapped[str] = mapped_column(String(30))
+    severity: Mapped[str] = mapped_column(String(10))  # low | medium | high
+    evidence: Mapped[list[Any]] = mapped_column(JSONB, default=list)
+    status: Mapped[str] = mapped_column(String(12), default="open")  # open | resolved | dismissed
+    note: Mapped[str | None] = mapped_column(String(600))
+    acted_by: Mapped[str | None] = mapped_column(String(36))
+    acted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    detected_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class ProviderCall(Base):
+    """A call made to a rate-limited provider. Kept in the database so the limit holds across
+    processes and restarts, and is shared by manual and scheduled runs."""
+
+    __tablename__ = "provider_calls"
+    __table_args__ = (Index("ix_provider_calls", "org_id", "provider", "called_at"),)
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    org_id: Mapped[str] = mapped_column(ForeignKey("organisations.id"))
+    provider: Mapped[str] = mapped_column(String(30))
+    called_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
