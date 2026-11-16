@@ -549,6 +549,35 @@ FEATURES.update({
     "EQUIP-01": ("PARTIAL", "tests/test_fleet.py; e2e fleet step", "Built: category catalogue, equipment register (as assets of kind equipment), status, where kept, inspection dates with overdue and due-soon states, certificates and documents with expiry. Outstanding: the legacy plant-maintenance catalogue and its re-import."),
 })
 
+T_SVC = "tests/test_service.py"
+DONE.update({
+    ("GET", "/api/assets/service/inbox"): (_A, "service.inbox", T_SVC, "IMPLEMENTED_TESTED", "Overdue, due soon and cannot-tell, worst first"),
+    ("GET", "/api/assets/service/summary"): (_A, "service.summary", T_SVC, "IMPLEMENTED_TESTED", ""),
+    ("POST", "/api/assets/service/scan-reminders"): (_A, "service.scan_reminders", T_SVC, "IMPLEMENTED_TESTED", "Preview by default; one per due point; through the comms boundary"),
+    ("GET", "/api/assets/{asset_id}/schedules"): (_A, "service.list_schedules", T_SVC, "IMPLEMENTED_TESTED", ""),
+    ("POST", "/api/assets/{asset_id}/schedules"): (_A, "service.create_schedule", T_SVC, "IMPLEMENTED_TESTED", ""),
+    ("GET", "/api/assets/{asset_id}/schedules/{sid}"): (_A, "service.get_schedule", T_SVC, "IMPLEMENTED_TESTED", ""),
+    ("PUT", "/api/assets/{asset_id}/schedules/{sid}"): (_A, "service.update_schedule", T_SVC, "IMPLEMENTED_TESTED", "Past records are not rewritten"),
+    ("DELETE", "/api/assets/{asset_id}/schedules/{sid}"): (_A, "service.delete_schedule", T_SVC, "IMPLEMENTED_TESTED", ""),
+    ("GET", "/api/assets/{asset_id}/records"): (_A, "service.list_records", T_SVC, "IMPLEMENTED_TESTED", ""),
+    ("POST", "/api/assets/{asset_id}/records"): (_A, "service.create_record", T_SVC, "IMPLEMENTED_TESTED", "Restarts the linked schedule; moves the meter forward only"),
+    ("GET", "/api/assets/{asset_id}/records/{rid}"): (_A, "service.get_record", T_SVC, "IMPLEMENTED_TESTED", ""),
+    ("PUT", "/api/assets/{asset_id}/records/{rid}"): (_A, "service.update_record", T_SVC, "IMPLEMENTED_TESTED", ""),
+    ("DELETE", "/api/assets/{asset_id}/records/{rid}"): (_A, "service.delete_record", T_SVC, "IMPLEMENTED_TESTED", "Needs the delete right"),
+    ("POST", "/api/fleet/assets/{asset_id}/services"): (_A, "service.create_record", T_SVC, "IMPLEMENTED_TESTED", "POST /api/assets/{asset_id}/records"),
+    ("GET", "/api/fleet/assets/{asset_id}"): (_A, "fleet.get_one", T_SVC, "IMPLEMENTED_TESTED", "GET /api/assets/{asset_id} plus its /schedules and /records"),
+    ("GET", "/api/fleet/assets/{asset_id}/next-service"): (_A, "service.list_schedules", T_SVC, "IMPLEMENTED_TESTED", "Each schedule carries its status and due point; nothing is cached"),
+    ("GET", "/api/fleet/service-status-rollup"): (_A, "fleet.list_assets", T_SVC, "IMPLEMENTED_TESTED", "The register list carries each asset's worst service status"),
+    ("GET", "/api/fleet/service-schedule-presets"): (_A, "service.presets", T_SVC, "IMPLEMENTED_TESTED", "Common intervals; the baseline's exact preset values were not in the pack"),
+    ("GET", "/api/plant/{plant_id}/maintenance"): (_A, "service.list_records", T_SVC, "IMPLEMENTED_TESTED", "GET /api/assets/{asset_id}/records"),
+    ("GET", "/api/plant-maintenance/{uid}"): (_A, "service.get_record", T_SVC, "IMPLEMENTED_TESTED", "Service record"),
+    ("PATCH", "/api/plant-maintenance/{uid}"): (_A, "service.update_record", T_SVC, "IMPLEMENTED_TESTED", "Service record"),
+    ("DELETE", "/api/plant-maintenance/{uid}"): (_A, "service.delete_record", T_SVC, "IMPLEMENTED_TESTED", "Service record"),
+})
+FEATURES.update({
+    "SERV-01": ("PARTIAL", "tests/test_service.py; tests/test_fleet.py; e2e fleet step", "Built: meter history; schedules by days, kilometres and hours (whichever first) with warning margins; status ok, due soon, overdue or cannot-tell; service, repair and inspection records with meters, cost and a checklist; recording a service restarts its schedule; schedule edits never rewrite history; fleet-wide due list; reminders with preview and dedupe. Outstanding: attachments on a schedule or record, the printable service check sheet (PDF and templates), technician picker, assigning a schedule to a person from the screen."),
+})
+
 
 def main() -> None:
     path = HERE / "endpoint_coverage.csv"

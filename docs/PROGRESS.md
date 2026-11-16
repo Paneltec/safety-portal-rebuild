@@ -19,11 +19,12 @@ Updated at the end of each finished part. The ledgers in `docs/ledger/` hold the
 | Stage 5a | Connections catalogue (Simpro, Navixy, SmartFill, Microsoft 365, TextMagic) with encrypted details, read-only tests, labelled simulator and honest status; safe mode (on by default, server lock, explicit grant); single send boundary; outbox with history, retry, cancel; one-time links never stored; notification bell. Provider calls are tested against a mock only | `backend/tests/test_comms.py`, `e2e/walkthrough.py` (connections and outbox step) |
 | Stage 5b | Simpro import of workers, sites and suppliers (dry run, pages, rate-limit retry, per-company results, hand edits kept, review queue, labelled simulator data); expiry reminders for certificates and supplier documents with preview and dedupe. Simpro calls are tested against a mock only | `backend/tests/test_imports.py`, `backend/tests/test_comms.py`, `e2e/walkthrough.py` (connections and outbox step) |
 | Stage 6a | Fleet and equipment register; QR labels; meters with history and regression review; documents and certificates; equipment categories; Navixy tracker list (preview, sync, tags, sign-in refresh) feeding the register and the form vehicle picker, with typing a vehicle in always allowed. Navixy calls are tested against a mock only | `backend/tests/test_fleet.py`, `e2e/walkthrough.py` (fleet and equipment step) |
+| Stage 6b | Service schedules by days, kilometres and hours; due soon, overdue and cannot-tell states; service records that restart their schedule; fleet-wide "Service due" list; service reminders with preview and dedupe | `backend/tests/test_service.py`, `e2e/walkthrough.py` (fleet and equipment step) |
 
 ## Next, in order
 
 1. Left over from stage 5: Simpro jobs, customers, attachments and scheduled sync; compose-and-send for reports; Dropbox.
-1a. **Stage 6b and 6c**: service schedules and records; SmartFill and CSV fuel import, fuel cards, weekly diesel lock, fuel reports, anomaly inbox.
+1a. **Stage 6c**: SmartFill and CSV fuel import, fuel cards, weekly diesel lock, fuel reports, anomaly inbox.
 1b. Left over from stage 4 (all recorded as PARTIAL in the ledger): worker ID card and QR, mobile PIN, supplier QR induction, inductions spreadsheet import and printable matrix, PDF/SMS job import, GPS distance checks at sign-on, supplier document folders.
 1a. Carried forward: bulk pre-start import (IMP-01), reference catalogues (REF-01), AI drafting, positions and asset-type assignment rules, authorised corrections after submit.
 2. Stage 5 onwards as listed in `STAGED_PLAN.md`.

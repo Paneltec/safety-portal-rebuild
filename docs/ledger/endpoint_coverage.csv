@@ -80,9 +80,9 @@ GET,/api/assets/navixy/dashboards/trips,asset_navixy_dashboards,trips,CLASSIFY,,
 POST,/api/assets/navixy/repair-lifetimes,asset_navixy_sync,http_repair_lifetimes,CLASSIFY,,,NOT_STARTED,
 POST,/api/assets/navixy/sync-counters,asset_navixy_sync,http_sync_now,team/resource,fleet.navixy_sync,tests/test_fleet.py,IMPLEMENTED_TESTED,Meters arrive with POST /api/fleet/navixy/sync; counter route unverified against real Navixy
 GET,/api/assets/scan/{scan_token},assets,resolve_scan,team/resource,fleet.scan,tests/test_fleet.py,IMPLEMENTED_TESTED,Signed-in people of the same organisation only (D-069)
-GET,/api/assets/service/inbox,asset_service,service_inbox,CLASSIFY,,,NOT_STARTED,
-POST,/api/assets/service/scan-reminders,asset_service,scan_reminders,CLASSIFY,,,NOT_STARTED,
-GET,/api/assets/service/summary,asset_service,service_summary,CLASSIFY,,,NOT_STARTED,
+GET,/api/assets/service/inbox,asset_service,service_inbox,team/resource,service.inbox,tests/test_service.py,IMPLEMENTED_TESTED,"Overdue, due soon and cannot-tell, worst first"
+POST,/api/assets/service/scan-reminders,asset_service,scan_reminders,team/resource,service.scan_reminders,tests/test_service.py,IMPLEMENTED_TESTED,Preview by default; one per due point; through the comms boundary
+GET,/api/assets/service/summary,asset_service,service_summary,team/resource,service.summary,tests/test_service.py,IMPLEMENTED_TESTED,
 DELETE,/api/assets/{asset_id},assets,archive_asset,team/resource,fleet.delete_asset,tests/test_fleet.py,IMPLEMENTED_TESTED,Soft delete; a sync does not bring it back
 GET,/api/assets/{asset_id},assets,get_asset,team/resource,fleet.get_one,tests/test_fleet.py,IMPLEMENTED_TESTED,
 PUT,/api/assets/{asset_id},assets,update_asset,team/resource,fleet.update_asset,tests/test_fleet.py,IMPLEMENTED_TESTED,Meters are changed through the meter routes so history is kept
@@ -97,16 +97,16 @@ GET,/api/assets/{asset_id}/photo/{gridfs_id},assets,stream_asset_photo,team/reso
 POST,/api/assets/{asset_id}/photos,assets,upload_asset_photo,team/resource,fleet.add_document,tests/test_fleet.py,IMPLEMENTED_TESTED,POST /api/assets/{asset_id}/documents with kind=photo
 DELETE,/api/assets/{asset_id}/photos/{photo_id},assets,delete_asset_photo,team/resource,fleet.delete_document,tests/test_fleet.py,IMPLEMENTED_TESTED,DELETE /api/assets/{asset_id}/documents/{doc_id}
 GET,/api/assets/{asset_id}/qr.png,assets,asset_qr_png,team/resource,fleet.qr_png,tests/test_fleet.py,IMPLEMENTED_TESTED,
-GET,/api/assets/{asset_id}/records,asset_service,list_records,CLASSIFY,,,NOT_STARTED,
-POST,/api/assets/{asset_id}/records,asset_service,create_record,CLASSIFY,,,NOT_STARTED,
-DELETE,/api/assets/{asset_id}/records/{rid},asset_service,delete_record,CLASSIFY,,,NOT_STARTED,
-GET,/api/assets/{asset_id}/records/{rid},asset_service,get_record,CLASSIFY,,,NOT_STARTED,
-PUT,/api/assets/{asset_id}/records/{rid},asset_service,update_record,CLASSIFY,,,NOT_STARTED,
-GET,/api/assets/{asset_id}/schedules,asset_service,list_schedules,CLASSIFY,,,NOT_STARTED,
-POST,/api/assets/{asset_id}/schedules,asset_service,create_schedule,CLASSIFY,,,NOT_STARTED,
-DELETE,/api/assets/{asset_id}/schedules/{sid},asset_service,delete_schedule,CLASSIFY,,,NOT_STARTED,
-GET,/api/assets/{asset_id}/schedules/{sid},asset_service,get_schedule,CLASSIFY,,,NOT_STARTED,
-PUT,/api/assets/{asset_id}/schedules/{sid},asset_service,update_schedule,CLASSIFY,,,NOT_STARTED,
+GET,/api/assets/{asset_id}/records,asset_service,list_records,team/resource,service.list_records,tests/test_service.py,IMPLEMENTED_TESTED,
+POST,/api/assets/{asset_id}/records,asset_service,create_record,team/resource,service.create_record,tests/test_service.py,IMPLEMENTED_TESTED,Restarts the linked schedule; moves the meter forward only
+DELETE,/api/assets/{asset_id}/records/{rid},asset_service,delete_record,team/resource,service.delete_record,tests/test_service.py,IMPLEMENTED_TESTED,Needs the delete right
+GET,/api/assets/{asset_id}/records/{rid},asset_service,get_record,team/resource,service.get_record,tests/test_service.py,IMPLEMENTED_TESTED,
+PUT,/api/assets/{asset_id}/records/{rid},asset_service,update_record,team/resource,service.update_record,tests/test_service.py,IMPLEMENTED_TESTED,
+GET,/api/assets/{asset_id}/schedules,asset_service,list_schedules,team/resource,service.list_schedules,tests/test_service.py,IMPLEMENTED_TESTED,
+POST,/api/assets/{asset_id}/schedules,asset_service,create_schedule,team/resource,service.create_schedule,tests/test_service.py,IMPLEMENTED_TESTED,
+DELETE,/api/assets/{asset_id}/schedules/{sid},asset_service,delete_schedule,team/resource,service.delete_schedule,tests/test_service.py,IMPLEMENTED_TESTED,
+GET,/api/assets/{asset_id}/schedules/{sid},asset_service,get_schedule,team/resource,service.get_schedule,tests/test_service.py,IMPLEMENTED_TESTED,
+PUT,/api/assets/{asset_id}/schedules/{sid},asset_service,update_schedule,team/resource,service.update_schedule,tests/test_service.py,IMPLEMENTED_TESTED,Past records are not rewritten
 POST,/api/assets/{asset_id}/schedules/{sid}/attachments,asset_service,upload_schedule_attachments,CLASSIFY,,,NOT_STARTED,
 DELETE,/api/assets/{asset_id}/schedules/{sid}/attachments/{stored_name},asset_service,delete_schedule_attachment,CLASSIFY,,,NOT_STARTED,
 GET,/api/assets/{asset_id}/schedules/{sid}/attachments/{stored_name},asset_service,serve_schedule_attachment,CLASSIFY,,,NOT_STARTED,
@@ -322,12 +322,12 @@ GET,/api/files/swms_scans/{name},dashboard,serve_swms_scan,CLASSIFY,,,NOT_STARTE
 GET,/api/files/{file_id}/pdf,file_pdf,file_pdf,CLASSIFY,,,NOT_STARTED,
 GET,/api/files/{file_id}/pdf.pdf,file_pdf,file_pdf_aliased,CLASSIFY,,,NOT_STARTED,
 POST,/api/files/{file_id}/preview-token,file_pdf,mint_file_preview_token,CLASSIFY,,,NOT_STARTED,
-GET,/api/fleet/assets/{asset_id},fleet,get_asset_detail,CLASSIFY,,,NOT_STARTED,
+GET,/api/fleet/assets/{asset_id},fleet,get_asset_detail,team/resource,fleet.get_one,tests/test_service.py,IMPLEMENTED_TESTED,GET /api/assets/{asset_id} plus its /schedules and /records
 GET,/api/fleet/assets/{asset_id}/fuel,fleet_fuel,asset_fuel_feed,CLASSIFY,,,NOT_STARTED,
 GET,/api/fleet/assets/{asset_id}/fuel-summary,fleet_fuel,asset_fuel_summary,CLASSIFY,,,NOT_STARTED,
-GET,/api/fleet/assets/{asset_id}/next-service,fleet,get_next_service,CLASSIFY,,,NOT_STARTED,
+GET,/api/fleet/assets/{asset_id}/next-service,fleet,get_next_service,team/resource,service.list_schedules,tests/test_service.py,IMPLEMENTED_TESTED,Each schedule carries its status and due point; nothing is cached
 GET,/api/fleet/assets/{asset_id}/service-sheet/{maintenance_id}/pdf,fleet,get_service_sheet_pdf,CLASSIFY,,,NOT_STARTED,
-POST,/api/fleet/assets/{asset_id}/services,fleet,log_service,CLASSIFY,,,NOT_STARTED,
+POST,/api/fleet/assets/{asset_id}/services,fleet,log_service,team/resource,service.create_record,tests/test_service.py,IMPLEMENTED_TESTED,POST /api/assets/{asset_id}/records
 GET,/api/fleet/categories,fleet,get_categories,team/resource,fleet.categories,tests/test_fleet.py,IMPLEMENTED_TESTED,GET /api/assets/categories
 GET,/api/fleet/fuel/anomalies,fleet_fuel,list_anomalies,CLASSIFY,,,NOT_STARTED,
 POST,/api/fleet/fuel/anomalies/bulk-attribute,fleet_fuel,bulk_attribute_anomalies,CLASSIFY,,,NOT_STARTED,
@@ -369,9 +369,9 @@ POST,/api/fleet/fuel/weekly-diesel/refresh,fuel_weekly_prices,refresh_weekly,CLA
 GET,/api/fleet/navixy/tags,fleet_navixy_tags,get_navixy_tags,team/resource,fleet.navixy_status,tests/test_fleet.py,IMPLEMENTED_TESTED,GET /api/fleet/navixy/status; PUT /api/fleet/navixy/tags chooses them
 GET,/api/fleet/register,fleet,get_register,team/resource,fleet.list_assets,tests/test_fleet.py,IMPLEMENTED_TESTED,GET /api/assets
 GET,/api/fleet/search,fleet,fleet_search,team/resource,fleet.list_assets,tests/test_fleet.py,IMPLEMENTED_TESTED,GET /api/assets?q= (assets only; cross-register search is stage 9)
-GET,/api/fleet/service-schedule-presets,fleet,list_service_schedule_presets,CLASSIFY,,,NOT_STARTED,
+GET,/api/fleet/service-schedule-presets,fleet,list_service_schedule_presets,team/resource,service.presets,tests/test_service.py,IMPLEMENTED_TESTED,Common intervals; the baseline's exact preset values were not in the pack
 GET,/api/fleet/service-sheet-templates,fleet,list_sheet_templates,CLASSIFY,,,NOT_STARTED,
-GET,/api/fleet/service-status-rollup,fleet,get_service_status_rollup,CLASSIFY,,,NOT_STARTED,
+GET,/api/fleet/service-status-rollup,fleet,get_service_status_rollup,team/resource,fleet.list_assets,tests/test_service.py,IMPLEMENTED_TESTED,The register list carries each asset's worst service status
 GET,/api/fleet/technicians,fleet,list_technicians,CLASSIFY,,,NOT_STARTED,
 GET,/api/form-templates/assignments,asset_service,list_assignments,team/resource,forms.get_assignments,tests/test_forms_api.py; tests/test_forms_engine.py,HISTORICAL_COMPATIBILITY,Replaced by GET /api/forms/templates/{id}/assignments (per template)
 POST,/api/form-templates/assignments/bulk,asset_service,bulk_save_assignments,team/resource,forms.put_assignments,tests/test_forms_api.py; tests/test_forms_engine.py,HISTORICAL_COMPATIBILITY,Replaced by PUT /api/forms/templates/{id}/assignments (replace rules per template)
@@ -748,10 +748,10 @@ GET,/api/permission-presets/{preset_id}/assignees,permission_presets,preset_assi
 POST,/api/permission-presets/{preset_id}/duplicate,permission_presets,duplicate_preset,team/resource,presets.duplicate_preset,tests/test_roles_sessions_tenancy.py,IMPLEMENTED_TESTED,
 POST,/api/permissions/bulk-restrict,bulk_permissions,bulk_restrict,team/resource,users.bulk_restrict,tests/test_users.py,IMPLEMENTED_TESTED,color_groups deferred
 POST,/api/plant-maintenance/reimport,plant_maintenance,reimport,CLASSIFY,,,NOT_STARTED,
-DELETE,/api/plant-maintenance/{uid},plant_maintenance,delete_row,CLASSIFY,,,NOT_STARTED,
-GET,/api/plant-maintenance/{uid},plant_maintenance,get_row,CLASSIFY,,,NOT_STARTED,
-PATCH,/api/plant-maintenance/{uid},plant_maintenance,patch_row,CLASSIFY,,,NOT_STARTED,
-GET,/api/plant/{plant_id}/maintenance,plant_maintenance,maintenance_for_plant,CLASSIFY,,,NOT_STARTED,
+DELETE,/api/plant-maintenance/{uid},plant_maintenance,delete_row,team/resource,service.delete_record,tests/test_service.py,IMPLEMENTED_TESTED,Service record
+GET,/api/plant-maintenance/{uid},plant_maintenance,get_row,team/resource,service.get_record,tests/test_service.py,IMPLEMENTED_TESTED,Service record
+PATCH,/api/plant-maintenance/{uid},plant_maintenance,patch_row,team/resource,service.update_record,tests/test_service.py,IMPLEMENTED_TESTED,Service record
+GET,/api/plant/{plant_id}/maintenance,plant_maintenance,maintenance_for_plant,team/resource,service.list_records,tests/test_service.py,IMPLEMENTED_TESTED,GET /api/assets/{asset_id}/records
 GET,/api/pre-starts,crud,list_items,team/resource,safety.list_records,tests/test_safety.py,IMPLEMENTED_TESTED,Paginated; own-only without team_view on team-scoped registers
 POST,/api/pre-starts,crud,create_item,team/resource,safety.create,tests/test_safety.py,IMPLEMENTED_TESTED,"D-030 body is {fields:[{id,value}]} validated against the register's form schema"
 POST,/api/pre-starts/archive,crud,bulk_archive,team/resource,safety.bulk_archive,tests/test_safety.py,IMPLEMENTED_TESTED,Needs the archive right; dry run by default

@@ -54,6 +54,8 @@ IDs are opaque strings. Every tenant-owned table carries `org_id`, and every que
 | `equipment_categories` | Named groups of equipment | Seeded with six defaults on first use; cannot be removed while in use |
 | `asset_documents` | Photos, manuals and certificates kept with an asset | Optional issue and expiry dates |
 | `asset_meter_readings` | Every odometer and hour-meter reading | `source` manual, navixy, simulator, service, fuel or reset; `applied=false` rows are evidence that was not used |
+| `asset_schedules` | A recurring service for one asset | Any of `interval_days`, `interval_km`, `interval_hours`; baseline values; no stored due date |
+| `asset_service_records` | Work done: service, repair, inspection | `schedule_name` frozen at the time; `cost` numeric(12,2); checklist JSON |
 
 ## Relationships to preserve as later stages add tables
 

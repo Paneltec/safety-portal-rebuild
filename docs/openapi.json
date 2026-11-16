@@ -1656,6 +1656,43 @@
     "title": "ChangePasswordIn",
     "type": "object"
    },
+   "ChecklistItem": {
+    "properties": {
+     "item": {
+      "maxLength": 200,
+      "minLength": 1,
+      "title": "Item",
+      "type": "string"
+     },
+     "note": {
+      "anyOf": [
+       {
+        "maxLength": 400,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Note"
+     },
+     "result": {
+      "default": "ok",
+      "enum": [
+       "ok",
+       "attention",
+       "na"
+      ],
+      "title": "Result",
+      "type": "string"
+     }
+    },
+    "required": [
+     "item"
+    ],
+    "title": "ChecklistItem",
+    "type": "object"
+   },
    "CompaniesPatch": {
     "properties": {
      "companies": {
@@ -3337,42 +3374,6 @@
     "title": "QuestionIn",
     "type": "object"
    },
-   "RecordIn": {
-    "properties": {
-     "fields": {
-      "items": {
-       "$ref": "#/components/schemas/FieldValue"
-      },
-      "title": "Fields",
-      "type": "array"
-     },
-     "status": {
-      "anyOf": [
-       {
-        "type": "string"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Status"
-     },
-     "workspace_id": {
-      "anyOf": [
-       {
-        "maxLength": 36,
-        "type": "string"
-       },
-       {
-        "type": "null"
-       }
-      ],
-      "title": "Workspace Id"
-     }
-    },
-    "title": "RecordIn",
-    "type": "object"
-   },
    "RecordPatch": {
     "properties": {
      "expected_revision": {
@@ -3869,6 +3870,147 @@
      "mode"
     ],
     "title": "SafeModeIn",
+    "type": "object"
+   },
+   "ScheduleIn": {
+    "properties": {
+     "active": {
+      "default": true,
+      "title": "Active",
+      "type": "boolean"
+     },
+     "assigned_worker_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Assigned Worker Id"
+     },
+     "baseline_date": {
+      "anyOf": [
+       {
+        "format": "date",
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Baseline Date"
+     },
+     "baseline_hours": {
+      "anyOf": [
+       {
+        "maximum": 500000.0,
+        "minimum": 0.0,
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Baseline Hours"
+     },
+     "baseline_km": {
+      "anyOf": [
+       {
+        "maximum": 5000000.0,
+        "minimum": 0.0,
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Baseline Km"
+     },
+     "interval_days": {
+      "anyOf": [
+       {
+        "maximum": 3650.0,
+        "minimum": 1.0,
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Interval Days"
+     },
+     "interval_hours": {
+      "anyOf": [
+       {
+        "exclusiveMinimum": 0.0,
+        "maximum": 100000.0,
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Interval Hours"
+     },
+     "interval_km": {
+      "anyOf": [
+       {
+        "exclusiveMinimum": 0.0,
+        "maximum": 1000000.0,
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Interval Km"
+     },
+     "name": {
+      "maxLength": 160,
+      "minLength": 1,
+      "title": "Name",
+      "type": "string"
+     },
+     "notes": {
+      "anyOf": [
+       {
+        "maxLength": 4000,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Notes"
+     },
+     "warn_days": {
+      "default": 14,
+      "maximum": 365.0,
+      "minimum": 0.0,
+      "title": "Warn Days",
+      "type": "integer"
+     },
+     "warn_hours": {
+      "default": 25,
+      "maximum": 10000.0,
+      "minimum": 0.0,
+      "title": "Warn Hours",
+      "type": "number"
+     },
+     "warn_km": {
+      "default": 500,
+      "maximum": 100000.0,
+      "minimum": 0.0,
+      "title": "Warn Km",
+      "type": "number"
+     }
+    },
+    "required": [
+     "name"
+    ],
+    "title": "ScheduleIn",
     "type": "object"
    },
    "SelfEdit": {
@@ -6298,6 +6440,42 @@
     "title": "ReviewIn",
     "type": "object"
    },
+   "app__routers__safety__RecordIn": {
+    "properties": {
+     "fields": {
+      "items": {
+       "$ref": "#/components/schemas/FieldValue"
+      },
+      "title": "Fields",
+      "type": "array"
+     },
+     "status": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Status"
+     },
+     "workspace_id": {
+      "anyOf": [
+       {
+        "maxLength": 36,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Workspace Id"
+     }
+    },
+    "title": "RecordIn",
+    "type": "object"
+   },
    "app__routers__safety__ReviewIn": {
     "properties": {
      "action": {
@@ -6321,6 +6499,110 @@
      "action"
     ],
     "title": "ReviewIn",
+    "type": "object"
+   },
+   "app__routers__service__RecordIn": {
+    "properties": {
+     "checklist": {
+      "items": {
+       "$ref": "#/components/schemas/ChecklistItem"
+      },
+      "maxItems": 100,
+      "title": "Checklist",
+      "type": "array"
+     },
+     "cost": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Cost"
+     },
+     "description": {
+      "anyOf": [
+       {
+        "maxLength": 8000,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Description"
+     },
+     "engine_hours": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Engine Hours"
+     },
+     "kind": {
+      "default": "service",
+      "enum": [
+       "service",
+       "repair",
+       "inspection",
+       "other"
+      ],
+      "title": "Kind",
+      "type": "string"
+     },
+     "odometer_km": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Odometer Km"
+     },
+     "performed_on": {
+      "format": "date",
+      "title": "Performed On",
+      "type": "string"
+     },
+     "schedule_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Schedule Id"
+     },
+     "technician": {
+      "anyOf": [
+       {
+        "maxLength": 160,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Technician"
+     }
+    },
+    "required": [
+     "performed_on"
+    ],
+    "title": "RecordIn",
     "type": "object"
    }
   }
@@ -7858,6 +8140,125 @@
     ]
    }
   },
+  "/api/assets/service/inbox": {
+   "get": {
+    "description": "Every active schedule that is overdue, due soon or cannot be worked out, worst first.",
+    "operationId": "inbox_api_assets_service_inbox_get",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "status",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Status"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Inbox Api Assets Service Inbox Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Inbox",
+    "tags": [
+     "fleet"
+    ]
+   }
+  },
+  "/api/assets/service/scan-reminders": {
+   "post": {
+    "description": "Prepare one reminder email per due service to the person it is assigned to. Lists first (dry run is\nthe default); asking twice does not prepare a second one for the same due point. Whether a prepared\nreminder is sent or held is decided by safe mode and the email connection.",
+    "operationId": "scan_reminders_api_assets_service_scan_reminders_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ReminderScanIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Scan Reminders Api Assets Service Scan Reminders Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Scan Reminders",
+    "tags": [
+     "fleet"
+    ]
+   }
+  },
+  "/api/assets/service/summary": {
+   "get": {
+    "operationId": "summary_api_assets_service_summary_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Summary Api Assets Service Summary Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Summary",
+    "tags": [
+     "fleet"
+    ]
+   }
+  },
   "/api/assets/{asset_id}": {
    "delete": {
     "description": "Removes the asset from the register. Its history is kept, and a provider sync will not bring it back.",
@@ -8423,6 +8824,260 @@
     ]
    }
   },
+  "/api/assets/{asset_id}/records": {
+   "get": {
+    "operationId": "list_records_api_assets__asset_id__records_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "asset_id",
+      "required": true,
+      "schema": {
+       "title": "Asset Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response List Records Api Assets  Asset Id  Records Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "List Records",
+    "tags": [
+     "fleet"
+    ]
+   },
+   "post": {
+    "description": "Record work done. Linked to a schedule, it becomes that schedule's new starting point.",
+    "operationId": "create_record_api_assets__asset_id__records_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "asset_id",
+      "required": true,
+      "schema": {
+       "title": "Asset Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/app__routers__service__RecordIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Create Record Api Assets  Asset Id  Records Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Create Record",
+    "tags": [
+     "fleet"
+    ]
+   }
+  },
+  "/api/assets/{asset_id}/records/{rid}": {
+   "delete": {
+    "operationId": "delete_record_api_assets__asset_id__records__rid__delete",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "asset_id",
+      "required": true,
+      "schema": {
+       "title": "Asset Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "path",
+      "name": "rid",
+      "required": true,
+      "schema": {
+       "title": "Rid",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "204": {
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Delete Record",
+    "tags": [
+     "fleet"
+    ]
+   },
+   "get": {
+    "operationId": "get_record_api_assets__asset_id__records__rid__get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "asset_id",
+      "required": true,
+      "schema": {
+       "title": "Asset Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "path",
+      "name": "rid",
+      "required": true,
+      "schema": {
+       "title": "Rid",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Get Record Api Assets  Asset Id  Records  Rid  Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Get Record",
+    "tags": [
+     "fleet"
+    ]
+   },
+   "put": {
+    "description": "Correct a record. The asset's current meter is not changed by a correction; use Update meter for that.",
+    "operationId": "update_record_api_assets__asset_id__records__rid__put",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "asset_id",
+      "required": true,
+      "schema": {
+       "title": "Asset Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "path",
+      "name": "rid",
+      "required": true,
+      "schema": {
+       "title": "Rid",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/app__routers__service__RecordIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Update Record Api Assets  Asset Id  Records  Rid  Put",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Update Record",
+    "tags": [
+     "fleet"
+    ]
+   }
+  },
   "/api/assets/{asset_id}/rotate-qr": {
    "post": {
     "description": "Retire every label printed so far for this asset.",
@@ -8463,6 +9118,260 @@
      }
     },
     "summary": "Rotate Qr",
+    "tags": [
+     "fleet"
+    ]
+   }
+  },
+  "/api/assets/{asset_id}/schedules": {
+   "get": {
+    "operationId": "list_schedules_api_assets__asset_id__schedules_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "asset_id",
+      "required": true,
+      "schema": {
+       "title": "Asset Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response List Schedules Api Assets  Asset Id  Schedules Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "List Schedules",
+    "tags": [
+     "fleet"
+    ]
+   },
+   "post": {
+    "operationId": "create_schedule_api_assets__asset_id__schedules_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "asset_id",
+      "required": true,
+      "schema": {
+       "title": "Asset Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ScheduleIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Create Schedule Api Assets  Asset Id  Schedules Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Create Schedule",
+    "tags": [
+     "fleet"
+    ]
+   }
+  },
+  "/api/assets/{asset_id}/schedules/{sid}": {
+   "delete": {
+    "description": "Stop the schedule. Records of work already done under it stay, still showing its name.",
+    "operationId": "delete_schedule_api_assets__asset_id__schedules__sid__delete",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "asset_id",
+      "required": true,
+      "schema": {
+       "title": "Asset Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "path",
+      "name": "sid",
+      "required": true,
+      "schema": {
+       "title": "Sid",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "204": {
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Delete Schedule",
+    "tags": [
+     "fleet"
+    ]
+   },
+   "get": {
+    "operationId": "get_schedule_api_assets__asset_id__schedules__sid__get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "asset_id",
+      "required": true,
+      "schema": {
+       "title": "Asset Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "path",
+      "name": "sid",
+      "required": true,
+      "schema": {
+       "title": "Sid",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Get Schedule Api Assets  Asset Id  Schedules  Sid  Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Get Schedule",
+    "tags": [
+     "fleet"
+    ]
+   },
+   "put": {
+    "description": "Change how often, the margins or who it is assigned to. Past service records are not touched.",
+    "operationId": "update_schedule_api_assets__asset_id__schedules__sid__put",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "asset_id",
+      "required": true,
+      "schema": {
+       "title": "Asset Id",
+       "type": "string"
+      }
+     },
+     {
+      "in": "path",
+      "name": "sid",
+      "required": true,
+      "schema": {
+       "title": "Sid",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ScheduleIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Update Schedule Api Assets  Asset Id  Schedules  Sid  Put",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Update Schedule",
     "tags": [
      "fleet"
     ]
@@ -11672,6 +12581,30 @@
     ]
    }
   },
+  "/api/fleet/service-schedule-presets": {
+   "get": {
+    "description": "Starting points for a new schedule. They are common intervals, not a manufacturer's requirement.",
+    "operationId": "presets_api_fleet_service_schedule_presets_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Presets Api Fleet Service Schedule Presets Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Presets",
+    "tags": [
+     "fleet"
+    ]
+   }
+  },
   "/api/forms/assignments/effective": {
    "get": {
     "description": "Which published forms a person sees, and why. Used to preview a change before relying on it.",
@@ -13345,7 +14278,7 @@
      "content": {
       "application/json": {
        "schema": {
-        "$ref": "#/components/schemas/RecordIn"
+        "$ref": "#/components/schemas/app__routers__safety__RecordIn"
        }
       }
      },
@@ -14256,7 +15189,7 @@
      "content": {
       "application/json": {
        "schema": {
-        "$ref": "#/components/schemas/RecordIn"
+        "$ref": "#/components/schemas/app__routers__safety__RecordIn"
        }
       }
      },
@@ -15371,7 +16304,7 @@
      "content": {
       "application/json": {
        "schema": {
-        "$ref": "#/components/schemas/RecordIn"
+        "$ref": "#/components/schemas/app__routers__safety__RecordIn"
        }
       }
      },
@@ -17420,7 +18353,7 @@
      "content": {
       "application/json": {
        "schema": {
-        "$ref": "#/components/schemas/RecordIn"
+        "$ref": "#/components/schemas/app__routers__safety__RecordIn"
        }
       }
      },
@@ -19505,7 +20438,7 @@
      "content": {
       "application/json": {
        "schema": {
-        "$ref": "#/components/schemas/RecordIn"
+        "$ref": "#/components/schemas/app__routers__safety__RecordIn"
        }
       }
      },
@@ -20686,7 +21619,7 @@
      "content": {
       "application/json": {
        "schema": {
-        "$ref": "#/components/schemas/RecordIn"
+        "$ref": "#/components/schemas/app__routers__safety__RecordIn"
        }
       }
      },
@@ -22433,7 +23366,7 @@
      "content": {
       "application/json": {
        "schema": {
-        "$ref": "#/components/schemas/RecordIn"
+        "$ref": "#/components/schemas/app__routers__safety__RecordIn"
        }
       }
      },
@@ -24745,7 +25678,7 @@
      "content": {
       "application/json": {
        "schema": {
-        "$ref": "#/components/schemas/RecordIn"
+        "$ref": "#/components/schemas/app__routers__safety__RecordIn"
        }
       }
      },

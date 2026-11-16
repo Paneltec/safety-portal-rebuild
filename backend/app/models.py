@@ -7,9 +7,10 @@ Conventions (spec section 3):
 """
 import uuid
 from datetime import date, datetime, timezone
+from decimal import Decimal
 from typing import Any
 
-from sqlalchemy import Boolean, Date, DateTime, Float, ForeignKey, Index, Integer, String, Text, UniqueConstraint, text
+from sqlalchemy import Boolean, Date, DateTime, Float, ForeignKey, Index, Integer, Numeric, String, Text, UniqueConstraint, text
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
@@ -1124,3 +1125,58 @@ class AssetMeterReading(Base):
     note: Mapped[str | None] = mapped_column(String(400))
     recorded_by: Mapped[str | None] = mapped_column(String(36))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class AssetSchedule(Base):
+    """A recurring service for one asset: every so many days, kilometres and/or running hours,
+    whichever comes first. The starting point is the last linked service record, or the baseline
+    entered here when there is none yet. Editing a schedule never changes a past service record."""
+
+    __tablename__ = "asset_schedules"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    org_id: Mapped[str] = mapped_column(ForeignKey("organisations.id"), index=True)
+    asset_id: Mapped[str] = mapped_column(ForeignKey("assets.id"), index=True)
+    name: Mapped[str] = mapped_column(String(160))
+    interval_days: Mapped[int | None] = mapped_column(Integer)
+    interval_km: Mapped[float | None] = mapped_column(Float)
+    interval_hours: Mapped[float | None] = mapped_column(Float)
+    warn_days: Mapped[int] = mapped_column(Integer, default=14)
+    warn_km: Mapped[float] = mapped_column(Float, default=500)
+    warn_hours: Mapped[float] = mapped_column(Float, default=25)
+    baseline_date: Mapped[date | None] = mapped_column(Date)
+    baseline_km: Mapped[float | None] = mapped_column(Float)
+    baseline_hours: Mapped[float | None] = mapped_column(Float)
+    assigned_worker_id: Mapped[str | None] = mapped_column(ForeignKey("workers.id"))
+    notes: Mapped[str | None] = mapped_column(Text)
+    active: Mapped[bool] = mapped_column(Boolean, default=True)
+    created_by: Mapped[str | None] = mapped_column(String(36))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+    deleted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
+class AssetServiceRecord(Base):
+    """Work actually done on an asset: a service, repair or inspection, with the meters at the time."""
+
+    __tablename__ = "asset_service_records"
+    __table_args__ = (Index("ix_asset_service_records_asset_date", "asset_id", "performed_on"),)
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    org_id: Mapped[str] = mapped_column(ForeignKey("organisations.id"), index=True)
+    asset_id: Mapped[str] = mapped_column(ForeignKey("assets.id"))
+    schedule_id: Mapped[str | None] = mapped_column(ForeignKey("asset_schedules.id"))
+    schedule_name: Mapped[str | None] = mapped_column(String(160))  # as it was called when the work was done
+    kind: Mapped[str] = mapped_column(String(20), default="service")  # service | repair | inspection | other
+    performed_on: Mapped[date] = mapped_column(Date)
+    odometer_km: Mapped[float | None] = mapped_column(Float)
+    engine_hours: Mapped[float | None] = mapped_column(Float)
+    description: Mapped[str | None] = mapped_column(Text)
+    technician: Mapped[str | None] = mapped_column(String(160))
+    cost: Mapped[Decimal | None] = mapped_column(Numeric(12, 2))
+    checklist: Mapped[list[Any]] = mapped_column(JSONB, default=list)
+    file_ids: Mapped[list[str]] = mapped_column(JSONB, default=list)
+    created_by: Mapped[str | None] = mapped_column(String(36))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+    deleted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))

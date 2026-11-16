@@ -13,6 +13,7 @@ export interface Asset {
   meter_review: { readings: { meter: string; on_file: number; incoming: number }[]; source: string; reading_date: string } | null;
   last_inspection_date: string | null; next_inspection_date: string | null; inspection_status: string | null; tags: string[]; not_listed_by_provider: boolean;
   tracker: { lat: number | null; lng: number | null; speed_kmh: number | null; last_seen_at: string | null; connection: string | null; stale: boolean | null } | null;
+  service?: { status: string; status_label: string; summary: string } | null;
   notes?: string | null; documents?: AssetDoc[]; can_edit?: boolean; can_delete?: boolean; can_reset_meter?: boolean; scan_url?: string | null;
 }
 interface AssetDoc { id: string; kind: string; title: string; issued_date: string | null; expiry_date: string | null; expiry_status: string | null; file: { original_name: string } | null }
@@ -76,7 +77,10 @@ export function Fleet() {
           <h1>Fleet and equipment</h1>
           <p className="muted">Vehicles, plant, trailers and equipment, with their meters, documents and QR labels.</p>
         </div>
-        {can("assets", "edit") && <button type="button" className="btn primary" onClick={() => setAdding(true)}>{equipment ? "Add equipment" : "Add vehicle or plant"}</button>}
+        <div className="row" style={{ gap: 8 }}>
+          <Link className="btn" to="/app/fleet/service">Service due</Link>
+          {can("assets", "edit") && <button type="button" className="btn primary" onClick={() => setAdding(true)}>{equipment ? "Add equipment" : "Add vehicle or plant"}</button>}
+        </div>
       </div>
 
       {!equipment && <NavixyPanel onChanged={list.reload} />}
@@ -129,7 +133,7 @@ export function Fleet() {
                 <thead>
                   {equipment
                     ? <tr><th scope="col">Equipment</th><th scope="col">Category</th><th scope="col">Serial</th><th scope="col">Next inspection</th><th scope="col">Status</th></tr>
-                    : <tr><th scope="col">Name</th><th scope="col">Type</th><th scope="col">Registration</th><th scope="col">Odometer</th><th scope="col">Hours</th><th scope="col">Status</th></tr>}
+                    : <tr><th scope="col">Name</th><th scope="col">Type</th><th scope="col">Registration</th><th scope="col">Odometer</th><th scope="col">Hours</th><th scope="col">Service</th><th scope="col">Status</th></tr>}
                 </thead>
                 <tbody>
                   {data.items.map((a) => (
@@ -151,6 +155,7 @@ export function Fleet() {
                           <td>{a.registration ?? "—"}</td>
                           <td>{a.odometer_km === null ? <span className="muted">Not recorded</span> : num(a.odometer_km, "km")}</td>
                           <td>{a.engine_hours === null ? <span className="muted">Not recorded</span> : num(a.engine_hours, "h")}</td>
+                          <td>{a.service ? <span title={a.service.summary}><Chip tone={a.service.status === "overdue" ? "bad" : a.service.status === "due_soon" ? "warn" : a.service.status === "ok" ? "ok" : "neutral"}>{a.service.status_label}</Chip></span> : <span className="muted">No schedule</span>}</td>
                         </>
                       )}
                       <td><StatusChip a={a} /></td>

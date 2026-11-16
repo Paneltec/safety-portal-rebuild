@@ -10,7 +10,7 @@ from pydantic import BaseModel, Field
 from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session
 
-from .. import fleet, integrations, navixy
+from .. import fleet, integrations, navixy, service
 from ..db import get_db
 from ..deps import Caller, get_caller, require_admin, require_permission
 from ..files import file_out, file_response, save_upload
@@ -176,7 +176,8 @@ def list_assets(
     rows = db.scalars(query.order_by(func.lower(Asset.name), Asset.id).offset((page - 1) * page_size).limit(page_size)).all()
     today = today_for(_org(db, caller.org_id))
     names = _names(db, list(rows))
-    return {"items": [asset_out(a, names, today) for a in rows], "total": total, "page": page, "page_size": page_size,
+    due = service.rollup(db, caller.org_id, list(rows), today)
+    return {"items": [{**asset_out(a, names, today), "service": due.get(a.id)} for a in rows], "total": total, "page": page, "page_size": page_size,
             "can_edit": caller.can("assets", "edit"), "can_delete": caller.can("assets", "delete"), "kinds": fleet.KINDS, "statuses": fleet.STATUSES}
 
 

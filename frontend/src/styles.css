@@ -225,3 +225,8 @@ tr.clickable:hover td { background: #f7f9fb; }
 .bell-item.bad { border-left-color: var(--bad); }
 .bell-item.info { border-left-color: var(--link); }
 .bell-item.read { border-left-color: var(--line); color: var(--muted); }
+
+/* Stage 6: grouped form fields */
+.grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; align-items: end; }
+fieldset { border: 1px solid var(--line-soft); border-radius: 8px; padding: 10px 12px 12px; margin: 0; min-width: 0; }
+fieldset > legend { padding: 0 6px; font-size: 13px; font-weight: 600; color: var(--muted); }
