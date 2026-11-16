@@ -12,6 +12,9 @@ from cryptography.fernet import Fernet  # noqa: E402
 os.environ["ENCRYPTION_KEY"] = Fernet.generate_key().decode()  # throwaway key for the test run
 os.environ["FILES_DIR"] = __import__("tempfile").mkdtemp(prefix="portal-test-files-")
 os.environ["PUBLIC_BASE_URL"] = "https://portal.test"
+os.environ["BACKUP_DIR"] = __import__("tempfile").mkdtemp(prefix="portal-test-backups-")
+# A scratch database for restore rehearsals, never the test database itself.
+os.environ["REHEARSAL_DATABASE_URL"] = os.environ["DATABASE_URL"].rsplit("/", 1)[0] + "/portal_test_rehearsal"
 
 from pathlib import Path  # noqa: E402
 
@@ -39,6 +42,9 @@ def _migrate():
     with engine.begin() as conn:
         conn.execute(text("DROP SCHEMA public CASCADE"))
         conn.execute(text("CREATE SCHEMA public"))
+    with engine.connect().execution_options(isolation_level="AUTOCOMMIT") as conn:
+        if not conn.execute(text("SELECT 1 FROM pg_database WHERE datname = 'portal_test_rehearsal'")).scalar():
+            conn.execute(text("CREATE DATABASE portal_test_rehearsal"))
     cfg = Config(str(BACKEND / "alembic.ini"))
     cfg.set_main_option("script_location", str(BACKEND / "migrations"))
     command.upgrade(cfg, "head")

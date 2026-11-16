@@ -6,8 +6,10 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 export PGPASSWORD="${PGPASSWORD:-portal}"
 DB=portal_e2e
 psql -h localhost -U portal -d postgres -q -c "DROP DATABASE IF EXISTS $DB" -c "CREATE DATABASE $DB"
+psql -h localhost -U portal -d postgres -q -c "DROP DATABASE IF EXISTS ${DB}_rehearsal" -c "CREATE DATABASE ${DB}_rehearsal"  # scratch copy for the restore rehearsal
 export DATABASE_URL="postgresql+psycopg://portal:${PGPASSWORD}@localhost:5432/$DB"
 export SETUP_KEY="e2e-setup-key" APP_ENV=test FILES_DIR="$(mktemp -d)"
+export BACKUP_DIR="$(mktemp -d)" REHEARSAL_DATABASE_URL="postgresql+psycopg://portal:${PGPASSWORD}@localhost:5432/${DB}_rehearsal"
 cd "$ROOT/backend"
 export ENCRYPTION_KEY="$(.venv/bin/python -m app.seed generate-key)"  # throwaway key for this run
 .venv/bin/python -m alembic upgrade head >/dev/null 2>&1

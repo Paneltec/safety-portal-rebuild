@@ -20,7 +20,7 @@ GET,/api/admin/forms/auto-seed-preview,admin_forms_autoseed,auto_seed_preview,CL
 POST,/api/admin/forms/import-service-check-sheet,admin_forms_import_service_check_sheet,import_service_check_sheet,CLASSIFY,,,NOT_STARTED,
 POST,/api/admin/install-libreoffice,file_pdf,install_libreoffice,CLASSIFY,,,NOT_STARTED,
 DELETE,/api/admin/missing-files/files/{file_id},admin_missing_files,hard_remove_orphan,CLASSIFY,,,NOT_STARTED,
-GET,/api/admin/missing-files/scan,admin_missing_files,scan_missing_files,CLASSIFY,,,NOT_STARTED,
+GET,/api/admin/missing-files/scan,admin_missing_files,scan_missing_files,admin,system.missing_files,tests/test_system.py,IMPLEMENTED_TESTED,"GET /api/system/missing-files; read-only, own organisation"
 POST,/api/admin/purge-test-data,admin_purge_test_data,purge_test_data,CLASSIFY,,,NOT_STARTED,
 GET,/api/admin/roles,roles_catalogue,list_roles,team/resource,roles.list_roles,tests/test_roles_sessions_tenancy.py,IMPLEMENTED_TESTED,users.view instead of admin-only
 POST,/api/admin/roles,roles_catalogue,create_role,team/resource,roles.create_role,tests/test_roles_sessions_tenancy.py,IMPLEMENTED_TESTED,D-010
@@ -35,7 +35,7 @@ POST,/api/admin/roles/{role_id}/forms,roles_catalogue,assign_form_to_role,CLASSI
 GET,/api/admin/roles/{role_id}/forms/available,roles_catalogue,list_available_forms_for_role,CLASSIFY,,,NOT_STARTED,
 DELETE,/api/admin/roles/{role_id}/forms/{form_id},roles_catalogue,unassign_form_from_role,CLASSIFY,,,NOT_STARTED,
 PATCH,/api/admin/roles/{role_id}/forms/{form_id},roles_catalogue,patch_role_form,CLASSIFY,,,NOT_STARTED,
-GET,/api/admin/server-tools/health,file_pdf,server_tools_health,CLASSIFY,,,NOT_STARTED,
+GET,/api/admin/server-tools/health,file_pdf,server_tools_health,installation owner,system.system_status,tests/test_system.py,IMPLEMENTED_TESTED,GET /api/system/status
 POST,/api/admin/settings/force-logout-all,session_timeout,force_logout_all,CLASSIFY,,,NOT_STARTED,
 POST,/api/admin/settings/force-refresh-all,session_timeout,force_refresh_all,CLASSIFY,,,NOT_STARTED,
 GET,/api/admin/settings/session-timeout,session_timeout,get_session_timeout,CLASSIFY,,,NOT_STARTED,
@@ -46,7 +46,7 @@ POST,/api/admin/simpro/import-employees/selective,simpro_import_users,import_emp
 POST,/api/admin/simpro/sync-linked,simpro_import_users,sync_linked_users,CLASSIFY,,,NOT_STARTED,
 POST,/api/admin/swms/backfill-version-chain,swms_extras,backfill_version_chain,CLASSIFY,,,NOT_STARTED,
 GET,/api/admin/swms/legacy-scope-count,swms_extras,legacy_scope_count,CLASSIFY,,,NOT_STARTED,
-GET,/api/admin/system-tools,file_pdf,system_tools,CLASSIFY,,,NOT_STARTED,
+GET,/api/admin/system-tools,file_pdf,system_tools,installation owner,system.system_status,tests/test_system.py,IMPLEMENTED_TESTED,GET /api/system/status
 POST,/api/admin/test-activity-reset/execute,admin_test_activity_reset,execute,CLASSIFY,,,NOT_STARTED,
 POST,/api/admin/test-activity-reset/preview,admin_test_activity_reset,preview,CLASSIFY,,,NOT_STARTED,
 GET,/api/admin/test-activity-reset/status,admin_test_activity_reset,status,CLASSIFY,,,NOT_STARTED,
@@ -158,19 +158,19 @@ PUT,/api/backup/destinations/{did},backup_service,update_destination,CLASSIFY,,,
 GET,/api/backup/discovered-smb,backup_service,discovered_smb,CLASSIFY,,,NOT_STARTED,
 GET,/api/backup/lan-status,backup_service,lan_status,CLASSIFY,,,NOT_STARTED,
 POST,/api/backup/offsite/retry,backup_service,offsite_retry,CLASSIFY,,,NOT_STARTED,
-POST,/api/backup/restore,backup_service,restore_from_zip,CLASSIFY,,,NOT_STARTED,
+POST,/api/backup/restore,backup_service,restore_from_zip,installation owner,system.restore_refused,tests/test_system.py,EXPLICITLY_UNAVAILABLE,Always 409: no restore over the running portal; use the rehearsal or the server command
 GET,/api/backup/restore/jobs/{job_id},backup_service,restore_job_status,CLASSIFY,,,NOT_STARTED,
 GET,/api/backup/retention,backup_service,get_retention,CLASSIFY,,,NOT_STARTED,
 PUT,/api/backup/retention,backup_service,set_retention,CLASSIFY,,,NOT_STARTED,
-GET,/api/backup/retention/preview,backup_service,retention_preview,CLASSIFY,,,NOT_STARTED,
-POST,/api/backup/retention/run,backup_service,retention_run_now,CLASSIFY,,,NOT_STARTED,
+GET,/api/backup/retention/preview,backup_service,retention_preview,installation owner,system.tidy_preview,tests/test_system.py,IMPLEMENTED_TESTED,Removes nothing
+POST,/api/backup/retention/run,backup_service,retention_run_now,installation owner,system.tidy_run,tests/test_system.py,IMPLEMENTED_TESTED,Only when asked; keeps the newest verified archive
 GET,/api/backup/schedule,backup_service,get_schedule,CLASSIFY,,,NOT_STARTED,
-GET,/api/backup/snapshots,backup_service,list_snapshots,CLASSIFY,,,NOT_STARTED,
-POST,/api/backup/snapshots,backup_service,create_snapshot,CLASSIFY,,,NOT_STARTED,
+GET,/api/backup/snapshots,backup_service,list_snapshots,installation owner,system.list_snapshots,tests/test_system.py,IMPLEMENTED_TESTED,"Created, verified and rehearsed shown separately"
+POST,/api/backup/snapshots,backup_service,create_snapshot,installation owner,system.create_snapshot,tests/test_system.py,IMPLEMENTED_TESTED,Answers at once; one at a time; an interrupted run ends as failed
 GET,/api/backup/snapshots/{snap_id}/data,backup_service,download_snapshot,CLASSIFY,,,NOT_STARTED,
 HEAD,/api/backup/snapshots/{snap_id}/data,backup_service,download_snapshot,CLASSIFY,,,NOT_STARTED,
-POST,/api/backup/snapshots/{snap_id}/verify,backup_service,verify_snapshot,CLASSIFY,,,NOT_STARTED,
-GET,/api/backup/summary,backup_service,get_summary,CLASSIFY,,,NOT_STARTED,
+POST,/api/backup/snapshots/{snap_id}/verify,backup_service,verify_snapshot,installation owner,system.verify_snapshot,tests/test_system.py,IMPLEMENTED_TESTED,Recorded size and SHA-256 plus every manifest entry; missing archive is pending
+GET,/api/backup/summary,backup_service,get_summary,installation owner,system.backup_summary,tests/test_system.py,IMPLEMENTED_TESTED,Age and verification of the newest archive; says plainly there is no schedule
 POST,/api/certifications/bulk-clear-pending-review,worker_certifications,bulk_clear_pending_review,CLASSIFY,,,NOT_STARTED,
 GET,/api/certifications/expiry-count,worker_certifications,certifications_expiry_count,team/resource,workers.expiry_count,tests/test_workers.py,IMPLEMENTED_TESTED,Same population as the register default
 GET,/api/companies/,companies,list_rows,CLASSIFY,,,NOT_STARTED,
@@ -416,7 +416,7 @@ GET,/api/hazards/{item_id},crud,get_item,team/resource,safety.get_record,tests/t
 PATCH,/api/hazards/{item_id},crud,update_item,team/resource,safety.patch,tests/test_safety.py,IMPLEMENTED_TESTED,Earlier answers kept in history
 POST,/api/hazards/{item_id}/archive,crud,archive_item,team/resource,safety.archive,tests/test_safety.py,IMPLEMENTED_TESTED,
 POST,/api/hazards/{item_id}/unarchive,crud,unarchive_item,team/resource,safety.unarchive,tests/test_safety.py,IMPLEMENTED_TESTED,
-GET,/api/health/backup,health_extras,health_backup,CLASSIFY,,,NOT_STARTED,
+GET,/api/health/backup,health_extras,health_backup,installation owner,system.backup_summary,tests/test_system.py,IMPLEMENTED_TESTED,GET /api/backup/summary
 POST,/api/health/disk-panic,health_extras,disk_panic,CLASSIFY,,,NOT_STARTED,
 GET,/api/health/integrations,health_extras,health_integrations,CLASSIFY,,,NOT_STARTED,
 GET,/api/health/version,server,health_version,CLASSIFY,,,NOT_STARTED,
@@ -1125,3 +1125,6 @@ GET,/api/audit-log,audit,,admin or audit_exports.audit_view,audit.activity_log,t
 GET,/api/audit-log/export.csv,audit,,admin or audit_exports.audit_view,audit.activity_log_csv,tests/test_audit.py,IMPLEMENTED_TESTED,"New: at most 20,000 entries per file; the export is itself recorded"
 GET,/api/audit-exports/registers,audit,,audit_exports.view,audit.pack_registers,tests/test_audit.py,IMPLEMENTED_TESTED,New: what a pack can hold and whether the caller may include it
 GET,/api/audit-exports/{pack_id}/download,audit,,audit_exports.view,audit.download_pack,tests/test_audit.py,IMPLEMENTED_TESTED,New: needs the same reach as making it; each download is recorded
+POST,/api/backup/snapshots/{snapshot_id}/rehearse,system,,installation owner,system.rehearse_snapshot,tests/test_system.py,IMPLEMENTED_TESTED,"New: restore into a scratch database, compare, clear"
+GET,/api/system/status,system,,installation owner,system.system_status,tests/test_system.py,IMPLEMENTED_TESTED,New: each check separate; no secrets
+GET,/api/system/missing-files,system,,admin,system.missing_files,tests/test_system.py,IMPLEMENTED_TESTED,New: file records whose bytes are gone

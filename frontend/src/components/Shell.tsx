@@ -70,6 +70,8 @@ export function Shell() {
         { to: "/app/settings/phone-modules", label: "Phone modules", show: isAdmin },
         { to: "/app/settings/sessions", label: "Active sessions", show: isAdmin },
         { to: "/app/settings/activity", label: "Activity log", show: isAdmin || can("audit_exports", "audit_view") },
+        { to: "/app/settings/backups", label: "Backups", show: me.is_account_holder },
+        { to: "/app/settings/system", label: "System check", show: me.is_account_holder },
         { to: "/app/profile", label: "My profile", show: true },
       ],
     },

@@ -781,6 +781,33 @@ FEATURES.update({
 })
 
 
+# ---- Stage 9c: backups and the system check ----
+T_SYS = "tests/test_system.py"
+DONE.update({
+    ("GET", "/api/backup/summary"): ("installation owner", "system.backup_summary", T_SYS, "IMPLEMENTED_TESTED", "Age and verification of the newest archive; says plainly there is no schedule"),
+    ("GET", "/api/backup/snapshots"): ("installation owner", "system.list_snapshots", T_SYS, "IMPLEMENTED_TESTED", "Created, verified and rehearsed shown separately"),
+    ("POST", "/api/backup/snapshots"): ("installation owner", "system.create_snapshot", T_SYS, "IMPLEMENTED_TESTED", "Answers at once; one at a time; an interrupted run ends as failed"),
+    ("POST", "/api/backup/snapshots/{snap_id}/verify"): ("installation owner", "system.verify_snapshot", T_SYS, "IMPLEMENTED_TESTED", "Recorded size and SHA-256 plus every manifest entry; missing archive is pending"),
+    ("GET", "/api/backup/retention/preview"): ("installation owner", "system.tidy_preview", T_SYS, "IMPLEMENTED_TESTED", "Removes nothing"),
+    ("POST", "/api/backup/retention/run"): ("installation owner", "system.tidy_run", T_SYS, "IMPLEMENTED_TESTED", "Only when asked; keeps the newest verified archive"),
+    ("POST", "/api/backup/restore"): ("installation owner", "system.restore_refused", T_SYS, "EXPLICITLY_UNAVAILABLE", "Always 409: no restore over the running portal; use the rehearsal or the server command"),
+    ("GET", "/api/health/backup"): ("installation owner", "system.backup_summary", T_SYS, "IMPLEMENTED_TESTED", "GET /api/backup/summary"),
+    ("GET", "/api/admin/missing-files/scan"): ("admin", "system.missing_files", T_SYS, "IMPLEMENTED_TESTED", "GET /api/system/missing-files; read-only, own organisation"),
+    ("GET", "/api/admin/system-tools"): ("installation owner", "system.system_status", T_SYS, "IMPLEMENTED_TESTED", "GET /api/system/status"),
+    ("GET", "/api/admin/server-tools/health"): ("installation owner", "system.system_status", T_SYS, "IMPLEMENTED_TESTED", "GET /api/system/status"),
+})
+NEW_ROWS += [
+    ["POST", "/api/backup/snapshots/{snapshot_id}/rehearse", "system", "", "installation owner", "system.rehearse_snapshot", T_SYS, "IMPLEMENTED_TESTED", "New: restore into a scratch database, compare, clear"],
+    ["GET", "/api/system/status", "system", "", "installation owner", "system.system_status", T_SYS, "IMPLEMENTED_TESTED", "New: each check separate; no secrets"],
+    ["GET", "/api/system/missing-files", "system", "", "admin", "system.missing_files", T_SYS, "IMPLEMENTED_TESTED", "New: file records whose bytes are gone"],
+]
+FEATURES.update({
+    "BACK-01": ("PARTIAL", "tests/test_system.py; e2e backups step; docs/BACKUP_RESTORE.md", "Built: archive with manifest and hashes, verify with distinct verified, failed and could-not-check states, restore rehearsal in a scratch database with an exact comparison, tidy-up with preview, server command for scheduling and for a real restore into an empty database. Not built: scheduling inside the portal, delivery to a second place, NAS agent, destinations, download of archives, agent logs."),
+    "OPS-01": ("PARTIAL", "tests/test_system.py; e2e backups step", "Built: readiness route, system check with database, database version, file storage, key, backups, sending lock and public address, each reported separately, plus version and build identifier. Not built: updates and rollback from inside the portal, multi-instance scheduler lock, Docker and GitHub checks. The Docker deployment itself has not been run."),
+    "ADMIN-01": ("PARTIAL", "tests/test_system.py; tests/test_audit.py", "Built: missing-files list (read-only), active sessions (stage 1), activity log, import run status (stage 5), generated API description. Not built: schema viewer, job watchdogs, a test-data reset (deliberately absent), repair of missing files."),
+})
+
+
 def main() -> None:
     path = HERE / "endpoint_coverage.csv"
     with path.open(encoding="utf-8-sig", newline="") as fh:

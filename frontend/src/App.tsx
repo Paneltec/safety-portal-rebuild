@@ -5,6 +5,7 @@ import { PhoneEntry, PhoneHome, PhoneModules, PhoneMore, PhoneShell, Scan, Waiti
 import { useAutoFlush } from "./offline";
 import { SearchPage } from "./pages/Dashboard";
 import { ActivityLog, AuditPacks } from "./pages/Activity";
+import { Backups, SystemCheck } from "./pages/System";
 import { Leave, MyLeave } from "./pages/Leave";
 import { MyTimesheet, Timesheets } from "./pages/Timesheets";
 import { MyPayslips, PayProfiles, PayRules, PayRunPage, PayRuns } from "./pages/Pay";
@@ -124,6 +125,8 @@ export function App() {
         <Route path="settings/outbox" element={<Outbox />} />
         <Route path="settings/sessions" element={<Sessions />} />
         <Route path="settings/activity" element={<ActivityLog />} />
+        <Route path="settings/backups" element={<Backups />} />
+        <Route path="settings/system" element={<SystemCheck />} />
         <Route path="audit-packs" element={<AuditPacks />} />
         <Route path="*" element={<Navigate to="/app/home" replace />} />
       </Route>

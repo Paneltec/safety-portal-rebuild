@@ -1499,7 +1499,66 @@ def overview_and_audit(browser) -> None:
     print("dashboard, search, activity log and audit packs walkthrough: ok")
 
 
-STEPS = [stage1_and_2a, documents, forms, safety_registers, workers, sites_and_visitors, suppliers_and_renewals, inductions_and_jobs, connections_and_outbox, fleet_and_equipment, fuel, leave, timesheets, pay, phone_app, overview_and_audit]
+def backups_and_system(browser) -> None:
+    pg = sign_in(browser)
+    errors: list[str] = []
+    pg.on("pageerror", lambda e: errors.append(str(e)))
+    nav = pg.get_by_role("navigation")
+
+    # Backups: made, then checked, then a restore rehearsed. Three separate facts on the screen.
+    nav.get_by_role("link", name="Backups").click()
+    expect(pg.get_by_text("No backup has been made on this server yet.")).to_be_visible()
+    expect(pg.get_by_text("The encryption key is not in this archive.")).to_be_visible()
+    pg.get_by_role("button", name="Make a backup now").click()
+    expect(pg.get_by_text("Backup started.")).to_be_visible()
+    row = pg.get_by_role("row").filter(has_text="portal-backup-")
+    expect(row).to_be_visible(timeout=20000)
+    expect(row.get_by_text("Not checked yet")).to_be_visible()
+    expect(row.get_by_text("Not rehearsed")).to_be_visible()
+    expect(row.get_by_role("button", name=re.compile("^Rehearse a restore"))).to_be_disabled()  # verify first
+    expect(pg.get_by_text("It has not been verified yet.")).to_be_visible()
+    row.get_by_role("button", name=re.compile("^Verify the backup")).click()
+    expect(pg.get_by_text("Checked: verified.")).to_be_visible(timeout=20000)
+    row.get_by_role("button", name=re.compile("^Check results")).click()
+    dialog = pg.get_by_role("dialog")
+    expect(dialog.get_by_text("Fingerprint (SHA-256) matches what was recorded")).to_be_visible()
+    assert dialog.get_by_text("Did not pass").count() == 0
+    pg.keyboard.press("Escape")
+    row.get_by_role("button", name=re.compile("^Rehearse a restore")).click()
+    expect(pg.get_by_text("Rehearsal: restore rehearsed. Your live records were not touched.")).to_be_visible(timeout=60000)
+    row.get_by_role("button", name=re.compile("^Rehearsal results")).click()
+    expect(dialog.get_by_text(re.compile("tables hold exactly the same"))).to_be_visible()
+    assert dialog.get_by_text("Did not pass").count() == 0
+    pg.keyboard.press("Escape")
+    expect(pg.get_by_text("There is no button to restore over the running portal")).to_be_visible()
+    shot(pg, "47-backups", full=True)
+    pg.get_by_role("button", name="Tidy up old backups").click()
+    expect(dialog.get_by_text("Nothing to remove.")).to_be_visible()
+    dialog.get_by_role("button", name="Cancel").click()
+
+    # System check: each line on its own.
+    nav.get_by_role("link", name="System check").click()
+    for label in ("Database", "Database version", "File storage", "Encryption key", "Backups", "Uploaded files"):
+        expect(pg.get_by_role("row").filter(has=pg.get_by_role("rowheader", name=label, exact=True))).to_be_visible()
+    expect(pg.get_by_role("row").filter(has=pg.get_by_role("rowheader", name="Backups", exact=True)).get_by_text("has been verified")).to_be_visible()
+    expect(pg.get_by_role("row").filter(has=pg.get_by_role("rowheader", name="Database", exact=True)).get_by_text("Fine")).to_be_visible()
+    shot(pg, "48-system-check", full=True)
+    # The dashboard still works after a rehearsal: the live records were not replaced.
+    nav.get_by_role("link", name="Home").click()
+    expect(pg.get_by_role("region", name="People").get_by_role("link", name=re.compile(r"Active workers"))).to_be_visible()
+
+    # Nobody else can reach either screen.
+    phone = sign_in(browser, 390, 844, "nina@e2e.example", "Nina-Pass-2026")
+    phone.on("pageerror", lambda e: errors.append(str(e)))
+    phone.goto(BASE + "/app/settings/backups")
+    expect(phone.get_by_role("alert")).to_contain_text("Only the account holder of this installation")
+    assert not errors, errors
+    pg.context.close()
+    phone.context.close()
+    print("backups and system check walkthrough: ok")
+
+
+STEPS = [stage1_and_2a, documents, forms, safety_registers, workers, sites_and_visitors, suppliers_and_renewals, inductions_and_jobs, connections_and_outbox, fleet_and_equipment, fuel, leave, timesheets, pay, phone_app, overview_and_audit, backups_and_system]
 
 if __name__ == "__main__":
     with sync_playwright() as p:

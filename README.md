@@ -90,3 +90,7 @@ The backend suite runs against a real PostgreSQL database that it migrates with 
 - No email, SMS, payment or lodgement is sent by this build. Invitation and reset links are shown once to the admin and logged as "held".
 - Payroll access is denied to everyone except the payroll owner (the account holder by default); an ordinary admin has none.
 - Secrets come from `.env`, which is never committed. There are no default passwords.
+
+## Backups
+
+See [docs/BACKUP_RESTORE.md](docs/BACKUP_RESTORE.md) for where backups go, how to make and check one, how to rehearse a restore, and how to do a real restore. The portal does not run backups by itself: set up the timer described there.

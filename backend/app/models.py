@@ -10,7 +10,7 @@ from datetime import date, datetime, timezone
 from decimal import Decimal
 from typing import Any
 
-from sqlalchemy import Boolean, Date, DateTime, Float, ForeignKey, Index, Integer, Numeric, String, Text, UniqueConstraint, text
+from sqlalchemy import BigInteger, Boolean, Date, DateTime, Float, ForeignKey, Index, Integer, Numeric, String, Text, UniqueConstraint, text
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
@@ -1528,3 +1528,32 @@ class AuditExport(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
     deleted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     deleted_by: Mapped[str | None] = mapped_column(String(36))
+
+
+class BackupSnapshot(Base):
+    """The catalogue of backup archives in this server's backup folder.
+
+    Three separate facts are kept apart: the archive was created; it was verified (its bytes and
+    contents were re-read and match); a restore from it was rehearsed in a scratch database.
+    "Created" never implies the other two. This table is not itself included in a backup.
+    """
+
+    __tablename__ = "backup_snapshots"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    status: Mapped[str] = mapped_column(String(20), default="creating")  # creating | created | failed | removed
+    filename: Mapped[str | None] = mapped_column(String(200))
+    size_bytes: Mapped[int | None] = mapped_column(BigInteger)
+    sha256: Mapped[str | None] = mapped_column(String(64))
+    summary: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict)
+    error: Mapped[str | None] = mapped_column(Text)
+    verify_state: Mapped[str] = mapped_column(String(20), default="not_checked")  # not_checked | verified | failed | pending
+    verify_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    verify_result: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict)
+    rehearsal_state: Mapped[str] = mapped_column(String(20), default="not_run")  # not_run | passed | failed | unavailable
+    rehearsal_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    rehearsal_result: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict)
+    created_by: Mapped[str | None] = mapped_column(String(36))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, index=True)
+    finished_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    removed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))

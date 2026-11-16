@@ -30,11 +30,18 @@ services:
       ENCRYPTION_KEY: ${ENCRYPTION_KEY:-}
       COMMS_SAFE_MODE: ${COMMS_SAFE_MODE:-on}
       FILES_DIR: /data/files
+      BACKUP_DIR: /data/backups
+      BACKUP_KEEP: ${BACKUP_KEEP:-14}
+      # A scratch database used only to rehearse a restore. Create it once (see docs/BACKUP_RESTORE.md).
+      REHEARSAL_DATABASE_URL: postgresql+psycopg://portal:${POSTGRES_PASSWORD}@db:5432/portal_rehearsal
+      GIT_COMMIT: ${GIT_COMMIT:-}
       SESSION_TTL_HOURS: ${SESSION_TTL_HOURS:-12}
       REMEMBER_ME_TTL_DAYS: ${REMEMBER_ME_TTL_DAYS:-30}
       IDLE_TIMEOUT_MINUTES: ${IDLE_TIMEOUT_MINUTES:-240}
     volumes:
       - files-data:/data/files
+      # Backups go to a folder you choose, ideally on a different disk from the database.
+      - ${BACKUP_PATH:-./backups}:/data/backups
 
   web:
     build: ./frontend

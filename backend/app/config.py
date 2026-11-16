@@ -47,6 +47,16 @@ class Settings(BaseSettings):
     files_dir: str = "./data/files"
     max_upload_mb: int = 50
 
+    # Where backup archives are written. Point this at a folder that is NOT on the same disk as the
+    # database (for example a NAS shared folder mounted into the container).
+    backup_dir: str = "./data/backups"
+    backup_keep: int = 14  # how many archives the tidy-up keeps; it only ever runs when asked
+    # An empty scratch database used only to rehearse a restore. Its name must end in "_rehearsal"
+    # and it must not be the portal's own database. Empty means rehearsal is not available.
+    rehearsal_database_url: str = ""
+    # Set by the build so two installs can be compared. Empty means not recorded.
+    git_commit: str = ""
+
 
 @lru_cache
 def get_settings() -> Settings:

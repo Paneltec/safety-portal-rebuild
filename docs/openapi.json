@@ -12145,6 +12145,265 @@
     ]
    }
   },
+  "/api/backup/restore": {
+   "post": {
+    "description": "There is no restore over the running portal. Recorded each time it is asked for.",
+    "operationId": "restore_refused_api_backup_restore_post",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Restore Refused",
+    "tags": [
+     "system"
+    ]
+   }
+  },
+  "/api/backup/retention/preview": {
+   "get": {
+    "operationId": "tidy_preview_api_backup_retention_preview_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Tidy Preview Api Backup Retention Preview Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Tidy Preview",
+    "tags": [
+     "system"
+    ]
+   }
+  },
+  "/api/backup/retention/run": {
+   "post": {
+    "operationId": "tidy_run_api_backup_retention_run_post",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Tidy Run Api Backup Retention Run Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Tidy Run",
+    "tags": [
+     "system"
+    ]
+   }
+  },
+  "/api/backup/snapshots": {
+   "get": {
+    "operationId": "list_snapshots_api_backup_snapshots_get",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "limit",
+      "required": false,
+      "schema": {
+       "default": 50,
+       "maximum": 200,
+       "minimum": 1,
+       "title": "Limit",
+       "type": "integer"
+      }
+     },
+     {
+      "in": "query",
+      "name": "offset",
+      "required": false,
+      "schema": {
+       "default": 0,
+       "minimum": 0,
+       "title": "Offset",
+       "type": "integer"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response List Snapshots Api Backup Snapshots Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "List Snapshots",
+    "tags": [
+     "system"
+    ]
+   },
+   "post": {
+    "description": "Start a backup. The answer comes back at once; the archive appears in the list as Created when it is finished.",
+    "operationId": "create_snapshot_api_backup_snapshots_post",
+    "responses": {
+     "202": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Create Snapshot Api Backup Snapshots Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Create Snapshot",
+    "tags": [
+     "system"
+    ]
+   }
+  },
+  "/api/backup/snapshots/{snapshot_id}/rehearse": {
+   "post": {
+    "description": "Restore the archive into the scratch database and a temporary folder, compare, and clear both. The portal's own data is never touched.",
+    "operationId": "rehearse_snapshot_api_backup_snapshots__snapshot_id__rehearse_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "snapshot_id",
+      "required": true,
+      "schema": {
+       "title": "Snapshot Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Rehearse Snapshot Api Backup Snapshots  Snapshot Id  Rehearse Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Rehearse Snapshot",
+    "tags": [
+     "system"
+    ]
+   }
+  },
+  "/api/backup/snapshots/{snapshot_id}/verify": {
+   "post": {
+    "description": "Re-read the archive and check it against what was recorded. Changes nothing but the result shown here.",
+    "operationId": "verify_snapshot_api_backup_snapshots__snapshot_id__verify_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "snapshot_id",
+      "required": true,
+      "schema": {
+       "title": "Snapshot Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Verify Snapshot Api Backup Snapshots  Snapshot Id  Verify Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Verify Snapshot",
+    "tags": [
+     "system"
+    ]
+   }
+  },
+  "/api/backup/summary": {
+   "get": {
+    "operationId": "backup_summary_api_backup_summary_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Backup Summary Api Backup Summary Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Backup Summary",
+    "tags": [
+     "system"
+    ]
+   }
+  },
   "/api/certification-kinds": {
    "get": {
     "operationId": "list_kinds_api_certification_kinds_get",
@@ -33312,6 +33571,78 @@
     "summary": "Versions",
     "tags": [
      "SWMS"
+    ]
+   }
+  },
+  "/api/system/missing-files": {
+   "get": {
+    "description": "File records in your organisation whose stored bytes are gone or the wrong size. Read-only: nothing is repaired or removed.",
+    "operationId": "missing_files_api_system_missing_files_get",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "limit",
+      "required": false,
+      "schema": {
+       "default": 200,
+       "maximum": 1000,
+       "minimum": 1,
+       "title": "Limit",
+       "type": "integer"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Missing Files Api System Missing Files Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Missing Files",
+    "tags": [
+     "system"
+    ]
+   }
+  },
+  "/api/system/status": {
+   "get": {
+    "description": "Each check is worked out on its own: one that fails or cannot be checked does not blank the rest. No secrets are shown.",
+    "operationId": "system_status_api_system_status_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response System Status Api System Status Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "System Status",
+    "tags": [
+     "system"
     ]
    }
   },
