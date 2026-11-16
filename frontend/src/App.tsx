@@ -2,6 +2,7 @@ import { AssetDetail, AssetScan, Fleet } from "./pages/Fleet";
 import { ServiceDue, ServicePanel } from "./pages/Service";
 import { Fuel } from "./pages/Fuel";
 import { Leave, MyLeave } from "./pages/Leave";
+import { MyTimesheet, Timesheets } from "./pages/Timesheets";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { useAuth } from "./auth";
 import { Shell } from "./components/Shell";
@@ -85,6 +86,8 @@ export function App() {
         <Route path="fuel" element={<Fuel />} />
         <Route path="leave" element={<Leave />} />
         <Route path="my-leave" element={<MyLeave />} />
+        <Route path="my-timesheet" element={<MyTimesheet />} />
+        <Route path="pay/timesheets" element={<Timesheets />} />
         <Route path="documents" element={<Documents />} />
         <Route path="documents/:folderId" element={<Documents />} />
         <Route path="settings/organisation" element={<OrganisationSettings />} />

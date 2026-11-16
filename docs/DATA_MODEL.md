@@ -63,6 +63,8 @@ IDs are opaque strings. Every tenant-owned table carries `org_id`, and every que
 | `fuel_anomalies` | One reason a fill needs a look | Unique `(transaction_id, rule)`; status open, resolved or dismissed with note, actor and time |
 | `provider_calls` | Calls made to a rate-limited provider | Counted per minute, hour and day before each SmartFill call |
 | `leave_requests` | A request for time off | Status requested, approved, rejected or cancelled; `days` holds the hours per day; `pay_run_id` once payroll has used it; `needs_payroll_correction` when cancelled after that |
+| `payroll_grants` | Named payroll access for one administrator | Primary key `user_id`; level view or edit; given by the payroll owner |
+| `timesheet_days` | One worker's hours for one date | Unique `(org_id, worker_id, work_date)`; `shifts` as entered; `hours` by category from the rules; `revision` for safe concurrent edits; status draft, submitted, approved, rejected or locked |
 
 ## Relationships to preserve as later stages add tables
 

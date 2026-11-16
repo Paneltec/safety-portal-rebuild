@@ -134,7 +134,10 @@ def clean_overrides(raw: Any, *, allow_special: bool = False) -> Matrix:
     return cleaned
 
 
-def effective_permissions(role_matrix: Matrix, overrides: Matrix | None, *, payroll_owner: bool = False) -> Matrix:
+PAYROLL_LEVELS = {"view": {"open", "view"}, "edit": {"open", "view", "edit"}}
+
+
+def effective_permissions(role_matrix: Matrix, overrides: Matrix | None, *, payroll_owner: bool = False, payroll_level: str | None = None) -> Matrix:
     overrides = overrides or {}
     result = empty_matrix()
     for r in RESOURCES:
@@ -142,7 +145,8 @@ def effective_permissions(role_matrix: Matrix, overrides: Matrix | None, *, payr
             if not supported(r, a):
                 continue
             if r in GRANT_ONLY_RESOURCES:
-                result[r][a] = payroll_owner
+                # Only the payroll owner, or a named grant held by an administrator, opens payroll.
+                result[r][a] = payroll_owner or a in PAYROLL_LEVELS.get(payroll_level or "", set())
                 continue
             override = overrides.get(r, {}).get(a)
             if isinstance(override, bool):

@@ -561,11 +561,11 @@ GET,/api/me/mobile-modules,mobile_modules,get_my_mobile_modules,CLASSIFY,,,NOT_S
 GET,/api/me/payroll/payslips,payroll_worker_payslips,list_payslips,CLASSIFY,,,NOT_STARTED,
 GET,/api/me/payroll/payslips/{week}/{revision},payroll_worker_payslips,detail,CLASSIFY,,,NOT_STARTED,
 GET,/api/me/payroll/payslips/{week}/{revision}/pdf,payroll_worker_payslips,pdf,CLASSIFY,,,NOT_STARTED,
-POST,/api/me/payroll/submit,payroll,my_submit,CLASSIFY,,,NOT_STARTED,
-GET,/api/me/payroll/time-catalog,payroll_segments,my_catalog,CLASSIFY,,,NOT_STARTED,
-GET,/api/me/payroll/timesheets,payroll,my_timesheets,CLASSIFY,,,NOT_STARTED,
-PUT,/api/me/payroll/timesheets/{day},payroll,my_upsert,CLASSIFY,,,NOT_STARTED,
-PUT,/api/me/payroll/timesheets/{day}/segments,payroll_segments,save_segments,CLASSIFY,,,NOT_STARTED,
+POST,/api/me/payroll/submit,payroll,my_submit,self,timesheets.submit_my_week,tests/test_timesheets.py,IMPLEMENTED_TESTED,Empty days are left out
+GET,/api/me/payroll/time-catalog,payroll_segments,my_catalog,self,timesheets.my_catalog,tests/test_timesheets.py,IMPLEMENTED_TESTED,Fixed categories; no client or job catalogue yet
+GET,/api/me/payroll/timesheets,payroll,my_timesheets,self,timesheets.my_timesheets,tests/test_timesheets.py,IMPLEMENTED_TESTED,One explicit seven-day week
+PUT,/api/me/payroll/timesheets/{day},payroll,my_upsert,self,timesheets.save_my_day,tests/test_timesheets.py,IMPLEMENTED_TESTED,Draft only; hours worked out on the server; expected revision
+PUT,/api/me/payroll/timesheets/{day}/segments,payroll_segments,save_segments,self,timesheets.save_my_day,tests/test_timesheets.py,IMPLEMENTED_TESTED,One editor: a day is a list of shifts with site and kind of work (D-078)
 POST,/api/me/signoff-active,sites_signon_v127,signoff_active,CLASSIFY,,,NOT_STARTED,
 GET,/api/me/suspicious-alerts,health_extras,get_suspicious_alerts,CLASSIFY,,,NOT_STARTED,
 PATCH,/api/me/suspicious-alerts,health_extras,set_suspicious_alerts,CLASSIFY,,,NOT_STARTED,
@@ -689,18 +689,18 @@ GET,/api/payroll/profiles,payroll,list_profiles,CLASSIFY,,,NOT_STARTED,
 PUT,/api/payroll/profiles/{worker_id},payroll,put_profile,CLASSIFY,,,NOT_STARTED,
 GET,/api/payroll/settings,payroll,read_settings,CLASSIFY,,,NOT_STARTED,
 PUT,/api/payroll/settings,payroll,write_settings,CLASSIFY,,,NOT_STARTED,
-GET,/api/payroll/summary,payroll,summary,CLASSIFY,,,NOT_STARTED,
-GET,/api/payroll/time-catalog,payroll_segments,office_catalog,CLASSIFY,,,NOT_STARTED,
-GET,/api/payroll/timesheets,payroll,list_timesheets,CLASSIFY,,,NOT_STARTED,
-POST,/api/payroll/timesheets,payroll,create_timesheet,CLASSIFY,,,NOT_STARTED,
-POST,/api/payroll/timesheets/approve,payroll,approve_timesheets,CLASSIFY,,,NOT_STARTED,
-POST,/api/payroll/timesheets/prefill,payroll,prefill_from_signons,CLASSIFY,,,NOT_STARTED,
-POST,/api/payroll/timesheets/reject,payroll,reject_timesheets,CLASSIFY,,,NOT_STARTED,
-DELETE,/api/payroll/timesheets/{entry_id},payroll,delete_timesheet,CLASSIFY,,,NOT_STARTED,
-PATCH,/api/payroll/timesheets/{entry_id},payroll,patch_timesheet,CLASSIFY,,,NOT_STARTED,
-POST,/api/payroll/timesheets/{entry_id}/review,payroll_segments,review_day,CLASSIFY,,,NOT_STARTED,
+GET,/api/payroll/summary,payroll,summary,payroll,timesheets.summary,tests/test_timesheets.py,IMPLEMENTED_TESTED,
+GET,/api/payroll/time-catalog,payroll_segments,office_catalog,payroll,timesheets.catalog,tests/test_timesheets.py,IMPLEMENTED_TESTED,
+GET,/api/payroll/timesheets,payroll,list_timesheets,payroll,timesheets.list_timesheets,tests/test_timesheets.py,IMPLEMENTED_TESTED,Payroll access only
+POST,/api/payroll/timesheets,payroll,create_timesheet,payroll,timesheets.enter_day,tests/test_timesheets.py,IMPLEMENTED_TESTED,One record per worker and date
+POST,/api/payroll/timesheets/approve,payroll,approve_timesheets,payroll,timesheets.approve,tests/test_timesheets.py,IMPLEMENTED_TESTED,Own days are skipped
+POST,/api/payroll/timesheets/prefill,payroll,prefill_from_signons,payroll,timesheets.prefill,tests/test_timesheets.py,IMPLEMENTED_TESTED,Drafts from site sign-ons; never overwrites
+POST,/api/payroll/timesheets/reject,payroll,reject_timesheets,payroll,timesheets.reject,tests/test_timesheets.py,IMPLEMENTED_TESTED,A reason is required
+DELETE,/api/payroll/timesheets/{entry_id},payroll,delete_timesheet,payroll,timesheets.delete_day,tests/test_timesheets.py,IMPLEMENTED_TESTED,Never an approved or paid day
+PATCH,/api/payroll/timesheets/{entry_id},payroll,patch_timesheet,payroll,timesheets.edit_day,tests/test_timesheets.py,IMPLEMENTED_TESTED,Changing an approved day puts it back to waiting; locked days refuse
+POST,/api/payroll/timesheets/{entry_id}/review,payroll_segments,review_day,payroll,timesheets.edit_day,tests/test_timesheets.py,IMPLEMENTED_TESTED,"PATCH, then approve or send back"
 POST,/api/payroll/timesheets/{entry_id}/segments/{segment_id}/match,payroll_segments,match_client,CLASSIFY,,,NOT_STARTED,
-GET,/api/payroll/workbench/access/list,payroll_run_register,access_list,CLASSIFY,,,NOT_STARTED,
+GET,/api/payroll/workbench/access/list,payroll_run_register,access_list,payroll owner,timesheets.payroll_access_list,tests/test_timesheets.py,IMPLEMENTED_TESTED,
 POST,/api/payroll/workbench/access/{user_id}/invite,payroll_run_register,invite_access,CLASSIFY,,,NOT_STARTED,
 GET,/api/payroll/workbench/branding,payroll_branding,load,CLASSIFY,,,NOT_STARTED,
 PUT,/api/payroll/workbench/branding,payroll_branding,save,CLASSIFY,,,NOT_STARTED,
@@ -924,7 +924,7 @@ PATCH,/api/users/{user_id},users,update_user,team/resource,users.update_user,tes
 GET,/api/users/{user_id}/access-status,auth_invite,access_status,admin-owner,users.access_status,tests/test_users.py,IMPLEMENTED_TESTED,
 POST,/api/users/{user_id}/force-signout,users,force_signout,team/resource,users.force_signout,tests/test_users.py,IMPLEMENTED_TESTED,
 POST,/api/users/{user_id}/invite,auth_invite,send_invite,admin-owner,users.send_invite,tests/test_auth.py,IMPLEMENTED_TESTED,"D-012 link shown once, delivery held"
-PUT,/api/users/{user_id}/payroll-access,users,set_payroll_access,CLASSIFY,,,NOT_STARTED,
+PUT,/api/users/{user_id}/payroll-access,users,set_payroll_access,payroll owner,timesheets.set_payroll_access,tests/test_timesheets.py,IMPLEMENTED_TESTED,"Owner only; administrators only; none, view or edit"
 GET,/api/users/{user_id}/permissions,users,get_permissions,team/resource,users.get_permissions,tests/test_users.py,IMPLEMENTED_TESTED,
 PUT,/api/users/{user_id}/permissions,users,put_permissions,team/resource,users.put_permissions,tests/test_users.py,IMPLEMENTED_TESTED,Strict booleans; D-005/D-006/D-007
 POST,/api/users/{user_id}/permissions/apply-preset,permission_presets,apply_preset,team/resource,users.apply_preset,tests/test_users.py,IMPLEMENTED_TESTED,D-011

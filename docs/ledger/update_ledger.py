@@ -646,6 +646,31 @@ FEATURES.update({
     "LEAVE-01": ("PARTIAL", "tests/test_leave.py; e2e leave step", "Built: own request with hours from working days, overlap refusal, evidence upload, own cancel; office list, entry on a worker's behalf, decision by someone else with a reason to refuse, who is away on a date, summary, settings; cancelling leave a pay run has used is flagged for payroll. Outstanding: leave balances, allocation by a pay run (stage 7c), leave by email, a warning when a daily job is given to someone on leave."),
 })
 
+T_TS = "tests/test_timesheets.py"
+DONE.update({
+    ("PUT", "/api/users/{user_id}/payroll-access"): ("payroll owner", "timesheets.set_payroll_access", T_TS, "IMPLEMENTED_TESTED", "Owner only; administrators only; none, view or edit"),
+    ("GET", "/api/payroll/workbench/access/list"): ("payroll owner", "timesheets.payroll_access_list", T_TS, "IMPLEMENTED_TESTED", ""),
+    ("GET", "/api/me/payroll/timesheets"): ("self", "timesheets.my_timesheets", T_TS, "IMPLEMENTED_TESTED", "One explicit seven-day week"),
+    ("PUT", "/api/me/payroll/timesheets/{day}"): ("self", "timesheets.save_my_day", T_TS, "IMPLEMENTED_TESTED", "Draft only; hours worked out on the server; expected revision"),
+    ("PUT", "/api/me/payroll/timesheets/{day}/segments"): ("self", "timesheets.save_my_day", T_TS, "IMPLEMENTED_TESTED", "One editor: a day is a list of shifts with site and kind of work (D-078)"),
+    ("POST", "/api/me/payroll/submit"): ("self", "timesheets.submit_my_week", T_TS, "IMPLEMENTED_TESTED", "Empty days are left out"),
+    ("GET", "/api/me/payroll/time-catalog"): ("self", "timesheets.my_catalog", T_TS, "IMPLEMENTED_TESTED", "Fixed categories; no client or job catalogue yet"),
+    ("GET", "/api/payroll/time-catalog"): ("payroll", "timesheets.catalog", T_TS, "IMPLEMENTED_TESTED", ""),
+    ("GET", "/api/payroll/timesheets"): ("payroll", "timesheets.list_timesheets", T_TS, "IMPLEMENTED_TESTED", "Payroll access only"),
+    ("POST", "/api/payroll/timesheets"): ("payroll", "timesheets.enter_day", T_TS, "IMPLEMENTED_TESTED", "One record per worker and date"),
+    ("PATCH", "/api/payroll/timesheets/{entry_id}"): ("payroll", "timesheets.edit_day", T_TS, "IMPLEMENTED_TESTED", "Changing an approved day puts it back to waiting; locked days refuse"),
+    ("POST", "/api/payroll/timesheets/{entry_id}/review"): ("payroll", "timesheets.edit_day", T_TS, "IMPLEMENTED_TESTED", "PATCH, then approve or send back"),
+    ("DELETE", "/api/payroll/timesheets/{entry_id}"): ("payroll", "timesheets.delete_day", T_TS, "IMPLEMENTED_TESTED", "Never an approved or paid day"),
+    ("POST", "/api/payroll/timesheets/approve"): ("payroll", "timesheets.approve", T_TS, "IMPLEMENTED_TESTED", "Own days are skipped"),
+    ("POST", "/api/payroll/timesheets/reject"): ("payroll", "timesheets.reject", T_TS, "IMPLEMENTED_TESTED", "A reason is required"),
+    ("POST", "/api/payroll/timesheets/prefill"): ("payroll", "timesheets.prefill", T_TS, "IMPLEMENTED_TESTED", "Drafts from site sign-ons; never overwrites"),
+    ("GET", "/api/payroll/summary"): ("payroll", "timesheets.summary", T_TS, "IMPLEMENTED_TESTED", ""),
+})
+FEATURES.update({
+    "PAY-01": ("PARTIAL", "tests/test_timesheets.py; tests/test_permissions_unit.py; e2e timesheets step", "Built: payroll opens only for the configured owner or a named view or edit grant held by an administrator; a role or override never opens it (also tested by writing an override straight into the database); the owner cannot be removed; changes are audited and take effect on the next request. Outstanding: the baseline's separate payroll invitation step."),
+    "TIME-01": ("PARTIAL", "tests/test_timesheets.py; tests/test_payroll_engine.py; e2e timesheets step", "Built: one record per worker and date; shifts with site and kind of work; hours by category worked out on the server by the pack's allocation rules (all six worked examples reproduced); draft, sent, approved, sent back, locked; optimistic revision; office entry, correction, approval, sending back with a reason, drafts from site sign-ons; nobody approves their own days. Outstanding: client and job catalogue from Simpro, recent clients, unmatched-client review, the phone layout (stage 8)."),
+})
+
 
 def main() -> None:
     path = HERE / "endpoint_coverage.csv"

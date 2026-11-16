@@ -93,7 +93,17 @@ def effective_for(db: Session, user: User) -> perms.Matrix:
         role_matrix,
         override_row.overrides if override_row else None,
         payroll_owner=is_payroll_owner(db, user),
+        payroll_level=payroll_level(db, user),
     )
+
+
+def payroll_level(db: Session, user: User) -> str | None:
+    """The named payroll grant a user holds, if any. A grant only counts while the user is an administrator."""
+    from .models import PayrollGrant
+    if user.role_id != "admin" or user.status != "active":
+        return None
+    grant = db.get(PayrollGrant, user.id)
+    return grant.level if grant is not None and grant.org_id == user.org_id else None
 
 
 def user_out(db: Session, user: User) -> dict[str, Any]:

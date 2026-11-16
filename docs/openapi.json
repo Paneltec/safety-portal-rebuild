@@ -1,6 +1,24 @@
 {
  "components": {
   "schemas": {
+   "AccessIn": {
+    "properties": {
+     "level": {
+      "enum": [
+       "none",
+       "view",
+       "edit"
+      ],
+      "title": "Level",
+      "type": "string"
+     }
+    },
+    "required": [
+     "level"
+    ],
+    "title": "AccessIn",
+    "type": "object"
+   },
    "AcknowledgeIn": {
     "properties": {
      "signed_name": {
@@ -1870,6 +1888,53 @@
     "title": "CreateUserIn",
     "type": "object"
    },
+   "DayIn": {
+    "properties": {
+     "expected_revision": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Expected Revision"
+     },
+     "kind": {
+      "default": "work",
+      "enum": [
+       "work",
+       "rdo",
+       "no_work"
+      ],
+      "title": "Kind",
+      "type": "string"
+     },
+     "notes": {
+      "anyOf": [
+       {
+        "maxLength": 1000,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Notes"
+     },
+     "shifts": {
+      "items": {
+       "$ref": "#/components/schemas/ShiftIn"
+      },
+      "maxItems": 10,
+      "title": "Shifts",
+      "type": "array"
+     }
+    },
+    "title": "DayIn",
+    "type": "object"
+   },
    "DayPrice": {
     "properties": {
      "cents": {
@@ -2431,6 +2496,36 @@
      }
     },
     "title": "HrPatch",
+    "type": "object"
+   },
+   "IdsIn": {
+    "properties": {
+     "ids": {
+      "items": {
+       "type": "string"
+      },
+      "maxItems": 500,
+      "minItems": 1,
+      "title": "Ids",
+      "type": "array"
+     },
+     "reason": {
+      "anyOf": [
+       {
+        "maxLength": 600,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Reason"
+     }
+    },
+    "required": [
+     "ids"
+    ],
+    "title": "IdsIn",
     "type": "object"
    },
    "ImportPayload": {
@@ -3249,6 +3344,113 @@
     "title": "NoteIn",
     "type": "object"
    },
+   "OfficeCreateIn": {
+    "properties": {
+     "expected_revision": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Expected Revision"
+     },
+     "kind": {
+      "default": "work",
+      "enum": [
+       "work",
+       "rdo",
+       "no_work"
+      ],
+      "title": "Kind",
+      "type": "string"
+     },
+     "notes": {
+      "anyOf": [
+       {
+        "maxLength": 1000,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Notes"
+     },
+     "shifts": {
+      "items": {
+       "$ref": "#/components/schemas/OfficeShiftIn"
+      },
+      "maxItems": 10,
+      "title": "Shifts",
+      "type": "array"
+     },
+     "work_date": {
+      "format": "date",
+      "title": "Work Date",
+      "type": "string"
+     },
+     "worker_id": {
+      "title": "Worker Id",
+      "type": "string"
+     }
+    },
+    "required": [
+     "worker_id",
+     "work_date"
+    ],
+    "title": "OfficeCreateIn",
+    "type": "object"
+   },
+   "OfficeDayIn": {
+    "properties": {
+     "expected_revision": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Expected Revision"
+     },
+     "kind": {
+      "default": "work",
+      "enum": [
+       "work",
+       "rdo",
+       "no_work"
+      ],
+      "title": "Kind",
+      "type": "string"
+     },
+     "notes": {
+      "anyOf": [
+       {
+        "maxLength": 1000,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Notes"
+     },
+     "shifts": {
+      "items": {
+       "$ref": "#/components/schemas/OfficeShiftIn"
+      },
+      "maxItems": 10,
+      "title": "Shifts",
+      "type": "array"
+     }
+    },
+    "title": "OfficeDayIn",
+    "type": "object"
+   },
    "OfficeLeaveIn": {
     "properties": {
      "end_date": {
@@ -3310,6 +3512,95 @@
      "worker_id"
     ],
     "title": "OfficeLeaveIn",
+    "type": "object"
+   },
+   "OfficeShiftIn": {
+    "properties": {
+     "break_minutes": {
+      "default": 0,
+      "maximum": 720.0,
+      "minimum": 0.0,
+      "title": "Break Minutes",
+      "type": "integer"
+     },
+     "break_start": {
+      "anyOf": [
+       {
+        "maxLength": 5,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Break Start"
+     },
+     "category": {
+      "default": "site",
+      "enum": [
+       "site",
+       "yard",
+       "travel",
+       "training",
+       "office"
+      ],
+      "title": "Category",
+      "type": "string"
+     },
+     "finish": {
+      "maxLength": 5,
+      "title": "Finish",
+      "type": "string"
+     },
+     "next_day": {
+      "default": false,
+      "title": "Next Day",
+      "type": "boolean"
+     },
+     "note": {
+      "anyOf": [
+       {
+        "maxLength": 300,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Note"
+     },
+     "public_holiday": {
+      "default": false,
+      "title": "Public Holiday",
+      "type": "boolean"
+     },
+     "replacement_day_shift": {
+      "default": false,
+      "title": "Replacement Day Shift",
+      "type": "boolean"
+     },
+     "site_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Site Id"
+     },
+     "start": {
+      "maxLength": 5,
+      "title": "Start",
+      "type": "string"
+     }
+    },
+    "required": [
+     "start",
+     "finish"
+    ],
+    "title": "OfficeShiftIn",
     "type": "object"
    },
    "OrgPatch": {
@@ -4604,6 +4895,85 @@
      "confirm_password"
     ],
     "title": "SetupIn",
+    "type": "object"
+   },
+   "ShiftIn": {
+    "properties": {
+     "break_minutes": {
+      "default": 0,
+      "maximum": 720.0,
+      "minimum": 0.0,
+      "title": "Break Minutes",
+      "type": "integer"
+     },
+     "break_start": {
+      "anyOf": [
+       {
+        "maxLength": 5,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Break Start"
+     },
+     "category": {
+      "default": "site",
+      "enum": [
+       "site",
+       "yard",
+       "travel",
+       "training",
+       "office"
+      ],
+      "title": "Category",
+      "type": "string"
+     },
+     "finish": {
+      "maxLength": 5,
+      "title": "Finish",
+      "type": "string"
+     },
+     "next_day": {
+      "default": false,
+      "title": "Next Day",
+      "type": "boolean"
+     },
+     "note": {
+      "anyOf": [
+       {
+        "maxLength": 300,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Note"
+     },
+     "site_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Site Id"
+     },
+     "start": {
+      "maxLength": 5,
+      "title": "Start",
+      "type": "string"
+     }
+    },
+    "required": [
+     "start",
+     "finish"
+    ],
+    "title": "ShiftIn",
     "type": "object"
    },
    "SiteIn": {
@@ -6184,6 +6554,24 @@
      "name"
     ],
     "title": "VisitorSignIn",
+    "type": "object"
+   },
+   "WeekIn": {
+    "properties": {
+     "week_start": {
+      "anyOf": [
+       {
+        "format": "date",
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Week Start"
+     }
+    },
+    "title": "WeekIn",
     "type": "object"
    },
    "WorkerIn": {
@@ -20228,6 +20616,181 @@
     ]
    }
   },
+  "/api/me/payroll/submit": {
+   "post": {
+    "description": "Send every filled-in day of the week that has not been sent (or was sent back) to the office.",
+    "operationId": "submit_my_week_api_me_payroll_submit_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/WeekIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Submit My Week Api Me Payroll Submit Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Submit My Week",
+    "tags": [
+     "timesheets"
+    ]
+   }
+  },
+  "/api/me/payroll/time-catalog": {
+   "get": {
+    "operationId": "my_catalog_api_me_payroll_time_catalog_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response My Catalog Api Me Payroll Time Catalog Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "My Catalog",
+    "tags": [
+     "timesheets"
+    ]
+   }
+  },
+  "/api/me/payroll/timesheets": {
+   "get": {
+    "operationId": "my_timesheets_api_me_payroll_timesheets_get",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "week_start",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "format": "date",
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Week Start"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response My Timesheets Api Me Payroll Timesheets Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "My Timesheets",
+    "tags": [
+     "timesheets"
+    ]
+   }
+  },
+  "/api/me/payroll/timesheets/{day}": {
+   "put": {
+    "description": "A worker writes their own day as a draft. A day that has been sent, approved or paid cannot be changed here.",
+    "operationId": "save_my_day_api_me_payroll_timesheets__day__put",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "day",
+      "required": true,
+      "schema": {
+       "format": "date",
+       "title": "Day",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/DayIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Save My Day Api Me Payroll Timesheets  Day  Put",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Save My Day",
+    "tags": [
+     "timesheets"
+    ]
+   }
+  },
   "/api/notifications": {
    "get": {
     "description": "Unread items first. Read items stay only while the thing they point at is still true.",
@@ -20599,6 +21162,455 @@
     "summary": "Get Logo",
     "tags": [
      "organisation"
+    ]
+   }
+  },
+  "/api/payroll/summary": {
+   "get": {
+    "operationId": "summary_api_payroll_summary_get",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "week_start",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "format": "date",
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Week Start"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Summary Api Payroll Summary Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Summary",
+    "tags": [
+     "timesheets"
+    ]
+   }
+  },
+  "/api/payroll/time-catalog": {
+   "get": {
+    "operationId": "catalog_api_payroll_time_catalog_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Catalog Api Payroll Time Catalog Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Catalog",
+    "tags": [
+     "timesheets"
+    ]
+   }
+  },
+  "/api/payroll/timesheets": {
+   "get": {
+    "description": "Every worker's days for one seven-day week, with each worker's totals.",
+    "operationId": "list_timesheets_api_payroll_timesheets_get",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "week_start",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "format": "date",
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Week Start"
+      }
+     },
+     {
+      "in": "query",
+      "name": "status",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Status"
+      }
+     },
+     {
+      "in": "query",
+      "name": "worker_id",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Worker Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response List Timesheets Api Payroll Timesheets Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "List Timesheets",
+    "tags": [
+     "timesheets"
+    ]
+   },
+   "post": {
+    "description": "Enter a day for a worker who has none yet. It still needs approving, by someone other than that worker.",
+    "operationId": "enter_day_api_payroll_timesheets_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/OfficeCreateIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Enter Day Api Payroll Timesheets Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Enter Day",
+    "tags": [
+     "timesheets"
+    ]
+   }
+  },
+  "/api/payroll/timesheets/approve": {
+   "post": {
+    "operationId": "approve_api_payroll_timesheets_approve_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/IdsIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": {
+          "type": "integer"
+         },
+         "title": "Response Approve Api Payroll Timesheets Approve Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Approve",
+    "tags": [
+     "timesheets"
+    ]
+   }
+  },
+  "/api/payroll/timesheets/prefill": {
+   "post": {
+    "description": "Start drafts from site sign-ons: for each worker and day in the week with completed site visits\nand no timesheet yet. An existing day is never touched, and the worker still has to check and send it.",
+    "operationId": "prefill_api_payroll_timesheets_prefill_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/WeekIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Prefill Api Payroll Timesheets Prefill Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Prefill",
+    "tags": [
+     "timesheets"
+    ]
+   }
+  },
+  "/api/payroll/timesheets/reject": {
+   "post": {
+    "description": "Send days back to the worker with a reason. A locked day cannot be sent back.",
+    "operationId": "reject_api_payroll_timesheets_reject_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/IdsIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": {
+          "type": "integer"
+         },
+         "title": "Response Reject Api Payroll Timesheets Reject Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Reject",
+    "tags": [
+     "timesheets"
+    ]
+   }
+  },
+  "/api/payroll/timesheets/{entry_id}": {
+   "delete": {
+    "description": "Remove a day that was never approved. An approved or paid day is kept.",
+    "operationId": "delete_day_api_payroll_timesheets__entry_id__delete",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "entry_id",
+      "required": true,
+      "schema": {
+       "title": "Entry Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "204": {
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Delete Day",
+    "tags": [
+     "timesheets"
+    ]
+   },
+   "patch": {
+    "description": "Correct a day (times, a public holiday, a night shift that replaced a day shift). A locked day\ncannot be changed. Changing an approved day puts it back to waiting, so it is approved again as it now stands.",
+    "operationId": "edit_day_api_payroll_timesheets__entry_id__patch",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "entry_id",
+      "required": true,
+      "schema": {
+       "title": "Entry Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/OfficeDayIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Edit Day Api Payroll Timesheets  Entry Id  Patch",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Edit Day",
+    "tags": [
+     "timesheets"
+    ]
+   }
+  },
+  "/api/payroll/workbench/access/list": {
+   "get": {
+    "operationId": "payroll_access_list_api_payroll_workbench_access_list_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Payroll Access List Api Payroll Workbench Access List Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Payroll Access List",
+    "tags": [
+     "payroll"
     ]
    }
   },
@@ -29953,6 +30965,61 @@
     "summary": "Send Invite",
     "tags": [
      "users"
+    ]
+   }
+  },
+  "/api/users/{user_id}/payroll-access": {
+   "put": {
+    "description": "The payroll owner gives a named administrator view or edit access to payroll, or takes it away.",
+    "operationId": "set_payroll_access_api_users__user_id__payroll_access_put",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "user_id",
+      "required": true,
+      "schema": {
+       "title": "User Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/AccessIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Set Payroll Access Api Users  User Id  Payroll Access Put",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Set Payroll Access",
+    "tags": [
+     "payroll"
     ]
    }
   },

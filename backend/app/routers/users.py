@@ -22,6 +22,7 @@ from ..services import (
     iso,
     is_account_holder,
     is_payroll_owner,
+    payroll_level,
     issue_auth_token,
     link_for,
     require_assignable_role,
@@ -124,7 +125,7 @@ def _permissions_payload(db: Session, user: User) -> dict[str, Any]:
         "applied_preset_key": row.applied_preset_key if row else None,
         "effective": effective_for(db, user),
         "schema": {"actions": perms.ACTIONS, "resources": perms.RESOURCES},
-        "payroll_access": {"is_owner": owner, "can_manage": owner, "grants": []},
+        "payroll_access": {"is_owner": owner, "can_manage": owner, "grants": [{"level": level}] if (level := payroll_level(db, user)) else []},
     }
 
 

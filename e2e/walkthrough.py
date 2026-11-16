@@ -1140,7 +1140,70 @@ def leave(browser) -> None:
     print("leave walkthrough: ok")
 
 
-STEPS = [stage1_and_2a, documents, forms, safety_registers, workers, sites_and_visitors, suppliers_and_renewals, inductions_and_jobs, connections_and_outbox, fleet_and_equipment, fuel, leave]
+def timesheets(browser) -> None:
+    import datetime as dt
+    pg = sign_in(browser)
+    errors: list[str] = []
+    pg.on("pageerror", lambda e: errors.append(str(e)))
+    today = dt.date.today()
+    monday = today - dt.timedelta(days=today.weekday() + 7)  # last week's Monday
+
+    pg.get_by_role("link", name="My timesheet").click()
+    expect(pg.get_by_text("Your login is not linked to a worker record")).to_be_visible()
+
+    # Payroll is its own section, shown because the account holder is the payroll owner.
+    pg.get_by_role("navigation").get_by_role("link", name="Timesheets", exact=True).click()
+    expect(pg.get_by_text("No timesheets for this week yet.")).to_be_visible()
+    access = pg.get_by_role("region", name="Payroll access")
+    expect(access.get_by_text("Payroll owner", exact=True)).to_be_visible()
+    expect(access.get_by_text("A role or a permission override never opens payroll.")).to_be_visible()
+
+    # The office enters a day for a worker: 07:00 to 15:30 with a 30 minute break is 8 paid hours, 7.6 ordinary and 0.4 overtime.
+    pg.get_by_role("button", name="Week before").click()
+    pg.get_by_role("button", name="Enter a day for a worker").click()
+    dialog = pg.get_by_role("dialog")
+    dialog.get_by_label("Worker").select_option(index=1)
+    name = dialog.get_by_label("Worker").locator("option:checked").inner_text()
+    dialog.get_by_label("Date").fill(monday.isoformat())
+    dialog.get_by_role("button", name="Next").click()
+    pg.get_by_role("dialog").get_by_role("button", name="Save day").click()
+    row = pg.get_by_role("row").filter(has_text=name)
+    expect(row.get_by_text("7.6 ordinary, 0.4 overtime (first rate)")).to_be_visible()
+    expect(row.get_by_text("Sent, waiting for the office")).to_be_visible()
+
+    # Overlapping shifts are refused with the reason; marking a public holiday changes the category, not the total.
+    row.get_by_role("button", name=re.compile("^Correct")).click()
+    dialog = pg.get_by_role("dialog")
+    dialog.get_by_role("button", name="Add another shift").click()
+    second = dialog.get_by_role("group", name="Shift 2")
+    second.get_by_label("Start", exact=True).fill("15:00")
+    second.get_by_label("Finish", exact=True).fill("17:00")
+    dialog.get_by_role("button", name="Save day").click()
+    expect(dialog.get_by_text("Shifts overlap; correct the time entries")).to_be_visible()
+    second.get_by_role("button", name="Remove this shift").click()
+    dialog.get_by_label("Worked on a public holiday").check()
+    dialog.get_by_role("button", name="Save day").click()
+    expect(row.get_by_text("8 public holiday")).to_be_visible()
+    shot(pg, "35-timesheets", full=True)
+
+    # Sending back needs a reason; approving records who approved.
+    row.get_by_role("button", name=re.compile("^Send back")).click()
+    dialog = pg.get_by_role("dialog")
+    dialog.get_by_label("What needs fixing?").fill("Check the finish time")
+    dialog.get_by_role("button", name="Send back").click()
+    expect(pg.get_by_text("1 day sent back.")).to_be_visible()
+    expect(row.get_by_text("Check the finish time")).to_be_visible()
+    row.get_by_role("button", name=re.compile("^Correct")).click()
+    pg.get_by_role("dialog").get_by_role("button", name="Save day").click()
+    row.get_by_role("button", name=re.compile("^Approve")).click()
+    expect(pg.get_by_text("1 day approved.")).to_be_visible()
+    expect(row.get_by_text("by Stephen")).to_be_visible()
+    assert not errors, errors
+    pg.context.close()
+    print("timesheets walkthrough: ok")
+
+
+STEPS = [stage1_and_2a, documents, forms, safety_registers, workers, sites_and_visitors, suppliers_and_renewals, inductions_and_jobs, connections_and_outbox, fleet_and_equipment, fuel, leave, timesheets]
 
 if __name__ == "__main__":
     with sync_playwright() as p:

@@ -1,0 +1,998 @@
+{
+ "note": "Worked examples copied from the reconstruction pack (calculation_fixtures.json). Synthetic inputs only.",
+ "shifts": [
+  {
+   "id": "day_8h",
+   "shifts": [
+    {
+     "date": "2026-10-19",
+     "start": "07:00",
+     "finish": "15:30",
+     "break_minutes": 30
+    }
+   ],
+   "rules": {
+    "ot1_multiplier": 1.5,
+    "ot2_multiplier": 2,
+    "night_multiplier": 2,
+    "holiday_work_multiplier": 2.5,
+    "super_percent": 12,
+    "meal_allowance": 20,
+    "meal_tax_treatment": "taxable",
+    "daily_ordinary_hours": 7.6,
+    "ot1_hours": 2,
+    "night_start": "18:00",
+    "night_end": "06:00",
+    "earning_rules": []
+   },
+   "separate_weekends": true,
+   "expected": {
+    "ordinary": 7.6,
+    "ot1": 0.4,
+    "ot2": 0.0,
+    "night": 0.0,
+    "holiday_work": 0.0,
+    "penalty_ordinary": 0.0,
+    "saturday": 0.0,
+    "sunday": 0.0,
+    "meal_count": 0
+   }
+  },
+  {
+   "id": "weekend",
+   "shifts": [
+    {
+     "date": "2026-10-24",
+     "start": "07:00",
+     "finish": "15:00",
+     "break_minutes": 0
+    }
+   ],
+   "rules": {
+    "ot1_multiplier": 1.5,
+    "ot2_multiplier": 2,
+    "night_multiplier": 2,
+    "holiday_work_multiplier": 2.5,
+    "super_percent": 12,
+    "meal_allowance": 20,
+    "meal_tax_treatment": "taxable",
+    "daily_ordinary_hours": 7.6,
+    "ot1_hours": 2,
+    "night_start": "18:00",
+    "night_end": "06:00",
+    "earning_rules": []
+   },
+   "separate_weekends": true,
+   "expected": {
+    "ordinary": 0.0,
+    "ot1": 0.0,
+    "ot2": 0.0,
+    "night": 0.0,
+    "holiday_work": 0.0,
+    "penalty_ordinary": 0.0,
+    "saturday": 8.0,
+    "sunday": 0.0,
+    "meal_count": 0
+   }
+  },
+  {
+   "id": "overnight",
+   "shifts": [
+    {
+     "date": "2026-10-19",
+     "start": "18:00",
+     "finish": "02:00",
+     "next_day": true,
+     "break_minutes": 0,
+     "replacement_day_shift": true
+    }
+   ],
+   "rules": {
+    "ot1_multiplier": 1.5,
+    "ot2_multiplier": 2,
+    "night_multiplier": 2,
+    "holiday_work_multiplier": 2.5,
+    "super_percent": 12,
+    "meal_allowance": 20,
+    "meal_tax_treatment": "taxable",
+    "daily_ordinary_hours": 7.6,
+    "ot1_hours": 2,
+    "night_start": "18:00",
+    "night_end": "06:00",
+    "earning_rules": []
+   },
+   "separate_weekends": true,
+   "expected": {
+    "ordinary": 0.0,
+    "ot1": 0.0,
+    "ot2": 0.0,
+    "night": 8.0,
+    "holiday_work": 0.0,
+    "penalty_ordinary": 7.6,
+    "saturday": 0.0,
+    "sunday": 0.0,
+    "meal_count": 0
+   }
+  },
+  {
+   "id": "cross_zone_break_missing",
+   "shifts": [
+    {
+     "date": "2026-10-19",
+     "start": "16:00",
+     "finish": "22:00",
+     "break_minutes": 30
+    }
+   ],
+   "rules": {
+    "ot1_multiplier": 1.5,
+    "ot2_multiplier": 2,
+    "night_multiplier": 2,
+    "holiday_work_multiplier": 2.5,
+    "super_percent": 12,
+    "meal_allowance": 20,
+    "meal_tax_treatment": "taxable",
+    "daily_ordinary_hours": 7.6,
+    "ot1_hours": 2,
+    "night_start": "18:00",
+    "night_end": "06:00",
+    "earning_rules": []
+   },
+   "separate_weekends": true,
+   "expected_error": "Enter the unpaid break start so day/night rates can be allocated correctly"
+  },
+  {
+   "id": "overlap",
+   "shifts": [
+    {
+     "date": "2026-10-19",
+     "start": "07:00",
+     "finish": "10:00"
+    },
+    {
+     "date": "2026-10-19",
+     "start": "09:00",
+     "finish": "12:00"
+    }
+   ],
+   "rules": {
+    "ot1_multiplier": 1.5,
+    "ot2_multiplier": 2,
+    "night_multiplier": 2,
+    "holiday_work_multiplier": 2.5,
+    "super_percent": 12,
+    "meal_allowance": 20,
+    "meal_tax_treatment": "taxable",
+    "daily_ordinary_hours": 7.6,
+    "ot1_hours": 2,
+    "night_start": "18:00",
+    "night_end": "06:00",
+    "earning_rules": []
+   },
+   "separate_weekends": true,
+   "expected_error": "Shifts overlap; correct the time entries"
+  },
+  {
+   "id": "public_holiday",
+   "shifts": [
+    {
+     "date": "2026-10-19",
+     "start": "07:00",
+     "finish": "15:00",
+     "public_holiday": true
+    }
+   ],
+   "rules": {
+    "ot1_multiplier": 1.5,
+    "ot2_multiplier": 2,
+    "night_multiplier": 2,
+    "holiday_work_multiplier": 2.5,
+    "super_percent": 12,
+    "meal_allowance": 20,
+    "meal_tax_treatment": "taxable",
+    "daily_ordinary_hours": 7.6,
+    "ot1_hours": 2,
+    "night_start": "18:00",
+    "night_end": "06:00",
+    "earning_rules": []
+   },
+   "separate_weekends": true,
+   "expected": {
+    "ordinary": 0.0,
+    "ot1": 0.0,
+    "ot2": 0.0,
+    "night": 0.0,
+    "holiday_work": 8.0,
+    "penalty_ordinary": 7.6,
+    "saturday": 0.0,
+    "sunday": 0.0,
+    "meal_count": 0
+   }
+  }
+ ],
+ "payroll_rows": [
+  {
+   "id": "ordinary_full_time",
+   "input": {
+    "profile": {
+     "hourly_rate": 30,
+     "employment_type": "full_time",
+     "pay_basis": "hourly",
+     "ordinary_weekly_hours": 38,
+     "conditions_reviewed": true,
+     "tax_mode": "resident_threshold",
+     "tax_declaration_reviewed": true,
+     "annual_weeks": 4,
+     "personal_weeks": 2,
+     "leave_loading_percent": 0
+    },
+    "entry": {
+     "ordinary": 38,
+     "hours_reviewed": true,
+     "super_reviewed": true,
+     "opening_annual": 100,
+     "opening_personal": 50
+    },
+    "rules": {
+     "ot1_multiplier": 1.5,
+     "ot2_multiplier": 2,
+     "night_multiplier": 2,
+     "holiday_work_multiplier": 2.5,
+     "super_percent": 12,
+     "meal_allowance": 20,
+     "meal_tax_treatment": "taxable",
+     "daily_ordinary_hours": 7.6,
+     "ot1_hours": 2,
+     "night_start": "18:00",
+     "night_end": "06:00",
+     "earning_rules": []
+    },
+    "payday": "2026-10-29"
+   },
+   "expected": {
+    "ordinary_pay": 1140.0,
+    "ot1_pay": 0.0,
+    "ot2_pay": 0.0,
+    "saturday_pay": 0.0,
+    "sunday_pay": 0.0,
+    "lafha_pay": 0.0,
+    "annual_pay": 0.0,
+    "personal_pay": 0.0,
+    "public_holiday_pay": 0.0,
+    "leave_loading": 0.0,
+    "taxable_allowances": 0.0,
+    "night_pay": 0.0,
+    "holiday_work_pay": 0.0,
+    "meal_allowance_pay": 0.0,
+    "configured_allowances": 0.0,
+    "other_earnings": 0.0,
+    "annual_closing": 102.923077,
+    "personal_closing": 51.461538,
+    "applied_rates": {
+     "ordinary": 30.0,
+     "ot1": 45.0,
+     "ot2": 60.0,
+     "night": 60.0,
+     "holiday_work": 75.0,
+     "saturday": 45.0,
+     "sunday": 60.0
+    },
+    "allowance_lines": [],
+    "earning_lines": [],
+    "gross": 1140.0,
+    "payg": 183.0,
+    "net": 957.0,
+    "super": 136.8,
+    "super_mode": "automatic",
+    "super_issues": [],
+    "qualifying_earnings": 1140.0,
+    "annual_accrued": 2.923077,
+    "personal_accrued": 1.461538,
+    "annual_base_value": 3087.69,
+    "reimbursements": 0.0,
+    "deductions": 0.0,
+    "issues": [],
+    "review_ready": true
+   }
+  },
+  {
+   "id": "overtime",
+   "input": {
+    "profile": {
+     "hourly_rate": 30,
+     "employment_type": "full_time",
+     "pay_basis": "hourly",
+     "ordinary_weekly_hours": 38,
+     "conditions_reviewed": true,
+     "tax_mode": "resident_threshold",
+     "tax_declaration_reviewed": true,
+     "annual_weeks": 4,
+     "personal_weeks": 2,
+     "leave_loading_percent": 0
+    },
+    "entry": {
+     "ordinary": 38,
+     "hours_reviewed": true,
+     "super_reviewed": true,
+     "opening_annual": 100,
+     "opening_personal": 50,
+     "ot1": 2,
+     "ot2": 1
+    },
+    "rules": {
+     "ot1_multiplier": 1.5,
+     "ot2_multiplier": 2,
+     "night_multiplier": 2,
+     "holiday_work_multiplier": 2.5,
+     "super_percent": 12,
+     "meal_allowance": 20,
+     "meal_tax_treatment": "taxable",
+     "daily_ordinary_hours": 7.6,
+     "ot1_hours": 2,
+     "night_start": "18:00",
+     "night_end": "06:00",
+     "earning_rules": []
+    },
+    "payday": "2026-10-29"
+   },
+   "expected": {
+    "ordinary_pay": 1140.0,
+    "ot1_pay": 90.0,
+    "ot2_pay": 60.0,
+    "saturday_pay": 0.0,
+    "sunday_pay": 0.0,
+    "lafha_pay": 0.0,
+    "annual_pay": 0.0,
+    "personal_pay": 0.0,
+    "public_holiday_pay": 0.0,
+    "leave_loading": 0.0,
+    "taxable_allowances": 0.0,
+    "night_pay": 0.0,
+    "holiday_work_pay": 0.0,
+    "meal_allowance_pay": 0.0,
+    "configured_allowances": 0.0,
+    "other_earnings": 0.0,
+    "annual_closing": 102.923077,
+    "personal_closing": 51.461538,
+    "applied_rates": {
+     "ordinary": 30.0,
+     "ot1": 45.0,
+     "ot2": 60.0,
+     "night": 60.0,
+     "holiday_work": 75.0,
+     "saturday": 45.0,
+     "sunday": 60.0
+    },
+    "allowance_lines": [],
+    "earning_lines": [],
+    "gross": 1290.0,
+    "payg": 231.0,
+    "net": 1059.0,
+    "super": 136.8,
+    "super_mode": "automatic",
+    "super_issues": [],
+    "qualifying_earnings": 1140.0,
+    "annual_accrued": 2.923077,
+    "personal_accrued": 1.461538,
+    "annual_base_value": 3087.69,
+    "reimbursements": 0.0,
+    "deductions": 0.0,
+    "issues": [],
+    "review_ready": true
+   }
+  },
+  {
+   "id": "annual_leave_with_loading",
+   "input": {
+    "profile": {
+     "hourly_rate": 30,
+     "employment_type": "full_time",
+     "pay_basis": "hourly",
+     "ordinary_weekly_hours": 38,
+     "conditions_reviewed": true,
+     "tax_mode": "resident_threshold",
+     "tax_declaration_reviewed": true,
+     "annual_weeks": 4,
+     "personal_weeks": 2,
+     "leave_loading_percent": 17.5
+    },
+    "entry": {
+     "ordinary": 30.4,
+     "hours_reviewed": true,
+     "super_reviewed": true,
+     "opening_annual": 100,
+     "opening_personal": 50,
+     "annual": 7.6
+    },
+    "rules": {
+     "ot1_multiplier": 1.5,
+     "ot2_multiplier": 2,
+     "night_multiplier": 2,
+     "holiday_work_multiplier": 2.5,
+     "super_percent": 12,
+     "meal_allowance": 20,
+     "meal_tax_treatment": "taxable",
+     "daily_ordinary_hours": 7.6,
+     "ot1_hours": 2,
+     "night_start": "18:00",
+     "night_end": "06:00",
+     "earning_rules": []
+    },
+    "payday": "2026-10-29"
+   },
+   "expected": {
+    "ordinary_pay": 912.0,
+    "ot1_pay": 0.0,
+    "ot2_pay": 0.0,
+    "saturday_pay": 0.0,
+    "sunday_pay": 0.0,
+    "lafha_pay": 0.0,
+    "annual_pay": 228.0,
+    "personal_pay": 0.0,
+    "public_holiday_pay": 0.0,
+    "leave_loading": 39.9,
+    "taxable_allowances": 0.0,
+    "night_pay": 0.0,
+    "holiday_work_pay": 0.0,
+    "meal_allowance_pay": 0.0,
+    "configured_allowances": 0.0,
+    "other_earnings": 0.0,
+    "annual_closing": 95.323077,
+    "personal_closing": 51.461538,
+    "applied_rates": {
+     "ordinary": 30.0,
+     "ot1": 45.0,
+     "ot2": 60.0,
+     "night": 60.0,
+     "holiday_work": 75.0,
+     "saturday": 45.0,
+     "sunday": 60.0
+    },
+    "allowance_lines": [],
+    "earning_lines": [],
+    "gross": 1179.9,
+    "payg": 196.0,
+    "net": 983.9,
+    "super": 141.59,
+    "super_mode": "automatic",
+    "super_issues": [],
+    "qualifying_earnings": 1179.9,
+    "annual_accrued": 2.923077,
+    "personal_accrued": 1.461538,
+    "annual_base_value": 2859.69,
+    "reimbursements": 0.0,
+    "deductions": 0.0,
+    "issues": [],
+    "review_ready": true
+   }
+  },
+  {
+   "id": "casual_override",
+   "input": {
+    "profile": {
+     "hourly_rate": 30,
+     "employment_type": "casual",
+     "pay_basis": "hourly",
+     "ordinary_weekly_hours": 38,
+     "conditions_reviewed": true,
+     "tax_mode": "resident_threshold",
+     "tax_declaration_reviewed": true,
+     "annual_weeks": 4,
+     "personal_weeks": 2,
+     "leave_loading_percent": 0,
+     "casual_rates": {
+      "base_rate": 30,
+      "loading_percent": 25,
+      "ot1": 50
+     }
+    },
+    "entry": {
+     "ordinary": 20,
+     "hours_reviewed": true,
+     "super_reviewed": true,
+     "opening_annual": 100,
+     "opening_personal": 50,
+     "ot1": 2
+    },
+    "rules": {
+     "ot1_multiplier": 1.5,
+     "ot2_multiplier": 2,
+     "night_multiplier": 2,
+     "holiday_work_multiplier": 2.5,
+     "super_percent": 12,
+     "meal_allowance": 20,
+     "meal_tax_treatment": "taxable",
+     "daily_ordinary_hours": 7.6,
+     "ot1_hours": 2,
+     "night_start": "18:00",
+     "night_end": "06:00",
+     "earning_rules": []
+    },
+    "payday": "2026-10-29"
+   },
+   "expected": {
+    "ordinary_pay": 750.0,
+    "ot1_pay": 100.0,
+    "ot2_pay": 0.0,
+    "saturday_pay": 0.0,
+    "sunday_pay": 0.0,
+    "lafha_pay": 0.0,
+    "annual_pay": 0.0,
+    "personal_pay": 0.0,
+    "public_holiday_pay": 0.0,
+    "leave_loading": 0.0,
+    "taxable_allowances": 0.0,
+    "night_pay": 0.0,
+    "holiday_work_pay": 0.0,
+    "meal_allowance_pay": 0.0,
+    "configured_allowances": 0.0,
+    "other_earnings": 0.0,
+    "annual_closing": 100.0,
+    "personal_closing": 50.0,
+    "applied_rates": {
+     "ordinary": 37.5,
+     "ot1": 50.0,
+     "ot2": 75.0,
+     "night": 75.0,
+     "holiday_work": 93.75,
+     "saturday": 50.0,
+     "sunday": 75.0
+    },
+    "allowance_lines": [],
+    "earning_lines": [],
+    "gross": 850.0,
+    "payg": 91.0,
+    "net": 759.0,
+    "super": 90.0,
+    "super_mode": "automatic",
+    "super_issues": [],
+    "qualifying_earnings": 750.0,
+    "annual_accrued": 0.0,
+    "personal_accrued": 0.0,
+    "annual_base_value": 3750.0,
+    "reimbursements": 0.0,
+    "deductions": 0.0,
+    "issues": [],
+    "review_ready": true
+   }
+  },
+  {
+   "id": "manual_payg",
+   "input": {
+    "profile": {
+     "hourly_rate": 30,
+     "employment_type": "full_time",
+     "pay_basis": "hourly",
+     "ordinary_weekly_hours": 38,
+     "conditions_reviewed": true,
+     "tax_mode": "manual",
+     "tax_declaration_reviewed": true,
+     "annual_weeks": 4,
+     "personal_weeks": 2,
+     "leave_loading_percent": 0
+    },
+    "entry": {
+     "ordinary": 38,
+     "hours_reviewed": true,
+     "super_reviewed": true,
+     "opening_annual": 100,
+     "opening_personal": 50,
+     "manual_payg": 150,
+     "payg_reference": "SYNTHETIC-REVIEW-001"
+    },
+    "rules": {
+     "ot1_multiplier": 1.5,
+     "ot2_multiplier": 2,
+     "night_multiplier": 2,
+     "holiday_work_multiplier": 2.5,
+     "super_percent": 12,
+     "meal_allowance": 20,
+     "meal_tax_treatment": "taxable",
+     "daily_ordinary_hours": 7.6,
+     "ot1_hours": 2,
+     "night_start": "18:00",
+     "night_end": "06:00",
+     "earning_rules": []
+    },
+    "payday": "2026-10-29"
+   },
+   "expected": {
+    "ordinary_pay": 1140.0,
+    "ot1_pay": 0.0,
+    "ot2_pay": 0.0,
+    "saturday_pay": 0.0,
+    "sunday_pay": 0.0,
+    "lafha_pay": 0.0,
+    "annual_pay": 0.0,
+    "personal_pay": 0.0,
+    "public_holiday_pay": 0.0,
+    "leave_loading": 0.0,
+    "taxable_allowances": 0.0,
+    "night_pay": 0.0,
+    "holiday_work_pay": 0.0,
+    "meal_allowance_pay": 0.0,
+    "configured_allowances": 0.0,
+    "other_earnings": 0.0,
+    "annual_closing": 102.923077,
+    "personal_closing": 51.461538,
+    "applied_rates": {
+     "ordinary": 30.0,
+     "ot1": 45.0,
+     "ot2": 60.0,
+     "night": 60.0,
+     "holiday_work": 75.0,
+     "saturday": 45.0,
+     "sunday": 60.0
+    },
+    "allowance_lines": [],
+    "earning_lines": [],
+    "gross": 1140.0,
+    "payg": 150.0,
+    "net": 990.0,
+    "super": 136.8,
+    "super_mode": "automatic",
+    "super_issues": [],
+    "qualifying_earnings": 1140.0,
+    "annual_accrued": 2.923077,
+    "personal_accrued": 1.461538,
+    "annual_base_value": 3087.69,
+    "reimbursements": 0.0,
+    "deductions": 0.0,
+    "issues": [],
+    "review_ready": true
+   }
+  },
+  {
+   "id": "unsupported_tax_year",
+   "input": {
+    "profile": {
+     "hourly_rate": 30,
+     "employment_type": "full_time",
+     "pay_basis": "hourly",
+     "ordinary_weekly_hours": 38,
+     "conditions_reviewed": true,
+     "tax_mode": "resident_threshold",
+     "tax_declaration_reviewed": true,
+     "annual_weeks": 4,
+     "personal_weeks": 2,
+     "leave_loading_percent": 0
+    },
+    "entry": {
+     "ordinary": 38,
+     "hours_reviewed": true,
+     "super_reviewed": true,
+     "opening_annual": 100,
+     "opening_personal": 50
+    },
+    "rules": {
+     "ot1_multiplier": 1.5,
+     "ot2_multiplier": 2,
+     "night_multiplier": 2,
+     "holiday_work_multiplier": 2.5,
+     "super_percent": 12,
+     "meal_allowance": 20,
+     "meal_tax_treatment": "taxable",
+     "daily_ordinary_hours": 7.6,
+     "ot1_hours": 2,
+     "night_start": "18:00",
+     "night_end": "06:00",
+     "earning_rules": []
+    },
+    "payday": "2027-07-01"
+   },
+   "expected": {
+    "ordinary_pay": 1140.0,
+    "ot1_pay": 0.0,
+    "ot2_pay": 0.0,
+    "saturday_pay": 0.0,
+    "sunday_pay": 0.0,
+    "lafha_pay": 0.0,
+    "annual_pay": 0.0,
+    "personal_pay": 0.0,
+    "public_holiday_pay": 0.0,
+    "leave_loading": 0.0,
+    "taxable_allowances": 0.0,
+    "night_pay": 0.0,
+    "holiday_work_pay": 0.0,
+    "meal_allowance_pay": 0.0,
+    "configured_allowances": 0.0,
+    "other_earnings": 0.0,
+    "annual_closing": 102.923077,
+    "personal_closing": 51.461538,
+    "applied_rates": {
+     "ordinary": 30.0,
+     "ot1": 45.0,
+     "ot2": 60.0,
+     "night": 60.0,
+     "holiday_work": 75.0,
+     "saturday": 45.0,
+     "sunday": 60.0
+    },
+    "allowance_lines": [],
+    "earning_lines": [],
+    "gross": 1140.0,
+    "payg": null,
+    "net": null,
+    "super": 136.8,
+    "super_mode": "automatic",
+    "super_issues": [],
+    "qualifying_earnings": 1140.0,
+    "annual_accrued": 2.923077,
+    "personal_accrued": 1.461538,
+    "annual_base_value": 3087.69,
+    "reimbursements": 0.0,
+    "deductions": 0.0,
+    "issues": [
+     "PAYG table supports paydays from 1 July 2026 to 30 June 2027; review the table before using another year"
+    ],
+    "review_ready": false
+   }
+  },
+  {
+   "id": "missing_tax_review",
+   "input": {
+    "profile": {
+     "hourly_rate": 30,
+     "employment_type": "full_time",
+     "pay_basis": "hourly",
+     "ordinary_weekly_hours": 38,
+     "conditions_reviewed": true,
+     "tax_mode": "resident_threshold",
+     "tax_declaration_reviewed": false,
+     "annual_weeks": 4,
+     "personal_weeks": 2,
+     "leave_loading_percent": 0
+    },
+    "entry": {
+     "ordinary": 38,
+     "hours_reviewed": true,
+     "super_reviewed": true,
+     "opening_annual": 100,
+     "opening_personal": 50
+    },
+    "rules": {
+     "ot1_multiplier": 1.5,
+     "ot2_multiplier": 2,
+     "night_multiplier": 2,
+     "holiday_work_multiplier": 2.5,
+     "super_percent": 12,
+     "meal_allowance": 20,
+     "meal_tax_treatment": "taxable",
+     "daily_ordinary_hours": 7.6,
+     "ot1_hours": 2,
+     "night_start": "18:00",
+     "night_end": "06:00",
+     "earning_rules": []
+    },
+    "payday": "2026-10-29"
+   },
+   "expected": {
+    "ordinary_pay": 1140.0,
+    "ot1_pay": 0.0,
+    "ot2_pay": 0.0,
+    "saturday_pay": 0.0,
+    "sunday_pay": 0.0,
+    "lafha_pay": 0.0,
+    "annual_pay": 0.0,
+    "personal_pay": 0.0,
+    "public_holiday_pay": 0.0,
+    "leave_loading": 0.0,
+    "taxable_allowances": 0.0,
+    "night_pay": 0.0,
+    "holiday_work_pay": 0.0,
+    "meal_allowance_pay": 0.0,
+    "configured_allowances": 0.0,
+    "other_earnings": 0.0,
+    "annual_closing": 102.923077,
+    "personal_closing": 51.461538,
+    "applied_rates": {
+     "ordinary": 30.0,
+     "ot1": 45.0,
+     "ot2": 60.0,
+     "night": 60.0,
+     "holiday_work": 75.0,
+     "saturday": 45.0,
+     "sunday": 60.0
+    },
+    "allowance_lines": [],
+    "earning_lines": [],
+    "gross": 1140.0,
+    "payg": null,
+    "net": null,
+    "super": 136.8,
+    "super_mode": "automatic",
+    "super_issues": [],
+    "qualifying_earnings": 1140.0,
+    "annual_accrued": 2.923077,
+    "personal_accrued": 1.461538,
+    "annual_base_value": 3087.69,
+    "reimbursements": 0.0,
+    "deductions": 0.0,
+    "issues": [
+     "Confirm tax declaration; HELP, variations and special payments use manual PAYG"
+    ],
+    "review_ready": false
+   }
+  },
+  {
+   "id": "unknown_lafha_tax",
+   "input": {
+    "profile": {
+     "hourly_rate": 30,
+     "employment_type": "full_time",
+     "pay_basis": "hourly",
+     "ordinary_weekly_hours": 38,
+     "conditions_reviewed": true,
+     "tax_mode": "resident_threshold",
+     "tax_declaration_reviewed": true,
+     "annual_weeks": 4,
+     "personal_weeks": 2,
+     "leave_loading_percent": 0
+    },
+    "entry": {
+     "ordinary": 38,
+     "hours_reviewed": true,
+     "super_reviewed": true,
+     "opening_annual": 100,
+     "opening_personal": 50,
+     "lafha": 100
+    },
+    "rules": {
+     "ot1_multiplier": 1.5,
+     "ot2_multiplier": 2,
+     "night_multiplier": 2,
+     "holiday_work_multiplier": 2.5,
+     "super_percent": 12,
+     "meal_allowance": 20,
+     "meal_tax_treatment": "taxable",
+     "daily_ordinary_hours": 7.6,
+     "ot1_hours": 2,
+     "night_start": "18:00",
+     "night_end": "06:00",
+     "earning_rules": []
+    },
+    "payday": "2026-10-29"
+   },
+   "expected": {
+    "ordinary_pay": 1140.0,
+    "ot1_pay": 0.0,
+    "ot2_pay": 0.0,
+    "saturday_pay": 0.0,
+    "sunday_pay": 0.0,
+    "lafha_pay": 100.0,
+    "annual_pay": 0.0,
+    "personal_pay": 0.0,
+    "public_holiday_pay": 0.0,
+    "leave_loading": 0.0,
+    "taxable_allowances": 0.0,
+    "night_pay": 0.0,
+    "holiday_work_pay": 0.0,
+    "meal_allowance_pay": 0.0,
+    "configured_allowances": 0.0,
+    "other_earnings": 0.0,
+    "annual_closing": 102.923077,
+    "personal_closing": 51.461538,
+    "applied_rates": {
+     "ordinary": 30.0,
+     "ot1": 45.0,
+     "ot2": 60.0,
+     "night": 60.0,
+     "holiday_work": 75.0,
+     "saturday": 45.0,
+     "sunday": 60.0
+    },
+    "allowance_lines": [],
+    "earning_lines": [],
+    "gross": 1240.0,
+    "payg": null,
+    "net": null,
+    "super": null,
+    "super_mode": "automatic",
+    "super_issues": [
+     "Confirm LAFHA super treatment"
+    ],
+    "qualifying_earnings": null,
+    "annual_accrued": 2.923077,
+    "personal_accrued": 1.461538,
+    "annual_base_value": 3087.69,
+    "reimbursements": 0.0,
+    "deductions": 0.0,
+    "issues": [
+     "Confirm LAFHA tax treatment",
+     "Confirm LAFHA super treatment"
+    ],
+    "review_ready": false
+   }
+  },
+  {
+   "id": "mixed_penalty_review",
+   "input": {
+    "profile": {
+     "hourly_rate": 30,
+     "employment_type": "full_time",
+     "pay_basis": "hourly",
+     "ordinary_weekly_hours": 38,
+     "conditions_reviewed": true,
+     "tax_mode": "resident_threshold",
+     "tax_declaration_reviewed": true,
+     "annual_weeks": 4,
+     "personal_weeks": 2,
+     "leave_loading_percent": 0
+    },
+    "entry": {
+     "ordinary": 30,
+     "hours_reviewed": true,
+     "super_reviewed": true,
+     "opening_annual": 100,
+     "opening_personal": 50,
+     "night": 4,
+     "penalty_ordinary": 2
+    },
+    "rules": {
+     "ot1_multiplier": 1.5,
+     "ot2_multiplier": 2,
+     "night_multiplier": 2,
+     "holiday_work_multiplier": 2.5,
+     "super_percent": 12,
+     "meal_allowance": 20,
+     "meal_tax_treatment": "taxable",
+     "daily_ordinary_hours": 7.6,
+     "ot1_hours": 2,
+     "night_start": "18:00",
+     "night_end": "06:00",
+     "earning_rules": []
+    },
+    "payday": "2026-10-29"
+   },
+   "expected": {
+    "ordinary_pay": 900.0,
+    "ot1_pay": 0.0,
+    "ot2_pay": 0.0,
+    "saturday_pay": 0.0,
+    "sunday_pay": 0.0,
+    "lafha_pay": 0.0,
+    "annual_pay": 0.0,
+    "personal_pay": 0.0,
+    "public_holiday_pay": 0.0,
+    "leave_loading": 0.0,
+    "taxable_allowances": 0.0,
+    "night_pay": 240.0,
+    "holiday_work_pay": 0.0,
+    "meal_allowance_pay": 0.0,
+    "configured_allowances": 0.0,
+    "other_earnings": 0.0,
+    "annual_closing": 102.461538,
+    "personal_closing": 51.230769,
+    "applied_rates": {
+     "ordinary": 30.0,
+     "ot1": 45.0,
+     "ot2": 60.0,
+     "night": 60.0,
+     "holiday_work": 75.0,
+     "saturday": 45.0,
+     "sunday": 60.0
+    },
+    "allowance_lines": [],
+    "earning_lines": [],
+    "gross": 1140.0,
+    "payg": 183.0,
+    "net": 957.0,
+    "super": null,
+    "super_mode": "automatic",
+    "super_issues": [
+     "Confirm qualifying earnings for mixed ordinary and overtime penalty hours"
+    ],
+    "qualifying_earnings": null,
+    "annual_accrued": 2.461538,
+    "personal_accrued": 1.230769,
+    "annual_base_value": 3073.85,
+    "reimbursements": 0.0,
+    "deductions": 0.0,
+    "issues": [
+     "Confirm qualifying earnings for mixed ordinary and overtime penalty hours"
+    ],
+    "review_ready": false
+   }
+  }
+ ]
+}

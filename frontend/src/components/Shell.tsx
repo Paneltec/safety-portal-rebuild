@@ -17,7 +17,7 @@ export function Shell() {
   const isAdmin = me.role_id === "admin";
   // Only screens that exist are listed, so no menu item leads to a blank page.
   const groups: { label: string; items: NavItem[] }[] = [
-    { label: "Overview", items: [{ to: "/app/home", label: "Home", show: true }, { to: "/app/my-work", label: "My work", show: true }, { to: "/app/my-leave", label: "My leave", show: true }] },
+    { label: "Overview", items: [{ to: "/app/home", label: "Home", show: true }, { to: "/app/my-work", label: "My work", show: true }, { to: "/app/my-leave", label: "My leave", show: true }, { to: "/app/my-timesheet", label: "My timesheet", show: true }] },
     {
       label: "Capture",
       items: [
@@ -47,6 +47,10 @@ export function Shell() {
         { to: "/app/visitors", label: "Visitors", show: can("sites_visitors", "view") },
         { to: "/app/documents", label: "Document library", show: can("documents", "view") },
       ],
+    },
+    {
+      label: "Pay (test only)",
+      items: [{ to: "/app/pay/timesheets", label: "Timesheets", show: can("payroll", "view") }],
     },
     {
       label: "Settings",
@@ -89,7 +93,7 @@ export function Shell() {
             </div>
           );
         })}
-        <div className="nav-note">Leave, timesheets and pay arrive in later build stages. See Home for progress.</div>
+        <div className="nav-note">The pay workbench and the phone app arrive in later build stages. See Home for progress.</div>
       </nav>
       <div className="content">
         <header className="topbar">

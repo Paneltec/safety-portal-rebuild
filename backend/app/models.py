@@ -1364,3 +1364,50 @@ class LeaveRequest(Base):
     needs_payroll_correction: Mapped[bool] = mapped_column(Boolean, default=False, server_default="false")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+class PayrollGrant(Base):
+    """Named access to payroll for one administrator, given by the payroll owner. A role or a
+    permission override can never grant payroll; only the owner or a row here can."""
+
+    __tablename__ = "payroll_grants"
+
+    user_id: Mapped[str] = mapped_column(ForeignKey("users.id"), primary_key=True)
+    org_id: Mapped[str] = mapped_column(ForeignKey("organisations.id"), index=True)
+    level: Mapped[str] = mapped_column(String(8))  # view | edit
+    granted_by: Mapped[str | None] = mapped_column(String(36))
+    granted_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class TimesheetDay(Base):
+    """One worker's hours for one date. There is exactly one record per worker and date.
+
+    draft -> submitted -> approved or rejected; an approved day used by a finalised pay run is
+    locked. `revision` goes up on every change so two people editing the same day cannot
+    overwrite each other without noticing.
+    """
+
+    __tablename__ = "timesheet_days"
+    __table_args__ = (UniqueConstraint("org_id", "worker_id", "work_date", name="uq_timesheet_days"), Index("ix_timesheet_days_org_date", "org_id", "work_date"))
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    org_id: Mapped[str] = mapped_column(ForeignKey("organisations.id"), index=True)
+    worker_id: Mapped[str] = mapped_column(ForeignKey("workers.id"))
+    work_date: Mapped[date] = mapped_column(Date)
+    kind: Mapped[str] = mapped_column(String(10), default="work")  # work | rdo | no_work
+    shifts: Mapped[list[Any]] = mapped_column(JSONB, default=list)
+    hours: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict)  # buckets worked out by the engine
+    paid_hours: Mapped[Decimal] = mapped_column(Numeric(6, 2), default=0)
+    notes: Mapped[str | None] = mapped_column(Text)
+    status: Mapped[str] = mapped_column(String(10), default="draft")  # draft | submitted | approved | rejected | locked
+    source: Mapped[str] = mapped_column(String(10), default="self")  # self | office | prefill
+    revision: Mapped[int] = mapped_column(Integer, default=1)
+    rule_version: Mapped[str | None] = mapped_column(String(40))
+    submitted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    reviewed_by: Mapped[str | None] = mapped_column(String(36))
+    reviewed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    reject_reason: Mapped[str | None] = mapped_column(String(600))
+    pay_run_id: Mapped[str | None] = mapped_column(String(36))
+    created_by: Mapped[str | None] = mapped_column(String(36))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
