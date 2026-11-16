@@ -20,7 +20,7 @@ from sqlalchemy import func, or_, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
-from .. import comms, people
+from .. import comms, people, reminders
 from ..crypto import decrypt_json, encrypt_json, key_status
 from ..db import get_db
 from ..deps import Caller, ensure_can_grant, get_caller, require_admin, require_permission
@@ -578,6 +578,47 @@ def all_certifications(
     rows.sort(key=lambda r: (order[r["status"]], r["expiry_date"] or "9999", r["worker"]["name"].lower()))
     return {"items": rows[offset:offset + limit], "total": len(rows), "limit": limit, "offset": offset,
             "summary": summary, "window_days": window}
+
+
+class ReminderScanIn(BaseModel):
+    dry_run: bool = True
+
+
+@router.post("/certifications/scan-reminders")
+def scan_reminders(
+    body: ReminderScanIn, request: Request,
+    caller: Caller = Depends(require_permission("certifications", "edit")), db: Session = Depends(get_db),
+) -> dict[str, Any]:
+    """Prepare a reminder email for every certificate that is expiring or recently expired. With
+    `dry_run` (the default) it only lists what would be prepared. Whether a prepared reminder is
+    sent or held is decided by safe mode and the email connection, as for any other message."""
+    if not caller.can("workers", "team_view"):
+        raise HTTPException(403, "You do not have permission to do this")
+    results = reminders.scan_certificates(db, request, _org(db, caller), caller.user.id, dry_run=body.dry_run)
+    if not body.dry_run:
+        audit(db, request, org_id=caller.org_id, actor_id=caller.user.id, action="certifications.reminders_prepared",
+              target_type="organisation", target_id=caller.org_id, detail=reminders.summarise(results, dry_run=False)["counts"])
+        db.commit()
+    return reminders.summarise(results, dry_run=body.dry_run)
+
+
+@router.post("/certifications/{cert_id}/send-reminder")
+def send_reminder(
+    cert_id: str, request: Request,
+    caller: Caller = Depends(require_permission("certifications", "edit")), db: Session = Depends(get_db),
+) -> dict[str, Any]:
+    """Prepare a reminder for one certificate. Asking twice for the same expiry date does not make a second one."""
+    cert, worker = _get_cert(db, caller, cert_id)
+    if cert.superseded_by_id is not None or cert.archived_at is not None or cert.no_expiry or cert.expiry_date is None:
+        raise HTTPException(409, "Only a current certificate with an expiry date can have a reminder")
+    org = _org(db, caller)
+    result = reminders.certificate_reminder(db, request, org, cert, worker, people.kind_labels(db, org.id), caller.user.id)
+    if result["outcome"] == "no_email":
+        raise HTTPException(409, f"{people.worker_name(worker)} has no email address on their worker record")
+    audit(db, request, org_id=caller.org_id, actor_id=caller.user.id, action="certification.reminder_prepared",
+          target_type="worker", target_id=worker.id, detail={"certification_id": cert.id, "outcome": result["outcome"]})
+    db.commit()
+    return result
 
 
 @router.post("/certifications/{cert_id}/renew", status_code=201)

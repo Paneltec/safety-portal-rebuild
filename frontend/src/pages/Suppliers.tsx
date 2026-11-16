@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { api, formatDate, formatDateTime, openFile, type DocType, type Renewal, type Supplier, type SupplierDoc, type User } from "../api";
 import { useAuth } from "../auth";
+import { ReminderButton } from "../components/Reminders";
 import { CertChip, Chip, LoadError, Loading, Modal, Notice, StatusChip, errorMessage } from "../components/ui";
 import { useLoad } from "../hooks";
 import { LinkBox, NewRequest, RenewalDetail, RenewalStatus } from "./Renewals";
@@ -60,7 +61,12 @@ export function Suppliers() {
           <h1>Suppliers and contractors</h1>
           <p className="muted">One directory. A contractor is a supplier who does work for you, so their insurance and licences are tracked.</p>
         </div>
-        {canAdd && <button type="button" className="btn primary" onClick={() => setAdding(true)}>Add supplier</button>}
+        {canAdd && (
+          <div className="row">
+            <ReminderButton url="/api/suppliers/documents/scan-reminders" what="supplier documents" />
+            <button type="button" className="btn primary" onClick={() => setAdding(true)}>Add supplier</button>
+          </div>
+        )}
       </div>
       <section className="card">
         <div className="tabs" role="tablist" aria-label="Supplier status">

@@ -423,6 +423,26 @@ def panel_counts(caller: Caller = Depends(_viewer), db: Session = Depends(get_db
     return {"counts": {sid: counts for sid, counts in out.items() if sid in visible}}
 
 
+class ReminderScanIn(BaseModel):
+    dry_run: bool = True
+
+
+@router.post("/documents/scan-reminders")
+def scan_document_reminders(body: ReminderScanIn, request: Request, caller: Caller = Depends(require_permission("suppliers", "edit")), db: Session = Depends(get_db)) -> dict[str, Any]:
+    """Prepare a reminder to each supplier whose compliance document is expiring or recently
+    expired. `dry_run` (the default) only lists them. Sending is decided by safe mode and the
+    email connection."""
+    from .. import reminders
+
+    org = db.get(Organisation, caller.org_id)
+    results = reminders.scan_supplier_documents(db, request, org, caller.user.id, doc_type_labels(db, org.id), dry_run=body.dry_run)
+    if not body.dry_run:
+        audit(db, request, org_id=caller.org_id, actor_id=caller.user.id, action="suppliers.reminders_prepared",
+              target_type="organisation", target_id=caller.org_id, detail=reminders.summarise(results, dry_run=False)["counts"])
+        db.commit()
+    return reminders.summarise(results, dry_run=body.dry_run)
+
+
 @router.get("/{supplier_id}")
 def get_one(supplier_id: str, caller: Caller = Depends(_viewer), db: Session = Depends(get_db)) -> dict[str, Any]:
     return supplier_out(db, caller, get_supplier(db, caller, supplier_id), detail=True)

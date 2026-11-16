@@ -408,3 +408,57 @@ def test_notifications_follow_what_each_person_may_see(world, client, db):
     cert_id = cert_note["id"].split(":")[1]
     client.post(f"/api/workers/certifications/{cert_id}/renew", json={"expiry_date": (date.today() + timedelta(days=400)).isoformat()}, headers=admin)
     assert cert_note["id"] not in [i["id"] for i in client.get(N, headers=admin).json()["items"]]
+
+
+# ---------- reminders ----------
+
+def test_reminders_are_previewed_prepared_once_and_held(world, client, db, provider):
+    admin, hseq = world.auth("admin1"), world.auth("hseq1")
+    day = lambda n: (date.today() + timedelta(days=n)).isoformat()  # noqa: E731
+    mia = world.add_worker("Mia", "Tanaka", email="mia@one.example")
+    ben = world.add_worker("Ben", "Abbott")  # no email
+    gone = world.add_worker("Old", "Hand", email="old@one.example", active=False)
+    world.add_worker("Other", "Org", org=world.org2, email="x@two.example")
+    soon = client.post(f"/api/workers/{mia.id}/certifications", json={"kind": "first_aid", "expiry_date": day(10)}, headers=admin).json()
+    client.post(f"/api/workers/{mia.id}/certifications", json={"kind": "white_card", "expiry_date": day(300)}, headers=admin)   # not due
+    client.post(f"/api/workers/{mia.id}/certifications", json={"kind": "cpr", "expiry_date": day(-400)}, headers=admin)        # lapsed long ago
+    client.post(f"/api/workers/{ben.id}/certifications", json={"kind": "first_aid", "expiry_date": day(-3)}, headers=admin)
+    client.post(f"/api/workers/{gone.id}/certifications", json={"kind": "first_aid", "expiry_date": day(5)}, headers=admin)    # inactive worker
+
+    scan = "/api/workers/certifications/scan-reminders"
+    assert client.post(scan, json={}, headers=world.auth("auditor1")).status_code == 403
+    assert client.post(scan, json={}, headers=world.auth("worker1")).status_code == 403
+    preview = client.post(scan, json={}, headers=hseq).json()
+    assert preview["dry_run"] is True and preview["due"] == 2 and preview["counts"] == {"would_prepare": 1, "no_email": 1}
+    assert db.scalars(select(OutboxMessage)).all() == []  # a preview prepares nothing
+    done = client.post(scan, json={"dry_run": False}, headers=hseq).json()
+    assert done["counts"] == {"held": 1, "no_email": 1}
+    message = db.scalars(select(OutboxMessage)).one()
+    assert (message.purpose, message.recipient, message.status, message.hold_code) == ("reminder", "mia@one.example", "held", "safe_mode")
+    assert "Hello Mia" in message.body_text and "First Aid certificate expires on" in message.body_text and "Org One" in message.body_text
+    # Asking again prepares nothing new, by scan or one at a time.
+    assert client.post(scan, json={"dry_run": False}, headers=hseq).json()["counts"] == {"already_prepared": 1, "no_email": 1}
+    one = client.post(f"/api/workers/certifications/{soon['id']}/send-reminder", headers=hseq).json()
+    assert one["outcome"] == "already_prepared" and len(db.scalars(select(OutboxMessage)).all()) == 1
+    ben_cert = client.get(f"/api/workers/{ben.id}/certifications", headers=admin).json()["items"][0]
+    refused = client.post(f"/api/workers/certifications/{ben_cert['id']}/send-reminder", headers=hseq)
+    assert refused.status_code == 409 and "no email address" in refused.json()["detail"]
+    assert client.post(f"/api/workers/certifications/{soon['id']}/send-reminder", headers=world.auth("admin2")).status_code == 404
+    # Once the date passes, the "expired" reminder is a new one; a renewal has its own.
+    client.patch(f"/api/workers/certifications/{soon['id']}", json={"expiry_date": day(-1)}, headers=admin)
+    assert client.post(scan, json={"dry_run": False}, headers=hseq).json()["counts"]["held"] == 1
+    assert len(db.scalars(select(OutboxMessage)).all()) == 2
+    assert provider.calls == []  # nothing was sent anywhere
+
+    # Supplier documents work the same way.
+    supplier = client.post("/api/suppliers", json={"name": "Acme Civil", "contact_email": "office@acme.example", "is_contractor": True}, headers=admin).json()
+    client.post(f"/api/suppliers/{supplier['id']}/documents", data={"doc_type": "public_liability", "expiry_date": day(7)},
+                files={"file": ("pl.pdf", b"%PDF-1.4\n1 0 obj<<>>endobj\ntrailer<<>>\n%%EOF", "application/pdf")}, headers=admin)
+    sup_scan = "/api/suppliers/documents/scan-reminders"
+    assert client.post(sup_scan, json={}, headers=world.auth("auditor1")).status_code == 403
+    assert client.post(sup_scan, json={}, headers=admin).json()["counts"] == {"would_prepare": 1}
+    assert client.post(sup_scan, json={"dry_run": False}, headers=admin).json()["counts"] == {"held": 1}
+    assert client.post(sup_scan, json={"dry_run": False}, headers=admin).json()["counts"] == {"already_prepared": 1}
+    row = db.scalars(select(OutboxMessage).where(OutboxMessage.related_type == "supplier_document")).one()
+    assert row.recipient == "office@acme.example" and "Public liability insurance we hold for Acme Civil expires on" in row.body_text
+    assert client.post(sup_scan, json={"dry_run": False}, headers=world.auth("admin2")).json()["due"] == 0

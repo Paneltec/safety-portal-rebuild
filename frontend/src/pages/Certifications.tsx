@@ -2,6 +2,7 @@ import { useEffect, useState, type FormEvent } from "react";
 import { Link } from "react-router-dom";
 import { api, openFile, type Cert, type CertKind } from "../api";
 import { useAuth } from "../auth";
+import { ReminderButton } from "../components/Reminders";
 import { CertChip, Chip, LoadError, Loading, Modal, Notice, errorMessage } from "../components/ui";
 import { useLoad } from "../hooks";
 import { ExpiryCell } from "./WorkerDetail";
@@ -73,6 +74,7 @@ export function Certifications() {
           </p>
         </div>
         <div className="row">
+          {can("certifications", "edit") && team && <ReminderButton url="/api/workers/certifications/scan-reminders" what="certificates" />}
           {can("certifications", "edit") && <button type="button" className="btn" onClick={() => setPanel("kinds")}>Certificate types</button>}
           {me?.role_id === "admin" && <button type="button" className="btn" onClick={() => setPanel("settings")}>Settings</button>}
         </div>

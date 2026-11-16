@@ -2742,6 +2742,17 @@
     "title": "ReissueIn",
     "type": "object"
    },
+   "ReminderScanIn": {
+    "properties": {
+     "dry_run": {
+      "default": true,
+      "title": "Dry Run",
+      "type": "boolean"
+     }
+    },
+    "title": "ReminderScanIn",
+    "type": "object"
+   },
    "RenewIn": {
     "properties": {
      "expiry_date": {
@@ -3003,6 +3014,24 @@
      }
     },
     "title": "RenewalPatch",
+    "type": "object"
+   },
+   "ResolveIn": {
+    "properties": {
+     "action": {
+      "enum": [
+       "link",
+       "create",
+       "ignore"
+      ],
+      "title": "Action",
+      "type": "string"
+     }
+    },
+    "required": [
+     "action"
+    ],
+    "title": "ResolveIn",
     "type": "object"
    },
    "RoleCreate": {
@@ -4077,6 +4106,29 @@
      }
     },
     "title": "SupplierPatch",
+    "type": "object"
+   },
+   "SyncIn": {
+    "properties": {
+     "dry_run": {
+      "default": true,
+      "title": "Dry Run",
+      "type": "boolean"
+     },
+     "resource": {
+      "enum": [
+       "workers",
+       "sites",
+       "suppliers"
+      ],
+      "title": "Resource",
+      "type": "string"
+     }
+    },
+    "required": [
+     "resource"
+    ],
+    "title": "SyncIn",
     "type": "object"
    },
    "TaskIn": {
@@ -14161,6 +14213,228 @@
     ]
    }
   },
+  "/api/integrations/simpro/companies": {
+   "get": {
+    "description": "The companies seen by the last connection test, and the ones chosen for import.",
+    "operationId": "companies_api_integrations_simpro_companies_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Companies Api Integrations Simpro Companies Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Companies",
+    "tags": [
+     "integrations"
+    ]
+   }
+  },
+  "/api/integrations/simpro/last-synced": {
+   "get": {
+    "description": "Per kind of record: the last import that was actually committed. A preview never counts.",
+    "operationId": "last_synced_api_integrations_simpro_last_synced_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Last Synced Api Integrations Simpro Last Synced Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Last Synced",
+    "tags": [
+     "integrations"
+    ]
+   }
+  },
+  "/api/integrations/simpro/review": {
+   "get": {
+    "description": "Incoming records that look like someone already on file. Only kinds the caller may view are listed.",
+    "operationId": "review_queue_api_integrations_simpro_review_get",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "status",
+      "required": false,
+      "schema": {
+       "default": "open",
+       "enum": [
+        "open",
+        "linked",
+        "created",
+        "ignored"
+       ],
+       "title": "Status",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Review Queue Api Integrations Simpro Review Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Review Queue",
+    "tags": [
+     "integrations"
+    ]
+   }
+  },
+  "/api/integrations/simpro/review/{item_id}/resolve": {
+   "post": {
+    "description": "Answer one question: it is the same record (link), it is a different one (create), or leave it out (ignore).",
+    "operationId": "resolve_api_integrations_simpro_review__item_id__resolve_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "item_id",
+      "required": true,
+      "schema": {
+       "title": "Item Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ResolveIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Resolve Api Integrations Simpro Review  Item Id  Resolve Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Resolve",
+    "tags": [
+     "integrations"
+    ]
+   }
+  },
+  "/api/integrations/simpro/runs": {
+   "get": {
+    "operationId": "runs_api_integrations_simpro_runs_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Runs Api Integrations Simpro Runs Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Runs",
+    "tags": [
+     "integrations"
+    ]
+   }
+  },
+  "/api/integrations/simpro/sync": {
+   "post": {
+    "description": "Fetch one kind of record from Simpro. With `dry_run` (the default) nothing is saved: the\nanswer says what an import would create, update and question. Needs edit access to that kind\nof record as well as to connections.",
+    "operationId": "sync_api_integrations_simpro_sync_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/SyncIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Sync Api Integrations Simpro Sync Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Sync",
+    "tags": [
+     "integrations"
+    ]
+   }
+  },
   "/api/integrations/{kind}": {
    "delete": {
     "description": "Remove the saved details and switch the connection off.",
@@ -21124,6 +21398,50 @@
     ]
    }
   },
+  "/api/suppliers/documents/scan-reminders": {
+   "post": {
+    "description": "Prepare a reminder to each supplier whose compliance document is expiring or recently\nexpired. `dry_run` (the default) only lists them. Sending is decided by safe mode and the\nemail connection.",
+    "operationId": "scan_document_reminders_api_suppliers_documents_scan_reminders_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ReminderScanIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Scan Document Reminders Api Suppliers Documents Scan Reminders Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Scan Document Reminders",
+    "tags": [
+     "suppliers"
+    ]
+   }
+  },
   "/api/suppliers/members/{member_id}": {
    "delete": {
     "operationId": "delete_member_api_suppliers_members__member_id__delete",
@@ -24691,6 +25009,50 @@
     ]
    }
   },
+  "/api/workers/certifications/scan-reminders": {
+   "post": {
+    "description": "Prepare a reminder email for every certificate that is expiring or recently expired. With\n`dry_run` (the default) it only lists what would be prepared. Whether a prepared reminder is\nsent or held is decided by safe mode and the email connection, as for any other message.",
+    "operationId": "scan_reminders_api_workers_certifications_scan_reminders_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ReminderScanIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Scan Reminders Api Workers Certifications Scan Reminders Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Scan Reminders",
+    "tags": [
+     "workers"
+    ]
+   }
+  },
   "/api/workers/certifications/{cert_id}": {
    "delete": {
     "description": "Remove a certificate entered by mistake. If it replaced an earlier one, that one becomes current again.",
@@ -24926,6 +25288,51 @@
      }
     },
     "summary": "Restore Certification",
+    "tags": [
+     "workers"
+    ]
+   }
+  },
+  "/api/workers/certifications/{cert_id}/send-reminder": {
+   "post": {
+    "description": "Prepare a reminder for one certificate. Asking twice for the same expiry date does not make a second one.",
+    "operationId": "send_reminder_api_workers_certifications__cert_id__send_reminder_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "cert_id",
+      "required": true,
+      "schema": {
+       "title": "Cert Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Send Reminder Api Workers Certifications  Cert Id  Send Reminder Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Send Reminder",
     "tags": [
      "workers"
     ]

@@ -3,6 +3,7 @@ import { api, formatDateTime } from "../api";
 import { useAuth } from "../auth";
 import { Chip, LoadError, Loading, Notice, errorMessage } from "../components/ui";
 import { useLoad } from "../hooks";
+import { SimproImport } from "./SimproImport";
 
 interface FieldSpec {
   name: string;
@@ -237,6 +238,7 @@ function ConnectionCard({ initial, timezone }: { initial: Connection; timezone: 
             {c.can_edit && c.mode === "off" && <span className="small muted">Save it as Simulator or Live to test it.</span>}
           </form>
         )}
+        {c.kind === "simpro" && (c.status.state === "simulator" || c.status.state === "connected") && <SimproImport simulator={c.mode === "simulator"} />}
       </div>
     </section>
   );

@@ -189,7 +189,7 @@ GET,/api/completed-training/{uid},completed_training,get_row,team/resource,induc
 PATCH,/api/completed-training/{uid},completed_training,patch_row,team/resource,inductions.edit_training,tests/test_inductions_jobs.py,IMPLEMENTED_TESTED,
 GET,/api/contractors,contractors,list_contractors,team/resource,suppliers.list_contractors,tests/test_suppliers_renewals.py,IMPLEMENTED_TESTED,D-047 one directory; contractors are flagged suppliers
 POST,/api/contractors,contractors,create_contractor,team/resource,suppliers.create_supplier,tests/test_suppliers_renewals.py,IMPLEMENTED_TESTED,POST /api/suppliers with is_contractor
-POST,/api/contractors/import-from-simpro,contractors,import_from_simpro,CLASSIFY,,,NOT_STARTED,
+POST,/api/contractors/import-from-simpro,contractors,import_from_simpro,team/resource,suppliers.update_supplier,tests/test_imports.py,IMPLEMENTED_TESTED,Imported vendors arrive as suppliers; ticking contractor promotes one
 DELETE,/api/contractors/{cid},contractors,delete_contractor,team/resource,suppliers.delete,tests/test_suppliers_renewals.py,IMPLEMENTED_TESTED,DELETE /api/suppliers/{id}; soft
 GET,/api/contractors/{cid},contractors,get_contractor,team/resource,suppliers.get_contractor,tests/test_suppliers_renewals.py,IMPLEMENTED_TESTED,
 PATCH,/api/contractors/{cid},contractors,patch_contractor,team/resource,suppliers.update_supplier,tests/test_suppliers_renewals.py,IMPLEMENTED_TESTED,PATCH /api/suppliers/{id}
@@ -490,28 +490,28 @@ POST,/api/integrations/navixy/get-hash,integrations,navixy_get_hash,team/resourc
 GET,/api/integrations/navixy/tags,integrations,navixy_tags,CLASSIFY,,,NOT_STARTED,
 POST,/api/integrations/navixy/test-connection,integrations,navixy_test,team/resource,comms.test_connection,tests/test_comms.py,IMPLEMENTED_TESTED,POST /v2/user/auth on the configured region. Mock transport only
 GET,/api/integrations/navixy/vehicles,integrations,navixy_vehicles,CLASSIFY,,,NOT_STARTED,
-GET,/api/integrations/simpro/companies,integrations_simpro,simpro_companies,CLASSIFY,,,NOT_STARTED,
-POST,/api/integrations/simpro/connect,integrations_simpro,simpro_connect,CLASSIFY,,,NOT_STARTED,
+GET,/api/integrations/simpro/companies,integrations_simpro,simpro_companies,team/resource,imports.companies,tests/test_imports.py,IMPLEMENTED_TESTED,From the last connection test
+POST,/api/integrations/simpro/connect,integrations_simpro,simpro_connect,team/resource,comms.save_integration,tests/test_imports.py,IMPLEMENTED_TESTED,PUT /api/integrations/simpro
 GET,/api/integrations/simpro/customers,integrations_simpro,simpro_customers,CLASSIFY,,,NOT_STARTED,
 GET,/api/integrations/simpro/customers/search,integrations_simpro,simpro_customers_search,CLASSIFY,,,NOT_STARTED,
 GET,/api/integrations/simpro/employees,integrations_simpro,simpro_employees,CLASSIFY,,,NOT_STARTED,
-GET,/api/integrations/simpro/last-synced,integrations_simpro,simpro_last_synced,CLASSIFY,,,NOT_STARTED,
+GET,/api/integrations/simpro/last-synced,integrations_simpro,simpro_last_synced,team/resource,imports.last_synced,tests/test_imports.py,IMPLEMENTED_TESTED,Committed imports only; a preview never counts
 GET,/api/integrations/simpro/staff,integrations_simpro,simpro_staff,CLASSIFY,,,NOT_STARTED,
-GET,/api/integrations/simpro/suppliers,integrations_simpro,simpro_suppliers,CLASSIFY,,,NOT_STARTED,
-GET,/api/integrations/simpro/suppliers/cached,integrations_simpro,simpro_suppliers_cached,CLASSIFY,,,NOT_STARTED,
-POST,/api/integrations/simpro/suppliers/sync,integrations_simpro,simpro_suppliers_sync,CLASSIFY,,,NOT_STARTED,
+GET,/api/integrations/simpro/suppliers,integrations_simpro,simpro_suppliers,team/resource,suppliers.list_suppliers,tests/test_imports.py,IMPLEMENTED_TESTED,Imported vendors are supplier rows; no separate cache
+GET,/api/integrations/simpro/suppliers/cached,integrations_simpro,simpro_suppliers_cached,team/resource,suppliers.list_suppliers,tests/test_imports.py,IMPLEMENTED_TESTED,Same
+POST,/api/integrations/simpro/suppliers/sync,integrations_simpro,simpro_suppliers_sync,team/resource,imports.sync,tests/test_imports.py,IMPLEMENTED_TESTED,resource=suppliers
 POST,/api/integrations/simpro/sync-customers,integrations_simpro,simpro_sync_customers,CLASSIFY,,,NOT_STARTED,
 POST,/api/integrations/simpro/sync-jobs,integrations_simpro,simpro_sync_jobs,CLASSIFY,,,NOT_STARTED,
-POST,/api/integrations/simpro/sync-sites,integrations_simpro,simpro_sync_sites,CLASSIFY,,,NOT_STARTED,
-POST,/api/integrations/simpro/sync-suppliers,integrations_simpro,simpro_sync_suppliers_now,CLASSIFY,,,NOT_STARTED,
-POST,/api/integrations/simpro/test-connection,integrations_simpro,simpro_test,CLASSIFY,,,NOT_STARTED,
+POST,/api/integrations/simpro/sync-sites,integrations_simpro,simpro_sync_sites,team/resource,imports.sync,tests/test_imports.py,IMPLEMENTED_TESTED,resource=sites
+POST,/api/integrations/simpro/sync-suppliers,integrations_simpro,simpro_sync_suppliers_now,team/resource,imports.sync,tests/test_imports.py,IMPLEMENTED_TESTED,resource=suppliers
+POST,/api/integrations/simpro/test-connection,integrations_simpro,simpro_test,team/resource,comms.test_connection,tests/test_imports.py,IMPLEMENTED_TESTED,Mock transport only
 POST,/api/integrations/simpro/workers/accept-suggestions,simpro_zip_import,accept_taxonomy_suggestions,CLASSIFY,,,NOT_STARTED,
 POST,/api/integrations/simpro/workers/bulk-zip-import,simpro_zip_import,bulk_zip_import,CLASSIFY,,,NOT_STARTED,
 GET,/api/integrations/simpro/workers/cert-kinds,simpro_zip_import,list_cert_kinds,CLASSIFY,,,NOT_STARTED,
 POST,/api/integrations/simpro/workers/identify-zip,simpro_zip_import,identify_zip,CLASSIFY,,,NOT_STARTED,
 POST,/api/integrations/simpro/workers/inductions/backfill-matrix-links,simpro_zip_import,backfill_matrix_links,CLASSIFY,,,NOT_STARTED,
-GET,/api/integrations/simpro/workers/last-sync,simpro_zip_import,last_sync_marker,CLASSIFY,,,NOT_STARTED,
-POST,/api/integrations/simpro/workers/refresh,integrations_simpro_workers,refresh_workers,CLASSIFY,,,NOT_STARTED,
+GET,/api/integrations/simpro/workers/last-sync,simpro_zip_import,last_sync_marker,team/resource,imports.last_synced,tests/test_imports.py,IMPLEMENTED_TESTED,Same route
+POST,/api/integrations/simpro/workers/refresh,integrations_simpro_workers,refresh_workers,team/resource,imports.sync,tests/test_imports.py,IMPLEMENTED_TESTED,POST /api/integrations/simpro/sync resource=workers (D-063)
 POST,/api/integrations/simpro/workers/rollback/{snapshot_id},integrations_simpro_workers,rollback_snapshot,CLASSIFY,,,NOT_STARTED,
 GET,/api/integrations/simpro/workers/snapshots,integrations_simpro_workers,list_snapshots,CLASSIFY,,,NOT_STARTED,
 GET,/api/integrations/simpro/workers/snapshots/{snapshot_id},integrations_simpro_workers,snapshot_detail,CLASSIFY,,,NOT_STARTED,
@@ -939,13 +939,13 @@ GET,/api/workers,workers,list_workers,team/resource,workers.list_workers,tests/t
 POST,/api/workers,workers,create_worker_deprecated,team/resource,workers.create_worker,tests/test_workers.py,IMPLEMENTED_TESTED,D-035 manual creation allowed until the Simpro sync exists
 POST,/api/workers/backfill-user-provision,worker_user_provisioning_routes,backfill,CLASSIFY,,,NOT_STARTED,
 GET,/api/workers/certifications/all,worker_certifications,list_all_certs,team/resource,workers.all_certifications,tests/test_workers.py,IMPLEMENTED_TESTED,Summary counts use the same filters as the rows
-POST,/api/workers/certifications/scan-reminders,worker_certifications,trigger_reminder_scan,CLASSIFY,,,NOT_STARTED,
+POST,/api/workers/certifications/scan-reminders,worker_certifications,trigger_reminder_scan,team/resource,workers.scan_reminders,tests/test_comms.py,IMPLEMENTED_TESTED,"Preview by default; one reminder per certificate, expiry date and state (D-065)"
 GET,/api/workers/certifications/search,worker_certifications,search_certs,team/resource,workers.all_certifications,tests/test_workers.py,IMPLEMENTED_TESTED,Folded into /certifications/all?q=
 DELETE,/api/workers/certifications/{cert_id},worker_certifications,delete_cert,team/resource,workers.delete_certification,tests/test_workers.py,IMPLEMENTED_TESTED,Earlier certificate becomes current again
 PATCH,/api/workers/certifications/{cert_id},worker_certifications,update_cert,team/resource,workers.update_certification,tests/test_workers.py,IMPLEMENTED_TESTED,
 POST,/api/workers/certifications/{cert_id}/archive,worker_certifications,archive_cert,team/resource,workers.archive_certification,tests/test_workers.py,IMPLEMENTED_TESTED,
 POST,/api/workers/certifications/{cert_id}/restore,worker_certifications,restore_cert,team/resource,workers.restore_certification,tests/test_workers.py,IMPLEMENTED_TESTED,
-POST,/api/workers/certifications/{cert_id}/send-reminder,worker_certifications,manual_send_reminder,CLASSIFY,,,NOT_STARTED,
+POST,/api/workers/certifications/{cert_id}/send-reminder,worker_certifications,manual_send_reminder,team/resource,workers.send_reminder,tests/test_comms.py,IMPLEMENTED_TESTED,Through the comms boundary
 GET,/api/workers/directory,workers,workers_directory,authenticated-own,workers.directory,tests/test_workers.py,IMPLEMENTED_TESTED,Names only
 PUT,/api/workers/inductions/cell,workers_inductions,edit_cell,team/resource,inductions.set_cell,tests/test_inductions_jobs.py,IMPLEMENTED_TESTED,"Exactly one of date, does-not-expire, not-applicable, clear"
 GET,/api/workers/inductions/export.xlsx,workers_inductions,export_matrix,team/resource,inductions.export_matrix,tests/test_inductions_jobs.py,IMPLEMENTED_TESTED,CSV at /export.csv (opens in Excel); the access sheet is not carried over
@@ -954,7 +954,7 @@ POST,/api/workers/inductions/import-xlsx/commit,workers_inductions,import_xlsx_c
 POST,/api/workers/inductions/import-xlsx/upload,workers_inductions,import_xlsx_upload,CLASSIFY,,,NOT_STARTED,
 GET,/api/workers/inductions/matrix,workers_inductions,induction_matrix,team/resource,inductions.matrix,tests/test_inductions_jobs.py,IMPLEMENTED_TESTED,Own row only without inductions.team_view
 POST,/api/workers/inductions/print,workers_inductions,print_inductions,CLASSIFY,,,NOT_STARTED,
-POST,/api/workers/sync-from-simpro,workers,sync_from_simpro,CLASSIFY,,,NOT_STARTED,
+POST,/api/workers/sync-from-simpro,workers,sync_from_simpro,team/resource,imports.sync,tests/test_imports.py,IMPLEMENTED_TESTED,Same route
 DELETE,/api/workers/{worker_id},workers,delete_worker,team/resource,workers.delete_worker,tests/test_workers.py,IMPLEMENTED_TESTED,"Soft delete; login unlinked, not removed"
 GET,/api/workers/{worker_id},workers,get_worker,team/resource,workers.get_worker,tests/test_workers.py,IMPLEMENTED_TESTED,D-036 privacy tiers
 PATCH,/api/workers/{worker_id},workers,update_worker,team/resource,workers.update_worker,tests/test_workers.py,IMPLEMENTED_TESTED,Protected fields need hr_employees.edit
@@ -1098,3 +1098,8 @@ POST,/api/daily-jobs/{job_id}/cancel,daily jobs,,admin-owner,jobs.cancel_job,tes
 POST,/api/daily-jobs/{job_id}/complete,daily jobs,,authenticated-own,jobs.complete_job,tests/test_inductions_jobs.py,IMPLEMENTED_TESTED,New: assignee marks done
 DELETE,/api/integrations/{kind},integrations,,team/resource,comms.disconnect,tests/test_comms.py,IMPLEMENTED_TESTED,New: remove saved details for any provider
 POST,/api/integrations/{kind}/test-connection,integrations,,team/resource,comms.test_connection,tests/test_comms.py,IMPLEMENTED_TESTED,"New: one test route for every provider, including Simpro and the simulator"
+POST,/api/integrations/simpro/sync,integrations,,team/resource,imports.sync,tests/test_imports.py,IMPLEMENTED_TESTED,"New: one import route with dry run, per-company results and review items"
+GET,/api/integrations/simpro/runs,integrations,,team/resource,imports.runs,tests/test_imports.py,IMPLEMENTED_TESTED,New: import history
+GET,/api/integrations/simpro/review,integrations,,team/resource,imports.review_queue,tests/test_imports.py,IMPLEMENTED_TESTED,New: possible duplicates awaiting a person
+POST,/api/integrations/simpro/review/{item_id}/resolve,integrations,,team/resource,imports.resolve,tests/test_imports.py,IMPLEMENTED_TESTED,"New: link, create or ignore"
+POST,/api/suppliers/documents/scan-reminders,suppliers,,team/resource,suppliers.scan_document_reminders,tests/test_comms.py,IMPLEMENTED_TESTED,New: insurance and licence reminders

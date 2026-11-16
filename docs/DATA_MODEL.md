@@ -20,7 +20,7 @@ IDs are opaque strings. Every tenant-owned table carries `org_id`, and every que
 | `safety_record_events` | Append-only history: created, edited (with earlier answers), submitted, reviewed, status changes, archive | Never rewritten |
 | `safety_assignments` | Who a SWMS is assigned to | Unique `(record_id, target_kind, target_id)` |
 | `safety_acknowledgements` | A person's sign-off on one SWMS version | Unique `(record_id, user_id)` |
-| `workers` | The operational person record, separate from a login | Unique `(org_id, source_system, source_company, source_id)` for imports; `details` JSONB (address, emergency contact, notes, masked hints); `protected` is encrypted JSON (birth date, TFN, USI); active flag, `archived_at`, soft delete |
+| `workers` | The operational person record, separate from a login | `source_data` (last import) and `locally_edited` (hand-edited imported fields); unique `(org_id, source_system, source_company, source_id)` for imports; `details` JSONB (address, emergency contact, notes, masked hints); `protected` is encrypted JSON (birth date, TFN, USI); active flag, `archived_at`, soft delete |
 | `certification_kinds` | Per-organisation certificate types with aliases | Unique `(org_id, slug)`; slug never changes; retire with `active=false`; `category` certificate or induction (induction kinds are the matrix columns) |
 | `certifications` | One certificate held by a worker | `supersedes_id` / `superseded_by_id` chain keeps renewals; `no_expiry` explicit; evidence in `stored_files`; archive and soft delete |
 | `sites` | A place where work happens | Unique `scan_token` (the QR secret, rotatable); unique source key for imports; `signon_questions` JSONB; active flag; soft delete |
@@ -48,6 +48,8 @@ IDs are opaque strings. Every tenant-owned table carries `org_id`, and every que
 | `outbox_attempts` | Each attempt to deliver a message | Outcome and a redacted detail |
 | `integration_configs` | One provider connection per organisation | Unique `(org_id, kind)`; settings JSON; secrets encrypted with the names set kept beside them; mode off/simulator/live; last test result and capabilities; last sync kept separately |
 | `notification_reads` | A person has read one notification | Unique `(user_id, notification_id)`; the notifications themselves are computed |
+| `import_runs` | One run of an import: mode, dry run or committed, counts, per-company results | Previews are recorded but never count as a sync |
+| `import_review_items` | An incoming record that looks like one already on file | Unique `(org_id, resource, source_system, source_company, source_id)`; status open, linked, created or ignored |
 
 ## Relationships to preserve as later stages add tables
 

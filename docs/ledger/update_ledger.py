@@ -452,6 +452,36 @@ FEATURES.update({
     "COM-01": ("PARTIAL", "tests/test_comms.py; e2e connections step", "Built: single send boundary; safe mode on by default with a server lock and an explicit-grant switch; automatic callers never send; duplicate keys; daily text limit; outbox with history, retry (never twice), cancel, delete; one-time links sent in memory and never stored; notification bell with per-person read state. Outstanding: compose/send-report screens, attachments, scheduled reminders, real delivery (unverified)."),
 })
 
+T_IMP = "tests/test_imports.py"
+DONE.update({
+    ("GET", "/api/integrations/simpro/companies"): ("team/resource", "imports.companies", T_IMP, "IMPLEMENTED_TESTED", "From the last connection test"),
+    ("POST", "/api/integrations/simpro/connect"): ("team/resource", "comms.save_integration", T_IMP, "IMPLEMENTED_TESTED", "PUT /api/integrations/simpro"),
+    ("POST", "/api/integrations/simpro/test-connection"): ("team/resource", "comms.test_connection", T_IMP, "IMPLEMENTED_TESTED", "Mock transport only"),
+    ("GET", "/api/integrations/simpro/last-synced"): ("team/resource", "imports.last_synced", T_IMP, "IMPLEMENTED_TESTED", "Committed imports only; a preview never counts"),
+    ("GET", "/api/integrations/simpro/workers/last-sync"): ("team/resource", "imports.last_synced", T_IMP, "IMPLEMENTED_TESTED", "Same route"),
+    ("POST", "/api/integrations/simpro/workers/refresh"): ("team/resource", "imports.sync", T_IMP, "IMPLEMENTED_TESTED", "POST /api/integrations/simpro/sync resource=workers (D-063)"),
+    ("POST", "/api/workers/sync-from-simpro"): ("team/resource", "imports.sync", T_IMP, "IMPLEMENTED_TESTED", "Same route"),
+    ("POST", "/api/integrations/simpro/sync-sites"): ("team/resource", "imports.sync", T_IMP, "IMPLEMENTED_TESTED", "resource=sites"),
+    ("POST", "/api/integrations/simpro/sync-suppliers"): ("team/resource", "imports.sync", T_IMP, "IMPLEMENTED_TESTED", "resource=suppliers"),
+    ("POST", "/api/integrations/simpro/suppliers/sync"): ("team/resource", "imports.sync", T_IMP, "IMPLEMENTED_TESTED", "resource=suppliers"),
+    ("GET", "/api/integrations/simpro/suppliers"): ("team/resource", "suppliers.list_suppliers", T_IMP, "IMPLEMENTED_TESTED", "Imported vendors are supplier rows; no separate cache"),
+    ("GET", "/api/integrations/simpro/suppliers/cached"): ("team/resource", "suppliers.list_suppliers", T_IMP, "IMPLEMENTED_TESTED", "Same"),
+    ("POST", "/api/contractors/import-from-simpro"): ("team/resource", "suppliers.update_supplier", T_IMP, "IMPLEMENTED_TESTED", "Imported vendors arrive as suppliers; ticking contractor promotes one"),
+    ("POST", "/api/workers/certifications/scan-reminders"): ("team/resource", "workers.scan_reminders", "tests/test_comms.py", "IMPLEMENTED_TESTED", "Preview by default; one reminder per certificate, expiry date and state (D-065)"),
+    ("POST", "/api/workers/certifications/{cert_id}/send-reminder"): ("team/resource", "workers.send_reminder", "tests/test_comms.py", "IMPLEMENTED_TESTED", "Through the comms boundary"),
+})
+NEW_ROWS += [
+    ["POST", "/api/integrations/simpro/sync", "integrations", "", "team/resource", "imports.sync", T_IMP, "IMPLEMENTED_TESTED", "New: one import route with dry run, per-company results and review items"],
+    ["GET", "/api/integrations/simpro/runs", "integrations", "", "team/resource", "imports.runs", T_IMP, "IMPLEMENTED_TESTED", "New: import history"],
+    ["GET", "/api/integrations/simpro/review", "integrations", "", "team/resource", "imports.review_queue", T_IMP, "IMPLEMENTED_TESTED", "New: possible duplicates awaiting a person"],
+    ["POST", "/api/integrations/simpro/review/{item_id}/resolve", "integrations", "", "team/resource", "imports.resolve", T_IMP, "IMPLEMENTED_TESTED", "New: link, create or ignore"],
+    ["POST", "/api/suppliers/documents/scan-reminders", "suppliers", "", "team/resource", "suppliers.scan_document_reminders", "tests/test_comms.py", "IMPLEMENTED_TESTED", "New: insurance and licence reminders"],
+]
+FEATURES.update({
+    "INT-03": ("PARTIAL", "tests/test_imports.py; e2e connections step", "Built: multi-company import of workers, sites and suppliers by company + Simpro id; pagination; bounded retry on rate limits; per-company failure reporting; dry run; hand edits kept; review queue for look-alikes (link, create, ignore); simulator dataset labelled as simulator. NOT VERIFIED against a real Simpro (mock transport only; column names follow the public API documentation and must be confirmed with real credentials). Outstanding: jobs and customers, delta cursor, attachments and ZIP import, position-to-role mapping, scheduled sync."),
+    "WORK-01": ("PARTIAL", "tests/test_workers.py; tests/test_imports.py; e2e workers step", "Built: roster (active/inactive/archived), details, photo, login link and provisioning, self-service edits, change history, duplicate warning, Simpro import by source key with review queue (unverified against a real Simpro). Outstanding: ID card/QR, mobile PIN, worker documents from Simpro."),
+})
+
 
 def main() -> None:
     path = HERE / "endpoint_coverage.csv"
