@@ -1,5 +1,5 @@
 import { useEffect, useState, type FormEvent } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { api, openFile, type Cert, type CertKind } from "../api";
 import { useAuth } from "../auth";
 import { ReminderButton } from "../components/Reminders";
@@ -35,7 +35,8 @@ export function Certifications() {
   const { me, can } = useAuth();
   const [search, setSearch] = useState("");
   const [query, setQuery] = useState("");
-  const [status, setStatus] = useState("");
+  const [params] = useSearchParams();
+  const [status, setStatus] = useState(() => (["expired", "expiring", "unknown", "valid"].includes(params.get("status") ?? "") ? params.get("status")! : ""));
   const [kind, setKind] = useState("");
   const [inactive, setInactive] = useState(false);
   const [offset, setOffset] = useState(0);

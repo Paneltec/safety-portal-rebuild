@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { SearchBox } from "../pages/Dashboard";
 import { NavLink, Outlet } from "react-router-dom";
 import { useAuth } from "../auth";
 import { Bell } from "./Bell";
@@ -46,6 +47,7 @@ export function Shell() {
         { to: "/app/sites", label: "Sites", show: can("sites", "view") },
         { to: "/app/visitors", label: "Visitors", show: can("sites_visitors", "view") },
         { to: "/app/documents", label: "Document library", show: can("documents", "view") },
+        { to: "/app/audit-packs", label: "Audit packs", show: can("audit_exports", "view") },
       ],
     },
     {
@@ -67,6 +69,7 @@ export function Shell() {
         { to: "/app/settings/outbox", label: "Outbox", show: can("notifications", "view") || can("users", "edit") || can("renewals", "edit") },
         { to: "/app/settings/phone-modules", label: "Phone modules", show: isAdmin },
         { to: "/app/settings/sessions", label: "Active sessions", show: isAdmin },
+        { to: "/app/settings/activity", label: "Activity log", show: isAdmin || can("audit_exports", "audit_view") },
         { to: "/app/profile", label: "My profile", show: true },
       ],
     },
@@ -103,6 +106,7 @@ export function Shell() {
       </nav>
       <div className="content">
         <header className="topbar">
+          <SearchBox />
           <div className="topbar-user">
             <span style={{ fontWeight: 600 }}>{me.name}</span>
             <span className="small muted">

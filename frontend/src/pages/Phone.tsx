@@ -112,7 +112,7 @@ export function PhoneMore() {
     <div className="stack">
       <h1 style={{ margin: 0 }}>More</h1>
       {waiting > 0 && <Notice tone="warn">{waiting} item{waiting === 1 ? " is" : "s are"} saved on this phone and waiting to send. They go by themselves when you are back online. <Link to="/app/waiting">See them</Link></Notice>}
-      <div className="phone-list">{items.map((m) => <Link key={m.key} to={m.path} className="phone-row">{m.label}<span aria-hidden="true">›</span></Link>)}</div>
+      <div className="phone-list"><Link to="/app/search" className="phone-row">Search<span aria-hidden="true">›</span></Link>{items.map((m) => <Link key={m.key} to={m.path} className="phone-row">{m.label}<span aria-hidden="true">›</span></Link>)}</div>
       <div className="phone-list">
         <button type="button" className="phone-row" onClick={() => { setLayout("office"); navigate("/app/home"); window.location.reload(); }}>Use the office layout<span aria-hidden="true">›</span></button>
         <button type="button" className="phone-row" onClick={() => void signOut()}>Sign out<span aria-hidden="true">›</span></button>

@@ -107,6 +107,31 @@ def save_upload(
     return row
 
 
+def save_bytes(db: Session, *, org_id: str, data: bytes, name: str, mime_type: str, purpose: str, created_by: str | None) -> StoredFile:
+    """Store bytes the portal itself produced (an export, a generated archive). Same durability rules as an upload."""
+    if not data:
+        raise HTTPException(500, "Nothing was produced to store")
+    sha = hashlib.sha256(data).hexdigest()
+    root = files_root()
+    fd, tmp_name = tempfile.mkstemp(dir=root, prefix=".made-")
+    try:
+        with os.fdopen(fd, "wb") as tmp:
+            tmp.write(data)
+            tmp.flush()
+            os.fsync(tmp.fileno())
+        final = _path_for(org_id, sha)
+        final.parent.mkdir(parents=True, exist_ok=True)
+        os.replace(tmp_name, final)
+    except BaseException:
+        if os.path.exists(tmp_name):
+            os.unlink(tmp_name)
+        raise
+    row = StoredFile(org_id=org_id, sha256=sha, size_bytes=len(data), mime_type=mime_type, original_name=safe_name(name), purpose=purpose, created_by=created_by)
+    db.add(row)
+    db.flush()
+    return row
+
+
 def file_exists(row: StoredFile) -> bool:
     path = _path_for(row.org_id, row.sha256)
     return path.is_file() and path.stat().st_size == row.size_bytes

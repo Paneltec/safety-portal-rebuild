@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { ApiError, api, formatDate, formatDateTime, openFile, type FieldDef, type SubmissionFile } from "../api";
 import { useAuth } from "../auth";
 import { AssignmentRules } from "../components/AssignmentRules";
@@ -75,7 +75,8 @@ export function RegisterList() {
   const config = REGISTERS[register];
   const { me } = useAuth();
   const navigate = useNavigate();
-  const [status, setStatus] = useState("");
+  const [params] = useSearchParams();
+  const [status, setStatus] = useState(() => (/^[a-z_]{2,20}$/.test(params.get("status") ?? "") ? params.get("status")! : ""));
   const [search, setSearch] = useState("");
   const [query, setQuery] = useState("");
   const [from, setFrom] = useState("");

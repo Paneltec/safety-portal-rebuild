@@ -3,6 +3,8 @@ import { ServiceDue, ServicePanel } from "./pages/Service";
 import { Fuel } from "./pages/Fuel";
 import { PhoneEntry, PhoneHome, PhoneModules, PhoneMore, PhoneShell, Scan, Waiting, usePhoneLayout } from "./pages/Phone";
 import { useAutoFlush } from "./offline";
+import { SearchPage } from "./pages/Dashboard";
+import { ActivityLog, AuditPacks } from "./pages/Activity";
 import { Leave, MyLeave } from "./pages/Leave";
 import { MyTimesheet, Timesheets } from "./pages/Timesheets";
 import { MyPayslips, PayProfiles, PayRules, PayRunPage, PayRuns } from "./pages/Pay";
@@ -72,6 +74,7 @@ export function App() {
       <Route path="/app" element={<Protected />}>
         <Route index element={<Navigate to="/app/home" replace />} />
         <Route path="home" element={<HomeSwitch />} />
+        <Route path="search" element={<SearchPage />} />
         <Route path="more" element={<PhoneMore />} />
         <Route path="scan" element={<Scan />} />
         <Route path="waiting" element={<Waiting />} />
@@ -120,6 +123,8 @@ export function App() {
         <Route path="settings/connections" element={<Connections />} />
         <Route path="settings/outbox" element={<Outbox />} />
         <Route path="settings/sessions" element={<Sessions />} />
+        <Route path="settings/activity" element={<ActivityLog />} />
+        <Route path="audit-packs" element={<AuditPacks />} />
         <Route path="*" element={<Navigate to="/app/home" replace />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />

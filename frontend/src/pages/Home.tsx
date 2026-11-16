@@ -4,6 +4,7 @@ import { api, formatDateTime, formatDuration, type Attendance } from "../api";
 import { useAuth } from "../auth";
 import { Chip, Notice, errorMessage } from "../components/ui";
 import { useLoad } from "../hooks";
+import { Dashboard } from "./Dashboard";
 
 /** A pointer to today's job, when there is one. */
 function JobToday() {
@@ -76,6 +77,7 @@ export function Home() {
 
       <SignedOnNow timezone={me.org_timezone} />
       <JobToday />
+      <Dashboard />
 
       <div className="grid-2">
         <section className="card">

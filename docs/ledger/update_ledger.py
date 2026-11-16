@@ -758,6 +758,29 @@ FEATURES.update({
 })
 
 
+# ---- Stage 9a/9b: dashboard, search, activity log, audit packs ----
+T_OVER, T_AUDIT = "tests/test_overview.py", "tests/test_audit.py"
+DONE.update({
+    ("GET", "/api/dashboard/metrics"): ("authenticated-scoped", "overview.metrics", T_OVER, "IMPLEMENTED_TESTED", "Each figure comes from its register's own count; unavailable is not zero"),
+    ("GET", "/api/audit-exports"): ("audit_exports.view", "audit.list_packs", T_AUDIT, "IMPLEMENTED_TESTED", "Own organisation; removed packs are hidden"),
+    ("POST", "/api/audit-exports"): ("audit_exports.edit", "audit.create_pack", T_AUDIT, "IMPLEMENTED_TESTED", "Built at once; needs whole-organisation view of each register; records only, no binaries"),
+    ("GET", "/api/audit-exports/{eid}"): ("audit_exports.view", "audit.get_pack", T_AUDIT, "IMPLEMENTED_TESTED", "Counts, size and SHA-256"),
+    ("DELETE", "/api/audit-exports/{eid}"): ("audit_exports.edit", "audit.remove_pack", T_AUDIT, "IMPLEMENTED_TESTED", "Soft delete; row and file kept"),
+})
+NEW_ROWS += [
+    ["GET", "/api/search", "overview", "", "authenticated-scoped", "overview.search", T_OVER, "IMPLEMENTED_TESTED", "New: names and titles across permitted registers; replaces per-module search routes for discovery"],
+    ["GET", "/api/audit-log", "audit", "", "admin or audit_exports.audit_view", "audit.activity_log", T_AUDIT, "IMPLEMENTED_TESTED", "New: read-only activity log with filters"],
+    ["GET", "/api/audit-log/export.csv", "audit", "", "admin or audit_exports.audit_view", "audit.activity_log_csv", T_AUDIT, "IMPLEMENTED_TESTED", "New: at most 20,000 entries per file; the export is itself recorded"],
+    ["GET", "/api/audit-exports/registers", "audit", "", "audit_exports.view", "audit.pack_registers", T_AUDIT, "IMPLEMENTED_TESTED", "New: what a pack can hold and whether the caller may include it"],
+    ["GET", "/api/audit-exports/{pack_id}/download", "audit", "", "audit_exports.view", "audit.download_pack", T_AUDIT, "IMPLEMENTED_TESTED", "New: needs the same reach as making it; each download is recorded"],
+]
+FEATURES.update({
+    "DASH-01": ("PARTIAL", "tests/test_overview.py; e2e dashboard step", "Built: permission-scoped figures for certificates, leave, safety registers, renewals, visitors, service, fuel checks, missing library files, outbox and timesheets, each with a definition and drill-down; recent activity; search by name and title. Outstanding: AI briefing, apps directory, per-module chart dashboards, text search inside files."),
+    "DOC-02": ("PARTIAL", "tests/test_audit.py; e2e dashboard step", "Built: audit packs with manifest, per-file SHA-256, scoped download and soft remove; activity log with CSV. Outstanding: attached files and PDFs inside a pack, background progress for very large packs, PDF rendering of a pack."),
+    "TIME-02": ("PARTIAL", "tests/test_timesheets.py; tests/test_payroll.py; e2e timesheets and pay steps", "Built in stage 7: office list by week, approve and send back with a reason (not your own), office entry and correction, prefill from site sign-ons, and import of approved days into a pay run that is safe to repeat. Outstanding: bulk actions across weeks."),
+})
+
+
 def main() -> None:
     path = HERE / "endpoint_coverage.csv"
     with path.open(encoding="utf-8-sig", newline="") as fh:

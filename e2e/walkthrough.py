@@ -1405,7 +1405,101 @@ def phone_app(browser) -> None:
     print("phone app walkthrough: ok")
 
 
-STEPS = [stage1_and_2a, documents, forms, safety_registers, workers, sites_and_visitors, suppliers_and_renewals, inductions_and_jobs, connections_and_outbox, fleet_and_equipment, fuel, leave, timesheets, pay, phone_app]
+def overview_and_audit(browser) -> None:
+    import zipfile
+    pg = sign_in(browser)
+    errors: list[str] = []
+    pg.on("pageerror", lambda e: errors.append(str(e)))
+
+    # Home: what needs attention, the figures behind it, and what each one counts.
+    attention = pg.get_by_role("region", name="Needs attention")
+    expect(attention).to_be_visible()
+    assert pg.get_by_text("could not be worked out just now").count() == 0
+    people = pg.get_by_role("region", name="People")
+    tile = people.get_by_role("link", name=re.compile(r"^\d+\s*Active workers"))
+    expect(tile).to_be_visible()
+    shown = int(re.match(r"\d+", tile.inner_text()).group(0))
+    pg.get_by_text("What each figure counts").click()
+    expect(pg.get_by_text("Worker records that are active and not archived.")).to_be_visible()
+    expect(pg.get_by_text("There is no overall compliance score")).to_be_visible()
+    expect(pg.get_by_role("region", name="Recent activity")).to_be_visible()
+    shot(pg, "43-dashboard", full=True)
+    # The figure and the screen it opens agree.
+    tile.click()
+    pg.wait_for_url("**/app/workers")
+    expect(pg.get_by_text(f"Active ({shown})", exact=True)).to_be_visible()
+    # A figure's link opens its register already filtered.
+    pg.goto(BASE + "/app/certifications?status=expired")
+    expect(pg.get_by_text("Showing:")).to_be_visible()
+
+    # Search across the registers from the top bar.
+    pg.get_by_label("Search the portal").fill("nina")
+    pg.get_by_role("search").get_by_role("button", name="Search").click()
+    pg.wait_for_url("**/app/search?q=nina")
+    workers = pg.get_by_role("region", name="Workers")
+    expect(workers.get_by_role("link", name=re.compile("Nina Example"))).to_be_visible()
+    shot(pg, "44-search", full=True)
+    workers.get_by_role("link", name=re.compile("Nina Example")).click()
+    pg.wait_for_url("**/app/workers/*")
+    expect(pg.get_by_role("heading", name="Nina Example")).to_be_visible()
+    pg.goto(BASE + "/app/search?q=zzzzqq")
+    expect(pg.get_by_text("Nothing found for")).to_be_visible()
+
+    # The activity log: read-only, filtered, with the detail of one entry, and a file to take away.
+    nav = pg.get_by_role("navigation")
+    nav.get_by_role("link", name="Activity log").click()
+    expect(pg.get_by_text("Nothing here can be edited or removed.")).to_be_visible()
+    expect(pg.get_by_text("Not shown to you")).to_have_count(0)  # the account holder is the payroll owner
+    pg.get_by_label("Kind of record").select_option("site")
+    expect(pg.get_by_role("cell", name="Site created").first).to_be_visible()
+    pg.get_by_role("button", name=re.compile("^Details of Site created")).first.click()
+    expect(pg.get_by_role("dialog").get_by_text("Request reference")).to_be_visible()
+    pg.keyboard.press("Escape")
+    shot(pg, "45-activity-log", full=True)
+    with pg.expect_download() as download:
+        pg.get_by_role("button", name="Download as a spreadsheet file").click()
+    text = Path(download.value.path()).read_text(encoding="utf-8-sig")
+    assert text.startswith("When (UTC),Who,Action") and "site.created" in text
+
+    # An audit pack: made, listed with its fingerprint, downloaded, and what is inside matches its manifest.
+    nav.get_by_role("link", name="Audit packs").click()
+    expect(pg.get_by_text("No packs have been made yet.")).to_be_visible()
+    pg.get_by_role("button", name="Make a pack").click()
+    dialog = pg.get_by_role("dialog")
+    dialog.get_by_label("Name of the pack").fill("Client audit")
+    dialog.get_by_role("button", name="Make the pack").click()
+    expect(dialog.get_by_text("Choose at least one register to include.")).to_be_visible()
+    dialog.get_by_label(re.compile("^Hazards")).check()
+    dialog.get_by_label(re.compile("^Site sign-on and visitor log")).check()
+    dialog.get_by_role("button", name="Make the pack").click()
+    expect(pg.get_by_text("Pack made. Download it from the list.")).to_be_visible()
+    row = pg.get_by_role("row").filter(has_text="Client audit")
+    expect(row.get_by_text("Fingerprint")).to_be_visible()
+    shot(pg, "46-audit-packs", full=True)
+    with pg.expect_download() as download:
+        row.get_by_role("button", name="Download Client audit").click()
+    archive = zipfile.ZipFile(download.value.path())
+    assert sorted(archive.namelist()) == ["hazard.csv", "manifest.json", "site_attendance.csv"]
+    manifest = __import__("json").loads(archive.read("manifest.json"))
+    assert manifest["organisation"] == "E2E Civil" and all(__import__("hashlib").sha256(archive.read(f["name"])).hexdigest() == f["sha256"] for f in manifest["files"])
+    assert "Vera Visitor" in archive.read("site_attendance.csv").decode("utf-8-sig")
+    row.get_by_role("button", name="Remove Client audit").click()
+    expect(pg.get_by_text("Removed from this list.")).to_be_visible()
+
+    # A worker has no activity log, no audit packs and no office figures.
+    phone = sign_in(browser, 390, 844, "nina@e2e.example", "Nina-Pass-2026")
+    phone.on("pageerror", lambda e: errors.append(str(e)))
+    phone.goto(BASE + "/app/settings/activity")
+    expect(phone.get_by_role("alert")).to_contain_text("do not have permission")
+    phone.goto(BASE + "/app/audit-packs")
+    expect(phone.get_by_role("alert").first).to_contain_text("do not have permission")
+    assert not errors, errors
+    pg.context.close()
+    phone.context.close()
+    print("dashboard, search, activity log and audit packs walkthrough: ok")
+
+
+STEPS = [stage1_and_2a, documents, forms, safety_registers, workers, sites_and_visitors, suppliers_and_renewals, inductions_and_jobs, connections_and_outbox, fleet_and_equipment, fuel, leave, timesheets, pay, phone_app, overview_and_audit]
 
 if __name__ == "__main__":
     with sync_playwright() as p:

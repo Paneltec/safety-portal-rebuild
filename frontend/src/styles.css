@@ -263,3 +263,20 @@ fieldset > legend { padding: 0 6px; font-size: 13px; font-weight: 600; color: va
 .phone-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 52px; padding: 10px 14px; border: 0; border-bottom: 1px solid var(--line-soft); background: none; color: var(--text); text-decoration: none; text-align: left; font: inherit; width: 100%; }
 .phone-row:last-child { border-bottom: 0; }
 .phone-video { width: 100%; max-height: 50dvh; border-radius: var(--radius); background: #000; }
+
+/* Dashboard and search */
+.section-title { font-size: 13px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin: 4px 0 8px; }
+.tile.bad { border-left-color: var(--bad); }
+.attention, .results { list-style: none; margin: 0; padding: 0; }
+.attention li + li, .results li + li { border-top: 1px solid var(--line-soft); }
+.attention a { display: flex; gap: 14px; align-items: center; padding: 10px 0; min-height: 44px; color: var(--text); text-decoration: none; }
+.attention a:hover strong, .results a:hover strong { text-decoration: underline; }
+.attention-num { flex: none; min-width: 44px; text-align: center; font-family: var(--font-display); font-size: 24px; font-weight: 600; padding: 2px 8px; border-radius: 6px; font-variant-numeric: tabular-nums; }
+.attention-num.bad { background: var(--bad-bg); color: var(--bad); }
+.attention-num.warn { background: var(--warn-bg); color: var(--warn); }
+.results a { display: block; padding: 10px 16px; min-height: 44px; color: var(--text); text-decoration: none; }
+.definitions { margin: 12px 0; display: grid; gap: 8px; }
+.definitions dt { font-weight: 600; }
+.definitions dd { margin: 0; color: var(--muted); }
+.searchbox { display: flex; gap: 6px; margin-right: auto; flex: 1; max-width: 420px; min-width: 180px; }
+.searchbox input { flex: 1; min-width: 0; }

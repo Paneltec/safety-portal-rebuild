@@ -113,10 +113,10 @@ GET,/api/assets/{asset_id}/schedules/{sid}/attachments/{stored_name},asset_servi
 PATCH,/api/assets/{asset_id}/tag,assets,patch_asset_tag,CLASSIFY,,,NOT_STARTED,
 GET,/api/assets/{asset_id}/trip-summary,asset_trip_summary,trip_summary,CLASSIFY,,,NOT_STARTED,
 POST,/api/assets/{asset_id}/uhf-pair,assets,uhf_pair,CLASSIFY,,,NOT_STARTED,
-GET,/api/audit-exports,exports,list_exports,CLASSIFY,,,NOT_STARTED,
-POST,/api/audit-exports,exports,create_export,CLASSIFY,,,NOT_STARTED,
-DELETE,/api/audit-exports/{eid},exports,delete_export,CLASSIFY,,,NOT_STARTED,
-GET,/api/audit-exports/{eid},exports,get_export,CLASSIFY,,,NOT_STARTED,
+GET,/api/audit-exports,exports,list_exports,audit_exports.view,audit.list_packs,tests/test_audit.py,IMPLEMENTED_TESTED,Own organisation; removed packs are hidden
+POST,/api/audit-exports,exports,create_export,audit_exports.edit,audit.create_pack,tests/test_audit.py,IMPLEMENTED_TESTED,"Built at once; needs whole-organisation view of each register; records only, no binaries"
+DELETE,/api/audit-exports/{eid},exports,delete_export,audit_exports.edit,audit.remove_pack,tests/test_audit.py,IMPLEMENTED_TESTED,Soft delete; row and file kept
+GET,/api/audit-exports/{eid},exports,get_export,audit_exports.view,audit.get_pack,tests/test_audit.py,IMPLEMENTED_TESTED,"Counts, size and SHA-256"
 POST,/api/audit-exports/{eid}/render-pdf,exports,render_pdf_sibling,CLASSIFY,,,NOT_STARTED,
 POST,/api/auth/admin-console/lock,admin_console_pin,lock,CLASSIFY,,,NOT_STARTED,
 POST,/api/auth/admin-console/set-pin,admin_console_pin,set_pin,CLASSIFY,,,NOT_STARTED,
@@ -208,7 +208,7 @@ GET,/api/daily-jobs/admin/trucks,daily_jobs_batch,admin_list_trucks,CLASSIFY,,,N
 GET,/api/daily-jobs/admin/workers,daily_jobs_batch,admin_list_workers_v2,admin-owner,workers.list_workers,tests/test_inductions_jobs.py,IMPLEMENTED_TESTED,The issue screen reads the worker roster
 POST,/api/daily-jobs/bulk-create,daily_jobs_batch,bulk_create_daily_jobs,admin-owner,jobs.bulk_create,tests/test_inductions_jobs.py,IMPLEMENTED_TESTED,trial_run saves nothing; override cancels the earlier job
 GET,/api/daily-jobs/today,daily_jobs_batch,admin_all_today,admin-owner,jobs.list_jobs,tests/test_inductions_jobs.py,IMPLEMENTED_TESTED,GET /api/daily-jobs?date=
-GET,/api/dashboard/metrics,dashboard,metrics,CLASSIFY,,,NOT_STARTED,
+GET,/api/dashboard/metrics,dashboard,metrics,authenticated-scoped,overview.metrics,tests/test_overview.py,IMPLEMENTED_TESTED,Each figure comes from its register's own count; unavailable is not zero
 GET,/api/dashboard/module-stats,dashboard,module_stats,CLASSIFY,,,NOT_STARTED,
 GET,/api/dashboards/{module},dashboards,module_dashboard,CLASSIFY,,,NOT_STARTED,
 GET,/api/docs,server,_admin_swagger_ui,CLASSIFY,,,NOT_STARTED,
@@ -1120,3 +1120,8 @@ POST,/api/payroll/runs/{run_id}/submit/{kind},payroll,,payroll,payroll.submit_to
 POST,/api/payroll/reset,payroll,,payroll,payroll.reset,tests/test_payroll.py,IMPLEMENTED_TESTED,New: always refused
 DELETE,/api/payroll/profiles/{worker_id}/bank,payroll,,payroll,payroll.clear_bank,tests/test_payroll.py,IMPLEMENTED_TESTED,New: remove stored bank details
 DELETE,/api/settings/mobile-modules/overrides/{scope}/{subject},phone,,admin,phone.delete_override,tests/test_phone.py,IMPLEMENTED_TESTED,New: remove every exception for one role or person
+GET,/api/search,overview,,authenticated-scoped,overview.search,tests/test_overview.py,IMPLEMENTED_TESTED,New: names and titles across permitted registers; replaces per-module search routes for discovery
+GET,/api/audit-log,audit,,admin or audit_exports.audit_view,audit.activity_log,tests/test_audit.py,IMPLEMENTED_TESTED,New: read-only activity log with filters
+GET,/api/audit-log/export.csv,audit,,admin or audit_exports.audit_view,audit.activity_log_csv,tests/test_audit.py,IMPLEMENTED_TESTED,"New: at most 20,000 entries per file; the export is itself recorded"
+GET,/api/audit-exports/registers,audit,,audit_exports.view,audit.pack_registers,tests/test_audit.py,IMPLEMENTED_TESTED,New: what a pack can hold and whether the caller may include it
+GET,/api/audit-exports/{pack_id}/download,audit,,audit_exports.view,audit.download_pack,tests/test_audit.py,IMPLEMENTED_TESTED,New: needs the same reach as making it; each download is recorded

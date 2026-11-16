@@ -1502,3 +1502,29 @@ class PhoneModuleSetting(Base):
     modules: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict)
     updated_by: Mapped[str | None] = mapped_column(String(36))
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
+class AuditExport(Base):
+    """A pack of records for an auditor: a ZIP with one file per register and a manifest of what is inside.
+
+    The pack is a copy taken at one moment. Removing it from the list keeps the row and the stored file.
+    """
+
+    __tablename__ = "audit_exports"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    org_id: Mapped[str] = mapped_column(ForeignKey("organisations.id"), index=True)
+    title: Mapped[str] = mapped_column(String(200))
+    registers: Mapped[list[str]] = mapped_column(JSONB, default=list)
+    date_from: Mapped[date | None] = mapped_column(Date)
+    date_to: Mapped[date | None] = mapped_column(Date)
+    status: Mapped[str] = mapped_column(String(20), default="ready")  # ready | failed
+    counts: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict)
+    error: Mapped[str | None] = mapped_column(Text)
+    file_id: Mapped[str | None] = mapped_column(String(36))
+    sha256: Mapped[str | None] = mapped_column(String(64))
+    size_bytes: Mapped[int | None] = mapped_column(Integer)
+    created_by: Mapped[str | None] = mapped_column(String(36))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    deleted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    deleted_by: Mapped[str | None] = mapped_column(String(36))
