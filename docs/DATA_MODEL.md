@@ -62,6 +62,7 @@ IDs are opaque strings. Every tenant-owned table carries `org_id`, and every que
 | `fuel_batches` | One import run | `via` csv, api or simulator; file hash; timezone used; counts, errors and warnings |
 | `fuel_anomalies` | One reason a fill needs a look | Unique `(transaction_id, rule)`; status open, resolved or dismissed with note, actor and time |
 | `provider_calls` | Calls made to a rate-limited provider | Counted per minute, hour and day before each SmartFill call |
+| `leave_requests` | A request for time off | Status requested, approved, rejected or cancelled; `days` holds the hours per day; `pay_run_id` once payroll has used it; `needs_payroll_correction` when cancelled after that |
 
 ## Relationships to preserve as later stages add tables
 

@@ -1,6 +1,7 @@
 import { AssetDetail, AssetScan, Fleet } from "./pages/Fleet";
 import { ServiceDue, ServicePanel } from "./pages/Service";
 import { Fuel } from "./pages/Fuel";
+import { Leave, MyLeave } from "./pages/Leave";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { useAuth } from "./auth";
 import { Shell } from "./components/Shell";
@@ -82,6 +83,8 @@ export function App() {
         <Route path="fleet/:assetId" element={<AssetDetail extra={(asset, reload) => (asset.kind === "equipment" ? null : <ServicePanel asset={asset} reload={reload} />)} />} />
         <Route path="scan/asset/:token" element={<AssetScan />} />
         <Route path="fuel" element={<Fuel />} />
+        <Route path="leave" element={<Leave />} />
+        <Route path="my-leave" element={<MyLeave />} />
         <Route path="documents" element={<Documents />} />
         <Route path="documents/:folderId" element={<Documents />} />
         <Route path="settings/organisation" element={<OrganisationSettings />} />

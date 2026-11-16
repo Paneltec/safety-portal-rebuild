@@ -522,16 +522,16 @@ POST,/api/integrations/textmagic/send-sms,integrations_textmagic,tm_send,CLASSIF
 POST,/api/integrations/textmagic/test-connection,integrations_textmagic,tm_test,team/resource,comms.test_connection,tests/test_comms.py,IMPLEMENTED_TESTED,GET /user; no text is sent. Mock transport only
 GET,/api/integrations/{kind},integrations,get_integration,team/resource,comms.get_integration,tests/test_comms.py,IMPLEMENTED_TESTED,Secrets reported as set/not set only
 PUT,/api/integrations/{kind},integrations,put_integration,team/resource,comms.save_integration,tests/test_comms.py,IMPLEMENTED_TESTED,integrations.edit; omitted/blank/mask keeps a secret; clear is explicit (D-056)
-GET,/api/leave,leave_requests,list_leave,CLASSIFY,,,NOT_STARTED,
+GET,/api/leave,leave_requests,list_leave,team/resource,leave.list_leave,tests/test_leave.py,IMPLEMENTED_TESTED,Needs team access
 POST,/api/leave/import-email,leave_requests,import_email,CLASSIFY,,,NOT_STARTED,
-GET,/api/leave/on-date,leave_requests,on_date,CLASSIFY,,,NOT_STARTED,
+GET,/api/leave/on-date,leave_requests,on_date,team/resource,leave.on_date,tests/test_leave.py,IMPLEMENTED_TESTED,
 POST,/api/leave/poll-inbox,leave_requests,poll_inbox_now,CLASSIFY,,,NOT_STARTED,
-GET,/api/leave/settings,leave_requests,get_settings,CLASSIFY,,,NOT_STARTED,
-PUT,/api/leave/settings,leave_requests,put_settings,CLASSIFY,,,NOT_STARTED,
-GET,/api/leave/summary,leave_requests,summary,CLASSIFY,,,NOT_STARTED,
-GET,/api/leave/{leave_id},leave_requests,get_one,CLASSIFY,,,NOT_STARTED,
-GET,/api/leave/{leave_id}/certificate,leave_requests,get_certificate,CLASSIFY,,,NOT_STARTED,
-POST,/api/leave/{leave_id}/decision,leave_requests,decide,CLASSIFY,,,NOT_STARTED,
+GET,/api/leave/settings,leave_requests,get_settings,team/resource,leave.get_settings,tests/test_leave.py,IMPLEMENTED_TESTED,"Hours a day, back-dating limit, working days"
+PUT,/api/leave/settings,leave_requests,put_settings,team/resource,leave.put_settings,tests/test_leave.py,IMPLEMENTED_TESTED,Admin only
+GET,/api/leave/summary,leave_requests,summary,team/resource,leave.summary,tests/test_leave.py,IMPLEMENTED_TESTED,
+GET,/api/leave/{leave_id},leave_requests,get_one,team/resource,leave.get_leave,tests/test_leave.py,IMPLEMENTED_TESTED,"Own request, or team access"
+GET,/api/leave/{leave_id}/certificate,leave_requests,get_certificate,team/resource,leave.certificate,tests/test_leave.py,IMPLEMENTED_TESTED,
+POST,/api/leave/{leave_id}/decision,leave_requests,decide,team/resource,leave.decide,tests/test_leave.py,IMPLEMENTED_TESTED,Never your own; a reason is needed to refuse; no email is sent (D-076)
 POST,/api/legislation/reingest,whs_legislation.api,reingest,CLASSIFY,,,NOT_STARTED,
 GET,/api/legislation/reingest/status,whs_legislation.api,reingest_status,CLASSIFY,,,NOT_STARTED,
 GET,/api/legislation/sources,whs_legislation.api,sources,CLASSIFY,,,NOT_STARTED,
@@ -553,10 +553,10 @@ POST,/api/master-risks/reimport,master_risks,reimport_master_risks,CLASSIFY,,,NO
 DELETE,/api/master-risks/{risk_uid},master_risks,delete_master_risk,CLASSIFY,,,NOT_STARTED,
 GET,/api/master-risks/{risk_uid},master_risks,get_master_risk,CLASSIFY,,,NOT_STARTED,
 PATCH,/api/master-risks/{risk_uid},master_risks,patch_master_risk,CLASSIFY,,,NOT_STARTED,
-GET,/api/me/leave,leave_requests,my_leave,CLASSIFY,,,NOT_STARTED,
-POST,/api/me/leave,leave_requests,create_my_leave,CLASSIFY,,,NOT_STARTED,
-POST,/api/me/leave/{leave_id}/cancel,leave_requests,cancel_my_leave,CLASSIFY,,,NOT_STARTED,
-POST,/api/me/leave/{leave_id}/certificate,leave_requests,upload_certificate,CLASSIFY,,,NOT_STARTED,
+GET,/api/me/leave,leave_requests,my_leave,self,leave.my_leave,tests/test_leave.py,IMPLEMENTED_TESTED,Balances are not shown yet (they belong to payroll)
+POST,/api/me/leave,leave_requests,create_my_leave,self,leave.request_leave,tests/test_leave.py,IMPLEMENTED_TESTED,Working days x hours a day unless hours are given; overlap refused
+POST,/api/me/leave/{leave_id}/cancel,leave_requests,cancel_my_leave,self,leave.cancel_mine,tests/test_leave.py,IMPLEMENTED_TESTED,"Leave already used by a pay run is flagged for payroll, not undone"
+POST,/api/me/leave/{leave_id}/certificate,leave_requests,upload_certificate,self,leave.upload_certificate,tests/test_leave.py,IMPLEMENTED_TESTED,
 GET,/api/me/mobile-modules,mobile_modules,get_my_mobile_modules,CLASSIFY,,,NOT_STARTED,
 GET,/api/me/payroll/payslips,payroll_worker_payslips,list_payslips,CLASSIFY,,,NOT_STARTED,
 GET,/api/me/payroll/payslips/{week}/{revision},payroll_worker_payslips,detail,CLASSIFY,,,NOT_STARTED,
@@ -1113,3 +1113,5 @@ DELETE,/api/assets/{asset_id}/documents/{doc_id},fleet,,team/resource,fleet.dele
 GET,/api/fleet/navixy/status,fleet,,team/resource,fleet.navixy_status,tests/test_fleet.py,IMPLEMENTED_TESTED,"New: connection state, tags, last committed sync"
 POST,/api/fleet/navixy/sync,fleet,,team/resource,fleet.navixy_sync,tests/test_fleet.py,IMPLEMENTED_TESTED,New: preview or bring in the tracker list
 PUT,/api/fleet/navixy/tags,fleet,,team/resource,fleet.navixy_tags,tests/test_fleet.py,IMPLEMENTED_TESTED,New: choose which Navixy tags feed the register
+POST,/api/leave,leave,,team/resource,leave.enter_leave,tests/test_leave.py,IMPLEMENTED_TESTED,New: the office enters a request for a worker
+POST,/api/leave/{leave_id}/cancel,leave,,team/resource,leave.cancel,tests/test_leave.py,IMPLEMENTED_TESTED,New: the office cancels a request

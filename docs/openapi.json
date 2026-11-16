@@ -936,6 +936,20 @@
     "title": "Body_upload_attachment_api_forms_submissions__submission_id__attachments_post",
     "type": "object"
    },
+   "Body_upload_certificate_api_me_leave__leave_id__certificate_post": {
+    "properties": {
+     "file": {
+      "contentMediaType": "application/octet-stream",
+      "title": "File",
+      "type": "string"
+     }
+    },
+    "required": [
+     "file"
+    ],
+    "title": "Body_upload_certificate_api_me_leave__leave_id__certificate_post",
+    "type": "object"
+   },
    "Body_upload_document_api_suppliers__supplier_id__documents_post": {
     "properties": {
      "doc_type": {
@@ -1352,6 +1366,24 @@
      }
     },
     "title": "BulkRevokeIn",
+    "type": "object"
+   },
+   "CancelIn": {
+    "properties": {
+     "reason": {
+      "anyOf": [
+       {
+        "maxLength": 600,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Reason"
+     }
+    },
+    "title": "CancelIn",
     "type": "object"
    },
    "CardIn": {
@@ -1932,6 +1964,35 @@
      "decision"
     ],
     "title": "Decision",
+    "type": "object"
+   },
+   "DecisionIn": {
+    "properties": {
+     "decision": {
+      "enum": [
+       "approve",
+       "reject"
+      ],
+      "title": "Decision",
+      "type": "string"
+     },
+     "note": {
+      "anyOf": [
+       {
+        "maxLength": 600,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Note"
+     }
+    },
+    "required": [
+     "decision"
+    ],
+    "title": "DecisionIn",
     "type": "object"
    },
    "DeclineIn": {
@@ -2768,6 +2829,64 @@
     "title": "LabelsIn",
     "type": "object"
    },
+   "LeaveIn": {
+    "properties": {
+     "end_date": {
+      "format": "date",
+      "title": "End Date",
+      "type": "string"
+     },
+     "hours": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Hours"
+     },
+     "leave_type": {
+      "enum": [
+       "annual",
+       "personal",
+       "unpaid",
+       "long_service",
+       "other"
+      ],
+      "title": "Leave Type",
+      "type": "string"
+     },
+     "reason": {
+      "anyOf": [
+       {
+        "maxLength": 2000,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Reason"
+     },
+     "start_date": {
+      "format": "date",
+      "title": "Start Date",
+      "type": "string"
+     }
+    },
+    "required": [
+     "leave_type",
+     "start_date",
+     "end_date"
+    ],
+    "title": "LeaveIn",
+    "type": "object"
+   },
    "LinkUserIn": {
     "properties": {
      "user_id": {
@@ -3128,6 +3247,69 @@
      "body"
     ],
     "title": "NoteIn",
+    "type": "object"
+   },
+   "OfficeLeaveIn": {
+    "properties": {
+     "end_date": {
+      "format": "date",
+      "title": "End Date",
+      "type": "string"
+     },
+     "hours": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Hours"
+     },
+     "leave_type": {
+      "enum": [
+       "annual",
+       "personal",
+       "unpaid",
+       "long_service",
+       "other"
+      ],
+      "title": "Leave Type",
+      "type": "string"
+     },
+     "reason": {
+      "anyOf": [
+       {
+        "maxLength": 2000,
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Reason"
+     },
+     "start_date": {
+      "format": "date",
+      "title": "Start Date",
+      "type": "string"
+     },
+     "worker_id": {
+      "title": "Worker Id",
+      "type": "string"
+     }
+    },
+    "required": [
+     "leave_type",
+     "start_date",
+     "end_date",
+     "worker_id"
+    ],
+    "title": "OfficeLeaveIn",
     "type": "object"
    },
    "OrgPatch": {
@@ -4347,6 +4529,38 @@
      "password"
     ],
     "title": "SetPasswordIn",
+    "type": "object"
+   },
+   "SettingsIn": {
+    "properties": {
+     "backdate_days": {
+      "maximum": 366.0,
+      "minimum": 0.0,
+      "title": "Backdate Days",
+      "type": "integer"
+     },
+     "hours_per_day": {
+      "exclusiveMinimum": 0.0,
+      "maximum": 24.0,
+      "title": "Hours Per Day",
+      "type": "number"
+     },
+     "work_days": {
+      "items": {
+       "type": "integer"
+      },
+      "maxItems": 7,
+      "minItems": 1,
+      "title": "Work Days",
+      "type": "array"
+     }
+    },
+    "required": [
+     "hours_per_day",
+     "backdate_days",
+     "work_days"
+    ],
+    "title": "SettingsIn",
     "type": "object"
    },
    "SetupIn": {
@@ -19362,6 +19576,655 @@
     "summary": "Test Connection",
     "tags": [
      "integrations"
+    ]
+   }
+  },
+  "/api/leave": {
+   "get": {
+    "operationId": "list_leave_api_leave_get",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "status",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Status"
+      }
+     },
+     {
+      "in": "query",
+      "name": "worker_id",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Worker Id"
+      }
+     },
+     {
+      "in": "query",
+      "name": "date_from",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "format": "date",
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Date From"
+      }
+     },
+     {
+      "in": "query",
+      "name": "date_to",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "format": "date",
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Date To"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response List Leave Api Leave Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "List Leave",
+    "tags": [
+     "leave"
+    ]
+   },
+   "post": {
+    "description": "Enter a request for a worker (a phone call, a paper form). It still waits for a decision,\nand the person who entered their own cannot decide it.",
+    "operationId": "enter_leave_api_leave_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/OfficeLeaveIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Enter Leave Api Leave Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Enter Leave",
+    "tags": [
+     "leave"
+    ]
+   }
+  },
+  "/api/leave/on-date": {
+   "get": {
+    "description": "Who is on approved leave on a day (today when no date is given).",
+    "operationId": "on_date_api_leave_on_date_get",
+    "parameters": [
+     {
+      "in": "query",
+      "name": "date",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "format": "date",
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Date"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response On Date Api Leave On Date Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "On Date",
+    "tags": [
+     "leave"
+    ]
+   }
+  },
+  "/api/leave/settings": {
+   "get": {
+    "operationId": "get_settings_api_leave_settings_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Get Settings Api Leave Settings Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Get Settings",
+    "tags": [
+     "leave"
+    ]
+   },
+   "put": {
+    "operationId": "put_settings_api_leave_settings_put",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/SettingsIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Put Settings Api Leave Settings Put",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Put Settings",
+    "tags": [
+     "leave"
+    ]
+   }
+  },
+  "/api/leave/summary": {
+   "get": {
+    "operationId": "summary_api_leave_summary_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Summary Api Leave Summary Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "Summary",
+    "tags": [
+     "leave"
+    ]
+   }
+  },
+  "/api/leave/{leave_id}": {
+   "get": {
+    "operationId": "get_leave_api_leave__leave_id__get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "leave_id",
+      "required": true,
+      "schema": {
+       "title": "Leave Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Get Leave Api Leave  Leave Id  Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Get Leave",
+    "tags": [
+     "leave"
+    ]
+   }
+  },
+  "/api/leave/{leave_id}/cancel": {
+   "post": {
+    "operationId": "cancel_api_leave__leave_id__cancel_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "leave_id",
+      "required": true,
+      "schema": {
+       "title": "Leave Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/CancelIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Cancel Api Leave  Leave Id  Cancel Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Cancel",
+    "tags": [
+     "leave"
+    ]
+   }
+  },
+  "/api/leave/{leave_id}/certificate": {
+   "get": {
+    "description": "The evidence attached to a request: for the person themselves, or the office with edit access.",
+    "operationId": "certificate_api_leave__leave_id__certificate_get",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "leave_id",
+      "required": true,
+      "schema": {
+       "title": "Leave Id",
+       "type": "string"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Certificate",
+    "tags": [
+     "leave"
+    ]
+   }
+  },
+  "/api/leave/{leave_id}/decision": {
+   "post": {
+    "operationId": "decide_api_leave__leave_id__decision_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "leave_id",
+      "required": true,
+      "schema": {
+       "title": "Leave Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/DecisionIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Decide Api Leave  Leave Id  Decision Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Decide",
+    "tags": [
+     "leave"
+    ]
+   }
+  },
+  "/api/me/leave": {
+   "get": {
+    "operationId": "my_leave_api_me_leave_get",
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response My Leave Api Me Leave Get",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     }
+    },
+    "summary": "My Leave",
+    "tags": [
+     "leave"
+    ]
+   },
+   "post": {
+    "operationId": "request_leave_api_me_leave_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/LeaveIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Request Leave Api Me Leave Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Request Leave",
+    "tags": [
+     "leave"
+    ]
+   }
+  },
+  "/api/me/leave/{leave_id}/cancel": {
+   "post": {
+    "operationId": "cancel_mine_api_me_leave__leave_id__cancel_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "leave_id",
+      "required": true,
+      "schema": {
+       "title": "Leave Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/CancelIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Cancel Mine Api Me Leave  Leave Id  Cancel Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Cancel Mine",
+    "tags": [
+     "leave"
+    ]
+   }
+  },
+  "/api/me/leave/{leave_id}/certificate": {
+   "post": {
+    "description": "Attach a medical certificate or other evidence to your own request.",
+    "operationId": "upload_certificate_api_me_leave__leave_id__certificate_post",
+    "parameters": [
+     {
+      "in": "path",
+      "name": "leave_id",
+      "required": true,
+      "schema": {
+       "title": "Leave Id",
+       "type": "string"
+      }
+     }
+    ],
+    "requestBody": {
+     "content": {
+      "multipart/form-data": {
+       "schema": {
+        "$ref": "#/components/schemas/Body_upload_certificate_api_me_leave__leave_id__certificate_post"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "title": "Response Upload Certificate Api Me Leave  Leave Id  Certificate Post",
+         "type": "object"
+        }
+       }
+      },
+      "description": "Successful Response"
+     },
+     "422": {
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      },
+      "description": "Validation Error"
+     }
+    },
+    "summary": "Upload Certificate",
+    "tags": [
+     "leave"
     ]
    }
   },

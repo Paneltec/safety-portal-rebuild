@@ -21,11 +21,12 @@ Updated at the end of each finished part. The ledgers in `docs/ledger/` hold the
 | Stage 6a | Fleet and equipment register; QR labels; meters with history and regression review; documents and certificates; equipment categories; Navixy tracker list (preview, sync, tags, sign-in refresh) feeding the register and the form vehicle picker, with typing a vehicle in always allowed. Navixy calls are tested against a mock only | `backend/tests/test_fleet.py`, `e2e/walkthrough.py` (fleet and equipment step) |
 | Stage 6b | Service schedules by days, kilometres and hours; due soon, overdue and cannot-tell states; service records that restart their schedule; fleet-wide "Service due" list; service reminders with preview and dedupe | `backend/tests/test_service.py`, `e2e/walkthrough.py` (fleet and equipment step) |
 | Stage 6c | Fuel: CSV and SmartFill import with preview and upsert, fuel cards and labelled attribution, the weekly diesel rate (write-once, seven days required, pending when missing, pack fixture reproduced), reports by vehicle, day, driver and card with CSV download and email through the outbox, anomaly inbox with bulk actions. SmartFill and FuelCheck are tested against mocks only | `backend/tests/test_fuel.py`, `e2e/walkthrough.py` (fuel step) |
+| Stage 7a | Leave: a worker asks for their own leave, the office can enter one for them, someone else decides, evidence can be attached, cancelling leave already paid is flagged for payroll. Nothing is sent | `backend/tests/test_leave.py`, `e2e/walkthrough.py` (leave step) |
 
 ## Next, in order
 
 1. Left over from stage 5: Simpro jobs, customers, attachments and scheduled sync; compose-and-send for reports; Dropbox.
-1a. **Stage 7**: leave, timesheets and the payroll workbench (test-only: no payments, STP, super or messages to workers).
+1a. **Stage 7b and 7c**: timesheets, then the payroll workbench (test-only: no payments, STP, super or messages to workers). Leave (7a) is built; leave balances, leave by email and warning when a daily job is given to someone on leave are not.
 1c. Left over from stage 6 (PARTIAL in the ledger): Navixy trips, map and dashboards; NFC/UHF pairing; service check sheet PDFs and attachments; fuel card date windows; scheduled SmartFill import; PDF on emailed fuel reports; per-asset fuel panel.
 1b. Left over from stage 4 (all recorded as PARTIAL in the ledger): worker ID card and QR, mobile PIN, supplier QR induction, inductions spreadsheet import and printable matrix, PDF/SMS job import, GPS distance checks at sign-on, supplier document folders.
 1a. Carried forward: bulk pre-start import (IMP-01), reference catalogues (REF-01), AI drafting, positions and asset-type assignment rules, authorised corrections after submit.

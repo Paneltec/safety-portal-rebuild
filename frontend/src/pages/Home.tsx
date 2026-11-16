@@ -55,7 +55,7 @@ const STAGES: { name: string; detail: string; built: boolean | "partial" }[] = [
   { name: "4. Workers, suppliers, sites and jobs", detail: "Workers, certifications, inductions and training, sites, QR sign-in, visitors, suppliers, renewal links and daily jobs are built. Still to come: Simpro imports (stage 5), worker ID cards, supplier QR induction, spreadsheet import of inductions", built: "partial" },
   { name: "5. Integrations and communications", detail: "Connections, safe mode, the outbox, notifications, the Simpro import of workers, sites and suppliers, and expiry reminders are built. Still to come: Simpro jobs and attachments, and Navixy and SmartFill data (with fleet and fuel)", built: "partial" },
   { name: "6. Fleet, service and fuel", detail: "The fleet and equipment register, QR labels, meters, the Navixy vehicle list, service schedules, fuel import, the weekly diesel rate, fuel reports and the fuel check list are built. Navixy, SmartFill and FuelCheck have only been tested against stand-ins, not the real services. Still to come: trips and maps, service check sheets, scheduled fuel import", built: "partial" },
-  { name: "7. Leave, timesheets and pay (test-only)", detail: "Approvals, weekly workbench, reports, payslips, ABA export", built: false },
+  { name: "7. Leave, timesheets and pay (test-only)", detail: "Leave requests and decisions are built. Still to come: timesheets and the test-only pay workbench (nothing is ever paid, lodged or sent)", built: "partial" },
   { name: "8. Phone app", detail: "Home, My Work, forms, QR scanning, offline queue, preview", built: false },
   { name: "9. Backups, system and help", detail: "Snapshots, NAS agent, restore rehearsal, diagnostics, manuals", built: false },
 ];

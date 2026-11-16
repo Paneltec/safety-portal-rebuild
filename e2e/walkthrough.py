@@ -1085,7 +1085,62 @@ def fuel(browser) -> None:
     print("fuel walkthrough: ok")
 
 
-STEPS = [stage1_and_2a, documents, forms, safety_registers, workers, sites_and_visitors, suppliers_and_renewals, inductions_and_jobs, connections_and_outbox, fleet_and_equipment, fuel]
+def leave(browser) -> None:
+    import datetime as dt
+    pg = sign_in(browser)
+    errors: list[str] = []
+    pg.on("pageerror", lambda e: errors.append(str(e)))
+    today = dt.date.today()
+    monday = today + dt.timedelta(days=(7 - today.weekday()) % 7 + 7)  # a Monday at least a week away
+    tuesday = monday + dt.timedelta(days=1)
+
+    # The account holder has no worker record, so "My leave" says so rather than failing.
+    pg.get_by_role("link", name="My leave").click()
+    expect(pg.get_by_text("Your login is not linked to a worker record")).to_be_visible()
+
+    # The office enters a request for a worker; hours come from the working days.
+    pg.get_by_role("navigation").get_by_role("link", name="Leave", exact=True).click()
+    expect(pg.get_by_text("Nothing here.")).to_be_visible()
+    pg.get_by_role("button", name="Enter leave for a worker").click()
+    dialog = pg.get_by_role("dialog")
+    dialog.get_by_label("Worker").select_option(index=1)
+    name = dialog.get_by_label("Worker").locator("option:checked").inner_text()
+    dialog.get_by_label("First day").fill(monday.isoformat())
+    dialog.get_by_label("Last day").fill(tuesday.isoformat())
+    dialog.get_by_label("Reason or note (optional)").fill("Phoned in")
+    dialog.get_by_role("button", name="Save request").click()
+    row = pg.get_by_role("row").filter(has_text=name)
+    expect(row.get_by_role("cell", name="15.2", exact=True)).to_be_visible()
+    expect(row.get_by_text("Waiting for a decision")).to_be_visible()
+    expect(row.get_by_text("Entered by Stephen")).to_be_visible()
+    shot(pg, "34-leave", full=True)
+
+    # A second request over the same days is refused.
+    pg.get_by_role("button", name="Enter leave for a worker").click()
+    dialog = pg.get_by_role("dialog")
+    dialog.get_by_label("Worker").select_option(index=1)
+    dialog.get_by_label("First day").fill(tuesday.isoformat())
+    dialog.get_by_role("button", name="Save request").click()
+    expect(dialog.get_by_text("There is already leave booked over some of those days.")).to_be_visible()
+    dialog.get_by_role("button", name="Cancel").click()
+
+    # Not approving needs a reason; approving moves it to Approved with who decided.
+    row.get_by_role("button", name=f"Do not approve leave for {name}").click()
+    dialog = pg.get_by_role("dialog")
+    dialog.get_by_role("button", name="Do not approve").click()
+    assert dialog.get_by_label("Why? The person will see this.").evaluate("e => e.validity.valueMissing")
+    dialog.get_by_role("button", name="Back").click()
+    row.get_by_role("button", name=f"Approve leave for {name}", exact=True).click()
+    expect(pg.get_by_text("Nothing here.")).to_be_visible()
+    pg.get_by_role("tab", name="Approved", exact=True).click()
+    expect(pg.get_by_role("row").filter(has_text=name).get_by_text("by Stephen", exact=True)).to_be_visible()
+    expect(pg.locator(".tile").filter(has_text="Starting in the next 14 days").get_by_text("1", exact=True)).to_be_visible()
+    assert not errors, errors
+    pg.context.close()
+    print("leave walkthrough: ok")
+
+
+STEPS = [stage1_and_2a, documents, forms, safety_registers, workers, sites_and_visitors, suppliers_and_renewals, inductions_and_jobs, connections_and_outbox, fleet_and_equipment, fuel, leave]
 
 if __name__ == "__main__":
     with sync_playwright() as p:

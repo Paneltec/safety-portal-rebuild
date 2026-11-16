@@ -622,6 +622,30 @@ FEATURES.update({
     "INT-04": ("PARTIAL", "tests/test_fuel.py", "Built: the 'parameters' envelope, list or table answers, paging guard (no progress stops; page cap), durable shared call limiter (6 a minute, 60 an hour, 600 a day), simulator labelled and kept out of real totals. NOT VERIFIED against FMT Data (mock transport only; column names in a real answer must be confirmed). Outstanding: scheduled sync, tank levels, Retry-After handling, counting the connection test against the limiter."),
 })
 
+T_LEAVE = "tests/test_leave.py"
+DONE.update({
+    ("GET", "/api/me/leave"): ("self", "leave.my_leave", T_LEAVE, "IMPLEMENTED_TESTED", "Balances are not shown yet (they belong to payroll)"),
+    ("POST", "/api/me/leave"): ("self", "leave.request_leave", T_LEAVE, "IMPLEMENTED_TESTED", "Working days x hours a day unless hours are given; overlap refused"),
+    ("POST", "/api/me/leave/{leave_id}/cancel"): ("self", "leave.cancel_mine", T_LEAVE, "IMPLEMENTED_TESTED", "Leave already used by a pay run is flagged for payroll, not undone"),
+    ("POST", "/api/me/leave/{leave_id}/certificate"): ("self", "leave.upload_certificate", T_LEAVE, "IMPLEMENTED_TESTED", ""),
+    ("GET", "/api/leave"): (_A, "leave.list_leave", T_LEAVE, "IMPLEMENTED_TESTED", "Needs team access"),
+    ("GET", "/api/leave/{leave_id}"): (_A, "leave.get_leave", T_LEAVE, "IMPLEMENTED_TESTED", "Own request, or team access"),
+    ("POST", "/api/leave/{leave_id}/decision"): (_A, "leave.decide", T_LEAVE, "IMPLEMENTED_TESTED", "Never your own; a reason is needed to refuse; no email is sent (D-076)"),
+    ("GET", "/api/leave/{leave_id}/certificate"): (_A, "leave.certificate", T_LEAVE, "IMPLEMENTED_TESTED", ""),
+    ("GET", "/api/leave/on-date"): (_A, "leave.on_date", T_LEAVE, "IMPLEMENTED_TESTED", ""),
+    ("GET", "/api/leave/summary"): (_A, "leave.summary", T_LEAVE, "IMPLEMENTED_TESTED", ""),
+    ("GET", "/api/leave/settings"): (_A, "leave.get_settings", T_LEAVE, "IMPLEMENTED_TESTED", "Hours a day, back-dating limit, working days"),
+    ("PUT", "/api/leave/settings"): (_A, "leave.put_settings", T_LEAVE, "IMPLEMENTED_TESTED", "Admin only"),
+})
+NEW_ROWS += [
+    ["POST", "/api/leave", "leave", "", _A, "leave.enter_leave", T_LEAVE, "IMPLEMENTED_TESTED", "New: the office enters a request for a worker"],
+    ["POST", "/api/leave/{leave_id}/cancel", "leave", "", _A, "leave.cancel", T_LEAVE, "IMPLEMENTED_TESTED", "New: the office cancels a request"],
+]
+
+FEATURES.update({
+    "LEAVE-01": ("PARTIAL", "tests/test_leave.py; e2e leave step", "Built: own request with hours from working days, overlap refusal, evidence upload, own cancel; office list, entry on a worker's behalf, decision by someone else with a reason to refuse, who is away on a date, summary, settings; cancelling leave a pay run has used is flagged for payroll. Outstanding: leave balances, allocation by a pay run (stage 7c), leave by email, a warning when a daily job is given to someone on leave."),
+})
+
 
 def main() -> None:
     path = HERE / "endpoint_coverage.csv"

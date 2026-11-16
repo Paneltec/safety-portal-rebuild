@@ -1329,3 +1329,38 @@ class ProviderCall(Base):
     org_id: Mapped[str] = mapped_column(ForeignKey("organisations.id"))
     provider: Mapped[str] = mapped_column(String(30))
     called_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+# ---------- stage 7: leave, timesheets and the payroll workbench ----------
+
+class LeaveRequest(Base):
+    """A request for time off. Decided by someone other than the person asking. Once a pay run
+    has used it (pay_run_id set), cancelling it does not quietly undo the pay: it is flagged for
+    payroll to correct."""
+
+    __tablename__ = "leave_requests"
+    __table_args__ = (Index("ix_leave_requests_worker", "worker_id", "start_date"), Index("ix_leave_requests_org_status", "org_id", "status"))
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    org_id: Mapped[str] = mapped_column(ForeignKey("organisations.id"), index=True)
+    worker_id: Mapped[str] = mapped_column(ForeignKey("workers.id"))
+    leave_type: Mapped[str] = mapped_column(String(20))  # annual | personal | unpaid | long_service | other
+    start_date: Mapped[date] = mapped_column(Date)
+    end_date: Mapped[date] = mapped_column(Date)
+    hours: Mapped[Decimal] = mapped_column(Numeric(7, 2))
+    days: Mapped[list[Any]] = mapped_column(JSONB, default=list)  # [{"date": "YYYY-MM-DD", "hours": "7.60"}]
+    reason: Mapped[str | None] = mapped_column(Text)
+    status: Mapped[str] = mapped_column(String(12), default="requested")  # requested | approved | rejected | cancelled
+    source: Mapped[str] = mapped_column(String(12), default="portal")  # portal (the worker) | office (entered for them)
+    requested_by: Mapped[str | None] = mapped_column(String(36))
+    decided_by: Mapped[str | None] = mapped_column(String(36))
+    decided_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    decision_note: Mapped[str | None] = mapped_column(String(600))
+    cancelled_by: Mapped[str | None] = mapped_column(String(36))
+    cancelled_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    cancel_reason: Mapped[str | None] = mapped_column(String(600))
+    certificate_file_id: Mapped[str | None] = mapped_column(String(36))
+    pay_run_id: Mapped[str | None] = mapped_column(String(36))
+    needs_payroll_correction: Mapped[bool] = mapped_column(Boolean, default=False, server_default="false")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
