@@ -223,6 +223,7 @@ def worker_out(db: Session, caller: Caller, worker: Worker, *, detail: bool = Fa
         out.update({"email": worker.email, "phone": worker.phone, "mobile": worker.mobile})
     if detail:
         user = _linked_user(db, worker)
+        out["locally_edited"] = list(worker.locally_edited or [])
         out["linked_user"] = (
             {"id": user.id, "name": user.name, "email": user.email if (team or me) else None,
              "status": user.status, "role_id": user.role_id} if user else None
@@ -322,6 +323,15 @@ def _apply_fields(db: Session, caller: Caller, worker: Worker, data: dict[str, A
             details.pop("protected_hints", None)
     worker.details = details
     return changed
+
+
+IMPORTED_FIELDS = ("first_name", "last_name", "email", "phone", "mobile", "position", "active")
+
+
+def _remember_hand_edits(worker: Worker, changed: list[str]) -> None:
+    """On an imported worker, note which imported fields were changed here so the next import keeps them."""
+    if worker.source_system and changed:
+        worker.locally_edited = sorted(set(worker.locally_edited or []) | (set(changed) & set(IMPORTED_FIELDS)))
 
 
 def _duplicates(db: Session, worker: Worker) -> list[dict[str, Any]]:
@@ -461,6 +471,7 @@ def edit_my_record(
 ) -> dict[str, Any]:
     worker = _own(db, caller)
     changed = _apply_fields(db, caller, worker, body.model_dump(exclude_unset=True))
+    _remember_hand_edits(worker, changed)
     if changed:
         audit(db, request, org_id=caller.org_id, actor_id=caller.user.id, action="worker.self_updated",
               target_type="worker", target_id=worker.id, detail={"fields": changed})
@@ -720,6 +731,7 @@ def update_worker(
 ) -> dict[str, Any]:
     worker = _get_worker(db, caller, worker_id)
     changed = _apply_fields(db, caller, worker, body.model_dump(exclude_unset=True))
+    _remember_hand_edits(worker, changed)
     if changed:
         audit(db, request, org_id=caller.org_id, actor_id=caller.user.id, action="worker.updated",
               target_type="worker", target_id=worker.id, detail={"fields": changed})

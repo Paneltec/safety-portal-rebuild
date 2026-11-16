@@ -438,6 +438,9 @@ def update_site(
             setattr(site, key, value)
             changed.append(key)
     if changed:
+        if site.source_system:
+            # Remember hand edits to imported fields so the next import keeps them.
+            site.locally_edited = sorted(set(site.locally_edited or []) | (set(changed) & {"name", "address", "suburb", "state", "postcode", "active"}))
         audit(db, request, org_id=caller.org_id, actor_id=caller.user.id, action="site.updated",
               target_type="site", target_id=site.id, detail={"fields": changed})
     db.commit()

@@ -580,6 +580,9 @@ class Worker(Base):
     source_system: Mapped[str | None] = mapped_column(String(20))
     source_company: Mapped[str | None] = mapped_column(String(40))
     source_id: Mapped[str | None] = mapped_column(String(80))
+    # Import bookkeeping: the last values received, and the fields changed by hand since (kept on re-import).
+    source_data: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict, server_default="{}")
+    locally_edited: Mapped[list[str]] = mapped_column(JSONB, default=list, server_default="[]")
     photo_file_id: Mapped[str | None] = mapped_column(String(36))
     details: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict)  # address, emergency contact, notes
     protected: Mapped[str | None] = mapped_column(Text)  # encrypted JSON: birth date, tax file number, USI
@@ -658,6 +661,8 @@ class Site(Base):
     source_system: Mapped[str | None] = mapped_column(String(20))
     source_company: Mapped[str | None] = mapped_column(String(40))
     source_id: Mapped[str | None] = mapped_column(String(80))
+    source_data: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict, server_default="{}")
+    locally_edited: Mapped[list[str]] = mapped_column(JSONB, default=list, server_default="[]")
     # The secret in the printed QR code. Rotating it retires every sign printed before.
     scan_token: Mapped[str] = mapped_column(String(64))
     signon_questions: Mapped[list[Any]] = mapped_column(JSONB, default=list)
@@ -968,3 +973,47 @@ class DailyJob(Base):
     completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     cancelled_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     deleted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
+class ImportRun(Base):
+    """One run of an import from an outside system: what was fetched and what it changed."""
+
+    __tablename__ = "import_runs"
+    __table_args__ = (Index("ix_import_runs_org", "org_id", "provider", "resource", "started_at"),)
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    org_id: Mapped[str] = mapped_column(ForeignKey("organisations.id"), index=True)
+    provider: Mapped[str] = mapped_column(String(30))
+    resource: Mapped[str] = mapped_column(String(30))  # workers | sites | suppliers
+    mode: Mapped[str] = mapped_column(String(12))  # live | simulator
+    dry_run: Mapped[bool] = mapped_column(Boolean, default=False)
+    status: Mapped[str] = mapped_column(String(12))  # previewed | committed | partial | failed
+    counts: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict)
+    companies: Mapped[list[Any]] = mapped_column(JSONB, default=list)  # per company: fetched, ok, error
+    error: Mapped[str | None] = mapped_column(String(400))
+    started_by: Mapped[str | None] = mapped_column(String(36))
+    started_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    finished_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
+class ImportReviewItem(Base):
+    """An incoming record the import would not decide by itself: it looks like someone already
+    on file. A person links it to that record, creates it separately, or ignores it."""
+
+    __tablename__ = "import_review_items"
+    __table_args__ = (UniqueConstraint("org_id", "resource", "source_system", "source_company", "source_id", name="uq_import_review_source"),)
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_id)
+    org_id: Mapped[str] = mapped_column(ForeignKey("organisations.id"), index=True)
+    run_id: Mapped[str | None] = mapped_column(String(36))
+    resource: Mapped[str] = mapped_column(String(30))
+    source_system: Mapped[str] = mapped_column(String(20))
+    source_company: Mapped[str] = mapped_column(String(40))
+    source_id: Mapped[str] = mapped_column(String(80))
+    incoming: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict)
+    candidate_id: Mapped[str | None] = mapped_column(String(36))
+    match_on: Mapped[str | None] = mapped_column(String(20))  # email | name | abn
+    status: Mapped[str] = mapped_column(String(12), default="open")  # open | linked | created | ignored
+    resolved_by: Mapped[str | None] = mapped_column(String(36))
+    resolved_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
